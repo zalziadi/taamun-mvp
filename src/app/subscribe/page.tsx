@@ -107,7 +107,7 @@ function SubscribeContent() {
           <div className="rounded-xl border border-white/10 bg-white/5 p-4">
             <p className="mb-2 text-sm font-medium text-white/90">رسالة تفعيل جاهزة</p>
             <p className="text-sm text-white/70">
-              تم تأكيد تحويلك ✅ هذا رابط التفعيل: {origin}/activate?code=TAAMUN001
+              تم تأكيد تحويلك ✅ هذا رابط التفعيل: {origin}/activate?code=TAAMUN-001
             </p>
           </div>
         )}
