@@ -4,8 +4,59 @@ import { useSearchParams } from "next/navigation";
 import { Suspense, useState } from "react";
 import Link from "next/link";
 import { isAdminRequest } from "../../../lib/admin";
-import { VALID_CODES } from "../../../lib/activation";
+import { BASE_CODES, PLAN_820_CODES } from "../../../lib/activation";
 import { getUsedCodes, clearUsedCodes } from "../../../lib/storage";
+import { getAppOriginClient } from "../../../lib/appOrigin";
+
+function copyToClipboard(text: string) {
+  if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
+    navigator.clipboard.writeText(text);
+  }
+}
+
+function CodeRow({
+  code,
+  used,
+  origin,
+}: {
+  code: string;
+  used: boolean;
+  origin: string;
+}) {
+  const link = `${origin}/activate?code=${code}`;
+  const whatsappMsg = `تم تأكيدك ✅ هذا رابط التفعيل: ${link}`;
+  return (
+    <div className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-white/10 bg-white/5 p-3">
+      <code className="text-white/90">{code}</code>
+      <span className={`text-sm ${used ? "text-amber-400" : "text-emerald-400"}`}>
+        {used ? "مستخدم" : "متاح"}
+      </span>
+      <div className="flex flex-wrap gap-2">
+        <button
+          type="button"
+          onClick={() => copyToClipboard(link)}
+          className="rounded bg-white/10 px-3 py-1 text-xs text-white hover:bg-white/20"
+        >
+          نسخ رابط التفعيل
+        </button>
+        <button
+          type="button"
+          onClick={() => copyToClipboard(code)}
+          className="rounded bg-white/10 px-3 py-1 text-xs text-white hover:bg-white/20"
+        >
+          نسخ الكود
+        </button>
+        <button
+          type="button"
+          onClick={() => copyToClipboard(whatsappMsg)}
+          className="rounded bg-emerald-500/20 px-3 py-1 text-xs text-emerald-400 hover:bg-emerald-500/30"
+        >
+          نسخ واتساب
+        </button>
+      </div>
+    </div>
+  );
+}
 
 function CodesContent() {
   const searchParams = useSearchParams();
@@ -15,13 +66,7 @@ function CodesContent() {
   const [refreshKey, setRefreshKey] = useState(0);
 
   const usedCodes = getUsedCodes();
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
-
-  const copyToClipboard = (text: string) => {
-    if (typeof navigator !== "undefined" && navigator.clipboard?.writeText) {
-      navigator.clipboard.writeText(text);
-    }
-  };
+  const origin = getAppOriginClient();
 
   const handleClearUsed = () => {
     if (confirm("هل تريد مسح قائمة الأكواد المستخدمة (هذا الجهاز فقط)؟")) {
@@ -62,7 +107,7 @@ function CodesContent() {
         </Link>
       </nav>
 
-      <h1 className="mb-6 text-2xl font-bold text-white">الأكواد (28)</h1>
+      <h1 className="mb-6 text-2xl font-bold text-white">الأكواد</h1>
 
       <div className="mb-6">
         <button
@@ -74,40 +119,32 @@ function CodesContent() {
         </button>
       </div>
 
-      <div className="space-y-2">
-        {VALID_CODES.map((code: string) => {
-          const used = usedCodes.includes(code);
-          const link = `${origin}/activate?code=${code}`;
-          return (
-            <div
+      <div className="mb-8">
+        <h2 className="mb-4 text-lg font-bold text-white/90">أكواد 280 (Base)</h2>
+        <div className="space-y-2">
+          {BASE_CODES.map((code) => (
+            <CodeRow
               key={code}
-              className="flex flex-wrap items-center justify-between gap-2 rounded-lg border border-white/10 bg-white/5 p-3"
-            >
-              <code className="text-white/90">{code}</code>
-              <span
-                className={`text-sm ${used ? "text-amber-400" : "text-emerald-400"}`}
-              >
-                {used ? "مستخدم" : "متاح"}
-              </span>
-              <div className="flex gap-2">
-                <button
-                  type="button"
-                  onClick={() => copyToClipboard(link)}
-                  className="rounded bg-white/10 px-3 py-1 text-xs text-white hover:bg-white/20"
-                >
-                  نسخ رابط التفعيل
-                </button>
-                <button
-                  type="button"
-                  onClick={() => copyToClipboard(code)}
-                  className="rounded bg-white/10 px-3 py-1 text-xs text-white hover:bg-white/20"
-                >
-                  نسخ الكود
-                </button>
-              </div>
-            </div>
-          );
-        })}
+              code={code}
+              used={usedCodes.includes(code)}
+              origin={origin}
+            />
+          ))}
+        </div>
+      </div>
+
+      <div>
+        <h2 className="mb-4 text-lg font-bold text-white/90">أكواد 820 (Scan)</h2>
+        <div className="space-y-2">
+          {PLAN_820_CODES.map((code) => (
+            <CodeRow
+              key={code}
+              code={code}
+              used={usedCodes.includes(code)}
+              origin={origin}
+            />
+          ))}
+        </div>
       </div>
     </div>
   );

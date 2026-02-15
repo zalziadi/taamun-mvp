@@ -5,7 +5,8 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import Link from "next/link";
 import { setEntitlement, markCodeUsed } from "../../lib/storage";
-import { checkCode } from "../../lib/activation";
+import { checkCode, getCodeKind } from "../../lib/activation";
+import { setPlan820 } from "../../features/scan";
 import { normalizeCode } from "../../lib/storage";
 import { StatusCard } from "../../components/StatusCard";
 
@@ -14,15 +15,17 @@ function ActivateContent() {
   const paramCode = searchParams.get("code");
 
   const [code, setCode] = useState("");
-  const [status, setStatus] = useState<"idle" | "success" | "invalid" | "used">("idle");
+  const [status, setStatus] = useState<"idle" | "success" | "success820" | "invalid" | "used">("idle");
   const [autoChecked, setAutoChecked] = useState(false);
 
   const doActivate = useCallback((normalized: string) => {
     const result = checkCode(normalized);
     if (result === "ok") {
+      const kind = getCodeKind(normalized);
       markCodeUsed(normalized);
       setEntitlement("active");
-      setStatus("success");
+      if (kind === "plan820") setPlan820(true);
+      setStatus(kind === "plan820" ? "success820" : "success");
     } else if (result === "used") {
       setStatus("used");
     } else {
@@ -66,11 +69,11 @@ function ActivateContent() {
       <h1 className="mb-8 text-2xl font-bold text-white">تفعيل الاشتراك</h1>
 
       <div className="max-w-md space-y-6">
-        {status === "success" ? (
+        {status === "success" || status === "success820" ? (
           <>
             <StatusCard
               title="تم التفعيل بنجاح ✅"
-              message="يمكنك الآن استخدام تمعّن كاملاً."
+              message={status === "success820" ? "يمكنك الآن استخدام تمعّن كاملاً. تم تفعيل باقة 820 ✅" : "يمكنك الآن استخدام تمعّن كاملاً."}
               variant="success"
             />
             <Link

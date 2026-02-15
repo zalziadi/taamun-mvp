@@ -25,6 +25,7 @@
 
 ## Vercel Environment Variables
 
+- `NEXT_PUBLIC_APP_ORIGIN=<production-domain>` — **مطلوب للإنتاج.** ضع رابط التطبيق الكامل (مثل `https://taamun-mvp.vercel.app`) لضمان أن روابط التفعيل ورسائل واتساب تستخدم النطاق الصحيح وليس localhost أو placeholder.
 - `NEXT_PUBLIC_ADMIN_KEY=<your-secret>` — مفتاح سري للوصول إلى لوحة الأدمن.
 - رابط الأدمن: `/admin?admin=<key>`
 

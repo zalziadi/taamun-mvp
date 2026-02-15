@@ -4,6 +4,7 @@ import { useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import Link from "next/link";
 import { setEntitlement, isEntitled, isAdminEnabled } from "../../lib/storage";
+import { getAppOriginClient } from "../../lib/appOrigin";
 import { StatusCard } from "../../components/StatusCard";
 
 const WHATSAPP_NUMBER = "966553930885";
@@ -32,7 +33,7 @@ function SubscribeContent() {
   const reasonLocked = searchParams.get("reason") === "locked";
   const entitled = isEntitled();
   const isAdmin = isAdminEnabled();
-  const origin = typeof window !== "undefined" ? window.location.origin : "";
+  const origin = getAppOriginClient();
 
   const handleWhatsAppClick = () => {
     setEntitlement("pending");
@@ -67,6 +68,24 @@ function SubscribeContent() {
         <div className="rounded-xl border border-white/10 bg-white/5 p-6">
           <p className="text-white/60">السعر</p>
           <p className="text-3xl font-bold text-white">280 ر.س</p>
+        </div>
+
+        <div className="rounded-xl border border-white/10 bg-white/5 p-4 space-y-3">
+          <p className="text-sm font-medium text-white/90">مقارنة الباقات</p>
+          <div className="text-sm text-white/80">
+            <p className="font-medium text-white/90">باقة 280:</p>
+            <ul className="list-disc list-inside mr-2 mt-1 space-y-0.5">
+              <li>برنامج تمعّن 28 يوم</li>
+              <li>تحميل الكتيّب</li>
+            </ul>
+          </div>
+          <div className="text-sm text-white/80">
+            <p className="font-medium text-white/90">باقة 820:</p>
+            <ul className="list-disc list-inside mr-2 mt-1 space-y-0.5">
+              <li>كل ما في باقة 280</li>
+              <li>جلسات مسح الآية غير محدودة</li>
+            </ul>
+          </div>
         </div>
 
         <p className="text-white/80">

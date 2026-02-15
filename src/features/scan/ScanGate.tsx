@@ -22,8 +22,8 @@ export function ScanGate({ children }: ScanGateProps) {
         </nav>
         <h1 className="mb-8 text-2xl font-bold text-white">التقاط آية</h1>
         <StatusCard
-          title="خطة 820 مطلوبة"
-          message="ميزة مسح الآية متاحة لمشتركي خطة 820. ترقّ للاشتراك للوصول."
+          title="ميزة مسح الآية متاحة في باقة 820 فقط"
+          message="ترقّ للاشتراك للوصول"
           variant="warning"
         />
         <Link

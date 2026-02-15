@@ -13,8 +13,24 @@ function getVisionClient(): ImageAnnotatorClient | null {
   });
 }
 
+function checkAuth(request: Request): { ok: boolean; error?: string } {
+  const entitlement = request.headers.get("X-Taamun-Entitlement") ?? "";
+  const plan820 = request.headers.get("X-Taamun-Plan-820") === "1";
+  if (entitlement !== "active") {
+    return { ok: false, error: "الاشتراك غير مفعّل" };
+  }
+  if (!plan820) {
+    return { ok: false, error: "باقة 820 مطلوبة" };
+  }
+  return { ok: true };
+}
+
 export async function POST(request: Request) {
   try {
+    const auth = checkAuth(request);
+    if (!auth.ok) {
+      return NextResponse.json({ ok: false, error: auth.error }, { status: 403 });
+    }
     const formData = await request.formData();
     const file = formData.get("image");
     if (!file || !(file instanceof Blob)) {
