@@ -19,15 +19,22 @@
 - [ ] 14. Admin Reset — `localStorage.setItem("taamun.admin","1")` يظهر زر Reset في التقدم
 - [ ] 15. Reset يمسح التقدم — بعد Reset تختفي البيانات وتحدث الواجهة
 - [ ] 16. كود صالح يفعّل مرة واحدة — TAAMUN-001 يعمل، ثم إعادة الاستخدام تعرض "مستخدم مسبقًا"
-- [ ] 17. الأدمن — `/admin?admin=<KEY>` تفتح لوحة الأدمن (يجب تطابق KEY مع NEXT_PUBLIC_ADMIN_KEY)
+- [ ] 17. الأدمن — `/admin?admin=<KEY>` أو `/admin/activations?admin=<KEY>` تفتح لوحة الأدمن (يجب تطابق KEY مع ADMIN_KEY في الخادم)
 - [ ] 18. الأدمن ينسخ رابط التفعيل — في /admin/codes زر "نسخ رابط التفعيل" بجانب كل كود
 - [ ] 19. Deploy — رفع البناء إلى الاستضافة (Vercel / Netlify / غيرها)
 
 ## Vercel Environment Variables
 
 - `NEXT_PUBLIC_APP_ORIGIN=<production-domain>` — **مطلوب للإنتاج.** ضع رابط التطبيق الكامل (مثل `https://taamun-mvp.vercel.app`) لضمان أن روابط التفعيل ورسائل واتساب تستخدم النطاق الصحيح وليس localhost أو placeholder.
-- `NEXT_PUBLIC_ADMIN_KEY=<your-secret>` — مفتاح سري للوصول إلى لوحة الأدمن.
-- رابط الأدمن: `/admin?admin=<key>`
+- `ADMIN_KEY=<your-secret>` — مفتاح سري للوصول إلى لوحة الأدمن (سري، لا يستخدم NEXT_PUBLIC).
+- رابط الأدمن: `/admin?admin=<key>` أو `/admin/activations?admin=<key>`
+
+### Supabase (التفعيلات)
+
+- `NEXT_PUBLIC_SUPABASE_URL` — رابط مشروع Supabase
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — مفتاح العميل (اختياري للتطبيق)
+- `SUPABASE_SERVICE_ROLE_KEY` — مفتاح الخدمة (سري، للخادم فقط) — مطلوب لـ /admin/activations
+- نفّذ `docs/sql/admin_activations.sql` لإنشاء جدول admin_activations
 
 ### Ayah Scan (خطة 820)
 

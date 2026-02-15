@@ -24,8 +24,8 @@
 - **NEXT_PUBLIC_APP_ORIGIN:** ضع في Vercel رابط الإنتاج الكامل (مثل `https://taamun-mvp.vercel.app`) لضمان أن روابط التفعيل ونسخ واتساب تستخدم النطاق الصحيح.
 
 ### لوحة الأدمن
-- **الوصول:** `/admin?admin=<ADMIN_KEY>` — يجب تطابق `NEXT_PUBLIC_ADMIN_KEY` في البيئة.
-- **Vercel:** ضبط المتغير `NEXT_PUBLIC_ADMIN_KEY` في إعدادات المشروع.
+- **الوصول:** `/admin?admin=<KEY>` أو `/admin/activations?admin=<KEY>` — يتم التحقق من المفتاح على الخادم عبر `/api/admin/verify`.
+- **Vercel:** ضبط المتغير `ADMIN_KEY` في إعدادات المشروع (سري، لا يستخدم NEXT_PUBLIC).
 - صفحات: `/admin` (الرئيسية)، `/admin/codes` (عرض 28 كود، نسخ رابط التفعيل/الكود، مسح المستخدمة على الجهاز).
 
 ### البيانات

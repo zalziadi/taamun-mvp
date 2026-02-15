@@ -10,11 +10,13 @@ import {
   isAdminEnabled,
   isEntitled,
 } from "../../lib/storage";
+import { track } from "../../lib/analytics";
 import { getDayIndexForToday } from "../../lib/ramadan-28";
 import {
   computeTotals,
   computeDominantStage,
   getDailyInsight,
+  computeStreak,
 } from "../../lib/scoring";
 import type { Phase } from "../../lib/types";
 
@@ -39,6 +41,7 @@ export default function ProgressPage() {
       router.replace("/subscribe?reason=locked");
       return;
     }
+    track("progress_opened", {});
     const id = setTimeout(() => setEntitled(true), 0);
     return () => clearTimeout(id);
   }, [router]);
@@ -47,6 +50,7 @@ export default function ProgressPage() {
     () => computeTotals(entries),
     [entries]
   );
+  const streak = useMemo(() => computeStreak(entries), [entries]);
   const dominant = useMemo(
     () => computeDominantStage(counts, points),
     [counts, points]
@@ -93,6 +97,21 @@ export default function ProgressPage() {
           </button>
         </div>
       )}
+
+      <div className="mb-6 flex flex-wrap gap-3">
+        <Link
+          href="/day"
+          className="rounded-lg bg-white px-6 py-3 font-medium text-[#0B0F14] hover:bg-white/90"
+        >
+          اكمل اليوم
+        </Link>
+        <Link
+          href="/book"
+          className="rounded-lg border border-white/20 bg-white/5 px-6 py-3 text-white hover:bg-white/10"
+        >
+          الكتاب
+        </Link>
+      </div>
 
       {completed === 0 ? (
         <div className="mb-8 rounded-xl border border-white/10 bg-white/5 p-8 text-center">
@@ -146,6 +165,13 @@ export default function ProgressPage() {
               <p className="text-3xl font-bold text-white">
                 {completed} <span className="text-lg font-normal">/ 28</span>
               </p>
+              <p className="mt-1 text-sm text-white/60">
+                {Math.round((completed / 28) * 100)}%
+              </p>
+            </div>
+            <div className="rounded-xl border border-white/10 bg-white/5 px-6 py-4">
+              <p className="text-white/60">التوالي</p>
+              <p className="text-2xl font-bold text-white">{streak}</p>
             </div>
             <div className="rounded-xl border border-white/10 bg-white/5 px-6 py-4">
               <p className="text-white/60">ظل</p>
@@ -174,7 +200,12 @@ export default function ProgressPage() {
           const cellContent =
             isCurrent && entry && isTodayLocked ? (
               <span className="flex flex-col items-center gap-0.5 text-xs">
-                <span className="text-emerald-400">Locked ✅</span>
+                <span className="text-emerald-400">تم ✅</span>
+                <span className="text-white/80">{PHASE_LABELS[entry.phase]}</span>
+              </span>
+            ) : hasEntry ? (
+              <span className="flex flex-col items-center gap-0.5 text-xs">
+                <span className="text-emerald-400">تم</span>
                 <span className="text-white/80">{PHASE_LABELS[entry.phase]}</span>
               </span>
             ) : (

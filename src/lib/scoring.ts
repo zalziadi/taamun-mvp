@@ -1,5 +1,15 @@
 import type { DayEntry, Phase } from "./types";
 
+/** Consecutive days from day 1 (e.g. 1,2,3 -> 3; 1,2,4 -> 2) */
+export function computeStreak(entries: Record<string, DayEntry>): number {
+  let streak = 0;
+  for (let d = 1; d <= 28; d++) {
+    if (entries[String(d)]) streak++;
+    else break;
+  }
+  return streak;
+}
+
 export const PHASE_POINTS: Record<Phase, number> = {
   shadow: 1,
   awareness: 2,

@@ -47,7 +47,13 @@ function AdminContent() {
           href={`/admin/codes${query}`}
           className="block rounded-xl border border-white/20 bg-white/5 px-6 py-4 text-white transition-colors hover:bg-white/10"
         >
-          الأكواد (28)
+          الأكواد
+        </Link>
+        <Link
+          href={`/admin/activations${query}`}
+          className="block rounded-xl border border-white/20 bg-white/5 px-6 py-4 text-white transition-colors hover:bg-white/10"
+        >
+          التفعيلات
         </Link>
       </div>
     </div>

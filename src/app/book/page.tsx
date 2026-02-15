@@ -1,57 +1,74 @@
 "use client";
 
+import { useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { isEntitled } from "../../lib/storage";
+import { Suspense } from "react";
+import { hasEntitlement } from "../../lib/entitlement";
+import { BookViewer } from "../../components/BookViewer";
+import { track } from "../../lib/analytics";
 
-export default function BookPage() {
-  const entitled = isEntitled();
+function BookContent() {
+  const router = useRouter();
+  const [mounted, setMounted] = useState(false);
+  const entitled = hasEntitlement("base");
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
+
+  useEffect(() => {
+    if (mounted && entitled) track("book_opened", {});
+  }, [mounted, entitled]);
+
+  useEffect(() => {
+    if (!mounted) return;
+    if (!entitled) {
+      router.replace("/subscribe?reason=book");
+      return;
+    }
+  }, [mounted, entitled, router]);
+
+  if (!mounted) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#0B0F14] p-6">
+        <p className="text-white/70">جاري التحميل...</p>
+      </div>
+    );
+  }
+
+  if (!entitled) {
+    return null;
+  }
 
   return (
     <div className="min-h-screen bg-[#0B0F14] p-6">
-      <nav className="mb-8">
+      <nav className="mb-8 flex flex-wrap gap-4">
         <Link href="/" className="text-white/70 hover:text-white">
           الرئيسية
         </Link>
+        <Link href="/day" className="text-white/70 hover:text-white">
+          اليوم
+        </Link>
+        <Link href="/progress" className="text-white/70 hover:text-white">
+          التقدم
+        </Link>
       </nav>
 
-      {!entitled ? (
-        <>
-          <h1 className="mb-4 text-2xl font-bold text-white">الوصول للكتيّب مقفل</h1>
-          <p className="mb-6 text-white/70">لازم الاشتراك أولاً</p>
-          <Link
-            href="/subscribe?reason=book_locked"
-            className="inline-flex items-center gap-2 rounded-lg bg-white px-6 py-3 font-medium text-[#0B0F14] transition-colors hover:bg-white/90"
-          >
-            الاشتراك
-          </Link>
-        </>
-      ) : (
-        <>
-          <h1 className="mb-8 text-2xl font-bold text-white">الكتيّب</h1>
+      <h1 className="mb-6 text-2xl font-bold text-white">مدينة المعنى بلغة القرآن</h1>
+      <p className="mb-6 text-white/70">
+        الدليل والتطبيق — اقرأ في المتصفح
+      </p>
 
-          <div className="max-w-lg space-y-6">
-            <p className="text-white/80">
-              هذا الكتيّب هو الدليل والتطبيق لبرنامج تمعّن — 28 يوماً في رحلة رمضان.
-            </p>
-
-            <a
-              href="/book/City_of_Meaning_Quran_AR_EN_v0.pdf"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 rounded-lg bg-white px-6 py-3 font-medium text-[#0B0F14] transition-colors hover:bg-white/90"
-            >
-              تحميل الكتيّب PDF
-            </a>
-
-            <Link
-              href="/subscribe"
-              className="inline-block text-white/70 hover:text-white"
-            >
-              الاشتراك في البرنامج
-            </Link>
-          </div>
-        </>
-      )}
+      <BookViewer />
     </div>
+  );
+}
+
+export default function BookPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#0B0F14] p-6 text-white/70">جاري التحميل...</div>}>
+      <BookContent />
+    </Suspense>
   );
 }

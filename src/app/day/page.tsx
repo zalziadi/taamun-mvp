@@ -5,8 +5,10 @@ import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import Link from "next/link";
 import { isEntitled } from "../../lib/storage";
+import { track } from "../../lib/analytics";
 import { getScanAyahText, buildQuickAyahSession } from "../../features/scan";
 import { VerseCard } from "../../components/VerseCard";
+import { Day1Gate } from "../../components/Day1Gate";
 import { ChoiceChips } from "../../components/ChoiceChips";
 import { getDayData, getRamadanDayInfo } from "../../lib/ramadan-28";
 import { upsertEntry, loadProgress, getTodayUtcDateKey } from "../../lib/storage";
@@ -37,9 +39,10 @@ function DayContent() {
       router.replace("/subscribe?reason=locked");
       return;
     }
+    track("day_opened", { dayId: effectiveDayId });
     const id = setTimeout(() => setEntitled(true), 0);
     return () => clearTimeout(id);
-  }, [router]);
+  }, [router, effectiveDayId]);
 
   const handleSave = useCallback(() => {
     if (!phase) return;
@@ -49,6 +52,7 @@ function DayContent() {
       note: note.trim() || undefined,
       answeredAtISO: new Date().toISOString(),
     });
+    track("day_saved", { dayId: effectiveDayId, phase });
     window.location.reload();
   }, [effectiveDayId, phase, note]);
 
@@ -117,6 +121,8 @@ function DayContent() {
         </div>
       )}
       <VerseCard verse={dayData.verse} reference={dayData.reference} />
+
+      {!isScanMode && effectiveDayId === 1 && <Day1Gate />}
 
       {isLocked ? (
         <div className="mt-8 rounded-xl border border-emerald-500/40 bg-emerald-500/20 p-6">
