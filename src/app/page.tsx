@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { HomeLinks } from "../components/HomeLinks";
+import { StartTodayButton } from "../components/StartTodayButton";
 
 export default function LandingPage() {
   return (
@@ -8,12 +9,7 @@ export default function LandingPage() {
       <p className="mb-12 text-white/70">28 يوماً في رحلة رمضان</p>
 
       <div className="flex flex-col gap-4 text-center">
-        <Link
-          href="/day"
-          className="rounded-xl bg-white px-10 py-4 font-bold text-[#0B0F14] transition-colors hover:bg-white/90"
-        >
-          ابدأ اليوم
-        </Link>
+        <StartTodayButton />
         <Link
           href="/progress"
           className="rounded-xl border border-white/20 bg-white/5 px-10 py-4 text-white transition-colors hover:bg-white/10"

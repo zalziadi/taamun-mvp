@@ -7,6 +7,7 @@ import Link from "next/link";
 import { isEntitled } from "../../lib/storage";
 import { track } from "../../lib/analytics";
 import { getScanAyahText, buildQuickAyahSession } from "../../features/scan";
+import { RequireAuth } from "../../components/RequireAuth";
 import { VerseCard } from "../../components/VerseCard";
 import { Day1Gate } from "../../components/Day1Gate";
 import { ChoiceChips } from "../../components/ChoiceChips";
@@ -96,6 +97,9 @@ function DayContent() {
         <Link href="/" className="text-white/70 hover:text-white">
           الرئيسية
         </Link>
+        <Link href="/account" className="text-white/70 hover:text-white">
+          حسابي
+        </Link>
         <Link href="/progress" className="text-white/70 hover:text-white">
           التقدم
         </Link>
@@ -179,8 +183,10 @@ function DayContent() {
 
 export default function DayPage() {
   return (
-    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#0B0F14] p-6 text-white/70">جاري التحميل...</div>}>
-      <DayContent />
-    </Suspense>
+    <RequireAuth>
+      <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#0B0F14] p-6 text-white/70">جاري التحميل...</div>}>
+        <DayContent />
+      </Suspense>
+    </RequireAuth>
   );
 }
