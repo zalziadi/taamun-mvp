@@ -8,7 +8,9 @@
     "start": "next start",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",
-    "verify": "npm run typecheck && npm run build"
+    "check": "npm run typecheck && npm run lint && npm run build",
+    "verify": "npm run typecheck && npm run build",
+    "ship": "npm run check && (echo ''; echo '--- Git status ---'; git status; echo ''; echo '--- Diff stat ---'; git diff --stat; git diff --cached --stat; echo ''; echo '--- Next: commit & push ---'; echo '  git add -A'; echo '  git commit -m \"<message>\"'; echo '  git push origin main')"
   },
   "dependencies": {
     "@google-cloud/vision": "^5.3.4",

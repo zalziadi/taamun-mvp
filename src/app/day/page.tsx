@@ -4,10 +4,11 @@ import { useCallback, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import Link from "next/link";
-import { isEntitled, getScanAyahText } from "../../lib/storage";
+import { isEntitled } from "../../lib/storage";
+import { getScanAyahText, buildQuickAyahSession } from "../../features/scan";
 import { VerseCard } from "../../components/VerseCard";
 import { ChoiceChips } from "../../components/ChoiceChips";
-import { getDayData, getRamadanDayInfo, buildQuickAyahSession } from "../../lib/ramadan-28";
+import { getDayData, getRamadanDayInfo } from "../../lib/ramadan-28";
 import { upsertEntry, loadProgress, getTodayUtcDateKey } from "../../lib/storage";
 import type { Phase } from "../../lib/types";
 
