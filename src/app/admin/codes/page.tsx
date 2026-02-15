@@ -9,8 +9,8 @@ import { getUsedCodes, clearUsedCodes } from "../../../lib/storage";
 
 function CodesContent() {
   const searchParams = useSearchParams();
-  const isAdmin = isAdminRequest(searchParams);
   const adminKey = searchParams.get("admin") ?? "";
+  const isAdmin = isAdminRequest(adminKey || undefined);
   const query = adminKey ? `?admin=${encodeURIComponent(adminKey)}` : "";
   const [refreshKey, setRefreshKey] = useState(0);
 

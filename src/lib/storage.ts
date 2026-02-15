@@ -4,7 +4,9 @@ import type { Entitlement, Phase } from "./types";
 const STORAGE_KEY = "taamun.progress.v1";
 const ADMIN_KEY = "taamun.admin";
 const ENTITLEMENT_KEY = "taamun.entitlement.v1";
+const PLAN_820_KEY = "taamun.plan820.v1";
 export const USED_CODES_KEY = "taamun.activation.used.v1";
+export const SCAN_AYAH_KEY = "tmn.scan.ayahText.v1";
 
 export function normalizeCode(raw: string): string {
   return raw.trim().toUpperCase();
@@ -81,6 +83,38 @@ export function isEntitled(): boolean {
   return e === "pending" || e === "active";
 }
 
+/** Returns true if user has plan 820 (Ayah Scan). Admin always has access. */
+export function hasPlan820(): boolean {
+  if (isAdminEnabled()) return true;
+  if (!isEntitled()) return false;
+  if (typeof window === "undefined") return false;
+  return window.localStorage.getItem(PLAN_820_KEY) === "1";
+}
+
+/** Grant plan 820 access (e.g. after purchase). */
+export function setPlan820(enabled: boolean): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(PLAN_820_KEY, enabled ? "1" : "0");
+  } catch {
+    // ignore
+  }
+}
+
+export function getScanAyahText(): string {
+  if (typeof window === "undefined") return "";
+  return window.localStorage.getItem(SCAN_AYAH_KEY) ?? "";
+}
+
+export function setScanAyahText(text: string): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(SCAN_AYAH_KEY, text);
+  } catch {
+    // ignore
+  }
+}
+
 const PHASES: Phase[] = ["shadow", "awareness", "contemplation"];
 
 function isValidPhase(v: unknown): v is Phase {
@@ -97,7 +131,7 @@ function normalizeEntry(raw: unknown): DayEntry | null {
   if (!raw || typeof raw !== "object") return null;
   const o = raw as Record<string, unknown>;
   const dayId = typeof o.dayId === "number" ? o.dayId : parseInt(String(o.dayId), 10);
-  if (isNaN(dayId) || dayId < 1 || dayId > 28) return null;
+  if (isNaN(dayId) || dayId < 0 || dayId > 28) return null;
   if (!isValidPhase(o.phase)) return null;
   if (!isValidAnsweredAtISO(o.answeredAtISO)) return null;
   const note = typeof o.note === "string" ? o.note : undefined;
@@ -186,13 +220,14 @@ export function upsertEntry(entry: DayEntry): ProgressState {
   const state = load();
   const normalized = normalizeEntry(entry);
   if (!normalized) return state;
+  const isScanSession = normalized.dayId === 0;
   const next: ProgressState = {
     ...state,
     entries: {
       ...state.entries,
       [String(normalized.dayId)]: normalized,
     },
-    lastSavedUtcDate: getTodayUtcDateKey(),
+    lastSavedUtcDate: isScanSession ? state.lastSavedUtcDate : getTodayUtcDateKey(),
   };
   save(next);
   return next;

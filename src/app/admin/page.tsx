@@ -7,8 +7,8 @@ import { isAdminRequest } from "../../lib/admin";
 
 function AdminContent() {
   const searchParams = useSearchParams();
-  const isAdmin = isAdminRequest(searchParams);
   const adminKey = searchParams.get("admin") ?? "";
+  const isAdmin = isAdminRequest(adminKey || undefined);
   const query = adminKey ? `?admin=${encodeURIComponent(adminKey)}` : "";
 
   if (!isAdmin) {

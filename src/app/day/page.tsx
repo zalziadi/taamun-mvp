@@ -1,12 +1,13 @@
 "use client";
 
 import { useCallback, useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useRouter, useSearchParams } from "next/navigation";
+import { Suspense } from "react";
 import Link from "next/link";
-import { isEntitled } from "../../lib/storage";
+import { isEntitled, getScanAyahText } from "../../lib/storage";
 import { VerseCard } from "../../components/VerseCard";
 import { ChoiceChips } from "../../components/ChoiceChips";
-import { getDayData, getRamadanDayInfo } from "../../lib/ramadan-28";
+import { getDayData, getRamadanDayInfo, buildQuickAyahSession } from "../../lib/ramadan-28";
 import { upsertEntry, loadProgress, getTodayUtcDateKey } from "../../lib/storage";
 import type { Phase } from "../../lib/types";
 
@@ -16,13 +17,17 @@ const LABELS: Record<Phase, string> = {
   contemplation: "تمعّن",
 };
 
-export default function DayPage() {
+function DayContent() {
   const router = useRouter();
+  const searchParams = useSearchParams();
+  const isScanMode = searchParams.get("mode") === "scan";
+  const scanAyahText = getScanAyahText();
   const [entitled, setEntitled] = useState<boolean | null>(null);
 
   const { dayIndex, status } = getRamadanDayInfo();
   const state = loadProgress();
-  const existing = state.entries[String(dayIndex)];
+  const effectiveDayId = isScanMode && scanAyahText ? 0 : dayIndex;
+  const existing = state.entries[String(effectiveDayId)];
   const [phase, setPhase] = useState<Phase | null>(existing?.phase ?? null);
   const [note, setNote] = useState(existing?.note ?? "");
 
@@ -38,13 +43,13 @@ export default function DayPage() {
   const handleSave = useCallback(() => {
     if (!phase) return;
     upsertEntry({
-      dayId: dayIndex,
+      dayId: effectiveDayId,
       phase,
       note: note.trim() || undefined,
       answeredAtISO: new Date().toISOString(),
     });
     window.location.reload();
-  }, [dayIndex, phase, note]);
+  }, [effectiveDayId, phase, note]);
 
   if (entitled === null) {
     return (
@@ -54,9 +59,20 @@ export default function DayPage() {
     );
   }
 
+  if (isScanMode && !scanAyahText.trim()) {
+    router.replace("/scan");
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#0B0F14] p-6">
+        <p className="text-white/70">جاري التوجيه...</p>
+      </div>
+    );
+  }
+
   const todayUtc = getTodayUtcDateKey();
-  const isLocked = state.lastSavedUtcDate === todayUtc;
-  const dayData = getDayData(dayIndex);
+  const isLocked = !isScanMode && state.lastSavedUtcDate === todayUtc;
+  const dayData = isScanMode && scanAyahText
+    ? { verse: scanAyahText, reference: "الآية المستخرجة", questions: buildQuickAyahSession(scanAyahText) }
+    : getDayData(dayIndex);
 
   if (!dayData) {
     return (
@@ -83,15 +99,22 @@ export default function DayPage() {
         </Link>
       </nav>
 
-      <h1 className="mb-6 text-2xl font-bold text-white">اليوم {dayIndex} من 28</h1>
+      <h1 className="mb-6 text-2xl font-bold text-white">
+        {isScanMode ? "جلسة التمعّن من الآية" : `اليوم ${dayIndex} من 28`}
+      </h1>
 
-      {status === "before" && (
+      {!isScanMode && status === "before" && (
         <p className="mb-4 text-sm text-amber-400/90">رمضان لم يبدأ بعد — عرض اليوم 1</p>
       )}
-      {status === "after" && (
+      {!isScanMode && status === "after" && (
         <p className="mb-4 text-sm text-amber-400/90">انتهت أيام البرنامج — عرض اليوم 28</p>
       )}
 
+      {isScanMode && (
+        <div className="mb-6 rounded-xl border border-emerald-500/30 bg-emerald-500/10 p-4">
+          <p className="text-sm font-medium text-emerald-400/90">الآية المستخرجة</p>
+        </div>
+      )}
       <VerseCard verse={dayData.verse} reference={dayData.reference} />
 
       {isLocked ? (
@@ -144,5 +167,13 @@ export default function DayPage() {
         </>
       )}
     </div>
+  );
+}
+
+export default function DayPage() {
+  return (
+    <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#0B0F14] p-6 text-white/70">جاري التحميل...</div>}>
+      <DayContent />
+    </Suspense>
   );
 }

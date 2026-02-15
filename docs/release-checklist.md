@@ -27,3 +27,11 @@
 
 - `NEXT_PUBLIC_ADMIN_KEY=<your-secret>` — مفتاح سري للوصول إلى لوحة الأدمن.
 - رابط الأدمن: `/admin?admin=<key>`
+
+### Ayah Scan (خطة 820)
+
+- `GOOGLE_CLOUD_PROJECT_ID` — معرف مشروع Google Cloud
+- `GOOGLE_CLOUD_CLIENT_EMAIL` — بريد حساب الخدمة (Service Account)
+- `GOOGLE_CLOUD_PRIVATE_KEY` — المفتاح الخاص (استبدل `\\n` بأسطر حقيقية عند اللزوم)
+
+**ملاحظة:** هذه المتغيرات سريّة ولا تُستخدم مع NEXT_PUBLIC_
