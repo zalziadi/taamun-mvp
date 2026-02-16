@@ -2,10 +2,24 @@ export type ValidationError = "not_found" | "expired" | "used" | "invalid_format
 
 const CODE_PATTERN = /^TAAMUN-[A-Z0-9]{4}$/i;
 
+function parseCodes(raw: string | undefined): string[] {
+  if (!raw) return [];
+  return raw
+    .split(",")
+    .map((c) => c.trim().toUpperCase())
+    .filter(Boolean);
+}
+
+// Exported for admin codes page
+export const BASE_CODES = parseCodes(process.env.ACTIVATION_CODES).length
+  ? parseCodes(process.env.ACTIVATION_CODES)
+  : ["TAAMUN-DEMO", "TAAMUN-1234"];
+
+// Optional plan codes; kept separate for admin display
+export const PLAN_820_CODES = parseCodes(process.env.ACTIVATION_CODES_820);
+
 function getValidCodes(): Set<string> {
-  const raw = process.env.ACTIVATION_CODES ?? "";
-  if (!raw.trim()) return new Set();
-  return new Set(raw.split(",").map((c) => c.trim().toUpperCase()));
+  return new Set([...BASE_CODES, ...PLAN_820_CODES]);
 }
 
 export function validateCode(code: unknown): { ok: true } | { ok: false; error: ValidationError } {
