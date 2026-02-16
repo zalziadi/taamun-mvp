@@ -29,12 +29,15 @@
 - `ADMIN_KEY=<your-secret>` — مفتاح سري للوصول إلى لوحة الأدمن (سري، لا يستخدم NEXT_PUBLIC).
 - رابط الأدمن: `/admin?admin=<key>` أو `/admin/activations?admin=<key>`
 
-### Supabase (التفعيلات)
+### Supabase (التفعيلات والاشتراك)
 
 - `NEXT_PUBLIC_SUPABASE_URL` — رابط مشروع Supabase
-- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — مفتاح العميل (اختياري للتطبيق)
-- `SUPABASE_SERVICE_ROLE_KEY` — مفتاح الخدمة (سري، للخادم فقط) — مطلوب لـ /admin/activations
-- نفّذ `docs/sql/admin_activations.sql` لإنشاء جدول admin_activations
+- `NEXT_PUBLIC_SUPABASE_ANON_KEY` — مفتاح العميل للمصادقة
+- `SUPABASE_URL` — نفس الرابط (أو NEXT_PUBLIC_SUPABASE_URL)
+- `SUPABASE_SERVICE_ROLE_KEY` — مفتاح الخدمة (سري، للخادم فقط)
+- `ACTIVATION_CODES` — (اختياري) قائمة أكواد مفصولة بفاصلة للـ MVP عند عدم وجود جدول activation_codes
+- `NEXT_PUBLIC_WHATSAPP_NUMBER` — (اختياري) رقم واتساب للاشتراك
+- نفّذ `docs/sql/admin_activations.sql` و `docs/sql/entitlements.sql`
 
 ### Ayah Scan (خطة 820)
 

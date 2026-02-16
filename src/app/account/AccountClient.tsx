@@ -6,7 +6,11 @@ import Link from "next/link";
 import { supabase } from "../../lib/supabaseClient";
 import type { User } from "@supabase/supabase-js";
 
-export function AccountClient() {
+interface AccountClientProps {
+  embedded?: boolean;
+}
+
+export function AccountClient({ embedded }: AccountClientProps) {
   const router = useRouter();
   const [user, setUser] = useState<User | null>(null);
   const [loading, setLoading] = useState(true);
@@ -51,14 +55,13 @@ export function AccountClient() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0B0F14] p-6">
+      <div className={`flex items-center justify-center p-6 ${embedded ? "min-h-[16rem]" : "min-h-screen"}`}>
         <p className="text-white/70">جارٍ التحميل...</p>
       </div>
     );
   }
 
-  return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#0B0F14] p-6">
+  const content = (
       <div className="w-full max-w-md">
         <h1 className="mb-6 text-center text-2xl font-bold text-white">حسابي</h1>
 
@@ -91,6 +94,15 @@ export function AccountClient() {
           الرئيسية
         </Link>
       </div>
+  );
+
+  if (embedded) {
+    return <div className="flex flex-1 flex-col items-center justify-center py-8">{content}</div>;
+  }
+
+  return (
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#0B0F14] p-6">
+      {content}
     </div>
   );
 }

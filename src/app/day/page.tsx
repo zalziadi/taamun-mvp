@@ -4,10 +4,11 @@ import { useCallback, useState, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { Suspense } from "react";
 import Link from "next/link";
-import { isEntitled } from "../../lib/storage";
 import { track } from "../../lib/analytics";
 import { getScanAyahText, buildQuickAyahSession } from "../../features/scan";
+import { AppShell } from "../../components/AppShell";
 import { RequireAuth } from "../../components/RequireAuth";
+import { RequireEntitlement } from "../../components/RequireEntitlement";
 import { VerseCard } from "../../components/VerseCard";
 import { Day1Gate } from "../../components/Day1Gate";
 import { ChoiceChips } from "../../components/ChoiceChips";
@@ -26,8 +27,6 @@ function DayContent() {
   const searchParams = useSearchParams();
   const isScanMode = searchParams.get("mode") === "scan";
   const scanAyahText = getScanAyahText();
-  const [entitled, setEntitled] = useState<boolean | null>(null);
-
   const { dayIndex, status } = getRamadanDayInfo();
   const state = loadProgress();
   const effectiveDayId = isScanMode && scanAyahText ? 0 : dayIndex;
@@ -36,14 +35,8 @@ function DayContent() {
   const [note, setNote] = useState(existing?.note ?? "");
 
   useEffect(() => {
-    if (!isEntitled()) {
-      router.replace("/subscribe?reason=locked");
-      return;
-    }
     track("day_opened", { dayId: effectiveDayId });
-    const id = setTimeout(() => setEntitled(true), 0);
-    return () => clearTimeout(id);
-  }, [router, effectiveDayId]);
+  }, [effectiveDayId]);
 
   const handleSave = useCallback(() => {
     if (!phase) return;
@@ -56,14 +49,6 @@ function DayContent() {
     track("day_saved", { dayId: effectiveDayId, phase });
     window.location.reload();
   }, [effectiveDayId, phase, note]);
-
-  if (entitled === null) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#0B0F14] p-6">
-        <p className="text-white/70">جاري التوجيه...</p>
-      </div>
-    );
-  }
 
   if (isScanMode && !scanAyahText.trim()) {
     router.replace("/scan");
@@ -82,18 +67,19 @@ function DayContent() {
 
   if (!dayData) {
     return (
-      <div className="min-h-screen bg-[#0B0F14] p-6 text-white">
-        <p>اليوم غير موجود</p>
-        <Link href="/" className="text-white/80 underline">
+      <AppShell title="اليوم">
+        <p className="text-white">اليوم غير موجود</p>
+        <Link href="/" className="mt-4 inline-block text-white/80 underline hover:text-white">
           الرئيسية
         </Link>
-      </div>
+      </AppShell>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0B0F14] p-6">
-      <nav className="mb-8 flex flex-wrap gap-4 text-sm">
+    <AppShell title="اليوم">
+      <div className="space-y-6">
+        <nav className="flex flex-wrap gap-4 text-sm">
         <Link href="/" className="text-white/70 hover:text-white">
           الرئيسية
         </Link>
@@ -177,16 +163,19 @@ function DayContent() {
           </div>
         </>
       )}
-    </div>
+      </div>
+    </AppShell>
   );
 }
 
 export default function DayPage() {
   return (
     <RequireAuth>
-      <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#0B0F14] p-6 text-white/70">جاري التحميل...</div>}>
-        <DayContent />
-      </Suspense>
+      <RequireEntitlement>
+        <Suspense fallback={<div className="flex min-h-screen items-center justify-center bg-[#0B0F14] p-6 text-white/70">جاري التحميل...</div>}>
+          <DayContent />
+        </Suspense>
+      </RequireEntitlement>
     </RequireAuth>
   );
 }
