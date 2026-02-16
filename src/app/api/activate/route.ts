@@ -20,5 +20,16 @@ export async function GET(req: Request) {
     return NextResponse.json({ ok: false, error: "not_found" });
   }
 
-  return NextResponse.json({ ok: true });
+  const res = NextResponse.json({ ok: true });
+  res.cookies.set({
+    name: "TAAMUN_ENTITLEMENT",
+    value: "1",
+    httpOnly: true,
+    sameSite: "lax",
+    secure: process.env.NODE_ENV === "production",
+    path: "/",
+    maxAge: 60 * 60 * 24 * 30,
+  });
+
+  return res;
 }
