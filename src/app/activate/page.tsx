@@ -39,20 +39,25 @@ export default function ActivatePage() {
     setLoading(true);
 
     try {
-      const res = await fetch("/api/validate-code", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code }),
-      });
+      const res = await fetch(
+        `/api/activate?code=${encodeURIComponent(code)}`,
+        {
+          method: "GET",
+          cache: "no-store",
+        }
+      );
+
+      if (!res.ok) {
+        track("activate_submit", { outcome: "fail", reason: "not_found" });
+        setError("not_found");
+        return;
+      }
 
       const data = await res.json();
 
       if (!data.ok) {
-        track("activate_submit", {
-          outcome: "fail",
-          reason: data.error ?? "unknown",
-        });
-        setError(data.error ?? "not_found");
+        track("activate_submit", { outcome: "fail", reason: "not_found" });
+        setError("not_found");
         return;
       }
 
