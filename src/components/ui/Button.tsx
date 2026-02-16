@@ -1,30 +1,47 @@
-import { type ButtonHTMLAttributes, forwardRef } from "react";
+import { forwardRef, type ButtonHTMLAttributes } from "react";
+import { cn } from "@/lib/utils";
 
-type Variant = "primary" | "secondary";
+type ButtonVariant = "primary" | "secondary" | "ghost" | "danger";
 
 interface ButtonProps extends ButtonHTMLAttributes<HTMLButtonElement> {
-  variant?: Variant;
-  children: React.ReactNode;
+  variant?: ButtonVariant;
+  size?: "sm" | "default" | "lg";
 }
 
-const variants: Record<Variant, string> = {
+const variantStyles: Record<ButtonVariant, string> = {
   primary:
-    "rounded-xl bg-gradient-to-l from-white/90 to-white/70 px-6 py-3 font-bold text-[#0B0F14 transition-all hover:from-white hover:to-white/90 disabled:opacity-50 disabled:cursor-not-allowed",
+    "bg-gold text-bg hover:bg-gold2 focus-visible:ring-gold shadow-soft",
   secondary:
-    "rounded-xl border border-white/10 bg-white/10 px-6 py-3 font-medium text-white transition-colors hover:bg-white/20 disabled:opacity-50 disabled:cursor-not-allowed",
+    "bg-panel2 text-text border border-border hover:bg-panel focus-visible:ring-gold",
+  ghost:
+    "bg-transparent text-text hover:bg-panel2 focus-visible:ring-gold",
+  danger:
+    "bg-danger/90 text-white hover:bg-danger focus-visible:ring-danger",
+};
+
+const sizeStyles = {
+  sm: "px-3 py-1.5 text-xs",
+  default: "px-4 py-2.5 text-sm",
+  lg: "px-5 py-3 text-base",
 };
 
 export const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ variant = "primary", type = "button", className = "", children, ...props }, ref) => {
+  ({ className, variant = "primary", size = "default", disabled, ...props }, ref) => {
     return (
       <button
         ref={ref}
-        type={type}
-        className={`${variants[variant]} ${className}`}
+        type="button"
+        disabled={disabled}
+        className={cn(
+          "inline-flex items-center justify-center rounded-xl font-medium transition-colors",
+          sizeStyles[size],
+          "focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 focus-visible:ring-offset-bg",
+          "disabled:pointer-events-none disabled:opacity-50",
+          variantStyles[variant],
+          className
+        )}
         {...props}
-      >
-        {children}
-      </button>
+      />
     );
   }
 );
