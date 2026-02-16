@@ -1,50 +1,47 @@
-/** Lightweight internal analytics. No external vendor. Dev: console. Prod: localStorage queue. */
-const QUEUE_KEY = "taamun.analytics.queue.v1";
-const MAX_QUEUE = 200;
+"use client";
 
-interface EventPayload {
-  event: string;
-  props?: Record<string, unknown>;
-  ts: string;
+import posthog from "posthog-js";
+
+const ANON_ID_KEY = "TAAMUN_ANON_ID";
+let initialized = false;
+
+function getOrCreateAnonId(): string {
+  const existing = window.localStorage.getItem(ANON_ID_KEY);
+  if (existing) return existing;
+
+  const nextId =
+    typeof crypto !== "undefined" && typeof crypto.randomUUID === "function"
+      ? crypto.randomUUID()
+      : `anon_${Math.random().toString(36).slice(2)}_${Date.now()}`;
+  window.localStorage.setItem(ANON_ID_KEY, nextId);
+  return nextId;
 }
 
-function loadQueue(): EventPayload[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem(QUEUE_KEY);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter(
-      (x): x is EventPayload =>
-        x && typeof x === "object" && typeof (x as EventPayload).event === "string"
-    );
-  } catch {
-    return [];
-  }
-}
+export function initAnalytics(): void {
+  if (initialized || typeof window === "undefined") return;
 
-function saveQueue(q: EventPayload[]): void {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.setItem(QUEUE_KEY, JSON.stringify(q.slice(-MAX_QUEUE)));
-  } catch {
-    // ignore
-  }
+  const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
+  const host = process.env.NEXT_PUBLIC_POSTHOG_HOST;
+  if (!key || !host) return;
+
+  const anonId = getOrCreateAnonId();
+  posthog.init(key, {
+    api_host: host,
+    autocapture: false,
+    capture_pageview: false,
+    capture_pageleave: false,
+    disable_session_recording: true,
+    persistence: "localStorage",
+    person_profiles: "never",
+  });
+
+  posthog.identify(anonId);
+  initialized = true;
 }
 
 export function track(eventName: string, props?: Record<string, unknown>): void {
-  const payload: EventPayload = {
-    event: eventName,
-    props,
-    ts: new Date().toISOString(),
-  };
-
-  if (process.env.NODE_ENV === "development") {
-    console.log("[analytics]", eventName, props ?? {});
-  }
-
-  const q = loadQueue();
-  q.push(payload);
-  saveQueue(q);
+  if (typeof window === "undefined") return;
+  if (!initialized) initAnalytics();
+  if (!initialized) return;
+  posthog.capture(eventName, props);
 }

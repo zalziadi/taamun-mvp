@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Alert, Button, Card, Input } from "@/components/ui";
+import { track } from "@/lib/analytics";
 
 type ValidationError = "not_found" | "expired" | "used" | "invalid_format";
 
@@ -29,10 +30,12 @@ export default function ActivatePage() {
     setError(null);
 
     if (!code.trim()) {
+      track("activate_submit", { outcome: "fail", reason: "invalid_format" });
       setError("invalid_format");
       return;
     }
 
+    track("activate_submit", { outcome: "attempt" });
     setLoading(true);
 
     try {
@@ -45,12 +48,19 @@ export default function ActivatePage() {
       const data = await res.json();
 
       if (!data.ok) {
+        track("activate_submit", {
+          outcome: "fail",
+          reason: data.error ?? "unknown",
+        });
         setError(data.error ?? "not_found");
         return;
       }
 
+      localStorage.setItem("TAAMUN_ENTITLED", "true");
+      track("activate_submit", { outcome: "success" });
       router.push("/day/1");
     } catch {
+      track("activate_submit", { outcome: "fail", reason: "network_error" });
       setError("not_found");
     } finally {
       setLoading(false);

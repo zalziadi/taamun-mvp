@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter, useParams } from "next/navigation";
 import { Alert, Button, Card } from "@/components/ui";
+import { track } from "@/lib/analytics";
 import { exportTaamunData } from "@/lib/export";
 
 const TOTAL_DAYS = 28;
@@ -33,6 +34,7 @@ export default function DayPage() {
       const prevCompleted = localStorage.getItem(prevDayKey);
 
       if (!prevCompleted) {
+        track("day_locked_redirect", { fromDay: dayId, toDay: dayId - 1 });
         router.replace(`/day/${dayId - 1}`);
         return;
       }
@@ -77,6 +79,7 @@ export default function DayPage() {
       })
     );
 
+    track("day_save", { dayId });
     setSaved(true);
     updateProgress();
 
@@ -150,7 +153,10 @@ export default function DayPage() {
             <Button
               variant="secondary"
               size="lg"
-              onClick={() => exportTaamunData()}
+              onClick={() => {
+                const { exportedDays } = exportTaamunData();
+                track("export_json", { exportedDays });
+              }}
             >
               تحميل ملف التمعّن
             </Button>

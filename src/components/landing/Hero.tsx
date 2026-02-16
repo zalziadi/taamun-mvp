@@ -1,7 +1,19 @@
+"use client";
+
 import Link from "next/link";
+import { useEffect, useRef } from "react";
 import { Reveal } from "@/components/landing/Reveal";
+import { track } from "@/lib/analytics";
 
 export function LandingHero() {
+  const hasTracked = useRef(false);
+
+  useEffect(() => {
+    if (hasTracked.current) return;
+    hasTracked.current = true;
+    track("landing_view");
+  }, []);
+
   return (
     <div className="mx-auto w-full max-w-[1080px] px-5 sm:px-8 pt-14 sm:pt-20 pb-10">
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 items-center">

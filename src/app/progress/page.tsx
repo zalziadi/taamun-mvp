@@ -3,6 +3,7 @@
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Button, Card } from "@/components/ui";
+import { track } from "@/lib/analytics";
 import { exportTaamunData } from "@/lib/export";
 
 const TOTAL_DAYS = 28;
@@ -53,7 +54,10 @@ export default function ProgressPage() {
           <Button
             variant="secondary"
             size="lg"
-            onClick={() => exportTaamunData()}
+            onClick={() => {
+              const { exportedDays } = exportTaamunData();
+              track("export_json", { exportedDays });
+            }}
           >
             تحميل ملف التمعّن
           </Button>

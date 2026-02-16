@@ -1,6 +1,7 @@
 export function exportTaamunData() {
   const TOTAL_DAYS = 28;
   const data: Record<string, unknown> = {};
+  let exportedDays = 0;
 
   for (let i = 1; i <= TOTAL_DAYS; i++) {
     const key = `TAAMUN_DAY_${i}`;
@@ -11,6 +12,7 @@ export function exportTaamunData() {
       } catch {
         data[`day_${i}`] = value;
       }
+      exportedDays++;
     }
   }
 
@@ -24,4 +26,6 @@ export function exportTaamunData() {
   a.download = "taamun-export.json";
   a.click();
   URL.revokeObjectURL(url);
+
+  return { exportedDays };
 }

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -51,6 +52,7 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <body className="font-arabic antialiased">
+        <AnalyticsProvider />
         <div className="flex min-h-screen flex-col">
           <header className="border-b border-border bg-panel">
             <div className="container flex h-14 items-center justify-between">
