@@ -1,51 +1,45 @@
-import { isCodeUsed } from "./storage";
-import { normalizeCode } from "./storage";
+export type ValidationError = "not_found" | "expired" | "used" | "invalid_format";
 
-/** Code kind: base (entitlement only) or plan820 (entitlement + scan) */
-export type CodeKind = "base" | "plan820";
+const CODE_PATTERN = /^TAAMUN-[A-Z0-9]{4}$/i;
 
-/** Base codes: TAAMUN-001 … TAAMUN-028 */
-export const BASE_CODES: string[] = Array.from({ length: 28 }, (_, i) =>
-  `TAAMUN-${String(i + 1).padStart(3, "0")}`
-);
-
-/** Plan 820 codes: TAAMUN-820-001 … TAAMUN-820-010 */
-export const PLAN_820_CODES: string[] = Array.from({ length: 10 }, (_, i) =>
-  `TAAMUN-820-${String(i + 1).padStart(3, "0")}`
-);
-
-/** All valid codes (base + plan820) */
-export const VALID_CODES: string[] = [...BASE_CODES, ...PLAN_820_CODES];
-
-export type CodeStatus = "ok" | "used" | "invalid";
-
-function normalizeInput(raw: string): string {
-  return normalizeCode(raw).replace(/\s/g, "");
+function parseCodes(raw: string | undefined): string[] {
+  if (!raw) return [];
+  return raw
+    .split(",")
+    .map((c) => c.trim().toUpperCase())
+    .filter(Boolean);
 }
 
-/** Returns code kind or null if invalid */
-export function getCodeKind(code: string): CodeKind | null {
-  const n = normalizeInput(code);
-  if (PLAN_820_CODES.includes(n)) return "plan820";
-  if (BASE_CODES.includes(n)) return "base";
-  return null;
+// Exported for admin codes page
+export const BASE_CODES = parseCodes(process.env.ACTIVATION_CODES).length
+  ? parseCodes(process.env.ACTIVATION_CODES)
+  : ["TAAMUN-DEMO", "TAAMUN-1234"];
+
+// Optional plan codes; kept separate for admin display
+export const PLAN_820_CODES = parseCodes(process.env.ACTIVATION_CODES_820);
+
+function getValidCodes(): Set<string> {
+  return new Set([...BASE_CODES, ...PLAN_820_CODES]);
 }
 
-/** Returns: ok (valid & not used), used (valid but used on device), invalid (not in list). */
-export function checkCode(code: string): CodeStatus {
-  const normalized = normalizeInput(code);
-  if (!VALID_CODES.includes(normalized)) return "invalid";
-  if (isCodeUsed(normalized)) return "used";
-  return "ok";
-}
+export function validateCode(code: unknown): { ok: true } | { ok: false; error: ValidationError } {
+  if (typeof code !== "string") {
+    return { ok: false, error: "invalid_format" };
+  }
 
-/** Returns true only if checkCode returns "ok". */
-export function validateCode(code: string): boolean {
-  return checkCode(code) === "ok";
-}
+  const trimmed = code.trim();
+  if (!trimmed) {
+    return { ok: false, error: "invalid_format" };
+  }
 
-/** Returns true if code is in fixed list (used or not). */
-export function isValidCode(code: string): boolean {
-  const normalized = normalizeInput(code);
-  return VALID_CODES.includes(normalized);
+  if (!CODE_PATTERN.test(trimmed)) {
+    return { ok: false, error: "invalid_format" };
+  }
+
+  const validCodes = getValidCodes();
+  if (!validCodes.has(trimmed.toUpperCase())) {
+    return { ok: false, error: "not_found" };
+  }
+
+  return { ok: true };
 }

@@ -4,14 +4,14 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Suspense } from "react";
-import { hasEntitlement } from "../../lib/entitlement";
+import { isEntitled } from "../../lib/storage";
 import { BookViewer } from "../../components/BookViewer";
 import { track } from "../../lib/analytics";
 
 function BookContent() {
   const router = useRouter();
   const [mounted, setMounted] = useState(false);
-  const entitled = hasEntitlement("base");
+  const entitled = isEntitled();
 
   useEffect(() => {
     setMounted(true);

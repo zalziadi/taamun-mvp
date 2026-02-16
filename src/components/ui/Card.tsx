@@ -1,19 +1,23 @@
 import { type HTMLAttributes, forwardRef } from "react";
+import { cn } from "@/lib/utils";
 
 interface CardProps extends HTMLAttributes<HTMLDivElement> {
-  children: React.ReactNode;
+  variant?: "default" | "elevated";
 }
 
 export const Card = forwardRef<HTMLDivElement, CardProps>(
-  ({ className = "", children, ...props }, ref) => {
+  ({ className, variant = "default", ...props }, ref) => {
     return (
       <div
         ref={ref}
-        className={`rounded-2xl border border-white/10 bg-white/5 p-6 shadow-lg backdrop-blur ${className}`}
+        className={cn(
+          "rounded-2xl border border-border",
+          variant === "default" && "bg-panel",
+          variant === "elevated" && "bg-panel2 shadow-soft",
+          className
+        )}
         {...props}
-      >
-        {children}
-      </div>
+      />
     );
   }
 );
