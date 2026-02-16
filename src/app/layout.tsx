@@ -67,7 +67,7 @@ export default function RootLayout({
               </nav>
             </div>
           </header>
-          <main className="flex-1 container py-8">{children}</main>
+          <main className="flex-1">{children}</main>
           <footer className="border-t border-border bg-panel py-4">
             <div className="container text-center p-muted text-sm">
               تعاون © {new Date().getFullYear()}
