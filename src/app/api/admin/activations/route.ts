@@ -1,22 +1,14 @@
 import { NextRequest } from "next/server";
-import { getSupabaseAdmin } from "../../../../lib/supabaseServer";
+import { requireAdmin } from "@/lib/authz";
 
-function isAdminValid(request: NextRequest): boolean {
-  const adminKey = process.env.ADMIN_KEY;
-  const key =
-    request.nextUrl.searchParams.get("admin") ?? request.headers.get("x-admin-key") ?? "";
-  return !!adminKey && key === adminKey;
-}
-
-function unauth() {
-  return Response.json({ ok: false }, { status: 401 });
-}
+export const dynamic = "force-dynamic";
 
 export async function GET(request: NextRequest) {
-  if (!isAdminValid(request)) return unauth();
+  const adminAuth = await requireAdmin();
+  if (!adminAuth.ok) return adminAuth.response;
 
   const q = (request.nextUrl.searchParams.get("q") ?? "").trim().replace(/[,]/g, " ");
-  const supabase = getSupabaseAdmin();
+  const supabase = adminAuth.admin;
 
   let query = supabase
     .from("admin_activations")
@@ -48,7 +40,8 @@ export async function GET(request: NextRequest) {
 }
 
 export async function POST(request: NextRequest) {
-  if (!isAdminValid(request)) return unauth();
+  const adminAuth = await requireAdmin();
+  if (!adminAuth.ok) return adminAuth.response;
 
   let body: unknown;
   try {
@@ -67,7 +60,7 @@ export async function POST(request: NextRequest) {
     return Response.json({ error: "identifier is required" }, { status: 400 });
   }
 
-  const supabase = getSupabaseAdmin();
+  const supabase = adminAuth.admin;
   const { data, error } = await supabase
     .from("admin_activations")
     .insert({

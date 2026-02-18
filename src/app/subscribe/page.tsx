@@ -6,26 +6,9 @@ import { Suspense } from "react";
 import Link from "next/link";
 import { AppShell } from "../../components/AppShell";
 import { StatusCard } from "../../components/StatusCard";
-
-const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "966553930885";
-
-const MESSAGE = encodeURIComponent(`السلام عليكم،
-
-أرغب بالاشتراك في برنامج *تمعّن – رمضان 28 يوم*.
-
-الاسم:
-المدينة:
-رقم الجوال:
-
-تم تحويل مبلغ *280 ريال*.
-مرفق صورة التحويل.
-
-بانتظار تأكيد الاشتراك.
-جزاكم الله خيرًا.`);
-
-function getWhatsAppUrl() {
-  return `https://wa.me/${WHATSAPP_NUMBER}?text=${MESSAGE}`;
-}
+import { APP_NAME, RAMADAN_ENDS_AT_LABEL } from "@/lib/appConfig";
+import { buildWhatsAppSubscribeUrl } from "@/lib/whatsapp";
+import { DAY1_ROUTE } from "@/lib/routes";
 
 function SubscribeContent() {
   const router = useRouter();
@@ -40,6 +23,7 @@ function SubscribeContent() {
     expired: "انتهت صلاحية الكود",
     max_uses: "تم استخدام الكود بالكامل",
     inactive: "الكود غير مفعل",
+    ramadan_ended: "انتهت فترة تفعيل باقة رمضان.",
   };
 
   const handleActivate = async (e: React.FormEvent) => {
@@ -53,10 +37,10 @@ function SubscribeContent() {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ code: trimmed }),
       });
-      const data = (await res.json()) as { ok?: boolean; error?: string };
+      const data = (await res.json()) as { ok?: boolean; error?: string; redirectTo?: string };
       if (data?.ok) {
         setActivateStatus("success");
-        router.replace("/day");
+        router.replace(data.redirectTo || DAY1_ROUTE);
       } else if (res.status === 401) {
         setActivateStatus("auth");
         setErrorCode(null);
@@ -95,7 +79,7 @@ function SubscribeContent() {
         {reasonLocked && (
           <StatusCard
             title="لازم الاشتراك"
-            message="لازم الاشتراك عشان تقدر تستخدم تمعّن."
+            message={`لازم الاشتراك عشان تقدر تستخدم ${APP_NAME}.`}
             variant="warning"
           />
         )}
@@ -143,12 +127,11 @@ function SubscribeContent() {
           <p className="text-3xl font-bold text-white">280 ر.س</p>
         </div>
 
-        <p className="text-white/80">
-          للاشتراك، اضغط الزر وسيتم فتح واتساب مع رسالة جاهزة.
-        </p>
+        <p className="text-white/80">للاشتراك، اضغط الزر وسيتم فتح واتساب مع رسالة جاهزة.</p>
+        <p className="text-sm text-white/60">{`صلاحية باقة رمضان: ${RAMADAN_ENDS_AT_LABEL}`}</p>
 
         <a
-          href={getWhatsAppUrl()}
+          href={buildWhatsAppSubscribeUrl("ramadan_28")}
           target="_blank"
           rel="noopener noreferrer"
           className="inline-flex items-center gap-2 rounded-lg bg-[#25D366] px-6 py-3 font-medium text-white transition-colors hover:bg-[#20BD5A]"

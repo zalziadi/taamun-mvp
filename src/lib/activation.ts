@@ -1,6 +1,8 @@
+import { APP_CODE_PREFIX } from "@/lib/appConfig";
+
 export type ValidationError = "not_found" | "expired" | "used" | "invalid_format";
 
-const CODE_PATTERN = /^TAAMUN-[A-Z0-9]{4}$/i;
+const CODE_PATTERN = new RegExp(`^${APP_CODE_PREFIX}-[A-Z0-9]{4}$`, "i");
 
 function parseCodes(raw: string | undefined): string[] {
   if (!raw) return [];
@@ -13,7 +15,7 @@ function parseCodes(raw: string | undefined): string[] {
 // Exported for admin codes page
 export const BASE_CODES = parseCodes(process.env.ACTIVATION_CODES).length
   ? parseCodes(process.env.ACTIVATION_CODES)
-  : ["TAAMUN-DEMO", "TAAMUN-1234"];
+  : [`${APP_CODE_PREFIX}-DEMO`, `${APP_CODE_PREFIX}-1234`];
 
 // Optional plan codes; kept separate for admin display
 export const PLAN_820_CODES = parseCodes(process.env.ACTIVATION_CODES_820);

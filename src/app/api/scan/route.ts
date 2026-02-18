@@ -1,5 +1,8 @@
 import { NextResponse } from "next/server";
 import { ImageAnnotatorClient } from "@google-cloud/vision";
+import { requireUser } from "@/lib/authz";
+
+export const dynamic = "force-dynamic";
 
 function getVisionClient(): ImageAnnotatorClient | null {
   const projectId = process.env.GOOGLE_CLOUD_PROJECT_ID;
@@ -13,23 +16,28 @@ function getVisionClient(): ImageAnnotatorClient | null {
   });
 }
 
-function checkAuth(request: Request): { ok: boolean; error?: string } {
-  const entitlement = request.headers.get("X-Taamun-Entitlement") ?? "";
-  const plan820 = request.headers.get("X-Taamun-Plan-820") === "1";
-  if (entitlement !== "active") {
-    return { ok: false, error: "الاشتراك غير مفعّل" };
-  }
-  if (!plan820) {
-    return { ok: false, error: "باقة 820 مطلوبة" };
-  }
-  return { ok: true };
-}
-
 export async function POST(request: Request) {
   try {
-    const auth = checkAuth(request);
-    if (!auth.ok) {
-      return NextResponse.json({ ok: false, error: auth.error }, { status: 403 });
+    const auth = await requireUser();
+    if (!auth.ok) return auth.response;
+
+    const { supabase, user } = auth;
+    const { data: entitlement, error: entitlementError } = await supabase
+      .from("entitlements")
+      .select("status, plan")
+      .eq("user_id", user.id)
+      .eq("status", "active")
+      .limit(1)
+      .maybeSingle();
+
+    if (entitlementError) {
+      return NextResponse.json({ ok: false, error: "تعذر التحقق من الاشتراك" }, { status: 500 });
+    }
+    if (!entitlement) {
+      return NextResponse.json({ ok: false, error: "الاشتراك غير مفعّل" }, { status: 403 });
+    }
+    if (String(entitlement.plan ?? "").toLowerCase() !== "plan820") {
+      return NextResponse.json({ ok: false, error: "باقة 820 مطلوبة" }, { status: 403 });
     }
     const formData = await request.formData();
     const file = formData.get("image");

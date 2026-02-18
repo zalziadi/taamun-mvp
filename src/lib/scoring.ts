@@ -1,3 +1,5 @@
+import { APP_NAME } from "@/lib/appConfig";
+
 import type { DayEntry, Phase } from "./types";
 
 /** Consecutive days from day 1 (e.g. 1,2,3 -> 3; 1,2,4 -> 2) */
@@ -46,7 +48,7 @@ export function computeTotals(entries: Record<string, DayEntry>): Totals {
 
 const PHASE_ORDER: Phase[] = ["shadow", "awareness", "contemplation"];
 
-/** Tie-break: taamun > idrak > shadow */
+/** Tie-break: contemplation > awareness > shadow */
 function phaseRank(a: Phase, b: Phase): number {
   return PHASE_ORDER.indexOf(b) - PHASE_ORDER.indexOf(a);
 }
@@ -79,7 +81,7 @@ const INSIGHTS: Record<Phase, string> = {
   awareness:
     "أنت في مرحلة الإدراك: ابحث عن المعنى الأعلى والباب التالي.",
   contemplation:
-    "أنت في مرحلة التمعّن: ثبّت النظام وكرّر السلوك، النتائج تتبعك.",
+    `أنت في مرحلة ${APP_NAME}: ثبّت النظام وكرّر السلوك، النتائج تتبعك.`,
 };
 
 export function getDailyInsight(phase: Phase): string {

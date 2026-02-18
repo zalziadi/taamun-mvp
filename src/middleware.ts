@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { ENTITLEMENT_COOKIE_NAME } from "@/lib/entitlement-constants";
+import { LEGACY_ENTITLEMENT_COOKIE } from "@/lib/appConfig";
 
 const PROTECTED_PREFIXES = ["/day", "/progress"];
 
@@ -77,15 +78,23 @@ export async function middleware(req: NextRequest) {
   );
   if (!isProtected) return NextResponse.next();
 
-  const simpleEntitlement = req.cookies.get("TAAMUN_ENTITLEMENT")?.value;
+  const simpleEntitlement = req.cookies.get(LEGACY_ENTITLEMENT_COOKIE)?.value;
   if (simpleEntitlement === "1") {
+    return NextResponse.next();
+  }
+
+  const hasSupabaseSessionCookie = req.cookies
+    .getAll()
+    .some((cookie) => cookie.name.startsWith("sb-") && cookie.name.includes("-auth-token"));
+  if (hasSupabaseSessionCookie) {
     return NextResponse.next();
   }
 
   const secret = process.env.ENTITLEMENT_SECRET;
   if (!secret) {
     const url = req.nextUrl.clone();
-    url.pathname = "/activate";
+    url.pathname = "/auth";
+    url.searchParams.set("next", pathname);
     return NextResponse.redirect(url);
   }
 
@@ -93,7 +102,8 @@ export async function middleware(req: NextRequest) {
   const ok = await verifyEntitlementTokenEdge(token, secret);
   if (!ok) {
     const url = req.nextUrl.clone();
-    url.pathname = "/activate";
+    url.pathname = "/auth";
+    url.searchParams.set("next", pathname);
     return NextResponse.redirect(url);
   }
 

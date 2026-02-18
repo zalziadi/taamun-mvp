@@ -1,7 +1,8 @@
 import { isAdminEnabled, isEntitled } from "../../lib/storage";
+import { APP_SLUG } from "@/lib/appConfig";
 
 export const SCAN_AYAH_KEY = "tmn.scan.ayahText.v1";
-const PLAN_820_KEY = "taamun.plan820.v1";
+const PLAN_820_KEY = `${APP_SLUG}.plan820.v1`;
 
 export function getScanAyahText(): string {
   if (typeof window === "undefined") return "";

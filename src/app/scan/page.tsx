@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { ScanGate, ocrImage, setScanAyahText } from "../../features/scan";
 import { StatusCard } from "../../components/StatusCard";
+import { APP_NAME } from "@/lib/appConfig";
 
 export default function ScanPage() {
   const router = useRouter();
@@ -109,7 +110,7 @@ export default function ScanPage() {
             disabled={!extractedText.trim()}
             className="w-full rounded-lg bg-white px-6 py-3 font-medium text-[#0B0F14] disabled:cursor-not-allowed disabled:opacity-40"
           >
-            ابدأ التمعّن
+            {`ابدأ ${APP_NAME}`}
           </button>
         </div>
       </div>

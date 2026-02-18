@@ -1,4 +1,5 @@
 import useReveal from "./hooks/useReveal";
+import { APP_NAME } from "@/lib/appConfig";
 
 const sMarker = { fontSize: 11, color: "#c4a265", letterSpacing: 4, marginBottom: 14, fontWeight: 500 };
 const sTitle = { fontFamily: "'Amiri', serif", fontSize: "clamp(26px, 4vw, 38px)", color: "#2a2118", fontWeight: 700, marginBottom: 14, lineHeight: 1.35 };
@@ -26,7 +27,7 @@ export default function Book() {
     "القرآن كنظام انتقال في الوعي",
     "حالات الوعي الثلاث",
     "كيف نقرأ آية بوصفها تجربة",
-    "المراقبة، الإدراك، التمعن",
+    `المراقبة، الإدراك، ${APP_NAME}`,
     "الفاتحة: خريطة الوعي",
     "الصلاة: إعادة ضبط الوعي",
     "الهوية بلغة القرآن",

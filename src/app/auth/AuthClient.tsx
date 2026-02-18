@@ -4,6 +4,7 @@ import { useState, useEffect, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "../../lib/supabaseClient";
+import { APP_NAME } from "@/lib/appConfig";
 
 type Tab = "signin" | "signup";
 
@@ -162,7 +163,7 @@ export function AuthClient({ embedded }: AuthClientProps) {
       style={{ animation: "auth-card-enter 250ms ease-out forwards" }}
     >
         <div className="mb-6 text-center">
-          <h1 className="mb-1 text-2xl font-bold tracking-wide text-white">تمَعُّن</h1>
+          <h1 className="mb-1 text-2xl font-bold tracking-wide text-white">{APP_NAME}</h1>
           <p className="mb-1 text-sm text-white/80">ادخل لتكمل رحلة 28 يومًا في رمضان</p>
           <p className="text-xs text-white/50">بياناتك محفوظة. خروجك في أي وقت.</p>
         </div>

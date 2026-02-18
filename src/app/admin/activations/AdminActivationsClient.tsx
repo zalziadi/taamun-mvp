@@ -15,21 +15,10 @@ interface ActivationRecord {
 }
 
 interface AdminActivationsClientProps {
-  adminQuery: string;
   apiBase: string;
 }
 
-function getAdminKey(adminQuery: string): string {
-  const q = adminQuery.trim();
-  if (!q) return "";
-  const eq = adminQuery.indexOf("=");
-  if (eq >= 0) {
-    return decodeURIComponent(adminQuery.slice(eq + 1));
-  }
-  return q;
-}
-
-export function AdminActivationsClient({ adminQuery, apiBase }: AdminActivationsClientProps) {
+export function AdminActivationsClient({ apiBase }: AdminActivationsClientProps) {
   const [list, setList] = useState<ActivationRecord[]>([]);
   const [search, setSearch] = useState("");
   const [searchDebounced, setSearchDebounced] = useState("");
@@ -40,19 +29,15 @@ export function AdminActivationsClient({ adminQuery, apiBase }: AdminActivations
   const [newNote, setNewNote] = useState("");
   const [creating, setCreating] = useState(false);
 
-  const adminKey = getAdminKey(adminQuery);
-
   const fetchActivations = useCallback(
     async (q: string) => {
       setLoading(true);
       setError(null);
       try {
         const url = new URL(`${apiBase}/api/admin/activations`);
-        if (adminKey) url.searchParams.set("admin", adminKey);
         if (q.trim()) url.searchParams.set("q", q.trim());
 
         const res = await fetch(url.toString(), {
-          headers: adminKey ? { "x-admin-key": adminKey } : {},
           cache: "no-store",
         });
         if (!res.ok) {
@@ -73,7 +58,7 @@ export function AdminActivationsClient({ adminQuery, apiBase }: AdminActivations
         setLoading(false);
       }
     },
-    [apiBase, adminKey]
+    [apiBase]
   );
 
   useEffect(() => {
@@ -95,7 +80,6 @@ export function AdminActivationsClient({ adminQuery, apiBase }: AdminActivations
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          ...(adminKey ? { "x-admin-key": adminKey } : {}),
         },
         body: JSON.stringify({
           identifier,
@@ -121,11 +105,8 @@ export function AdminActivationsClient({ adminQuery, apiBase }: AdminActivations
 
   const handleExport = () => {
     const url = new URL(`${apiBase}/api/admin/activations/export`);
-    if (adminKey) url.searchParams.set("admin", adminKey);
     window.open(url.toString(), "_blank", "noopener");
   };
-
-  const q = adminQuery ? (adminQuery.startsWith("?") ? adminQuery : `?${adminQuery}`) : "";
 
   return (
     <div className="min-h-screen bg-[#0B0F14] p-6">
@@ -133,11 +114,8 @@ export function AdminActivationsClient({ adminQuery, apiBase }: AdminActivations
         <Link href="/" className="text-white/70 hover:text-white">
           الرئيسية
         </Link>
-        <Link href={`/admin${q}`} className="text-white/70 hover:text-white">
+        <Link href="/admin" className="text-white/70 hover:text-white">
           الأدمن
-        </Link>
-        <Link href={`/admin/codes${q}`} className="text-white/70 hover:text-white">
-          الأكواد
         </Link>
       </nav>
 

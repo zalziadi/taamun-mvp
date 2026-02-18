@@ -3,11 +3,12 @@
 import { useEffect } from "react";
 import Link from "next/link";
 import { track } from "../lib/analytics";
+import { APP_NAME } from "@/lib/appConfig";
 
 const WHATSAPP_NUMBER = "966553930885";
 const MESSAGE = encodeURIComponent(`السلام عليكم،
 
-أرغب بالاشتراك في برنامج *تمعّن – رمضان 28 يوم*.
+أرغب بالاشتراك في برنامج *${APP_NAME} – رمضان 28 يوم*.
 
 الاسم:
 المدينة:
@@ -32,7 +33,7 @@ interface PaywallProps {
 const REASONS: Record<string, { title: string; message: string }> = {
   locked: {
     title: "لازم الاشتراك",
-    message: "الاشتراك مطلوب للوصول إلى محتوى تمعّن.",
+    message: `الاشتراك مطلوب للوصول إلى محتوى ${APP_NAME}.`,
   },
   book: {
     title: "الكتيّب متاح للمشتركين",

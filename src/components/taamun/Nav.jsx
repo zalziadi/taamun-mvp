@@ -1,5 +1,8 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { track } from "./track";
+import { APP_NAME, APP_SLUG } from "@/lib/appConfig";
+
+const mobileMenuId = `${APP_SLUG}-mobile-menu`;
 
 function toFriendlyError(raw) {
   if (raw === "unauthorized") return "سجّل دخولك للمتابعة";
@@ -106,7 +109,7 @@ export default function Nav() {
           style={{ fontFamily: "'Amiri', serif", fontSize: 24, color: "#2a2118", fontWeight: 700, cursor: "pointer" }}
           onClick={() => go("hero")}
         >
-          تمعُّن
+          {APP_NAME}
         </div>
 
         <div className="nav-desktop" style={{ display: "flex", gap: 24, alignItems: "center" }}>
@@ -167,7 +170,7 @@ export default function Nav() {
           onClick={() => setMenuOpen(!menuOpen)}
           aria-label="فتح القائمة"
           aria-expanded={menuOpen}
-          aria-controls="taamun-mobile-menu"
+          aria-controls={mobileMenuId}
           style={{
             display: "none",
             background: "none",
@@ -212,7 +215,7 @@ export default function Nav() {
       </nav>
 
       <div
-        id="taamun-mobile-menu"
+        id={mobileMenuId}
         style={{
           position: "fixed",
           top: 0,

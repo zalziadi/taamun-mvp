@@ -6,7 +6,11 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "next lint"
+    "lint": "next lint",
+    "guard:brand": "node scripts/guards/brand.js",
+    "guard:runtime": "node scripts/guards/runtime.js",
+    "guard:metadata": "node scripts/guards/metadata.js",
+    "guard:release": "npm run guard:brand && npm run guard:runtime && npm run guard:metadata && npx tsc --noEmit && npm run build"
   },
   "dependencies": {
     "@google-cloud/vision": "^5.3.4",

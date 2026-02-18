@@ -1,3 +1,5 @@
+import { APP_NAME } from "@/lib/appConfig";
+
 export interface DayData {
   dayId: number;
   verse: string;
@@ -42,7 +44,7 @@ export function getDayIndexForToday(): number {
 /** Placeholder seed for 28 days - replace content later */
 const QUESTION_SHADOW = "ما أبرز ظلّك اليوم؟";
 const QUESTION_AWARENESS = "كيف أدركت نفسك؟";
-const QUESTION_CONTEMPLATION = "ما أعمق تمعّن وصلت إليه؟";
+const QUESTION_CONTEMPLATION = `ما أعمق ${APP_NAME} وصلت إليه؟`;
 
 export const RAMADAN_28: DayData[] = Array.from({ length: 28 }, (_, i) => ({
   dayId: i + 1,

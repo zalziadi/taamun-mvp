@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { APP_NAME } from "@/lib/appConfig";
 
 const PDF_PATH = "/book/City_of_Meaning_Quran_AR_EN_v0.pdf";
 
@@ -39,7 +40,7 @@ export function BookViewer() {
         aria-hidden
       >
         <p className="rotate-[-25deg] text-sm text-white/60 select-none">
-          تمعّن {maskedId} · {dateStr}
+          {APP_NAME} {maskedId} · {dateStr}
         </p>
       </div>
       <iframe

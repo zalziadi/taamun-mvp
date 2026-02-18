@@ -1,6 +1,9 @@
 import Link from "next/link";
 import { LandingSection } from "@/components/landing/Section";
 import { Reveal } from "@/components/landing/Reveal";
+import { APP_NAME } from "@/lib/appConfig";
+import { DAY1_ROUTE } from "@/lib/routes";
+import { buildWhatsAppSubscribeUrl } from "@/lib/whatsapp";
 
 function FeatureCard({
   title,
@@ -70,7 +73,7 @@ export function LandingSections() {
                 />
                 <Step
                   n="3"
-                  title="تمَعُّن"
+                  title={APP_NAME}
                   desc="ثبت المعنى كسلوك صغير اليوم — عادة تُبنى ببطء وتثبت."
                 />
               </div>
@@ -89,7 +92,7 @@ export function LandingSections() {
 
               <div className="mt-6 flex flex-col sm:flex-row gap-3">
                 <Link
-                  href="/day/1"
+                  href={DAY1_ROUTE}
                   className="rounded-2xl px-6 py-3 bg-[color:var(--ink)] text-[color:var(--parchment)] text-[14px] text-center hover:opacity-90"
                 >
                   ابدأ اليوم
@@ -119,7 +122,7 @@ export function LandingSections() {
           <Reveal>
             <FeatureCard
               title="3 أسئلة"
-              desc="مراقبة → إدراك → تمعّن. كتابة بسيطة لا تتجاوز دقائق."
+              desc={`مراقبة → إدراك → ${APP_NAME}. كتابة بسيطة لا تتجاوز دقائق.`}
             />
           </Reveal>
           <Reveal>
@@ -189,12 +192,14 @@ export function LandingSections() {
               </p>
 
               <div className="mt-6">
-                <Link
-                  href="/day/1"
+                <a
+                  href={buildWhatsAppSubscribeUrl("ramadan_28")}
+                  target="_blank"
+                  rel="noopener noreferrer"
                   className="block rounded-2xl px-6 py-3 bg-[color:var(--ink)] text-[color:var(--parchment)] text-[14px] text-center hover:opacity-90"
                 >
-                  ابدأ الآن
-                </Link>
+                  اشترك عبر واتساب
+                </a>
               </div>
             </div>
           </Reveal>

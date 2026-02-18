@@ -1,3 +1,5 @@
+import { APP_NAME } from "@/lib/appConfig";
+
 /** Quick ayah session: pick shadow/awareness/contemplation questions by ayah keywords */
 export interface QuickAyahSession {
   shadow: string;
@@ -13,13 +15,13 @@ const KEYWORDS_Rizq = ["رزق", "وسع", "بركة"];
 const FALLBACK: QuickAyahSession = {
   shadow: "ما أبرز ظلّك اليوم؟",
   awareness: "كيف أدركت نفسك؟",
-  contemplation: "ما أعمق تمعّن وصلت إليه؟",
+  contemplation: `ما أعمق ${APP_NAME} وصلت إليه؟`,
 };
 
 const TAWHID: QuickAyahSession = {
   shadow: "ما ظلّ التوحيد في نفسك؟",
   awareness: "كيف تدرك وحدانية الله؟",
-  contemplation: "ما أعمق تمعّن في قوله (قل هو الله أحد)؟",
+  contemplation: `ما أعمق ${APP_NAME} في قوله (قل هو الله أحد)؟`,
 };
 
 const FEAR_ATTACH: QuickAyahSession = {

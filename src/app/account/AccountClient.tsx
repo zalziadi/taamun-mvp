@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "../../lib/supabaseClient";
 import type { User } from "@supabase/supabase-js";
+import { buildWhatsAppSubscribeUrl } from "@/lib/whatsapp";
+import { formatPlanEndDate, getPlanLabel } from "@/lib/plans";
 
 interface AccountClientProps {
   embedded?: boolean;
@@ -16,6 +18,11 @@ export function AccountClient({ embedded }: AccountClientProps) {
   const [loading, setLoading] = useState(true);
   const [logoutLoading, setLogoutLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [entitlement, setEntitlement] = useState<{
+    plan: string | null;
+    endsAt: string | null;
+    status: string | null;
+  } | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -38,6 +45,32 @@ export function AccountClient({ embedded }: AccountClientProps) {
     });
     return () => subscription.unsubscribe();
   }, [router]);
+
+  useEffect(() => {
+    const loadEntitlement = async () => {
+      try {
+        const res = await fetch("/api/entitlement", { cache: "no-store" });
+        if (!res.ok) return;
+        const data = (await res.json()) as {
+          plan?: string | null;
+          endsAt?: string | null;
+          status?: string | null;
+        };
+        setEntitlement({
+          plan: data.plan ?? null,
+          endsAt: data.endsAt ?? null,
+          status: data.status ?? null,
+        });
+      } catch {
+        // ignore entitlement fetch errors in account page
+      }
+    };
+
+    loadEntitlement();
+  }, []);
+
+  const friendlyPlan = getPlanLabel(entitlement?.plan);
+  const friendlyEndsAt = formatPlanEndDate(entitlement?.plan, entitlement?.endsAt);
 
   const handleLogout = async () => {
     setError(null);
@@ -71,6 +104,23 @@ export function AccountClient({ embedded }: AccountClientProps) {
             <p className="text-lg text-white">{user.email}</p>
           </div>
         )}
+
+        <div className="mb-6 rounded-xl border border-white/10 bg-white/5 p-6">
+          <p className="mb-1 text-sm text-white/60">الباقة الحالية</p>
+          <p className="text-lg text-white">{friendlyPlan}</p>
+          <p className="mt-3 mb-1 text-sm text-white/60">صالحة حتى</p>
+          <p className="text-white/90">{friendlyEndsAt}</p>
+          <p className="mt-3 mb-1 text-sm text-white/60">حالة الاشتراك</p>
+          <p className="text-white/90">{entitlement?.status ?? "غير مفعّل"}</p>
+          <a
+            href={buildWhatsAppSubscribeUrl("ramadan_28")}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="mt-4 inline-flex rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10"
+          >
+            الدعم عبر واتساب
+          </a>
+        </div>
 
         {error && (
           <p className="mb-4 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-400">

@@ -4,6 +4,8 @@ import Link from "next/link";
 import { useEffect, useRef } from "react";
 import { Reveal } from "@/components/landing/Reveal";
 import { track } from "@/lib/analytics";
+import { APP_NAME } from "@/lib/appConfig";
+import { DAY1_ROUTE } from "@/lib/routes";
 
 export function LandingHero() {
   const hasTracked = useRef(false);
@@ -26,20 +28,19 @@ export function LandingHero() {
 
           <Reveal>
             <h1 className="font-amiri text-[40px] sm:text-[54px] leading-[1.05] text-[color:var(--ink)]">
-              تمعّن
+              {APP_NAME}
             </h1>
           </Reveal>
 
           <Reveal>
             <p className="text-[15px] sm:text-[17px] text-[color:var(--text-mid)] leading-relaxed">
-              برنامج يومي يساعدك على بناء عادة التمعّن خلال 28 يومًا: مراقبة →
-              إدراك → تمعّن.
+              {`برنامج يومي يساعدك على بناء عادة ${APP_NAME} خلال 28 يومًا: مراقبة → إدراك → ${APP_NAME}.`}
             </p>
           </Reveal>
 
           <Reveal className="flex flex-col sm:flex-row gap-3 pt-2">
             <Link
-              href="/day/1"
+              href={DAY1_ROUTE}
               className="rounded-2xl px-6 py-3 bg-[color:var(--ink)] text-[color:var(--parchment)] text-[14px] text-center hover:opacity-90"
             >
               ابدأ اليوم
@@ -78,7 +79,7 @@ export function LandingHero() {
             <p>• كتابة يومية بسيطة</p>
             <p>• شريط تقدم واضح</p>
             <p>• قفل تسلسلي يمنع التخطي</p>
-            <p>• تصدير ملف التمعّن (JSON)</p>
+            <p>{`• تصدير ملف ${APP_NAME} (JSON)`}</p>
           </div>
         </Reveal>
       </div>

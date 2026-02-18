@@ -3,6 +3,7 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
+import { APP_NAME } from "@/lib/appConfig";
 
 const WHATSAPP_NUMBER = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "966553930885";
 const SUPPORT_URL = `https://wa.me/${WHATSAPP_NUMBER}`;
@@ -79,7 +80,7 @@ export function AppShell({ title, children }: AppShellProps) {
         <header className="mb-8 flex items-center justify-between gap-4">
           <Link href="/" className="flex items-center gap-2 shrink-0">
             <LogoMark />
-            <span className="text-lg font-bold text-white">تمَعُّن</span>
+            <span className="text-lg font-bold text-white">{APP_NAME}</span>
           </Link>
 
           <h2 className="flex-1 text-center text-lg font-medium text-white/90 truncate" dir="rtl">

@@ -1,1 +1,3 @@
-export const ENTITLEMENT_COOKIE_NAME = "taamun_entitled";
+import { APP_ENTITLEMENT_COOKIE } from "@/lib/appConfig";
+
+export const ENTITLEMENT_COOKIE_NAME = APP_ENTITLEMENT_COOKIE;

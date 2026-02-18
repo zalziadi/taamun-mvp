@@ -1,3 +1,5 @@
+import { APP_DOMAIN } from "@/lib/appConfig";
+
 const ENV_ORIGIN = process.env.NEXT_PUBLIC_APP_ORIGIN ?? "";
 
 const UNSAFE_PATTERNS = ["yourdomain", "localhost"];
@@ -49,6 +51,6 @@ export function assertSafeOrigin(origin: string): string {
   if (!isUnsafe(origin)) return origin;
   if (ENV_ORIGIN && !isUnsafe(ENV_ORIGIN)) return ENV_ORIGIN;
   throw new Error(
-    "Cannot use placeholder origin in production. Set NEXT_PUBLIC_APP_ORIGIN to your production domain (e.g. https://taamun-mvp.vercel.app)."
+    `Cannot use placeholder origin in production. Set NEXT_PUBLIC_APP_ORIGIN to your production domain (e.g. ${APP_DOMAIN}).`
   );
 }

@@ -1,16 +1,6 @@
-import { NextRequest } from "next/server";
-import { getSupabaseAdmin } from "../../../../../lib/supabaseServer";
+import { requireAdmin } from "@/lib/authz";
 
-function isAdminValid(request: NextRequest): boolean {
-  const adminKey = process.env.ADMIN_KEY;
-  const key =
-    request.nextUrl.searchParams.get("admin") ?? request.headers.get("x-admin-key") ?? "";
-  return !!adminKey && key === adminKey;
-}
-
-function unauth() {
-  return new Response(JSON.stringify({ error: "Unauthorized" }), { status: 401 });
-}
+export const dynamic = "force-dynamic";
 
 function escapeCsv(value: unknown): string {
   if (value == null) return "";
@@ -21,10 +11,11 @@ function escapeCsv(value: unknown): string {
   return s;
 }
 
-export async function GET(request: NextRequest) {
-  if (!isAdminValid(request)) return unauth();
+export async function GET() {
+  const adminAuth = await requireAdmin();
+  if (!adminAuth.ok) return adminAuth.response;
 
-  const supabase = getSupabaseAdmin();
+  const supabase = adminAuth.admin;
   const { data, error } = await supabase
     .from("admin_activations")
     .select("*")

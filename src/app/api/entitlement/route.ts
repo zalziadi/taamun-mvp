@@ -1,47 +1,21 @@
-import { NextRequest } from "next/server";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
-import { getSupabaseAdmin } from "../../../lib/supabaseAdmin";
+import { requireUser } from "@/lib/authz";
 
-export async function GET(request: NextRequest) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
-  if (!url || !anonKey) {
-    return Response.json({ ok: false, active: false, error: "Server config" }, { status: 500 });
-  }
+export const dynamic = "force-dynamic";
 
-  const cookieStore = await cookies();
-  const supabase = createServerClient(url, anonKey, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll();
-      },
-      setAll(cookiesToSet) {
-        try {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options)
-          );
-        } catch {
-          // ignore
-        }
-      },
-    },
-  });
+export async function GET() {
+  const auth = await requireUser();
+  if (!auth.ok) return auth.response;
 
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
-
-  if (authError || !user) {
-    return Response.json({ ok: false, active: false }, { status: 401 });
-  }
-
-  const { data: rows } = await getSupabaseAdmin()
+  const { supabase, user } = auth;
+  const { data: rows, error } = await supabase
     .from("entitlements")
     .select("plan, status, starts_at, ends_at")
     .eq("user_id", user.id)
     .limit(1);
+
+  if (error) {
+    return Response.json({ ok: false, active: false, error: "server_error" }, { status: 500 });
+  }
 
   const row = rows?.[0];
   const now = new Date().toISOString();
@@ -55,6 +29,8 @@ export async function GET(request: NextRequest) {
     ok: true,
     active,
     plan: row?.plan ?? null,
+    status: row?.status ?? null,
+    startsAt: row?.starts_at ?? null,
     endsAt: row?.ends_at ?? null,
   });
 }

@@ -1,5 +1,5 @@
 import { ImageResponse } from "next/og";
-
+import { APP_NAME } from "@/lib/appConfig";
 export const runtime = "edge";
 
 export async function GET() {
@@ -20,10 +20,10 @@ export async function GET() {
           padding: "48px",
         }}
       >
-        <div style={{ fontSize: 76, fontWeight: 700, marginBottom: 16 }}>تمَعُّن</div>
+        <div style={{ fontSize: 76, fontWeight: 700, marginBottom: 16 }}>{APP_NAME}</div>
         <div style={{ fontSize: 34, opacity: 0.9 }}>رحلة 28 يومًا</div>
         <div style={{ fontSize: 24, marginTop: 24, opacity: 0.75 }}>
-          مراقبة → إدراك → تمَعُّن
+          {`مراقبة → إدراك → ${APP_NAME}`}
         </div>
       </div>
     ),

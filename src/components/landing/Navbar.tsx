@@ -3,6 +3,8 @@
 import Link from "next/link";
 import { useEffect, useMemo, useState } from "react";
 import { cn } from "@/lib/utils";
+import { APP_NAME } from "@/lib/appConfig";
+import { DAY1_ROUTE } from "@/lib/routes";
 
 const SECTIONS = [
   { id: "journey", label: "الرحلة" },
@@ -102,10 +104,10 @@ export function LandingNavbar() {
             </div>
             <div className="leading-tight">
               <div className="text-[13px] text-[color:var(--text-quiet)]">
-                Taamun
+                {APP_NAME}
               </div>
               <div className="font-amiri text-[18px] text-[color:var(--ink)]">
-                تمعّن
+                {APP_NAME}
               </div>
             </div>
           </div>
@@ -124,7 +126,7 @@ export function LandingNavbar() {
               لدي كود
             </Link>
             <Link
-              href="/day/1"
+              href={DAY1_ROUTE}
               className="hidden sm:inline-flex rounded-xl px-4 py-2 text-[13px] bg-[color:var(--ink)] text-[color:var(--parchment)] hover:opacity-90"
             >
               ابدأ اليوم
@@ -171,7 +173,7 @@ export function LandingNavbar() {
 
             <div className="mt-4 grid grid-cols-1 gap-2">
               <Link
-                href="/day/1"
+                href={DAY1_ROUTE}
                 onClick={() => setOpen(false)}
                 className="rounded-2xl px-5 py-3 bg-[color:var(--ink)] text-[color:var(--parchment)] text-[14px] text-center hover:opacity-90"
               >

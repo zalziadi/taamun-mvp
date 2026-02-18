@@ -1,8 +1,9 @@
 "use client";
 
 import { useState, useCallback } from "react";
+import { APP_CODE_PREFIX, APP_NAME } from "@/lib/appConfig";
 
-const DAY1_GATE_KEY = "TAAMUN_DAY1_GATE_V1";
+const DAY1_GATE_KEY = `${APP_CODE_PREFIX}_DAY1_GATE_V1`;
 
 export interface Day1GateData {
   observed: string;
@@ -63,7 +64,7 @@ const MODAL_BULLETS = [
   "أفضل احتمال: ما يمكن أن يصبح",
   "المراقبة: رؤية الواقع بدون تبرير",
   "الإدراك: إدراك المعنى الأعلى",
-  "التمعّن: ترسيخ الوعي في السلوك",
+  `${APP_NAME}: ترسيخ الوعي في السلوك`,
 ];
 
 export function Day1Gate() {
@@ -108,7 +109,7 @@ export function Day1Gate() {
       <h2 className="mb-4 text-xl font-bold text-white">اليوم 1: الآية مرآة</h2>
       <p className="mb-3 leading-relaxed text-white/85 text-[15px]">
         الآية مرآة: السؤال ليس ماذا تقول، بل ماذا يحدث داخلك وأنت تقرأ.
-        نمرّ من مراقبةٍ — نرى ما هو — إلى إدراكٍ — ندرك ما لم نره — إلى تمعّنٍ — نثبت الوعي خطوةً صغيرة.
+        {`نمرّ من مراقبةٍ — نرى ما هو — إلى إدراكٍ — ندرك ما لم نره — إلى مرحلة ${APP_NAME} — نثبت الوعي خطوةً صغيرة.`}
       </p>
       <button
         type="button"
@@ -147,7 +148,7 @@ export function Day1Gate() {
         </div>
         <div>
           <label htmlFor="day1-contemplation" className="mb-1 block text-sm font-medium text-white/90">
-            تمعّن
+            {APP_NAME}
           </label>
           <textarea
             id="day1-contemplation"
@@ -183,7 +184,7 @@ export function Day1Gate() {
             role="dialog"
             aria-label="ما هذا؟"
           >
-            <p className="mb-4 font-medium text-white">إطار تمعّن</p>
+            <p className="mb-4 font-medium text-white">{`إطار ${APP_NAME}`}</p>
             <ul className="mb-4 list-inside list-disc space-y-1 text-sm text-white/85">
               {MODAL_BULLETS.map((b) => (
                 <li key={b}>{b}</li>

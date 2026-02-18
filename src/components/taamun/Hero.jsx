@@ -1,8 +1,9 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import useParallax from "./hooks/useParallax";
 import { track } from "./track";
+import { APP_NAME, APP_SLUG } from "@/lib/appConfig";
 
-const HERO_IMAGE_SRC = "/images/taamun-hero.jpg";
+const HERO_IMAGE_SRC = `/images/${APP_SLUG}-hero.jpg`;
 
 const btnInk = {
   padding: "14px 38px",
@@ -114,7 +115,7 @@ export default function Hero() {
         ) : (
           <img
             src={HERO_IMAGE_SRC}
-            alt="تمعُّن"
+            alt={APP_NAME}
             loading="eager"
             decoding="async"
             onError={() => setImageFailed(true)}
@@ -145,7 +146,7 @@ export default function Hero() {
           letterSpacing: "-0.02em",
         }}
       >
-        تمعُّن
+        {APP_NAME}
       </h1>
 
       <p
