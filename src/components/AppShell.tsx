@@ -89,16 +89,12 @@ export function AppShell({ title, children }: AppShellProps) {
           </h2>
 
           <div className="w-16 shrink-0 text-left">
-            {loggedIn ? (
-              <Link
-                href="/account"
-                className="text-sm text-white/70 hover:text-white transition-colors"
-              >
-                حسابي
-              </Link>
-            ) : (
-              <span className="invisible text-sm">حسابي</span>
-            )}
+            <Link
+              href={loggedIn ? "/account" : "/auth?next=%2Faccount"}
+              className="text-sm text-white/70 hover:text-white transition-colors"
+            >
+              حسابي
+            </Link>
           </div>
         </header>
 
