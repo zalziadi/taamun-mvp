@@ -1,12 +1,13 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "../../lib/supabaseClient";
 import type { User } from "@supabase/supabase-js";
 import { buildWhatsAppSubscribeUrl } from "@/lib/whatsapp";
 import { formatPlanEndDate, getPlanLabel } from "@/lib/plans";
+import { DAY1_ROUTE } from "@/lib/routes";
 
 interface AccountClientProps {
   embedded?: boolean;
@@ -23,6 +24,10 @@ export function AccountClient({ embedded }: AccountClientProps) {
     endsAt: string | null;
     status: string | null;
   } | null>(null);
+  const [activationCode, setActivationCode] = useState("");
+  const [activationLoading, setActivationLoading] = useState(false);
+  const [activationError, setActivationError] = useState<string | null>(null);
+  const [activationSuccess, setActivationSuccess] = useState<string | null>(null);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -46,28 +51,28 @@ export function AccountClient({ embedded }: AccountClientProps) {
     return () => subscription.unsubscribe();
   }, [router]);
 
-  useEffect(() => {
-    const loadEntitlement = async () => {
-      try {
-        const res = await fetch("/api/entitlement", { cache: "no-store" });
-        if (!res.ok) return;
-        const data = (await res.json()) as {
-          plan?: string | null;
-          endsAt?: string | null;
-          status?: string | null;
-        };
-        setEntitlement({
-          plan: data.plan ?? null,
-          endsAt: data.endsAt ?? null,
-          status: data.status ?? null,
-        });
-      } catch {
-        // ignore entitlement fetch errors in account page
-      }
-    };
-
-    loadEntitlement();
+  const loadEntitlement = useCallback(async () => {
+    try {
+      const res = await fetch("/api/entitlement", { cache: "no-store" });
+      if (!res.ok) return;
+      const data = (await res.json()) as {
+        plan?: string | null;
+        endsAt?: string | null;
+        status?: string | null;
+      };
+      setEntitlement({
+        plan: data.plan ?? null,
+        endsAt: data.endsAt ?? null,
+        status: data.status ?? null,
+      });
+    } catch {
+      // ignore entitlement fetch errors in account page
+    }
   }, []);
+
+  useEffect(() => {
+    void loadEntitlement();
+  }, [loadEntitlement]);
 
   const friendlyPlan = getPlanLabel(entitlement?.plan);
   const friendlyEndsAt = formatPlanEndDate(entitlement?.plan, entitlement?.endsAt);
@@ -83,6 +88,50 @@ export function AccountClient({ embedded }: AccountClientProps) {
       setError(e instanceof Error ? e.message : "حدث خطأ");
     } finally {
       setLogoutLoading(false);
+    }
+  };
+
+  const handleActivate = async () => {
+    setActivationError(null);
+    setActivationSuccess(null);
+
+    const code = activationCode.trim().toUpperCase();
+    if (!code) {
+      setActivationError("أدخل كود التفعيل.");
+      return;
+    }
+
+    try {
+      setActivationLoading(true);
+      const res = await fetch("/api/activate", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ code }),
+      });
+      const data = (await res.json()) as {
+        ok?: boolean;
+        error?: string;
+      };
+
+      if (data.ok) {
+        setActivationSuccess("تم تفعيل الاشتراك بنجاح.");
+        setActivationCode("");
+        await loadEntitlement();
+        router.refresh();
+        return;
+      }
+
+      if (data.error === "ramadan_ended") {
+        setActivationError("انتهت فترة تفعيل باقة رمضان.");
+      } else if (data.error === "not_found" || data.error === "invalid_format") {
+        setActivationError("الكود غير صالح.");
+      } else {
+        setActivationError("تعذر التفعيل الآن. حاول مرة أخرى.");
+      }
+    } catch {
+      setActivationError("حدث خطأ غير متوقع.");
+    } finally {
+      setActivationLoading(false);
     }
   };
 
@@ -120,6 +169,52 @@ export function AccountClient({ embedded }: AccountClientProps) {
           >
             الدعم عبر واتساب
           </a>
+        </div>
+
+        <div className="mb-6 rounded-xl border border-white/10 bg-white/5 p-6">
+          <p className="mb-1 text-sm text-white/60">تفعيل الاشتراك</p>
+          <p className="mb-3 text-sm text-white/80">أدخل كود التفعيل لتحديث باقتك مباشرة.</p>
+          <div className="flex gap-2">
+            <input
+              type="text"
+              value={activationCode}
+              onChange={(e) => {
+                setActivationCode(e.target.value);
+                if (activationError) setActivationError(null);
+                if (activationSuccess) setActivationSuccess(null);
+              }}
+              placeholder="TAAMUN-XXXX"
+              dir="ltr"
+              className="flex-1 rounded-lg border border-white/10 bg-black/20 px-4 py-3 text-white placeholder:text-white/40 focus:border-white/20 focus:outline-none"
+            />
+            <button
+              type="button"
+              onClick={handleActivate}
+              disabled={activationLoading}
+              className="rounded-lg bg-white px-4 py-3 text-sm font-semibold text-[#0B0F14] disabled:opacity-50"
+            >
+              {activationLoading ? "جارٍ..." : "تفعيل"}
+            </button>
+          </div>
+          {activationError ? (
+            <p className="mt-3 rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-400">
+              {activationError}
+            </p>
+          ) : null}
+          {activationSuccess ? (
+            <div className="mt-3 space-y-3">
+              <p className="rounded-lg border border-emerald-500/40 bg-emerald-500/10 px-3 py-2 text-sm text-emerald-300">
+                {activationSuccess}
+              </p>
+              <button
+                type="button"
+                onClick={() => router.push(DAY1_ROUTE)}
+                className="w-full rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-sm text-white hover:bg-white/10"
+              >
+                ابدأ اليوم الأول
+              </button>
+            </div>
+          ) : null}
         </div>
 
         {error && (
