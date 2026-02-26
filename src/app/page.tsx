@@ -1,5 +1,5 @@
-import TaamunMerged from "@/components/taamun/TaamunMerged";
+import TaamunEssential from "@/components/taamun/TaamunEssential";
 
 export default function HomePage() {
-  return <TaamunMerged />;
+  return <TaamunEssential />;
 }
