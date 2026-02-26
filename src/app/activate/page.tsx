@@ -157,6 +157,25 @@ function ActivateContent() {
             ) : null}
           </div>
         </Card>
+
+        <Card className="space-y-4 p-6">
+          <h2 className="text-lg font-semibold text-text">كيف يعمل التفعيل؟</h2>
+          <ol className="space-y-2 text-sm leading-7 text-muted">
+            <li>١) سجّل الدخول إلى حسابك.</li>
+            <li>٢) أدخل كود التفعيل كما وصلك.</li>
+            <li>٣) اضغط تفعيل الآن.</li>
+            <li>٤) عند نجاح التحقق، تُفعّل الباقة مباشرة على حسابك.</li>
+          </ol>
+
+          <div className="rounded-xl border border-border bg-panel2 p-4">
+            <p className="mb-2 text-sm font-medium text-text">لو ظهر خطأ في الكود:</p>
+            <ul className="space-y-1 text-sm text-muted">
+              <li>• الكود غير صحيح</li>
+              <li>• الكود منتهي</li>
+              <li>• الكود تم استخدامه مسبقاً</li>
+            </ul>
+          </div>
+        </Card>
       </div>
     </AppShell>
   );
