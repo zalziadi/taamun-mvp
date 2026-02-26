@@ -1,4 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useState } from "react";
+import { useRouter } from "next/navigation";
 import useReveal from "./hooks/useReveal";
 import { track } from "./track";
 
@@ -58,12 +59,6 @@ const priceFeature = {
   borderBottom: "1px solid rgba(160,148,128,0.05)",
 };
 
-function toFriendlyError(raw) {
-  if (raw === "unauthorized") return "سجّل دخولك للمتابعة";
-  if (raw === "network") return "تعذر الاتصال — حاول مرة أخرى";
-  return "حدث خطأ غير متوقع";
-}
-
 function Reveal({ children, delay = 0, className = "" }) {
   const [ref, visible] = useReveal();
   return (
@@ -82,34 +77,20 @@ function Reveal({ children, delay = 0, className = "" }) {
 }
 
 export default function Pricing() {
-  const [freeState, setFreeState] = useState({ loading: false, success: "", error: "" });
-  const [paidState, setPaidState] = useState({ loading: false, success: "", error: "" });
-  const freeTimerRef = useRef(0);
-  const paidTimerRef = useRef(0);
-
-  useEffect(
-    () => () => {
-      window.clearTimeout(freeTimerRef.current);
-      window.clearTimeout(paidTimerRef.current);
-    },
-    []
-  );
+  const router = useRouter();
+  const [freeLoading, setFreeLoading] = useState(false);
+  const [paidLoading, setPaidLoading] = useState(false);
 
   const runPricingAction = useCallback((type) => {
     track("pricing_cta_click", { type });
-    const setState = type === "free" ? setFreeState : setPaidState;
-    const timerRef = type === "free" ? freeTimerRef : paidTimerRef;
-    setState({ loading: true, success: "", error: "" });
-    requestAnimationFrame(() => {
-      try {
-        setState({ loading: false, success: "تم الإرسال", error: "" });
-        window.clearTimeout(timerRef.current);
-        timerRef.current = window.setTimeout(() => setState({ loading: false, success: "", error: "" }), 3000);
-      } catch {
-        setState({ loading: false, success: "", error: toFriendlyError("generic") });
-      }
-    });
-  }, []);
+    if (type === "free") {
+      setFreeLoading(true);
+      router.push("/activate");
+      return;
+    }
+    setPaidLoading(true);
+    router.push("/subscribe?reason=pricing");
+  }, [router]);
 
   return (
     <section id="pricing" style={{ padding: "72px 24px", maxWidth: 840, margin: "0 auto" }}>
@@ -136,30 +117,19 @@ export default function Pricing() {
                 {f}
               </div>
             ))}
-            <div style={{ marginTop: 10, marginBottom: 2, fontSize: 12, color: "#a09480", lineHeight: 1.9 }}>
-              <div>• 24 ساعة للدخول والتجربة</div>
-              <div>• اختيار آية اليوم بسهولة</div>
-              <div>• حفظ الإجابات تلقائيًا</div>
-            </div>
             <button
               style={{
                 ...btnGhost,
                 width: "100%",
                 marginTop: 8,
-                opacity: freeState.loading ? 0.7 : 1,
-                cursor: freeState.loading ? "not-allowed" : "pointer",
+                opacity: freeLoading ? 0.7 : 1,
+                cursor: freeLoading ? "not-allowed" : "pointer",
               }}
-              disabled={freeState.loading}
+              disabled={freeLoading}
               onClick={() => runPricingAction("free")}
             >
-              {freeState.loading ? "جارٍ..." : "ابدأ مجاناً"}
+              {freeLoading ? "جارٍ..." : "ابدأ مجاناً"}
             </button>
-            <div style={{ minHeight: 18, marginTop: 8 }}>
-              <p style={{ fontSize: 12, color: "#a09480" }}>ابدأ بهدوء، والانتظام يفتح لك المعنى.</p>
-              <p style={{ fontSize: 12, color: "#a09480" }}>تفعيل عبر كود الدخول</p>
-              {freeState.error && <p style={{ fontSize: 12, color: "#a09480" }}>{freeState.error}</p>}
-              {freeState.success && <p style={{ fontSize: 12, color: "#a09480" }}>{freeState.success}</p>}
-            </div>
           </div>
         </Reveal>
 
@@ -179,32 +149,19 @@ export default function Pricing() {
                 {f}
               </div>
             ))}
-            <div style={{ marginTop: 10, marginBottom: 2, fontSize: 12, color: "#a09480", lineHeight: 1.9 }}>
-              <div>• 28 يوم كاملة خطوة بخطوة</div>
-              <div>• تتبع التقدم يوميًا</div>
-              <div>• محتوى من الكتاب داخل المسار</div>
-              <div>• دعم واتساب عند الحاجة</div>
-            </div>
             <button
               style={{
                 ...btnInk,
                 width: "100%",
                 marginTop: 8,
-                opacity: paidState.loading ? 0.7 : 1,
-                cursor: paidState.loading ? "not-allowed" : "pointer",
+                opacity: paidLoading ? 0.7 : 1,
+                cursor: paidLoading ? "not-allowed" : "pointer",
               }}
-              disabled={paidState.loading}
+              disabled={paidLoading}
               onClick={() => runPricingAction("paid")}
             >
-              {paidState.loading ? "جارٍ..." : "اشترك الآن"}
+              {paidLoading ? "جارٍ..." : "اشترك الآن"}
             </button>
-            <div style={{ minHeight: 18, marginTop: 8 }}>
-              <p style={{ fontSize: 12, color: "#a09480" }}>اشتراك واضح لرحلة رمضان كاملة.</p>
-              <p style={{ fontSize: 12, color: "#a09480" }}>الانطلاق مع أول يوم رمضان</p>
-              <p style={{ fontSize: 12, color: "#a09480" }}>تفعيل عبر كود الدخول</p>
-              {paidState.error && <p style={{ fontSize: 12, color: "#a09480" }}>{paidState.error}</p>}
-              {paidState.success && <p style={{ fontSize: 12, color: "#a09480" }}>{paidState.success}</p>}
-            </div>
           </div>
         </Reveal>
       </div>

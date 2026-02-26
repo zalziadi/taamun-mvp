@@ -8,7 +8,6 @@ import Daily from "./Daily";
 import Progress from "./Progress";
 import Book from "./Book";
 import Pricing from "./Pricing";
-import Account from "./Account";
 import Footer from "./Footer";
 
 function Breath({ reveal = false }) {
@@ -46,8 +45,6 @@ export default function TaamunMerged() {
         <Book />
         <Breath reveal />
         <Pricing />
-        <Breath reveal />
-        <Account />
         <Footer />
       </div>
 

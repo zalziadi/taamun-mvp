@@ -1,6 +1,5 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import useParallax from "./hooks/useParallax";
-import { track } from "./track";
 import { APP_NAME, APP_SLUG } from "@/lib/appConfig";
 
 const HERO_IMAGE_SRC = `/images/${APP_SLUG}-hero.jpg`;
@@ -32,48 +31,20 @@ const btnGhost = {
   transition: "all 0.4s",
 };
 
-function toFriendlyError(raw) {
-  if (raw === "unauthorized") return "سجّل دخولك للمتابعة";
-  if (raw === "network") return "تعذر الاتصال — حاول مرة أخرى";
-  return "حدث خطأ غير متوقع";
-}
-
 export default function Hero() {
   const parallax = useParallax(0.15);
   const [loaded, setLoaded] = useState(false);
   const [imageFailed, setImageFailed] = useState(false);
-  const [ctaState, setCtaState] = useState({ loading: false, success: "", error: "" });
-  const ctaTimerRef = useRef(0);
 
   useEffect(() => {
     setTimeout(() => setLoaded(true), 100);
   }, []);
-
-  useEffect(() => () => window.clearTimeout(ctaTimerRef.current), []);
 
   const stagger = (d) => ({
     opacity: loaded ? 1 : 0,
     transform: loaded ? "translateY(0)" : "translateY(22px)",
     transition: `all 1.2s cubic-bezier(0.22,1,0.36,1) ${d}s`,
   });
-
-  const runCta = useCallback((target) => {
-    if (target === "states") track("hero_cta_click");
-    setCtaState({ loading: true, success: "", error: "" });
-    requestAnimationFrame(() => {
-      try {
-        document.getElementById(target)?.scrollIntoView({ behavior: "smooth" });
-        setCtaState({ loading: false, success: "تم", error: "" });
-        window.clearTimeout(ctaTimerRef.current);
-        ctaTimerRef.current = window.setTimeout(
-          () => setCtaState({ loading: false, success: "", error: "" }),
-          3000
-        );
-      } catch {
-        setCtaState({ loading: false, success: "", error: toFriendlyError("generic") });
-      }
-    });
-  }, []);
 
   return (
     <section
@@ -181,51 +152,16 @@ export default function Hero() {
 
       <div style={{ ...stagger(0.75), display: "flex", gap: 14, flexWrap: "wrap", justifyContent: "center" }}>
         <button
-          onClick={() => runCta("pricing-full")}
-          disabled={ctaState.loading}
+          onClick={() => document.getElementById("states")?.scrollIntoView({ behavior: "smooth" })}
           style={{
             ...btnInk,
-            opacity: ctaState.loading ? 0.7 : 1,
-            cursor: ctaState.loading ? "not-allowed" : "pointer",
-            minWidth: 112,
           }}
         >
-          {ctaState.loading ? "جارٍ..." : "ابدأ اليوم"}
+          ابدأ اليوم
         </button>
         <button onClick={() => document.getElementById("journey")?.scrollIntoView({ behavior: "smooth" })} style={btnGhost}>
           شاهد الرحلة
         </button>
-      </div>
-
-      <div style={{ ...stagger(0.82), minHeight: 18, marginTop: 8 }}>
-        <p style={{ fontSize: 12, color: "#a09480" }}>تجربة 24 ساعة — بدون بطاقة — تفعيل فوري</p>
-        <button
-          onClick={() => {
-            track("secondary_link_click");
-            document.getElementById("daily")?.scrollIntoView({ behavior: "smooth" });
-          }}
-          style={{
-            background: "none",
-            border: "none",
-            padding: 0,
-            marginTop: 6,
-            fontSize: 12,
-            color: "#6b5d4a",
-            cursor: "pointer",
-            textDecoration: "underline",
-          }}
-        >
-          شاهد كيف تعمل خلال دقيقة
-        </button>
-        <div style={{ marginTop: 8, fontSize: 11.5, color: "#a09480", display: "flex", gap: 8, justifyContent: "center", flexWrap: "wrap" }}>
-          <span>28 يوم</span>
-          <span>·</span>
-          <span>3 أسئلة يوميًا</span>
-          <span>·</span>
-          <span>تقدم محفوظ</span>
-        </div>
-        {ctaState.error && <p style={{ fontSize: 12, color: "#a09480" }}>{ctaState.error}</p>}
-        {ctaState.success && <p style={{ fontSize: 12, color: "#a09480" }}>{ctaState.success}</p>}
       </div>
 
       <div
