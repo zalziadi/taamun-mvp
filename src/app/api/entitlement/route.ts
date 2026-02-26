@@ -1,10 +1,18 @@
 import { requireUser } from "@/lib/authz";
+import { cookies } from "next/headers";
+import { ENTITLEMENT_COOKIE_NAME, verifyEntitlementToken } from "@/lib/entitlement";
+import { LEGACY_ENTITLEMENT_COOKIE } from "@/lib/appConfig";
 
 export const dynamic = "force-dynamic";
 
 export async function GET() {
   const auth = await requireUser();
   if (!auth.ok) return auth.response;
+
+  const cookieStore = await cookies();
+  const entitlementToken = cookieStore.get(ENTITLEMENT_COOKIE_NAME)?.value;
+  const legacyEntitled = cookieStore.get(LEGACY_ENTITLEMENT_COOKIE)?.value === "1";
+  const tokenCheck = verifyEntitlementToken(entitlementToken);
 
   const { supabase, user } = auth;
   const { data: rows, error } = await supabase
@@ -14,7 +22,16 @@ export async function GET() {
     .limit(1);
 
   if (error) {
-    return Response.json({ ok: false, active: false, error: "server_error" }, { status: 500 });
+    const cookieActive = tokenCheck.ok || legacyEntitled;
+    return Response.json({
+      ok: true,
+      active: cookieActive,
+      plan: cookieActive ? "ramadan_28" : null,
+      status: cookieActive ? "active" : null,
+      startsAt: null,
+      endsAt: null,
+      source: cookieActive ? "cookie" : "none",
+    });
   }
 
   const row = rows?.[0];
@@ -32,5 +49,6 @@ export async function GET() {
     status: row?.status ?? null,
     startsAt: row?.starts_at ?? null,
     endsAt: row?.ends_at ?? null,
+    source: "database",
   });
 }

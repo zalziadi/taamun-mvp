@@ -94,9 +94,7 @@ async function activateForRequest(codeRaw: unknown) {
     error = retry.error;
   }
 
-  if (error) {
-    return NextResponse.json({ ok: false, error: "generic_failure" }, { status: 500 });
-  }
+  const dbPersisted = !error;
 
   let token: string | null = null;
   try {
@@ -113,6 +111,7 @@ async function activateForRequest(codeRaw: unknown) {
     plan,
     endsAt,
     redirectTo: DAY1_ROUTE,
+    persistence: dbPersisted ? "database" : "cookie",
   });
 
   // Keep backward compatibility while moving to signed entitlement token.
