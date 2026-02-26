@@ -46,7 +46,13 @@ async function activateForRequest(codeRaw: unknown) {
   }
 
   const { user } = auth;
-  const supabaseAdmin = getSupabaseAdmin();
+  let supabaseWriter: ReturnType<typeof getSupabaseAdmin> | typeof auth.supabase;
+  try {
+    supabaseWriter = getSupabaseAdmin();
+  } catch {
+    // Fallback to authenticated user client when service-role env is unavailable.
+    supabaseWriter = auth.supabase;
+  }
   const now = new Date();
   const { plan, days } = resolvePlan(code);
   const startsAt = now.toISOString();
@@ -60,7 +66,7 @@ async function activateForRequest(codeRaw: unknown) {
     endsAt = ramadanEndsAt.toISOString();
   }
 
-  const { error } = await supabaseAdmin.from("entitlements").upsert(
+  const { error } = await supabaseWriter.from("entitlements").upsert(
     {
       user_id: user.id,
       plan,
