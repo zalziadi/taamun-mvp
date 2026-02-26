@@ -83,14 +83,9 @@
   font-family: var(--font-amiri), serif;
 }
 
-/* Optional helpers used by the HTML design */
-.theme-parchment .reveal {
-  opacity: 0;
-  transform: translateY(22px);
-  transition: all 1s cubic-bezier(0.22, 1, 0.36, 1);
-}
-
+/* Keep landing content visible on first paint to avoid flicker. */
+.theme-parchment .reveal,
 .theme-parchment .reveal.visible {
   opacity: 1;
-  transform: translateY(0);
+  transform: none;
 }
