@@ -10,6 +10,8 @@ import { APP_NAME, RAMADAN_ENDS_AT_LABEL } from "@/lib/appConfig";
 import { buildWhatsAppSubscribeUrl } from "@/lib/whatsapp";
 import { DAY1_ROUTE } from "@/lib/routes";
 
+const SALLA_STORE_URL = process.env.NEXT_PUBLIC_SALLA_STORE_URL ?? "";
+
 function SubscribeContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -138,6 +140,16 @@ function SubscribeContent() {
         >
           فتح واتساب
         </a>
+        {SALLA_STORE_URL ? (
+          <a
+            href={SALLA_STORE_URL}
+            target="_blank"
+            rel="noopener noreferrer"
+            className="inline-flex items-center gap-2 rounded-lg border border-white/20 bg-white/10 px-6 py-3 font-medium text-white transition-colors hover:bg-white/20"
+          >
+            الدفع عبر سلة
+          </a>
+        ) : null}
 
         <p className="text-sm text-white/70">
           إذا وصلك كود التفعيل، أدخله أعلاه واضغط تفعيل.

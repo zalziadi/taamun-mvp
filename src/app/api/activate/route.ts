@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/authz";
+import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { BASE_CODES, PLAN_820_CODES, validateCode } from "@/lib/activation";
 import { ENTITLEMENT_COOKIE_NAME, makeEntitlementToken } from "@/lib/entitlement";
 import { LEGACY_ENTITLEMENT_COOKIE, RAMADAN_ENDS_AT_ISO } from "@/lib/appConfig";
@@ -44,7 +45,8 @@ async function activateForRequest(codeRaw: unknown) {
     return NextResponse.json({ ok: false, error: result.error }, { status: 400 });
   }
 
-  const { supabase, user } = auth;
+  const { user } = auth;
+  const supabaseAdmin = getSupabaseAdmin();
   const now = new Date();
   const { plan, days } = resolvePlan(code);
   const startsAt = now.toISOString();
@@ -58,7 +60,7 @@ async function activateForRequest(codeRaw: unknown) {
     endsAt = ramadanEndsAt.toISOString();
   }
 
-  const { error } = await supabase.from("entitlements").upsert(
+  const { error } = await supabaseAdmin.from("entitlements").upsert(
     {
       user_id: user.id,
       plan,
