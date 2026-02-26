@@ -330,7 +330,7 @@ function FullJourney({ currentDay, onBack, onSubscribe, onContinue }) {
                 المسار الكامل · ٤٩ ر.س
               </button>
               <button onClick={onContinue} style={{ padding: "13px 36px", background: "transparent", color: quiet, border: `1px solid ${sand}`, borderRadius: 6, fontFamily: bodyFont, fontSize: 18, fontWeight: 500, cursor: "pointer" }}>
-                استمر مجانا
+                إنشاء حساب وتفعيله
               </button>
             </div>
           </div>
@@ -378,7 +378,7 @@ export default function TaamunEssential() {
           currentDay={daily.day}
           onBack={() => transition("experience")}
           onSubscribe={() => router.push("/subscribe?reason=pricing")}
-          onContinue={() => router.push("/activate")}
+          onContinue={() => router.push("/auth?next=%2Factivate")}
         />
       )}
 

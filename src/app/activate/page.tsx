@@ -124,7 +124,7 @@ function ActivateContent() {
 
           {!authenticated ? (
             <Alert variant="muted">
-              يلزم تسجيل الدخول قبل التفعيل حتى يتم ربط الاشتراك ببياناتك وحفظ كتاباتك على حسابك.
+              يلزم إنشاء حساب أو تسجيل الدخول قبل التفعيل حتى يتم ربط الاشتراك ببياناتك وحفظ كتاباتك على حسابك.
             </Alert>
           ) : null}
 
@@ -138,7 +138,7 @@ function ActivateContent() {
           <div className="flex flex-wrap gap-3">
             {!authenticated ? (
               <Button size="lg" onClick={() => router.push(authNext)}>
-                تسجيل الدخول للتفعيل
+                إنشاء حساب / تسجيل دخول للتفعيل
               </Button>
             ) : (
               <Button size="lg" onClick={handleActivate} disabled={loading}>
