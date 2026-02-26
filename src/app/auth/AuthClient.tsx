@@ -56,9 +56,11 @@ interface AuthClientProps {
 export function AuthClient({ embedded }: AuthClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
+  const safeNext = getSafeRedirect(searchParams.get("next"));
+  const isActivationFlow = safeNext.startsWith("/activate");
   const emailRef = useRef<HTMLInputElement>(null);
   const passwordRef = useRef<HTMLInputElement>(null);
-  const [tab, setTab] = useState<Tab>("signin");
+  const [tab, setTab] = useState<Tab>(() => (isActivationFlow ? "signup" : "signin"));
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState<string | null>(null);
@@ -76,12 +78,12 @@ export function AuthClient({ embedded }: AuthClientProps) {
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
       if (session) {
-        router.replace(getSafeRedirect(searchParams.get("next")));
+        router.replace(safeNext);
         return;
       }
       setCheckingSession(false);
     });
-  }, [router, searchParams]);
+  }, [router, safeNext]);
 
   const handleSignIn = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -100,7 +102,7 @@ export function AuthClient({ embedded }: AuthClientProps) {
         }
         return;
       }
-      router.replace(getSafeRedirect(searchParams.get("next")));
+      router.replace(safeNext);
       router.refresh();
     } catch (e) {
       setError(e instanceof Error ? e.message : "حدث خطأ");
@@ -127,11 +129,12 @@ export function AuthClient({ embedded }: AuthClientProps) {
         return;
       }
       if (data.session) {
-        router.replace(getSafeRedirect(searchParams.get("next")));
+        router.replace(safeNext);
         router.refresh();
         return;
       }
       setSignupNeedsConfirm(true);
+      setTab("signin");
     } catch (e) {
       setError(e instanceof Error ? e.message : "حدث خطأ");
     } finally {
@@ -164,7 +167,11 @@ export function AuthClient({ embedded }: AuthClientProps) {
     >
         <div className="mb-6 text-center">
           <h1 className="mb-1 text-2xl font-bold tracking-wide text-white">{APP_NAME}</h1>
-          <p className="mb-1 text-sm text-white/80">ادخل لتكمل رحلة 28 يومًا في رمضان</p>
+          <p className="mb-1 text-sm text-white/80">
+            {isActivationFlow
+              ? "أنشئ حسابك أو سجّل الدخول لإكمال التفعيل"
+              : "ادخل لتكمل رحلة 28 يومًا في رمضان"}
+          </p>
           <p className="text-xs text-white/50">بياناتك محفوظة. خروجك في أي وقت.</p>
         </div>
 
@@ -267,9 +274,9 @@ export function AuthClient({ embedded }: AuthClientProps) {
             ) : isCooldown ? (
               <span>انتظر {cooldownSeconds} ثانية</span>
             ) : tab === "signin" ? (
-              "تسجيل دخول"
+              isActivationFlow ? "تسجيل الدخول للمتابعة" : "تسجيل دخول"
             ) : (
-              "إنشاء حساب"
+              isActivationFlow ? "إنشاء حساب للمتابعة" : "إنشاء حساب"
             )}
           </button>
         </form>
