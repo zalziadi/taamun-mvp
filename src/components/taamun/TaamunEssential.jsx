@@ -37,7 +37,7 @@ function Fade({ children, delay = 0, style = {} }) {
 const font = "'Amiri', serif";
 const bodyFont = "'Tajawal', sans-serif";
 const ink = "#1d1a15";
-const quiet = "#b5a998";
+const quiet = "#8d7f6d";
 const warmBg = "#f8f4ed";
 const sand = "#e8e0d2";
 
@@ -74,7 +74,6 @@ function Gate({ onEnter }) {
             borderRadius: "50%",
             WebkitMaskImage: "radial-gradient(circle, black 35%, transparent 70%)",
             maskImage: "radial-gradient(circle, black 35%, transparent 70%)",
-            animation: "breath 9s ease-in-out infinite",
           }}
         />
       </div>
@@ -96,7 +95,7 @@ function Gate({ onEnter }) {
         تمعُّن
       </h1>
 
-      <p style={{ ...a(0.8), fontFamily: font, fontSize: "clamp(16px, 2vw, 19px)", color: quiet, fontStyle: "italic", marginTop: 16, marginBottom: 48 }}>
+      <p style={{ ...a(0.8), fontFamily: font, fontSize: "clamp(20px, 2.4vw, 24px)", color: quiet, fontStyle: "italic", marginTop: 16, marginBottom: 48 }}>
         ٢٨ يوما في رحلة رمضان
       </p>
 
@@ -110,8 +109,8 @@ function Gate({ onEnter }) {
           border: "none",
           borderRadius: 6,
           fontFamily: bodyFont,
-          fontSize: 16,
-          fontWeight: 500,
+          fontSize: 20,
+          fontWeight: 600,
           cursor: "pointer",
           letterSpacing: "0.02em",
         }}
@@ -145,7 +144,7 @@ function Question({ onAnswer }) {
 
   return (
     <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "60px 24px", textAlign: "center", background: warmBg }}>
-      <p style={{ ...a(0.2), fontSize: 12, color: quiet, letterSpacing: 3, marginBottom: 20 }}>قبل أن نبدأ</p>
+      <p style={{ ...a(0.2), fontSize: 16, color: quiet, letterSpacing: 2, marginBottom: 20, fontWeight: 500 }}>قبل أن نبدأ</p>
       <h2 style={{ ...a(0.4), fontFamily: font, fontSize: "clamp(24px, 4vw, 34px)", color: ink, fontWeight: 700, lineHeight: 1.4, marginBottom: 40, maxWidth: 500 }}>
         كيف تشعر عادة وأنت تقرأ القرآن؟
       </h2>
@@ -166,8 +165,8 @@ function Question({ onAnswer }) {
               transition: "all 0.5s cubic-bezier(0.22,1,0.36,1)",
             }}
           >
-            <div style={{ fontSize: 15, fontWeight: 500, marginBottom: 4, lineHeight: 1.6 }}>{c.text}</div>
-            <div style={{ fontSize: 12.5, opacity: 0.55, fontWeight: 300 }}>{c.sub}</div>
+            <div style={{ fontSize: 20, fontWeight: 600, marginBottom: 6, lineHeight: 1.7 }}>{c.text}</div>
+            <div style={{ fontSize: 17, opacity: 0.75, fontWeight: 400 }}>{c.sub}</div>
           </button>
         ))}
       </div>
@@ -228,46 +227,46 @@ function TodaysExperience({ userState, daily, onExplore, onOpenDaily }) {
     <div style={{ minHeight: "100vh", background: warmBg }}>
       <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, padding: "16px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(248,244,237,0.9)", backdropFilter: "blur(16px)" }}>
         <span style={{ fontFamily: font, fontSize: 20, color: ink, fontWeight: 700 }}>تمعُّن</span>
-        <span onClick={onOpenDaily} style={{ fontSize: 12, color: quiet, cursor: "pointer" }}>
+        <span onClick={onOpenDaily} style={{ fontSize: 16, color: quiet, cursor: "pointer", fontWeight: 500 }}>
           أنت في يومك {daily.day}
         </span>
       </div>
 
       <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 24px 60px", textAlign: "center", maxWidth: 540, margin: "0 auto" }}>
-        <p style={{ ...a(0.2), fontSize: 12, color: quiet, letterSpacing: 2, marginBottom: 24 }}>{messages[userState]}</p>
+        <p style={{ ...a(0.2), fontSize: 18, color: quiet, letterSpacing: 1, marginBottom: 24, fontWeight: 500 }}>{messages[userState]}</p>
         <div style={{ ...a(0.5), marginBottom: 40 }}>
-          <p style={{ fontFamily: font, fontSize: "clamp(22px, 3.5vw, 30px)", color: ink, lineHeight: 2.2, marginBottom: 12 }}>{daily.verse.arabic}</p>
-          <p style={{ fontSize: 12, color: quiet }}>
+          <p style={{ fontFamily: font, fontSize: "clamp(26px, 4vw, 36px)", color: ink, lineHeight: 2.15, marginBottom: 12 }}>{daily.verse.arabic}</p>
+          <p style={{ fontSize: 16, color: quiet, fontWeight: 500 }}>
             سورة {daily.verse.surah} — {daily.verse.ayah}
           </p>
         </div>
 
         <div style={{ ...a(0.8), padding: "28px 32px", background: "rgba(255,255,255,0.5)", borderRadius: 12, border: "1px solid rgba(160,148,128,0.08)", marginBottom: 36, width: "100%" }}>
-          <p style={{ fontSize: 12, color: "#c4a265", letterSpacing: 1.5, marginBottom: 12 }}>سؤال اليوم</p>
-          <p style={{ fontFamily: font, fontSize: "clamp(17px, 2.5vw, 21px)", color: ink, lineHeight: 1.8 }}>{daily.question}</p>
+          <p style={{ fontSize: 16, color: "#a88951", letterSpacing: 1, marginBottom: 12, fontWeight: 600 }}>سؤال اليوم</p>
+          <p style={{ fontFamily: font, fontSize: "clamp(22px, 3vw, 27px)", color: ink, lineHeight: 1.9 }}>{daily.question}</p>
         </div>
 
         {!journalOpen ? (
-          <button onClick={() => setJournalOpen(true)} style={{ ...a(1.1), padding: "14px 36px", background: "transparent", color: quiet, border: `1px solid ${sand}`, borderRadius: 6, fontFamily: bodyFont, fontSize: 14, cursor: "pointer" }}>
+          <button onClick={() => setJournalOpen(true)} style={{ ...a(1.1), padding: "14px 36px", background: "transparent", color: quiet, border: `1px solid ${sand}`, borderRadius: 6, fontFamily: bodyFont, fontSize: 18, fontWeight: 500, cursor: "pointer" }}>
             اكتب ملاحظتك
           </button>
         ) : (
           <div style={{ width: "100%" }}>
-            <textarea value={journalText} onChange={(e) => setJournalText(e.target.value)} placeholder="لاحظ... ماذا يحدث فيك الآن؟" style={{ width: "100%", minHeight: 120, padding: 20, background: "rgba(255,255,255,0.4)", border: "1px solid rgba(160,148,128,0.1)", borderRadius: 10, fontFamily: bodyFont, fontSize: 15, color: ink, lineHeight: 2, resize: "vertical", direction: "rtl", outline: "none" }} />
-            <button onClick={handleSaveJournal} style={{ marginTop: 12, padding: "12px 32px", background: ink, color: warmBg, border: "none", borderRadius: 6, fontFamily: bodyFont, fontSize: 14, fontWeight: 500, cursor: "pointer" }}>
+            <textarea value={journalText} onChange={(e) => setJournalText(e.target.value)} placeholder="لاحظ... ماذا يحدث فيك الآن؟" style={{ width: "100%", minHeight: 120, padding: 20, background: "rgba(255,255,255,0.4)", border: "1px solid rgba(160,148,128,0.1)", borderRadius: 10, fontFamily: bodyFont, fontSize: 19, color: ink, lineHeight: 2, resize: "vertical", direction: "rtl", outline: "none" }} />
+            <button onClick={handleSaveJournal} style={{ marginTop: 12, padding: "12px 32px", background: ink, color: warmBg, border: "none", borderRadius: 6, fontFamily: bodyFont, fontSize: 18, fontWeight: 600, cursor: "pointer" }}>
               حفظ
             </button>
-            {saveMessage ? <p style={{ marginTop: 8, marginBottom: 0, fontSize: 12, color: quiet }}>{saveMessage}</p> : null}
+            {saveMessage ? <p style={{ marginTop: 8, marginBottom: 0, fontSize: 16, color: quiet, fontWeight: 500 }}>{saveMessage}</p> : null}
           </div>
         )}
 
         <div style={{ marginTop: 56, opacity: showWhisper ? 1 : 0, transform: showWhisper ? "translateY(0)" : "translateY(10px)", transition: "all 1.5s cubic-bezier(0.22,1,0.36,1)" }}>
-          <p style={{ fontFamily: font, fontSize: 14, fontStyle: "italic", color: quiet, lineHeight: 2, opacity: 0.6 }}>{daily.whisper.text}</p>
-          <p style={{ fontSize: 11, color: quiet, opacity: 0.45, marginTop: 6 }}>{daily.whisper.source}</p>
+          <p style={{ fontFamily: font, fontSize: 18, fontStyle: "italic", color: quiet, lineHeight: 2, opacity: 0.75 }}>{daily.whisper.text}</p>
+          <p style={{ fontSize: 15, color: quiet, opacity: 0.65, marginTop: 6, fontWeight: 500 }}>{daily.whisper.source}</p>
         </div>
 
         <div style={{ marginTop: 60, opacity: showWhisper ? 0.4 : 0, transition: "opacity 2s ease 1s" }}>
-          <span onClick={onExplore} style={{ fontSize: 12, color: quiet, cursor: "pointer" }}>
+          <span onClick={onExplore} style={{ fontSize: 16, color: quiet, cursor: "pointer", fontWeight: 500 }}>
             استكشف الرحلة الكاملة ↓
           </span>
         </div>
@@ -290,13 +289,13 @@ function FullJourney({ currentDay, onBack, onSubscribe, onContinue }) {
     <div style={{ background: warmBg, minHeight: "100vh" }}>
       <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, padding: "16px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(248,244,237,0.9)", backdropFilter: "blur(16px)" }}>
         <span style={{ fontFamily: font, fontSize: 20, color: ink, fontWeight: 700 }}>تمعُّن</span>
-        <span onClick={onBack} style={{ fontSize: 13, color: quiet, cursor: "pointer" }}>← العودة ليومك</span>
+        <span onClick={onBack} style={{ fontSize: 17, color: quiet, cursor: "pointer", fontWeight: 500 }}>← العودة ليومك</span>
       </div>
 
       <div style={{ maxWidth: 600, margin: "0 auto", padding: "100px 24px 80px" }}>
         <Fade>
           <h2 style={{ fontFamily: font, fontSize: "clamp(26px, 4vw, 34px)", color: ink, marginBottom: 8 }}>أنت في الأسبوع الثاني</h2>
-          <p style={{ fontSize: 14, color: quiet, lineHeight: 2, marginBottom: 48 }}>
+          <p style={{ fontSize: 18, color: quiet, lineHeight: 2, marginBottom: 48, fontWeight: 500 }}>
             أنت في يومك {currentDay}. {Math.max(currentDay - 1, 0)} يوما عشتها بوعي.
           </p>
         </Fade>
@@ -317,8 +316,8 @@ function FullJourney({ currentDay, onBack, onSubscribe, onContinue }) {
               <div style={{ fontFamily: font, fontSize: 28, color: sand, fontWeight: 700, minWidth: 36 }}>{["١", "٢", "٣", "٤"][i]}</div>
               <div>
                 <h3 style={{ fontFamily: font, fontSize: 19, color: ink, marginBottom: 2 }}>{w.name}</h3>
-                <p style={{ fontSize: 12, color: quiet, marginBottom: 4 }}>اليوم {w.days}</p>
-                <p style={{ fontSize: 13.5, color: quiet, fontWeight: 300, lineHeight: 1.7 }}>{w.line}</p>
+                <p style={{ fontSize: 16, color: quiet, marginBottom: 4, fontWeight: 500 }}>اليوم {w.days}</p>
+                <p style={{ fontSize: 18, color: quiet, fontWeight: 400, lineHeight: 1.7 }}>{w.line}</p>
               </div>
             </div>
           </Fade>
@@ -327,10 +326,10 @@ function FullJourney({ currentDay, onBack, onSubscribe, onContinue }) {
         <Fade delay={0.7}>
           <div style={{ marginTop: 48, textAlign: "center" }}>
             <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-              <button onClick={onSubscribe} style={{ padding: "13px 36px", background: ink, color: warmBg, border: "none", borderRadius: 6, fontFamily: bodyFont, fontSize: 14, fontWeight: 500, cursor: "pointer" }}>
+              <button onClick={onSubscribe} style={{ padding: "13px 36px", background: ink, color: warmBg, border: "none", borderRadius: 6, fontFamily: bodyFont, fontSize: 18, fontWeight: 600, cursor: "pointer" }}>
                 المسار الكامل · ٤٩ ر.س
               </button>
-              <button onClick={onContinue} style={{ padding: "13px 36px", background: "transparent", color: quiet, border: `1px solid ${sand}`, borderRadius: 6, fontFamily: bodyFont, fontSize: 14, cursor: "pointer" }}>
+              <button onClick={onContinue} style={{ padding: "13px 36px", background: "transparent", color: quiet, border: `1px solid ${sand}`, borderRadius: 6, fontFamily: bodyFont, fontSize: 18, fontWeight: 500, cursor: "pointer" }}>
                 استمر مجانا
               </button>
             </div>
@@ -346,16 +345,11 @@ export default function TaamunEssential() {
   const daily = getTodayTaamunDaily();
   const [phase, setPhase] = useState("gate");
   const [userState, setUserState] = useState("shadow");
-  const [transitioning, setTransitioning] = useState(false);
 
   const transition = (next, data) => {
-    setTransitioning(true);
-    window.setTimeout(() => {
-      if (data) setUserState(data);
-      setPhase(next);
-      setTransitioning(false);
-      window.scrollTo({ top: 0, behavior: "auto" });
-    }, 600);
+    if (data) setUserState(data);
+    setPhase(next);
+    window.scrollTo({ top: 0, behavior: "auto" });
   };
 
   return (
@@ -363,12 +357,10 @@ export default function TaamunEssential() {
       dir="rtl"
       style={{
         fontFamily: bodyFont,
-        fontWeight: 300,
+        fontWeight: 400,
         lineHeight: 1.9,
         background: warmBg,
         minHeight: "100vh",
-        opacity: transitioning ? 0 : 1,
-        transition: "opacity 0.6s ease",
       }}
     >
       {phase === "gate" && <Gate onEnter={() => transition("question")} />}
@@ -394,10 +386,6 @@ export default function TaamunEssential() {
         @import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Tajawal:wght@200;300;400;500;700&display=swap');
         * { box-sizing: border-box; }
         html { scroll-behavior: smooth; }
-        @keyframes breath {
-          0%, 100% { transform: scale(1); opacity: 0.8; }
-          50% { transform: scale(1.03); opacity: 1; }
-        }
       `}</style>
     </div>
   );

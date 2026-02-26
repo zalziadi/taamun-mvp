@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import Image from "next/image";
 import useParallax from "./hooks/useParallax";
 import { APP_NAME, APP_SLUG } from "@/lib/appConfig";
 
@@ -84,15 +85,14 @@ export default function Hero() {
             }}
           />
         ) : (
-          <img
+          <Image
             src={HERO_IMAGE_SRC}
             alt={APP_NAME}
-            loading="eager"
-            decoding="async"
+            fill
+            priority
+            sizes="220px"
             onError={() => setImageFailed(true)}
             style={{
-              width: "100%",
-              height: "100%",
               objectFit: "cover",
               borderRadius: "50%",
               WebkitMaskImage: "radial-gradient(circle, black 40%, transparent 72%)",
