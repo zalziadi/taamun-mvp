@@ -6,6 +6,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { BookViewer } from "../../components/BookViewer";
 import { track } from "../../lib/analytics";
+import { supabase } from "../../lib/supabaseClient";
 
 function BookContent() {
   const router = useRouter();
@@ -18,7 +19,19 @@ function BookContent() {
       .then(async (res) => {
         if (!active) return;
         if (!res.ok) {
-          setEntitled(false);
+          const {
+            data: { user },
+          } = await supabase.auth.getUser();
+          if (!user?.id) {
+            setEntitled(false);
+            return;
+          }
+          const { data: row } = await supabase
+            .from("entitlements")
+            .select("status")
+            .eq("user_id", user.id)
+            .maybeSingle();
+          setEntitled(row?.status === "active");
           return;
         }
         const data = (await res.json()) as { active?: boolean };

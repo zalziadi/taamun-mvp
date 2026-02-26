@@ -55,20 +55,42 @@ export function AccountClient({ embedded }: AccountClientProps) {
   const loadEntitlement = useCallback(async () => {
     try {
       const res = await fetch("/api/entitlement", { cache: "no-store" });
-      if (!res.ok) return;
-      const data = (await res.json()) as {
-        active?: boolean;
-        plan?: string | null;
-        endsAt?: string | null;
-        status?: string | null;
-      };
-      if (data.active) {
+      if (res.ok) {
+        const data = (await res.json()) as {
+          active?: boolean;
+          plan?: string | null;
+          endsAt?: string | null;
+          status?: string | null;
+        };
+        if (data.active) {
+          setLocalEntitlement("active");
+        }
+        setEntitlement({
+          plan: data.plan ?? null,
+          endsAt: data.endsAt ?? null,
+          status: data.status ?? null,
+        });
+        return;
+      }
+
+      // Fallback: if entitlement API is misconfigured on server, read directly using user session.
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+      if (!user?.id) return;
+      const { data: row, error } = await supabase
+        .from("entitlements")
+        .select("plan, status, ends_at")
+        .eq("user_id", user.id)
+        .maybeSingle();
+      if (error || !row) return;
+      if (row.status === "active") {
         setLocalEntitlement("active");
       }
       setEntitlement({
-        plan: data.plan ?? null,
-        endsAt: data.endsAt ?? null,
-        status: data.status ?? null,
+        plan: row.plan ?? null,
+        endsAt: row.ends_at ?? null,
+        status: row.status ?? null,
       });
     } catch {
       // ignore entitlement fetch errors in account page
