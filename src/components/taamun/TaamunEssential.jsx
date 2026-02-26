@@ -7,24 +7,10 @@ import { getTodayTaamunDaily } from "@/lib/taamun-daily";
 
 function useVisible(threshold = 0.15) {
   const ref = useRef(null);
-  const [visible, setVisible] = useState(false);
+  const [visible] = useState(true);
 
   useEffect(() => {
-    const el = ref.current;
-    if (!el) return;
-
-    const observer = new IntersectionObserver(
-      ([entry]) => {
-        if (entry.isIntersecting) {
-          setVisible(true);
-          observer.unobserve(el);
-        }
-      },
-      { threshold, rootMargin: "0px 0px -20px 0px" }
-    );
-
-    observer.observe(el);
-    return () => observer.disconnect();
+    void threshold;
   }, [threshold]);
 
   return [ref, visible];
@@ -56,12 +42,7 @@ const warmBg = "#f8f4ed";
 const sand = "#e8e0d2";
 
 function Gate({ onEnter }) {
-  const [ready, setReady] = useState(false);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setReady(true), 200);
-    return () => window.clearTimeout(timer);
-  }, []);
+  const [ready] = useState(true);
 
   const a = (d) => ({
     opacity: ready ? 1 : 0,
@@ -142,13 +123,8 @@ function Gate({ onEnter }) {
 }
 
 function Question({ onAnswer }) {
-  const [ready, setReady] = useState(false);
+  const [ready] = useState(true);
   const [selected, setSelected] = useState(null);
-
-  useEffect(() => {
-    const timer = window.setTimeout(() => setReady(true), 300);
-    return () => window.clearTimeout(timer);
-  }, []);
 
   const a = (d) => ({
     opacity: ready ? 1 : 0,
@@ -200,19 +176,41 @@ function Question({ onAnswer }) {
 }
 
 function TodaysExperience({ userState, daily, onExplore, onOpenDaily }) {
-  const [ready, setReady] = useState(false);
+  const [ready] = useState(true);
   const [journalOpen, setJournalOpen] = useState(false);
   const [journalText, setJournalText] = useState("");
+  const [saveMessage, setSaveMessage] = useState("");
   const [showWhisper, setShowWhisper] = useState(false);
 
   useEffect(() => {
-    const a = window.setTimeout(() => setReady(true), 300);
     const b = window.setTimeout(() => setShowWhisper(true), 4000);
     return () => {
-      window.clearTimeout(a);
       window.clearTimeout(b);
     };
   }, []);
+
+  useEffect(() => {
+    try {
+      const key = `taamun-journal-day-${daily.day}`;
+      const saved = window.localStorage.getItem(key) ?? "";
+      setJournalText(saved);
+      if (saved.trim()) {
+        setJournalOpen(true);
+      }
+    } catch {
+      // Ignore storage read issues in private mode or restricted environments.
+    }
+  }, [daily.day]);
+
+  function handleSaveJournal() {
+    try {
+      const key = `taamun-journal-day-${daily.day}`;
+      window.localStorage.setItem(key, journalText);
+      setSaveMessage("تم حفظ ملاحظتك");
+    } catch {
+      setSaveMessage("تعذر الحفظ على هذا المتصفح");
+    }
+  }
 
   const messages = {
     shadow: "رحلتك تبدأ من هنا: أن تلاحظ ما يحدث فيك دون أن تحاول تغييره.",
@@ -256,9 +254,10 @@ function TodaysExperience({ userState, daily, onExplore, onOpenDaily }) {
         ) : (
           <div style={{ width: "100%" }}>
             <textarea value={journalText} onChange={(e) => setJournalText(e.target.value)} placeholder="لاحظ... ماذا يحدث فيك الآن؟" style={{ width: "100%", minHeight: 120, padding: 20, background: "rgba(255,255,255,0.4)", border: "1px solid rgba(160,148,128,0.1)", borderRadius: 10, fontFamily: bodyFont, fontSize: 15, color: ink, lineHeight: 2, resize: "vertical", direction: "rtl", outline: "none" }} />
-            <button style={{ marginTop: 12, padding: "12px 32px", background: ink, color: warmBg, border: "none", borderRadius: 6, fontFamily: bodyFont, fontSize: 14, fontWeight: 500, cursor: "pointer" }}>
+            <button onClick={handleSaveJournal} style={{ marginTop: 12, padding: "12px 32px", background: ink, color: warmBg, border: "none", borderRadius: 6, fontFamily: bodyFont, fontSize: 14, fontWeight: 500, cursor: "pointer" }}>
               حفظ
             </button>
+            {saveMessage ? <p style={{ marginTop: 8, marginBottom: 0, fontSize: 12, color: quiet }}>{saveMessage}</p> : null}
           </div>
         )}
 
