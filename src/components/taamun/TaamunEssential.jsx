@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
+import { getTodayTaamunDaily } from "@/lib/taamun-daily";
 
 function useVisible(threshold = 0.15) {
   const ref = useRef(null);
@@ -198,7 +199,7 @@ function Question({ onAnswer }) {
   );
 }
 
-function TodaysExperience({ userState, onExplore }) {
+function TodaysExperience({ userState, daily, onExplore, onOpenDaily }) {
   const [ready, setReady] = useState(false);
   const [journalOpen, setJournalOpen] = useState(false);
   const [journalText, setJournalText] = useState("");
@@ -229,23 +230,23 @@ function TodaysExperience({ userState, onExplore }) {
     <div style={{ minHeight: "100vh", background: warmBg }}>
       <div style={{ position: "fixed", top: 0, left: 0, right: 0, zIndex: 100, padding: "16px 24px", display: "flex", justifyContent: "space-between", alignItems: "center", background: "rgba(248,244,237,0.9)", backdropFilter: "blur(16px)" }}>
         <span style={{ fontFamily: font, fontSize: 20, color: ink, fontWeight: 700 }}>تمعُّن</span>
-        <span style={{ fontSize: 12, color: quiet }}>أنت في يومك الثالث عشر</span>
+        <span onClick={onOpenDaily} style={{ fontSize: 12, color: quiet, cursor: "pointer" }}>
+          أنت في يومك {daily.day}
+        </span>
       </div>
 
       <div style={{ minHeight: "100vh", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "80px 24px 60px", textAlign: "center", maxWidth: 540, margin: "0 auto" }}>
         <p style={{ ...a(0.2), fontSize: 12, color: quiet, letterSpacing: 2, marginBottom: 24 }}>{messages[userState]}</p>
         <div style={{ ...a(0.5), marginBottom: 40 }}>
-          <p style={{ fontFamily: font, fontSize: "clamp(22px, 3.5vw, 30px)", color: ink, lineHeight: 2.2, marginBottom: 12 }}>﴿ وَنَحْنُ أَقْرَبُ إِلَيْهِ مِنْ حَبْلِ الْوَرِيدِ ﴾</p>
-          <p style={{ fontSize: 12, color: quiet }}>سورة ق — ١٦</p>
+          <p style={{ fontFamily: font, fontSize: "clamp(22px, 3.5vw, 30px)", color: ink, lineHeight: 2.2, marginBottom: 12 }}>{daily.verse.arabic}</p>
+          <p style={{ fontSize: 12, color: quiet }}>
+            سورة {daily.verse.surah} — {daily.verse.ayah}
+          </p>
         </div>
 
         <div style={{ ...a(0.8), padding: "28px 32px", background: "rgba(255,255,255,0.5)", borderRadius: 12, border: "1px solid rgba(160,148,128,0.08)", marginBottom: 36, width: "100%" }}>
           <p style={{ fontSize: 12, color: "#c4a265", letterSpacing: 1.5, marginBottom: 12 }}>سؤال اليوم</p>
-          <p style={{ fontFamily: font, fontSize: "clamp(17px, 2.5vw, 21px)", color: ink, lineHeight: 1.8 }}>
-            متى كانت آخر مرة شعرت فيها بقرب حقيقي...
-            <br />
-            دون أن تبحث عنه؟
-          </p>
+          <p style={{ fontFamily: font, fontSize: "clamp(17px, 2.5vw, 21px)", color: ink, lineHeight: 1.8 }}>{daily.question}</p>
         </div>
 
         {!journalOpen ? (
@@ -262,11 +263,8 @@ function TodaysExperience({ userState, onExplore }) {
         )}
 
         <div style={{ marginTop: 56, opacity: showWhisper ? 1 : 0, transform: showWhisper ? "translateY(0)" : "translateY(10px)", transition: "all 1.5s cubic-bezier(0.22,1,0.36,1)" }}>
-          <p style={{ fontFamily: font, fontSize: 14, fontStyle: "italic", color: quiet, lineHeight: 2, opacity: 0.6 }}>
-            «حين تقرأ آية بصدق، لا تكشف لك فقط ما تقوله...
-            <br />
-            بل تكشف لك من أنت حين تسمعها.»
-          </p>
+          <p style={{ fontFamily: font, fontSize: 14, fontStyle: "italic", color: quiet, lineHeight: 2, opacity: 0.6 }}>{daily.whisper.text}</p>
+          <p style={{ fontSize: 11, color: quiet, opacity: 0.45, marginTop: 6 }}>{daily.whisper.source}</p>
         </div>
 
         <div style={{ marginTop: 60, opacity: showWhisper ? 0.4 : 0, transition: "opacity 2s ease 1s" }}>
@@ -279,7 +277,7 @@ function TodaysExperience({ userState, onExplore }) {
   );
 }
 
-function FullJourney({ onBack, onSubscribe, onContinue }) {
+function FullJourney({ currentDay, onBack, onSubscribe, onContinue }) {
   const weeks = [
     { name: "التنقية", days: "١ — ٧", line: "أن ترى ما فيك دون أن تهرب" },
     { name: "التدبّر", days: "٨ — ١٤", line: "أن تسمح لآية واحدة أن تغيّرك" },
@@ -287,7 +285,7 @@ function FullJourney({ onBack, onSubscribe, onContinue }) {
     { name: "التجلّي", days: "٢٢ — ٢٨", line: "أن يصبح الوعي طبيعتك اليومية" },
   ];
 
-  const done = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12];
+  const done = Array.from({ length: Math.max(currentDay - 1, 0) }, (_, i) => i + 1);
 
   return (
     <div style={{ background: warmBg, minHeight: "100vh" }}>
@@ -299,13 +297,15 @@ function FullJourney({ onBack, onSubscribe, onContinue }) {
       <div style={{ maxWidth: 600, margin: "0 auto", padding: "100px 24px 80px" }}>
         <Fade>
           <h2 style={{ fontFamily: font, fontSize: "clamp(26px, 4vw, 34px)", color: ink, marginBottom: 8 }}>أنت في الأسبوع الثاني</h2>
-          <p style={{ fontSize: 14, color: quiet, lineHeight: 2, marginBottom: 48 }}>أنت في يومك الثالث عشر. ١٢ يوما عشتها بوعي.</p>
+          <p style={{ fontSize: 14, color: quiet, lineHeight: 2, marginBottom: 48 }}>
+            أنت في يومك {currentDay}. {Math.max(currentDay - 1, 0)} يوما عشتها بوعي.
+          </p>
         </Fade>
 
         <Fade delay={0.15}>
           <div style={{ display: "grid", gridTemplateColumns: "repeat(7, 1fr)", gap: "clamp(5px, 1.2vw, 8px)", marginBottom: 56 }}>
             {Array.from({ length: 28 }, (_, i) => i + 1).map((d) => (
-              <div key={d} style={{ aspectRatio: "1", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: font, fontWeight: 700, background: d === 13 ? ink : done.includes(d) ? "rgba(237,229,213,0.8)" : "rgba(255,255,255,0.35)", color: d === 13 ? warmBg : done.includes(d) ? "#6b5d4a" : "rgba(160,148,128,0.4)" }}>
+              <div key={d} style={{ aspectRatio: "1", borderRadius: 7, display: "flex", alignItems: "center", justifyContent: "center", fontFamily: font, fontWeight: 700, background: d === currentDay ? ink : done.includes(d) ? "rgba(237,229,213,0.8)" : "rgba(255,255,255,0.35)", color: d === currentDay ? warmBg : done.includes(d) ? "#6b5d4a" : "rgba(160,148,128,0.4)" }}>
                 {d}
               </div>
             ))}
@@ -344,6 +344,7 @@ function FullJourney({ onBack, onSubscribe, onContinue }) {
 
 export default function TaamunEssential() {
   const router = useRouter();
+  const daily = getTodayTaamunDaily();
   const [phase, setPhase] = useState("gate");
   const [userState, setUserState] = useState("shadow");
   const [transitioning, setTransitioning] = useState(false);
@@ -373,9 +374,17 @@ export default function TaamunEssential() {
     >
       {phase === "gate" && <Gate onEnter={() => transition("question")} />}
       {phase === "question" && <Question onAnswer={(id) => transition("experience", id)} />}
-      {phase === "experience" && <TodaysExperience userState={userState} onExplore={() => transition("explore")} />}
+      {phase === "experience" && (
+        <TodaysExperience
+          userState={userState}
+          daily={daily}
+          onExplore={() => transition("explore")}
+          onOpenDaily={() => router.push(`/daily?day=${daily.day}`)}
+        />
+      )}
       {phase === "explore" && (
         <FullJourney
+          currentDay={daily.day}
           onBack={() => transition("experience")}
           onSubscribe={() => router.push("/subscribe?reason=pricing")}
           onContinue={() => router.push("/activate")}
