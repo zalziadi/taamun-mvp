@@ -47,8 +47,10 @@ async function activateForRequest(codeRaw: unknown) {
 
   const { user } = auth;
   let supabaseWriter: ReturnType<typeof getSupabaseAdmin> | typeof auth.supabase;
+  let usingAdminClient = false;
   try {
     supabaseWriter = getSupabaseAdmin();
+    usingAdminClient = true;
   } catch {
     // Fallback to authenticated user client when service-role env is unavailable.
     supabaseWriter = auth.supabase;
@@ -66,7 +68,7 @@ async function activateForRequest(codeRaw: unknown) {
     endsAt = ramadanEndsAt.toISOString();
   }
 
-  const { error } = await supabaseWriter.from("entitlements").upsert(
+  let { error } = await supabaseWriter.from("entitlements").upsert(
     {
       user_id: user.id,
       plan,
@@ -76,6 +78,21 @@ async function activateForRequest(codeRaw: unknown) {
     },
     { onConflict: "user_id" }
   );
+
+  if (error && usingAdminClient) {
+    // If admin credentials are misconfigured, retry with the authenticated user client.
+    const retry = await auth.supabase.from("entitlements").upsert(
+      {
+        user_id: user.id,
+        plan,
+        status: "active",
+        starts_at: startsAt,
+        ends_at: endsAt,
+      },
+      { onConflict: "user_id" }
+    );
+    error = retry.error;
+  }
 
   if (error) {
     return NextResponse.json({ ok: false, error: "generic_failure" }, { status: 500 });
