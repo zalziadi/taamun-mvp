@@ -28,12 +28,14 @@ SALLA_WEBHOOK_SECRET=
 Run Supabase migrations, including:
 
 - `supabase/migrations/20260218090000_ramadan28_experience.sql`
+- `supabase/migrations/20260226012000_progress_table.sql`
+- `supabase/migrations/20260226013000_drop_legacy_user_progress.sql`
 
 This creates:
 
 - `quran_ayahs`
 - `ramadan_verses`
-- `user_progress`
+- `progress` (with backward compatibility for `user_progress`)
 - `user_answers`
 - `awareness_insights`
 - `profiles` (with `role`)
@@ -46,8 +48,19 @@ This creates:
 - `GET/POST /api/answers`
 - `GET /api/progress`
 - `POST /api/progress/complete`
+- `GET/POST /api/program/progress`
+- `GET /api/program/day/:id`
+- ملاحظة: مسارات `api/progress*` القديمة أصبحت wrappers متوافقة نحو `api/program/progress`.
 - `GET /api/history`
 - `GET/POST /api/awareness`
+
+## Legacy Cleanup Order
+
+لتجنب أي فقد بيانات:
+
+1. طبّق `20260226012000_progress_table.sql` أولاً.
+2. تأكد أن القراءة/الكتابة تعمل على النظام الجديد.
+3. بعدها طبّق `20260226013000_drop_legacy_user_progress.sql` لحذف `user_progress`.
 
 ### Admin (auth required + `profiles.role = 'admin'`)
 

@@ -62,7 +62,10 @@ export default function RootLayout({
                 <Link href="/" className="text-sm text-muted hover:text-text">
                   الرئيسية
                 </Link>
-                <Link href="/progress" className="text-sm text-muted hover:text-text">
+                <Link href="/program" className="text-sm text-muted hover:text-text">
+                  البرنامج
+                </Link>
+                <Link href="/program" className="text-sm text-muted hover:text-text">
                   تقدمك
                 </Link>
               </nav>

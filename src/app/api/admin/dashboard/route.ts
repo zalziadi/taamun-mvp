@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/authz";
+import { listAllProgressRows } from "@/lib/progressStore";
 
 export const dynamic = "force-dynamic";
 
@@ -11,11 +12,11 @@ export async function GET() {
 
   const [answersRes, progressRes, awarenessRes] = await Promise.all([
     supabase.from("user_answers").select("user_id, day"),
-    supabase.from("user_progress").select("user_id, current_day, completed_days"),
+    listAllProgressRows(supabase),
     supabase.from("awareness_insights").select("user_id, insight_type"),
   ]);
 
-  if (answersRes.error || progressRes.error || awarenessRes.error) {
+  if (answersRes.error || !progressRes.ok || awarenessRes.error) {
     return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 });
   }
 

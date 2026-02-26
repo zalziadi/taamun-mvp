@@ -1,6 +1,6 @@
 import { redirect } from "next/navigation";
-import { DAY1_ROUTE } from "@/lib/routes";
+import { PROGRAM_DAY1_ROUTE } from "@/lib/routes";
 
 export default function DayRedirect() {
-  redirect(DAY1_ROUTE);
+  redirect(PROGRAM_DAY1_ROUTE);
 }
