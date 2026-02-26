@@ -5,9 +5,32 @@ import { useRouter } from "next/navigation";
 
 interface RequireEntitlementProps {
   children: React.ReactNode;
+  subscribeReason?: string;
+  allowDemoDay?: boolean;
+  demoDayId?: number;
 }
 
-export function RequireEntitlement({ children }: RequireEntitlementProps) {
+const DEMO_DAY_USED_KEY = "taamun.demo.day1.used.v1";
+
+export function markDemoUsed(): void {
+  if (typeof window === "undefined") return;
+  try {
+    window.localStorage.setItem(DEMO_DAY_USED_KEY, "1");
+  } catch {
+    // ignore
+  }
+}
+
+function isDemoUnused(): boolean {
+  if (typeof window === "undefined") return false;
+  return window.localStorage.getItem(DEMO_DAY_USED_KEY) !== "1";
+}
+
+export function RequireEntitlement({
+  children,
+  subscribeReason,
+  allowDemoDay = false,
+}: RequireEntitlementProps) {
   const router = useRouter();
   const [status, setStatus] = useState<"loading" | "active" | "auth" | "locked" | "error">("loading");
 
@@ -25,8 +48,13 @@ export function RequireEntitlement({ children }: RequireEntitlementProps) {
         setStatus("active");
         return;
       }
+      if (allowDemoDay && isDemoUnused()) {
+        setStatus("active");
+        return;
+      }
       setStatus("locked");
-      router.replace("/subscribe?reason=locked");
+      const reason = subscribeReason || "locked";
+      router.replace(`/subscribe?reason=${encodeURIComponent(reason)}`);
     } catch {
       setStatus("error");
     }
@@ -34,7 +62,8 @@ export function RequireEntitlement({ children }: RequireEntitlementProps) {
 
   useEffect(() => {
     runCheck();
-  }, [router]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [router, subscribeReason, allowDemoDay]);
 
   if (status === "error") {
     return (

@@ -52,7 +52,7 @@ export async function POST(request: NextRequest) {
 
   const b = body as Record<string, unknown>;
   const identifier = typeof b?.identifier === "string" ? b.identifier.trim() : "";
-  const planKey = typeof b?.planKey === "string" ? b.planKey.trim() : "base";
+  const planKey = typeof b?.planKey === "string" ? b.planKey.trim() : "ramadan_28";
   const maxUses = typeof b?.maxUses === "number" ? b.maxUses : 1;
   const note = typeof b?.note === "string" ? b.note.trim() : "";
 

@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { APP_NAME } from "@/lib/appConfig";
@@ -18,7 +19,7 @@ function LogoMark() {
   return (
     <span className="flex h-9 w-9 shrink-0 items-center justify-center overflow-hidden rounded-lg bg-white/10">
       {!failed ? (
-        <img
+        <Image
           src="/brand/logo-mark.svg"
           alt=""
           width={28}

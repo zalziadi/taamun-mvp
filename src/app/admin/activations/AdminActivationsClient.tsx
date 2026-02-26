@@ -25,7 +25,7 @@ export function AdminActivationsClient({ apiBase }: AdminActivationsClientProps)
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const [newId, setNewId] = useState("");
-  const [newPlan, setNewPlan] = useState("base");
+  const [newPlan, setNewPlan] = useState("ramadan_28");
   const [newNote, setNewNote] = useState("");
   const [creating, setCreating] = useState(false);
 
@@ -159,8 +159,10 @@ export function AdminActivationsClient({ apiBase }: AdminActivationsClientProps)
             onChange={(e) => setNewPlan(e.target.value)}
             className="rounded-lg border border-white/20 bg-white/5 px-4 py-2 text-white"
           >
-            <option value="base">باقة 280</option>
-            <option value="plan820">باقة 820</option>
+            <option value="ramadan_28">باقة رمضان 28</option>
+            <option value="plan_280_monthly">باقة 280 الشهرية</option>
+            <option value="plan_820_full">باقة 820 السنوية</option>
+            <option value="trial_24h">تجربة 24 ساعة</option>
           </select>
           <input
             type="text"

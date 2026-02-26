@@ -6,9 +6,10 @@ import { supabase } from "../lib/supabaseClient";
 
 interface RequireAuthProps {
   children: React.ReactNode;
+  next?: string;
 }
 
-export function RequireAuth({ children }: RequireAuthProps) {
+export function RequireAuth({ children, next }: RequireAuthProps) {
   const router = useRouter();
   const [status, setStatus] = useState<"loading" | "authenticated" | "unauthenticated">("loading");
 
@@ -18,10 +19,11 @@ export function RequireAuth({ children }: RequireAuthProps) {
         setStatus("authenticated");
       } else {
         setStatus("unauthenticated");
-        router.replace("/auth");
+        const suffix = next ? `?next=${encodeURIComponent(next)}` : "";
+        router.replace(`/auth${suffix}`);
       }
     });
-  }, [router]);
+  }, [router, next]);
 
   useEffect(() => {
     const {
@@ -30,11 +32,12 @@ export function RequireAuth({ children }: RequireAuthProps) {
       if (session) setStatus("authenticated");
       else {
         setStatus("unauthenticated");
-        router.replace("/auth");
+        const suffix = next ? `?next=${encodeURIComponent(next)}` : "";
+        router.replace(`/auth${suffix}`);
       }
     });
     return () => subscription.unsubscribe();
-  }, [router]);
+  }, [router, next]);
 
   if (status === "loading" || status === "unauthenticated") {
     return (
