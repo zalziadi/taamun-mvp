@@ -10,6 +10,20 @@ export async function GET() {
   const auth = await requireUser();
   if (!auth.ok) return auth.response;
 
+  const adminEmail = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
+  const userEmail = (auth.user.email || "").trim().toLowerCase();
+  if (adminEmail && userEmail && adminEmail === userEmail) {
+    return Response.json({
+      ok: true,
+      active: true,
+      plan: "ramadan_28",
+      status: "active",
+      startsAt: null,
+      endsAt: null,
+      source: "admin_email_fallback",
+    });
+  }
+
   const cookieStore = await cookies();
   const entitlementToken = cookieStore.get(ENTITLEMENT_COOKIE_NAME)?.value;
   const legacyEntitled = cookieStore.get(LEGACY_ENTITLEMENT_COOKIE)?.value === "1";
