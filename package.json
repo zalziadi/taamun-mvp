@@ -6,6 +6,7 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
+    "verify": "npm run build",
     "lint": "next lint",
     "guard:brand": "node scripts/guards/brand.js",
     "guard:runtime": "node scripts/guards/runtime.js",
@@ -16,10 +17,13 @@
     "@google-cloud/vision": "^5.3.4",
     "@supabase/ssr": "^0.8.0",
     "@supabase/supabase-js": "^2.95.3",
+    "gray-matter": "^4.0.3",
     "next": "14.2.18",
     "posthog-js": "^1.278.0",
     "react": "^18.3.1",
-    "react-dom": "^18.3.1"
+    "react-dom": "^18.3.1",
+    "remark": "^15.0.1",
+    "remark-html": "^16.0.1"
   },
   "devDependencies": {
     "@types/node": "^20",
