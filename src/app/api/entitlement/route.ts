@@ -2,6 +2,7 @@ import { requireUser } from "@/lib/authz";
 import { cookies } from "next/headers";
 import { ENTITLEMENT_COOKIE_NAME, verifyEntitlementToken } from "@/lib/entitlement";
 import { LEGACY_ENTITLEMENT_COOKIE } from "@/lib/appConfig";
+import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const dynamic = "force-dynamic";
 
@@ -15,7 +16,15 @@ export async function GET() {
   const tokenCheck = verifyEntitlementToken(entitlementToken);
 
   const { supabase, user } = auth;
-  const { data: rows, error } = await supabase
+  let reader: typeof supabase | ReturnType<typeof getSupabaseAdmin> = supabase;
+  try {
+    reader = getSupabaseAdmin();
+  } catch {
+    // Fallback to authenticated user client when service-role env is unavailable.
+    reader = supabase;
+  }
+
+  const { data: rows, error } = await reader
     .from("entitlements")
     .select("plan, status, starts_at, ends_at")
     .eq("user_id", user.id)
