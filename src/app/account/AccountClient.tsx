@@ -1,10 +1,9 @@
 "use client";
 
-import { useCallback, useEffect, useState } from "react";
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "../../lib/supabaseClient";
-import type { User } from "@supabase/supabase-js";
 import { buildWhatsAppSubscribeUrl } from "@/lib/whatsapp";
 import { formatPlanEndDate, getPlanLabel } from "@/lib/plans";
 import { DAY1_ROUTE } from "@/lib/routes";
@@ -12,112 +11,60 @@ import { setEntitlement as setLocalEntitlement } from "@/lib/storage";
 
 interface AccountClientProps {
   embedded?: boolean;
-}
-
-export function AccountClient({ embedded }: AccountClientProps) {
-  const router = useRouter();
-  const [user, setUser] = useState<User | null>(null);
-  const [loading, setLoading] = useState(true);
-  const [logoutLoading, setLogoutLoading] = useState(false);
-  const [error, setError] = useState<string | null>(null);
-  const [entitlement, setEntitlement] = useState<{
+  userEmail: string | null;
+  initialEntitlement: {
     plan: string | null;
     endsAt: string | null;
     status: string | null;
-  } | null>(null);
+  };
+  initialPlanLabel: string;
+  initialEndsAtLabel: string;
+}
+
+export function AccountClient({
+  embedded,
+  userEmail,
+  initialEntitlement,
+  initialPlanLabel,
+  initialEndsAtLabel,
+}: AccountClientProps) {
+  const router = useRouter();
+  const [logoutLoading, setLogoutLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [entitlement, setEntitlement] = useState(initialEntitlement);
+  const [friendlyPlan, setFriendlyPlan] = useState(initialPlanLabel);
+  const [friendlyEndsAt, setFriendlyEndsAt] = useState(initialEndsAtLabel);
   const [activationCode, setActivationCode] = useState("");
   const [activationLoading, setActivationLoading] = useState(false);
   const [activationError, setActivationError] = useState<string | null>(null);
   const [activationSuccess, setActivationSuccess] = useState<string | null>(null);
 
-  useEffect(() => {
-    let active = true;
-    supabase.auth
-      .getSession()
-      .then(({ data: { session } }) => {
-        if (!active) return;
-        if (!session) {
-          router.replace("/auth");
-          return;
-        }
-        setUser(session.user);
-      })
-      .catch(() => {
-        if (!active) return;
-        router.replace("/auth");
-      })
-      .finally(() => {
-        if (!active) return;
-        setLoading(false);
-      });
-
-    const {
-      data: { subscription },
-    } = supabase.auth.onAuthStateChange((_event, session) => {
-      if (!session) {
-        router.replace("/auth");
-        return;
-      }
-      setUser(session.user);
-      setLoading(false);
-    });
-    return () => {
-      active = false;
-      subscription.unsubscribe();
-    };
-  }, [router]);
-
-  const loadEntitlement = useCallback(async () => {
+  const loadEntitlement = async () => {
     try {
       const res = await fetch("/api/entitlement", { cache: "no-store" });
-      if (res.ok) {
-        const data = (await res.json()) as {
-          active?: boolean;
-          plan?: string | null;
-          endsAt?: string | null;
-          status?: string | null;
-        };
-        if (data.active) {
-          setLocalEntitlement("active");
-        }
-        setEntitlement({
-          plan: data.plan ?? null,
-          endsAt: data.endsAt ?? null,
-          status: data.status ?? null,
-        });
-        return;
-      }
+      if (!res.ok) return;
 
-      // Fallback: if entitlement API is misconfigured on server, read directly using user session.
-      const {
-        data: { user },
-      } = await supabase.auth.getUser();
-      if (!user?.id) return;
-      const { data: row, error } = await supabase
-        .from("entitlements")
-        .select("plan, status, ends_at")
-        .eq("user_id", user.id)
-        .maybeSingle();
-      if (error || !row) return;
-      if (row.status === "active") {
+      const data = (await res.json()) as {
+        active?: boolean;
+        plan?: string | null;
+        endsAt?: string | null;
+        status?: string | null;
+      };
+      if (data.active) {
         setLocalEntitlement("active");
       }
-      setEntitlement({
-        plan: row.plan ?? null,
-        endsAt: row.ends_at ?? null,
-        status: row.status ?? null,
-      });
+      const nextEntitlement = {
+        plan: data.plan ?? null,
+        endsAt: data.endsAt ?? null,
+        status: data.status ?? null,
+      };
+      setEntitlement(nextEntitlement);
+      setFriendlyPlan(getPlanLabel(nextEntitlement.plan));
+      setFriendlyEndsAt(formatPlanEndDate(nextEntitlement.plan, nextEntitlement.endsAt));
     } catch {
       // ignore entitlement fetch errors in account page
     }
-  }, []);
-
-  useEffect(() => {
-    void loadEntitlement();
-  }, [loadEntitlement]);
-
-  const friendlyPlan = getPlanLabel(entitlement?.plan);
-  const friendlyEndsAt = formatPlanEndDate(entitlement?.plan, entitlement?.endsAt);
+  };
 
   const handleLogout = async () => {
     setError(null);
@@ -158,6 +105,9 @@ export function AccountClient({ embedded }: AccountClientProps) {
       if (data.ok) {
         setLocalEntitlement("active");
         setActivationSuccess("تم تفعيل الاشتراك بنجاح.");
+        setEntitlement((prev) => ({ ...prev, status: "active", plan: prev.plan ?? "ramadan_28" }));
+        setFriendlyPlan("رمضان 28 يوم");
+        setFriendlyEndsAt("30 رمضان 1447 هـ الموافق 29 مارس 2026");
         setActivationCode("");
         await loadEntitlement();
         router.refresh();
@@ -178,35 +128,14 @@ export function AccountClient({ embedded }: AccountClientProps) {
     }
   };
 
-  if (loading) {
-    return (
-      <div className="flex flex-1 flex-col items-center justify-center py-8">
-        <div className="w-full max-w-md space-y-6">
-          <div className="h-8 w-40 animate-pulse rounded-lg bg-white/10" />
-          <div className="h-24 animate-pulse rounded-xl border border-white/10 bg-white/5" />
-          <div className="h-28 animate-pulse rounded-xl border border-white/10 bg-white/5" />
-          <div className="h-28 animate-pulse rounded-xl border border-white/10 bg-white/5" />
-        </div>
-      </div>
-    );
-  }
-
-  if (!user) {
-    return (
-      <div className="flex flex-1 items-center justify-center py-8">
-        <p className="text-white/70">جارٍ التحويل...</p>
-      </div>
-    );
-  }
-
   const content = (
       <div className="w-full max-w-md">
         <h1 className="mb-6 text-center text-2xl font-bold text-white">حسابي</h1>
 
-        {user?.email && (
+        {userEmail && (
           <div className="mb-6 rounded-xl border border-white/10 bg-white/5 p-6">
             <p className="mb-1 text-sm text-white/60">البريد الإلكتروني</p>
-            <p className="text-lg text-white">{user.email}</p>
+            <p className="text-lg text-white">{userEmail}</p>
           </div>
         )}
 
@@ -216,7 +145,7 @@ export function AccountClient({ embedded }: AccountClientProps) {
           <p className="mt-3 mb-1 text-sm text-white/60">صالحة حتى</p>
           <p className="text-white/90">{friendlyEndsAt}</p>
           <p className="mt-3 mb-1 text-sm text-white/60">حالة الاشتراك</p>
-          <p className="text-white/90">{entitlement?.status ?? "غير مفعّل"}</p>
+          <p className="text-white/90">{entitlement.status ?? "غير مفعّل"}</p>
           <a
             href={buildWhatsAppSubscribeUrl("ramadan_28")}
             target="_blank"
