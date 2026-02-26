@@ -26,9 +26,16 @@ async function ensureAdminTableRow(email) {
     .upsert({ email, role: "admin" }, { onConflict: "email" });
 
   if (error) {
-    throw new Error(
-      `Failed writing admins table. Ensure public.admins exists (email unique). Details: ${error.message}`
-    );
+    if (
+      error.message.includes("Could not find the table") ||
+      error.message.includes("schema cache")
+    ) {
+      console.warn(
+        "Warning: public.admins table not found. Continuing with profiles/entitlements only."
+      );
+      return;
+    }
+    throw new Error(`Failed writing admins table: ${error.message}`);
   }
 }
 
@@ -46,7 +53,16 @@ async function grantAdminRoleInProfiles(userId) {
   const { error } = await supabase
     .from("profiles")
     .upsert({ id: userId, role: "admin" }, { onConflict: "id" });
-  if (error) throw new Error(`Failed to upsert profiles role=admin: ${error.message}`);
+  if (error) {
+    if (
+      error.message.includes("Could not find the table") ||
+      error.message.includes("schema cache")
+    ) {
+      console.warn("Warning: public.profiles table not found. Skipping profiles role upsert.");
+      return;
+    }
+    throw new Error(`Failed to upsert profiles role=admin: ${error.message}`);
+  }
 }
 
 async function activateEntitlement(userId, days) {
@@ -65,7 +81,16 @@ async function activateEntitlement(userId, days) {
     { onConflict: "user_id" }
   );
 
-  if (error) throw new Error(`Failed to upsert entitlements: ${error.message}`);
+  if (error) {
+    if (
+      error.message.includes("Could not find the table") ||
+      error.message.includes("schema cache")
+    ) {
+      console.warn("Warning: public.entitlements table not found. Skipping entitlement upsert.");
+      return null;
+    }
+    throw new Error(`Failed to upsert entitlements: ${error.message}`);
+  }
   return endsAt.toISOString();
 }
 
@@ -80,7 +105,11 @@ async function main() {
   console.log("Done.");
   console.log(`- admin email: ${ADMIN_EMAIL}`);
   console.log(`- user id: ${user.id}`);
-  console.log(`- entitlement: active until ${validUntil}`);
+  if (validUntil) {
+    console.log(`- entitlement: active until ${validUntil}`);
+  } else {
+    console.log("- entitlement: skipped (entitlements table missing)");
+  }
 }
 
 main().catch((err) => {
