@@ -76,13 +76,25 @@ export function AuthClient({ embedded }: AuthClientProps) {
   }, [cooldownSeconds]);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (session) {
-        router.replace(safeNext);
-        return;
-      }
-      setCheckingSession(false);
-    });
+    let active = true;
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        if (!active) return;
+        if (session) {
+          router.replace(safeNext);
+          return;
+        }
+        setCheckingSession(false);
+      })
+      .catch(() => {
+        if (!active) return;
+        setCheckingSession(false);
+      });
+
+    return () => {
+      active = false;
+    };
   }, [router, safeNext]);
 
   const handleSignIn = async (e: React.FormEvent) => {
