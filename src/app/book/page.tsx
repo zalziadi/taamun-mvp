@@ -4,32 +4,53 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { Suspense } from "react";
-import { isEntitled } from "../../lib/storage";
 import { BookViewer } from "../../components/BookViewer";
 import { track } from "../../lib/analytics";
 
 function BookContent() {
   const router = useRouter();
-  const [mounted, setMounted] = useState(false);
-  const entitled = isEntitled();
+  const [checking, setChecking] = useState(true);
+  const [entitled, setEntitled] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
+    let active = true;
+    fetch("/api/entitlement", { cache: "no-store" })
+      .then(async (res) => {
+        if (!active) return;
+        if (!res.ok) {
+          setEntitled(false);
+          return;
+        }
+        const data = (await res.json()) as { active?: boolean };
+        setEntitled(Boolean(data.active));
+      })
+      .catch(() => {
+        if (!active) return;
+        setEntitled(false);
+      })
+      .finally(() => {
+        if (!active) return;
+        setChecking(false);
+      });
+
+    return () => {
+      active = false;
+    };
   }, []);
 
   useEffect(() => {
-    if (mounted && entitled) track("book_opened", {});
-  }, [mounted, entitled]);
+    if (entitled) track("book_opened", {});
+  }, [entitled]);
 
   useEffect(() => {
-    if (!mounted) return;
+    if (checking) return;
     if (!entitled) {
       router.replace("/subscribe?reason=book");
       return;
     }
-  }, [mounted, entitled, router]);
+  }, [checking, entitled, router]);
 
-  if (!mounted) {
+  if (checking) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#0B0F14] p-6">
         <p className="text-white/70">جاري التحميل...</p>

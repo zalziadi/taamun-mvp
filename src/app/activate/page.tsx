@@ -9,6 +9,7 @@ import { supabase } from "@/lib/supabaseClient";
 import { APP_NAME } from "@/lib/appConfig";
 import { DAY1_ROUTE } from "@/lib/routes";
 import { formatPlanEndDate, getPlanLabel } from "@/lib/plans";
+import { setEntitlement as setLocalEntitlement } from "@/lib/storage";
 
 function ActivateContent() {
   const searchParams = useSearchParams();
@@ -73,6 +74,7 @@ function ActivateContent() {
       }
 
       if (data.ok) {
+        setLocalEntitlement("active");
         setSuccess({ endsAt: data.endsAt, plan: data.plan, redirectTo: data.redirectTo });
       } else {
         if (data.error === "ramadan_ended") {

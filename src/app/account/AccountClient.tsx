@@ -8,6 +8,7 @@ import type { User } from "@supabase/supabase-js";
 import { buildWhatsAppSubscribeUrl } from "@/lib/whatsapp";
 import { formatPlanEndDate, getPlanLabel } from "@/lib/plans";
 import { DAY1_ROUTE } from "@/lib/routes";
+import { setEntitlement as setLocalEntitlement } from "@/lib/storage";
 
 interface AccountClientProps {
   embedded?: boolean;
@@ -56,10 +57,14 @@ export function AccountClient({ embedded }: AccountClientProps) {
       const res = await fetch("/api/entitlement", { cache: "no-store" });
       if (!res.ok) return;
       const data = (await res.json()) as {
+        active?: boolean;
         plan?: string | null;
         endsAt?: string | null;
         status?: string | null;
       };
+      if (data.active) {
+        setLocalEntitlement("active");
+      }
       setEntitlement({
         plan: data.plan ?? null,
         endsAt: data.endsAt ?? null,
@@ -114,6 +119,7 @@ export function AccountClient({ embedded }: AccountClientProps) {
       };
 
       if (data.ok) {
+        setLocalEntitlement("active");
         setActivationSuccess("تم تفعيل الاشتراك بنجاح.");
         setActivationCode("");
         await loadEntitlement();
