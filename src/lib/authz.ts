@@ -31,9 +31,9 @@ export async function requireAdmin() {
     };
   }
 
-  const adminEmail = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-  const userEmail = (authResult.user.email || "").trim().toLowerCase();
-  if (adminEmail && userEmail && adminEmail === userEmail) {
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const userEmail = authResult.user.email;
+  if (userEmail && adminEmail && userEmail === adminEmail) {
     return { ok: true as const, user: authResult.user, admin };
   }
   const { data: profile, error } = await admin
@@ -49,7 +49,7 @@ export async function requireAdmin() {
   const { data: adminRow, error: adminRowError } = await admin
     .from("admins")
     .select("role")
-    .eq("email", userEmail)
+    .eq("email", userEmail ?? "")
     .maybeSingle();
 
   if (!adminRowError && adminRow?.role === "admin") {

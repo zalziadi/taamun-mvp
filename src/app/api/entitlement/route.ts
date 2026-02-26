@@ -10,9 +10,9 @@ export async function GET() {
   const auth = await requireUser();
   if (!auth.ok) return auth.response;
 
-  const adminEmail = (process.env.ADMIN_EMAIL || "").trim().toLowerCase();
-  const userEmail = (auth.user.email || "").trim().toLowerCase();
-  if (adminEmail && userEmail && adminEmail === userEmail) {
+  const adminEmail = process.env.ADMIN_EMAIL;
+  const userEmail = auth.user.email;
+  if (userEmail && adminEmail && userEmail === adminEmail) {
     return Response.json({
       ok: true,
       active: true,
