@@ -31,14 +31,26 @@ export function AccountClient({ embedded }: AccountClientProps) {
   const [activationSuccess, setActivationSuccess] = useState<string | null>(null);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) {
+    let active = true;
+    supabase.auth
+      .getSession()
+      .then(({ data: { session } }) => {
+        if (!active) return;
+        if (!session) {
+          router.replace("/auth");
+          return;
+        }
+        setUser(session.user);
+      })
+      .catch(() => {
+        if (!active) return;
         router.replace("/auth");
-        return;
-      }
-      setUser(session.user);
-      setLoading(false);
-    });
+      })
+      .finally(() => {
+        if (!active) return;
+        setLoading(false);
+      });
+
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
@@ -49,7 +61,10 @@ export function AccountClient({ embedded }: AccountClientProps) {
       setUser(session.user);
       setLoading(false);
     });
-    return () => subscription.unsubscribe();
+    return () => {
+      active = false;
+      subscription.unsubscribe();
+    };
   }, [router]);
 
   const loadEntitlement = useCallback(async () => {
@@ -165,8 +180,21 @@ export function AccountClient({ embedded }: AccountClientProps) {
 
   if (loading) {
     return (
-      <div className={`flex items-center justify-center p-6 ${embedded ? "min-h-[16rem]" : "min-h-screen"}`}>
-        <p className="text-white/70">جارٍ التحميل...</p>
+      <div className="flex flex-1 flex-col items-center justify-center py-8">
+        <div className="w-full max-w-md space-y-6">
+          <div className="h-8 w-40 animate-pulse rounded-lg bg-white/10" />
+          <div className="h-24 animate-pulse rounded-xl border border-white/10 bg-white/5" />
+          <div className="h-28 animate-pulse rounded-xl border border-white/10 bg-white/5" />
+          <div className="h-28 animate-pulse rounded-xl border border-white/10 bg-white/5" />
+        </div>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return (
+      <div className="flex flex-1 items-center justify-center py-8">
+        <p className="text-white/70">جارٍ التحويل...</p>
       </div>
     );
   }
