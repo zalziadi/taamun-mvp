@@ -1,3 +1,8 @@
+/**
+ * @deprecated هذا الملف لا يُستخدم في التطبيق الحالي.
+ * البيانات الحقيقية تُجلب من Supabase عبر /api/ramadan/day
+ * هذا الملف محفوظ كمرجع محلي فقط — لا تحذفه دون مراجعة.
+ */
 import { APP_NAME } from "@/lib/appConfig";
 
 export interface DayData {

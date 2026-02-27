@@ -2,7 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { ENTITLEMENT_COOKIE_NAME } from "@/lib/entitlement-constants";
 import { LEGACY_ENTITLEMENT_COOKIE } from "@/lib/appConfig";
 
-const PROTECTED_PREFIXES = ["/day", "/progress"];
+const PROTECTED_PREFIXES = ["/day", "/progress", "/ramadan"];
 
 function base64urlToBytes(input: string): Uint8Array {
   const base64 = input.replace(/-/g, "+").replace(/_/g, "/");
@@ -111,5 +111,5 @@ export async function middleware(req: NextRequest) {
 }
 
 export const config = {
-  matcher: ["/day/:path*", "/progress"],
+  matcher: ["/day/:path*", "/progress", "/ramadan/:path*", "/ramadan"],
 };
