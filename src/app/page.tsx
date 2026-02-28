@@ -1,18 +1,23 @@
-import { LandingFooter } from "@/components/landing/Footer";
-import { LandingHero } from "@/components/landing/Hero";
-import { LandingNavbar } from "@/components/landing/Navbar";
-import { LandingSections } from "@/components/landing/Sections";
-import { amiri, tajawal } from "@/components/landing/landing-fonts";
+import dynamic from "next/dynamic";
+import Hero from "@/components/Hero";
+import "@/styles/hero.css";
+import "@/styles/journey.css";
+import "@/styles/days.css";
 
-export default function HomePage() {
+const Journey = dynamic(() => import("@/components/Journey"), {
+  loading: () => <div style={{ minHeight: "50vh" }} />,
+});
+
+const DaysPath = dynamic(() => import("@/components/DaysPath"), {
+  loading: () => <div style={{ minHeight: "40vh" }} />,
+});
+
+export default function Home() {
   return (
-    <main
-      className={`theme-parchment ${tajawal.variable} ${amiri.variable} min-h-screen bg-[color:var(--parchment)]`}
-    >
-      <LandingNavbar />
-      <LandingHero />
-      <LandingSections />
-      <LandingFooter />
-    </main>
+    <>
+      <Hero />
+      <Journey />
+      <DaysPath />
+    </>
   );
 }

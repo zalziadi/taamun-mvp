@@ -57,7 +57,7 @@ export default function RootLayout({
           <header className="border-b border-border bg-panel">
             <div className="container flex h-14 items-center justify-between">
               <Link href="/" className="font-bold text-gold hover:opacity-90">
-                تعاون
+                تمَعُّن
               </Link>
               <nav aria-label="الرئيسية" className="flex items-center gap-4">
                 <Link href="/" className="text-sm text-muted hover:text-text">
@@ -72,7 +72,7 @@ export default function RootLayout({
           <main className="flex-1">{children}</main>
           <footer className="border-t border-border bg-panel py-4">
             <div className="container text-center p-muted text-sm">
-              تعاون © {new Date().getFullYear()}
+              تمَعُّن © {new Date().getFullYear()}
             </div>
           </footer>
         </div>

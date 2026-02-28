@@ -14,15 +14,19 @@ function sign(payload: string, secret: string) {
   return base64url(sig);
 }
 
-export function makeEntitlementToken(daysValid = 45) {
+export function makeEntitlementToken(plan: string, expMs: number) {
   const secret = process.env.ENTITLEMENT_SECRET;
   if (!secret) throw new Error("ENTITLEMENT_SECRET is missing");
 
-  const exp = Date.now() + daysValid * 24 * 60 * 60 * 1000;
-  const payload = JSON.stringify({ exp });
+  const payload = JSON.stringify({ plan, exp: expMs });
   const payloadB64 = base64url(Buffer.from(payload, "utf8"));
   const sig = sign(payloadB64, secret);
   return `${payloadB64}.${sig}`;
+}
+
+export function makeEntitlementTokenForDays(plan = "base", daysValid = 45) {
+  const expMs = Date.now() + daysValid * 24 * 60 * 60 * 1000;
+  return makeEntitlementToken(plan, expMs);
 }
 
 export function verifyEntitlementToken(token: string | undefined) {
@@ -47,7 +51,7 @@ export function verifyEntitlementToken(token: string | undefined) {
     return { ok: false as const, reason: "bad_sig" as const };
   }
 
-  let payload: { exp?: number };
+  let payload: { plan?: string; exp?: number };
   try {
     const raw = payloadB64.replace(/-/g, "+").replace(/_/g, "/");
     payload = JSON.parse(Buffer.from(raw, "base64").toString("utf8"));
@@ -63,7 +67,7 @@ export function verifyEntitlementToken(token: string | undefined) {
     return { ok: false as const, reason: "expired" as const };
   }
 
-  return { ok: true as const };
+  return { ok: true as const, plan: payload.plan, exp: payload.exp };
 }
 
 export { ENTITLEMENT_COOKIE_NAME };

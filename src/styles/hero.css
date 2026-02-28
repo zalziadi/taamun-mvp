@@ -1,0 +1,84 @@
+.hero {
+  background: linear-gradient(#e2dbcf, #f8f4ed);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  direction: rtl;
+}
+
+.logo-wrapper {
+  margin-bottom: 40px;
+  animation: fadeIn 1s ease-out forwards;
+}
+
+.logo-svg {
+  width: 380px;
+  max-width: 90%;
+}
+
+.logo-parallax {
+  transition: transform 0.2s ease-out;
+  will-change: transform;
+}
+
+.staff {
+  animation: dropStaff 1s ease-out forwards;
+}
+
+.hero-title {
+  font-size: 3rem;
+  font-weight: 600;
+  margin-bottom: 20px;
+  color: #111111;
+  opacity: 0;
+  animation: fadeIn 1.2s ease-out forwards;
+  animation-delay: 1s;
+}
+
+.hero-sub {
+  font-size: 1.1rem;
+  max-width: 600px;
+  color: #4a4a4a;
+  margin-bottom: 30px;
+  opacity: 0;
+  animation: fadeIn 1.2s ease-out forwards;
+  animation-delay: 1.3s;
+}
+
+.hero-btn {
+  background: #111111;
+  color: white;
+  border: none;
+  padding: 14px 32px;
+  border-radius: 8px;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+  opacity: 0;
+  animation: fadeIn 1.2s ease-out forwards;
+  animation-delay: 1.6s;
+}
+
+.hero-btn:hover {
+  transform: translateY(-3px);
+}
+
+@keyframes fadeIn {
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes dropStaff {
+  0% {
+    transform: translateY(-50px);
+    opacity: 0;
+  }
+  100% {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}

@@ -1,1 +1,1 @@
-export const ENTITLEMENT_COOKIE_NAME = "taamun_entitled";
+export const ENTITLEMENT_COOKIE_NAME = "TAAMUN_ENTITLEMENT_TOKEN";

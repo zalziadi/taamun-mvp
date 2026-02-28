@@ -1,60 +1,44 @@
-import { NextRequest } from "next/server";
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
-import { getSupabaseAdmin } from "../../../lib/supabaseAdmin";
+import { NextRequest, NextResponse } from "next/server";
+import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { verifyEntitlementToken } from "@/lib/entitlement";
+import { ENTITLEMENT_COOKIE_NAME } from "@/lib/entitlement-constants";
 
 export async function GET(request: NextRequest) {
-  const url = process.env.NEXT_PUBLIC_SUPABASE_URL ?? "";
-  const anonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY ?? "";
-  if (!url || !anonKey) {
-    return Response.json({ ok: false, active: false, error: "Server config" }, { status: 500 });
+  const token = request.cookies.get(ENTITLEMENT_COOKIE_NAME)?.value;
+  const verified = verifyEntitlementToken(token);
+  if (!verified.ok) {
+    return NextResponse.json({ ok: true, status: "expired", plan: null, endsAt: null });
   }
 
-  const cookieStore = await cookies();
-  const supabase = createServerClient(url, anonKey, {
-    cookies: {
-      getAll() {
-        return cookieStore.getAll();
-      },
-      setAll(cookiesToSet) {
-        try {
-          cookiesToSet.forEach(({ name, value, options }) =>
-            cookieStore.set(name, value, options)
-          );
-        } catch {
-          // ignore
-        }
-      },
-    },
-  });
-
-  const {
-    data: { user },
-    error: authError,
-  } = await supabase.auth.getUser();
-
-  if (authError || !user) {
-    return Response.json({ ok: false, active: false }, { status: 401 });
+  const nowIso = new Date().toISOString();
+  const expIso = new Date(verified.exp).toISOString();
+  const plan = typeof verified.plan === "string" ? verified.plan : null;
+  if (!plan) {
+    return NextResponse.json({ ok: true, status: "expired", plan: null, endsAt: null });
   }
 
-  const { data: rows } = await getSupabaseAdmin()
+  const { data, error } = await getSupabaseAdmin()
     .from("entitlements")
-    .select("plan, status, starts_at, ends_at")
-    .eq("user_id", user.id)
+    .select("plan, status, ends_at")
+    .eq("plan", plan)
+    .eq("status", "active")
+    .gte("ends_at", nowIso)
+    .order("ends_at", { ascending: false })
     .limit(1);
 
-  const row = rows?.[0];
-  const now = new Date().toISOString();
-  const active =
-    !!row &&
-    row.status === "active" &&
-    (row.ends_at == null || row.ends_at > now) &&
-    (row.starts_at == null || row.starts_at <= now);
+  if (error) {
+    return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 });
+  }
 
-  return Response.json({
+  const row = data?.[0];
+  if (!row) {
+    return NextResponse.json({ ok: true, status: "expired", plan, endsAt: expIso });
+  }
+
+  return NextResponse.json({
     ok: true,
-    active,
-    plan: row?.plan ?? null,
-    endsAt: row?.ends_at ?? null,
+    status: "active",
+    plan: row.plan,
+    endsAt: row.ends_at,
   });
 }

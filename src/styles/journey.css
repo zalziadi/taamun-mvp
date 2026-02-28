@@ -1,0 +1,158 @@
+.journey {
+  min-height: 140vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  direction: rtl;
+  padding: 64px 16px;
+}
+
+.journey-inner {
+  width: min(980px, 92vw);
+  display: grid;
+  gap: 28px;
+}
+
+.journey-head {
+  text-align: center;
+}
+
+.journey-title {
+  font-size: 2.2rem;
+  font-weight: 600;
+  color: #111111;
+  margin: 0;
+}
+
+.journey-sub {
+  margin: 10px 0 0;
+  color: #4a4a4a;
+  line-height: 1.7;
+}
+
+.track {
+  position: relative;
+  padding: 30px 16px 10px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.35);
+  backdrop-filter: blur(6px);
+}
+
+.track-line {
+  position: absolute;
+  left: 24px;
+  right: 24px;
+  top: 38px;
+  height: 2px;
+  background: rgba(17, 17, 17, 0.12);
+}
+
+.track-progress {
+  position: absolute;
+  left: 24px;
+  top: 38px;
+  height: 2px;
+  background: rgba(17, 17, 17, 0.55);
+  transition: width 0.12s ease-out;
+}
+
+.nodes {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 14px;
+}
+
+.node {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  opacity: 0.55;
+  transform: translateY(6px);
+  transition: opacity 0.25s ease, transform 0.25s ease;
+}
+
+.node.active {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.dot {
+  width: 12px;
+  height: 12px;
+  border-radius: 999px;
+  background: rgba(17, 17, 17, 0.35);
+  margin-top: 6px;
+}
+
+.node.active .dot {
+  background: rgba(17, 17, 17, 0.9);
+}
+
+.label .name {
+  font-weight: 600;
+  color: #111111;
+  margin-bottom: 4px;
+}
+
+.label .desc {
+  color: #4a4a4a;
+  line-height: 1.6;
+  font-size: 0.95rem;
+}
+
+.journey-card {
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.55);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+  padding: 18px 18px;
+}
+
+.card-title {
+  font-weight: 600;
+  color: #111111;
+  margin-bottom: 8px;
+}
+
+.card-body {
+  color: #4a4a4a;
+  line-height: 1.8;
+}
+
+.journey-cta {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.journey-btn {
+  background: #111111;
+  color: #fff;
+  border: none;
+  padding: 14px 28px;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.25s ease;
+}
+
+.journey-btn:hover {
+  transform: translateY(-2px);
+}
+
+.journey-hint {
+  color: rgba(17, 17, 17, 0.55);
+}
+
+@media (max-width: 720px) {
+  .nodes {
+    grid-template-columns: 1fr;
+  }
+  .track-line,
+  .track-progress {
+    top: 28px;
+  }
+  .track {
+    padding-top: 22px;
+  }
+}

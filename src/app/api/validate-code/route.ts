@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { validateCode } from "@/lib/activation";
 import {
   ENTITLEMENT_COOKIE_NAME,
-  makeEntitlementToken,
+  makeEntitlementTokenForDays,
 } from "@/lib/entitlement";
 
 export async function POST(req: Request) {
@@ -22,7 +22,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: result.error }, { status: 200 });
   }
 
-  const token = makeEntitlementToken(45);
+  const token = makeEntitlementTokenForDays("base", 45);
   const res = NextResponse.json({ ok: true });
   res.cookies.set({
     name: ENTITLEMENT_COOKIE_NAME,

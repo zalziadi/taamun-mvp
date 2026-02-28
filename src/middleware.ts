@@ -77,11 +77,6 @@ export async function middleware(req: NextRequest) {
   );
   if (!isProtected) return NextResponse.next();
 
-  const simpleEntitlement = req.cookies.get("TAAMUN_ENTITLEMENT")?.value;
-  if (simpleEntitlement === "1") {
-    return NextResponse.next();
-  }
-
   const secret = process.env.ENTITLEMENT_SECRET;
   if (!secret) {
     const url = req.nextUrl.clone();

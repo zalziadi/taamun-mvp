@@ -1,0 +1,91 @@
+.days-section {
+  min-height: 120vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f8f4ed;
+  padding: 80px 16px;
+  direction: rtl;
+}
+
+.days-inner {
+  width: min(900px, 95vw);
+  text-align: center;
+}
+
+.days-title {
+  font-size: 2.4rem;
+  font-weight: 600;
+  margin-bottom: 10px;
+  color: #111111;
+}
+
+.days-sub {
+  color: #4a4a4a;
+  margin-bottom: 40px;
+  line-height: 1.7;
+}
+
+.days-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  gap: 18px;
+  margin-bottom: 40px;
+}
+
+.day-node {
+  aspect-ratio: 1;
+  border-radius: 12px;
+  background: rgba(17, 17, 17, 0.08);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.25s ease;
+  color: #111;
+}
+
+.day-node:hover {
+  transform: translateY(-3px);
+}
+
+.day-node.active {
+  background: #111111;
+  color: white;
+}
+
+.day-node.completed {
+  background: #111111;
+  color: white;
+}
+
+.day-node.current {
+  border: 2px solid #111111;
+  background: white;
+}
+
+.day-node.locked {
+  opacity: 0.3;
+  cursor: not-allowed;
+}
+
+.days-btn {
+  background: #111111;
+  color: white;
+  padding: 14px 28px;
+  border: none;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: transform 0.3s ease;
+}
+
+.days-btn:hover {
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .days-grid {
+    grid-template-columns: repeat(4, 1fr);
+  }
+}

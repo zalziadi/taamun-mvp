@@ -32,6 +32,7 @@ function SubscribeContent() {
   const searchParams = useSearchParams();
   const reasonLocked = searchParams.get("reason") === "locked";
   const [code, setCode] = useState("");
+  const [cartStatus, setCartStatus] = useState<"idle" | "loading" | "added" | "error">("idle");
   const [activateStatus, setActivateStatus] = useState<"idle" | "loading" | "success" | "invalid" | "auth">("idle");
   const [errorCode, setErrorCode] = useState<string | null>(null);
 
@@ -48,11 +49,10 @@ function SubscribeContent() {
     if (!trimmed) return;
     setActivateStatus("loading");
     try {
-      const res = await fetch("/api/activate", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ code: trimmed }),
-      });
+      const res = await fetch(
+        `/api/activate?code=${encodeURIComponent(trimmed)}`,
+        { method: "GET" }
+      );
       const data = (await res.json()) as { ok?: boolean; error?: string };
       if (data?.ok) {
         setActivateStatus("success");
@@ -75,6 +75,30 @@ function SubscribeContent() {
     : "أدخل كود التفعيل للمتابعة.";
 
   const errorMsg = errorCode ? (errorMessages[errorCode] ?? "حدث خطأ. حاول مرة أخرى.") : "";
+
+  const handleAddToCart = async () => {
+    setCartStatus("loading");
+    try {
+      const res = await fetch("/api/cart", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ productKey: "ramadan-28-base", qty: 1 }),
+      });
+      if (res.status === 401) {
+        router.push("/auth?next=/subscribe");
+        return;
+      }
+      const data = await res.json();
+      if (!res.ok || !data?.ok) {
+        setCartStatus("error");
+        return;
+      }
+      setCartStatus("added");
+      router.push("/cart");
+    } catch {
+      setCartStatus("error");
+    }
+  };
 
   return (
     <AppShell title="اشتراك رمضان">
@@ -141,6 +165,25 @@ function SubscribeContent() {
         <div className="rounded-xl border border-white/10 bg-white/5 p-6">
           <p className="text-white/60">السعر</p>
           <p className="text-3xl font-bold text-white">280 ر.س</p>
+          <div className="mt-4 flex flex-wrap gap-3">
+            <button
+              type="button"
+              onClick={handleAddToCart}
+              disabled={cartStatus === "loading"}
+              className="rounded-lg bg-white px-6 py-3 font-medium text-[#0B0F14] disabled:opacity-50"
+            >
+              {cartStatus === "loading" ? "جاري الإضافة..." : "أضف إلى السلة"}
+            </button>
+            <Link
+              href="/cart"
+              className="rounded-lg border border-white/20 px-6 py-3 font-medium text-white hover:bg-white/10"
+            >
+              عرض السلة
+            </Link>
+          </div>
+          {cartStatus === "error" && (
+            <p className="mt-3 text-sm text-red-400">تعذر الإضافة إلى السلة. حاول مرة أخرى.</p>
+          )}
         </div>
 
         <p className="text-white/80">

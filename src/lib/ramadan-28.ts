@@ -3,9 +3,18 @@ export interface DayData {
   verse: string;
   reference: string;
   questions: {
-    shadow: string;
-    awareness: string;
-    contemplation: string;
+    shadow: {
+      surface: string;
+      mirror: string;
+    };
+    awareness: {
+      surface: string;
+      mirror: string;
+    };
+    contemplation: {
+      surface: string;
+      mirror: string;
+    };
   };
 }
 
@@ -40,18 +49,30 @@ export function getDayIndexForToday(): number {
 }
 
 /** Placeholder seed for 28 days - replace content later */
-const QUESTION_SHADOW = "ما أبرز ظلّك اليوم؟";
-const QUESTION_AWARENESS = "كيف أدركت نفسك؟";
-const QUESTION_CONTEMPLATION = "ما أعمق تمعّن وصلت إليه؟";
+const QUESTION_SHADOW_SURFACE = "ما أبرز ظلّك اليوم؟";
+const QUESTION_SHADOW_MIRROR = "ماذا يكشف هذا الظل عن حالك في الداخل؟";
+const QUESTION_AWARENESS_SURFACE = "ما المعنى الذي لفتك في الآية اليوم؟";
+const QUESTION_AWARENESS_MIRROR = "ماذا حدث داخلك وأنت تقرأ الآية؟";
+const QUESTION_CONTEMPLATION_SURFACE = "ما خطوة عملية ستحمل بها هذا المعنى لليوم؟";
+const QUESTION_CONTEMPLATION_MIRROR = "ما الذي بقي من الآية في حياتك بعد القراءة؟";
 
 export const RAMADAN_28: DayData[] = Array.from({ length: 28 }, (_, i) => ({
   dayId: i + 1,
   verse: `آية اليوم ${i + 1} - [سيتم استبدالها لاحقاً]`,
   reference: `السورة: آية`,
   questions: {
-    shadow: QUESTION_SHADOW,
-    awareness: QUESTION_AWARENESS,
-    contemplation: QUESTION_CONTEMPLATION,
+    shadow: {
+      surface: QUESTION_SHADOW_SURFACE,
+      mirror: QUESTION_SHADOW_MIRROR,
+    },
+    awareness: {
+      surface: QUESTION_AWARENESS_SURFACE,
+      mirror: QUESTION_AWARENESS_MIRROR,
+    },
+    contemplation: {
+      surface: QUESTION_CONTEMPLATION_SURFACE,
+      mirror: QUESTION_CONTEMPLATION_MIRROR,
+    },
   },
 }));
 
