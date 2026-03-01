@@ -2,7 +2,25 @@ import { NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/authz";
 import { listAllProgressRows } from "@/lib/progressStore";
 
+
 export const dynamic = "force-dynamic";
+
+interface ProgressRow {
+  user_id: string;
+  current_day: number | null;
+  completed_days: string[] | null;
+}
+
+interface AwarenessRow {
+  user_id: string;
+  insight_type: string;
+}
+
+interface AnswerRow {
+  user_id: string;
+  day: number;
+}
+
 
 export async function GET() {
   const adminAuth = await requireAdmin();
@@ -20,9 +38,9 @@ export async function GET() {
     return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 });
   }
 
-  const answerRows = answersRes.data ?? [];
+  const answerRows = (answersRes.data ?? []) as AnswerRow[];
   const progressRows = progressRes.data ?? [];
-  const awarenessRows = awarenessRes.data ?? [];
+  const awarenessRows = (awarenessRes.data ?? []) as AwarenessRow[];
 
   const uniqueUsers = new Set<string>();
   for (const row of answerRows) uniqueUsers.add(row.user_id);
