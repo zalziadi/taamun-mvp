@@ -10,6 +10,16 @@ interface ProgressRow {
   completed_days: string[] | null;
 }
 
+interface AwarenessRow {
+  user_id: string;
+  insight_type: string;
+}
+
+interface AnswerRow {
+  user_id: string;
+  day: number;
+}
+
 export async function GET() {
   let adminAuth: Awaited<ReturnType<typeof requireAdmin>>;
 
@@ -48,9 +58,9 @@ export async function GET() {
     return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 });
   }
 
-  const answerRows = answersRes.data ?? [];
+  const answerRows = (answersRes.data ?? []) as AnswerRow[];
   const progressRows = (progressRes.data ?? []) as ProgressRow[];
-  const awarenessRows = awarenessRes.data ?? [];
+  const awarenessRows = (awarenessRes.data ?? []) as AwarenessRow[];
 
   const uniqueUsers = new Set<string>();
   for (const row of answerRows) uniqueUsers.add(row.user_id);
