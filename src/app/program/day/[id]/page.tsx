@@ -180,12 +180,10 @@ export default function ProgramDayPage() {
 
           {message ? <Alert variant="success">{message}</Alert> : null}
           {error ? <Alert variant="danger">{error}</Alert> : null}
-          {isLocked ? (
-            <Alert variant="muted">هذا اليوم غير متاح بعد. أكمل الأيام السابقة أولاً.</Alert>
-          ) : null}
+
 
           <div className="flex flex-wrap gap-3">
-            <Button onClick={handleComplete} disabled={isLocked || isCompleted || completing}>
+            <Button onClick={handleComplete} disabled={isCompleted || completing}>
               {completing ? "جارٍ التسجيل..." : "تم الإنجاز"}
             </Button>
 
