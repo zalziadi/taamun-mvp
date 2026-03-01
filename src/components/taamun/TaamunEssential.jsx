@@ -327,11 +327,8 @@ function FullJourney({ currentDay, onBack, onSubscribe, onContinue }) {
         <Fade delay={0.7}>
           <div style={{ marginTop: 48, textAlign: "center" }}>
             <div style={{ display: "flex", gap: 12, justifyContent: "center", flexWrap: "wrap" }}>
-              <button onClick={onSubscribe} style={{ padding: "13px 36px", background: ink, color: warmBg, border: "none", borderRadius: 6, fontFamily: bodyFont, fontSize: 18, fontWeight: 600, cursor: "pointer" }}>
-                المسار الكامل · ٤٩ ر.س
-              </button>
-              <button onClick={onContinue} style={{ padding: "13px 36px", background: "transparent", color: quiet, border: `1px solid ${sand}`, borderRadius: 6, fontFamily: bodyFont, fontSize: 18, fontWeight: 500, cursor: "pointer" }}>
-                إنشاء حساب وتفعيله
+              <button onClick={onContinue} style={{ padding: "13px 36px", background: ink, color: warmBg, border: "none", borderRadius: 6, fontFamily: bodyFont, fontSize: 18, fontWeight: 600, cursor: "pointer" }}>
+                ابدأ الرحلة — مجاناً
               </button>
             </div>
           </div>
@@ -378,8 +375,8 @@ export default function TaamunEssential() {
         <FullJourney
           currentDay={daily.day}
           onBack={() => transition("experience")}
-          onSubscribe={() => router.push("/subscribe?reason=pricing")}
-          onContinue={() => router.push("/auth?next=%2Factivate")}
+          onSubscribe={() => router.push("/auth")}
+          onContinue={() => router.push("/auth")}
         />
       )}
 

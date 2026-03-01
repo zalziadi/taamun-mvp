@@ -72,10 +72,7 @@ export default function ProgramDayPage() {
           fetch("/api/program/progress", { cache: "no-store" }),
         ]);
 
-        if (dayRes.status === 401 || progressRes.status === 401) {
-          router.replace(`/auth?next=${encodeURIComponent(`/program/day/${day}`)}`);
-          return;
-        }
+        // No auth required — all days are public.
 
         const dayData = (await dayRes.json()) as ProgramDayPayload;
         const progressData = (await progressRes.json()) as ProgramProgressResponse;
@@ -121,10 +118,7 @@ export default function ProgramDayPage() {
         body: JSON.stringify({ day }),
       });
 
-      if (res.status === 401) {
-        router.push(`/auth?next=${encodeURIComponent(`/program/day/${day}`)}`);
-        return;
-      }
+      // No auth required.
 
       const data = (await res.json()) as ProgramProgressResponse;
       if (!res.ok || data.ok === false) {
@@ -180,12 +174,17 @@ export default function ProgramDayPage() {
 
           {message ? <Alert variant="success">{message}</Alert> : null}
           {error ? <Alert variant="danger">{error}</Alert> : null}
-          {isLocked ? (
-            <Alert variant="muted">هذا اليوم غير متاح بعد. أكمل الأيام السابقة أولاً.</Alert>
-          ) : null}
-
           <div className="flex flex-wrap gap-3">
-            <Button onClick={handleComplete} disabled={isLocked || isCompleted || completing}>
+            {day > 1 ? (
+              <Button
+                variant="secondary"
+                onClick={() => router.push(programDayRoute(day - 1))}
+              >
+                ← اليوم السابق
+              </Button>
+            ) : null}
+
+            <Button onClick={handleComplete} disabled={isCompleted || completing}>
               {completing ? "جارٍ التسجيل..." : "تم الإنجاز"}
             </Button>
 
@@ -194,7 +193,7 @@ export default function ProgramDayPage() {
                 variant="secondary"
                 onClick={() => router.push(programDayRoute(day + 1))}
               >
-                اليوم التالي
+                اليوم التالي →
               </Button>
             ) : null}
           </div>
