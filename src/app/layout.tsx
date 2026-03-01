@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { NavAuth } from "@/components/NavAuth";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { APP_DESCRIPTION, APP_DOMAIN, APP_NAME } from "@/lib/appConfig";
 import "./globals.css";
@@ -59,15 +60,9 @@ export default function RootLayout({
                 {APP_NAME}
               </Link>
               <nav aria-label="الرئيسية" className="flex items-center gap-4">
-                <Link href="/" className="text-sm text-muted hover:text-text">
-                  الرئيسية
-                </Link>
-                <Link href="/program" className="text-sm text-muted hover:text-text">
-                  البرنامج
-                </Link>
-                <Link href="/program" className="text-sm text-muted hover:text-text">
-                  تقدمك
-                </Link>
+                <Link href="/" className="text sm text-muted hover:text-text">الرئيسية</Link>
+                <Link href="/program" className="text-sm text-muted hover:text-text">البرنامج</Link>
+                <NavAuth />
               </nav>
             </div>
           </header>
