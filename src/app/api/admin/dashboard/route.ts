@@ -67,11 +67,15 @@ export async function GET() {
   for (const row of progressRows) uniqueUsers.add(row.user_id);
 
   const completed28 = progressRows.filter(
-    (row) => (row.completed_days ?? []).length >= 28
+    (row: ProgressRow) => (row.completed_days ?? []).length >= 28
   ).length;
 
-  const weeklyInsights = awarenessRows.filter((row) => row.insight_type === "weekly").length;
-  const finalInsights = awarenessRows.filter((row) => row.insight_type === "final").length;
+  const weeklyInsights = awarenessRows.filter(
+    (row: AwarenessRow) => row.insight_type === "weekly"
+  ).length;
+  const finalInsights = awarenessRows.filter(
+    (row: AwarenessRow) => row.insight_type === "final"
+  ).length;
 
   return NextResponse.json({
     ok: true,
