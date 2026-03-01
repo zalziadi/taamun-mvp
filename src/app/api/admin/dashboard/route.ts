@@ -39,7 +39,7 @@ export async function GET() {
   }
 
   const answerRows = (answersRes.data ?? []) as AnswerRow[];
-  const progressRows = progressRes.data ?? [];
+  const progressRows = (progressRes.data ?? []) as ProgressRow[];
   const awarenessRows = (awarenessRes.data ?? []) as AwarenessRow[];
 
   const uniqueUsers = new Set<string>();
