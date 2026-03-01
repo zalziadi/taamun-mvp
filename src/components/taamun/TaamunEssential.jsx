@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Image from "next/image";
 import { getTodayTaamunDaily } from "@/lib/taamun-daily";
+import { APP_NAME } from "@/lib/appConfig";
 
 function useVisible(threshold = 0.15) {
   const ref = useRef(null);
@@ -66,7 +67,7 @@ function Gate({ onEnter }) {
       <div style={{ ...a(0.2), width: 180, height: 180, marginBottom: 0, position: "relative" }}>
         <Image
           src="/images/taamun-hero.jpg"
-          alt="تمعّن"
+          alt={APP_NAME}
           fill
           sizes="180px"
           style={{

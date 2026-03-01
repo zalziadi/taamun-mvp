@@ -1,0 +1,12 @@
+{
+  "_instructions": "أكمل جميع الحقول قبل تشغيل Gate 4.",
+  "monthly_server_cost_sar": null,
+  "price_per_unit_sar": null,
+  "variable_cost_per_unit_sar": null,
+  "expected_units_first_month": null,
+  "competitor_pricing_sar": {
+    "lowest": null,
+    "highest": null
+  },
+  "notes": ""
+}

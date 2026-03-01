@@ -1,0 +1,19 @@
+{
+  "_instructions": "أكمل الـ checklist يدويًا بعد الاختبار الفعلي قبل تشغيل Gate 3.",
+  "manual_checklist": {
+    "registration_works": false,
+    "login_works": false,
+    "data_save_works": false,
+    "crud_complete": false,
+    "permissions_correct": false,
+    "no_500_errors": false,
+    "no_404_errors": false,
+    "mobile_tested": false,
+    "browser_chrome": false,
+    "browser_safari": false,
+    "browser_firefox": false,
+    "rtl_correct": false,
+    "localstorage_persists": false
+  },
+  "notes": ""
+}

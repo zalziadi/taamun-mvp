@@ -12,7 +12,16 @@
     "guard:brand": "node scripts/guards/brand.js",
     "guard:runtime": "node scripts/guards/runtime.js",
     "guard:metadata": "node scripts/guards/metadata.js",
-    "guard:release": "npm run guard:brand && npm run guard:runtime && npm run guard:metadata && npx tsc --noEmit && npm run build"
+    "guard:release": "npm run guard:brand && npm run guard:runtime && npm run guard:metadata && npx tsc --noEmit && npm run build",
+    "launch:all": "node scripts/launch-gates/run-gates.js all",
+    "launch:status": "node scripts/launch-gates/run-gates.js status",
+    "launch:gate1": "node scripts/launch-gates/run-gates.js gate1",
+    "launch:gate2": "node scripts/launch-gates/run-gates.js gate2",
+    "launch:gate3": "node scripts/launch-gates/run-gates.js gate3",
+    "launch:gate4": "node scripts/launch-gates/run-gates.js gate4",
+    "launch:gate5": "node scripts/launch-gates/run-gates.js gate5",
+    "launch:gate6": "node scripts/launch-gates/run-gates.js gate6",
+    "launch:gate7": "node scripts/launch-gates/run-gates.js gate7"
   },
   "dependencies": {
     "@google-cloud/vision": "^5.3.4",

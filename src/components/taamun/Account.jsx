@@ -1,4 +1,5 @@
 import useReveal from "./hooks/useReveal";
+import { APP_NAME } from "@/lib/appConfig";
 
 const sMarker = { fontSize: 11, color: "#c4a265", letterSpacing: 4, marginBottom: 14, fontWeight: 500 };
 const sTitle = {
@@ -72,7 +73,7 @@ export default function Account() {
             <h3 style={{ fontFamily: "'Amiri', serif", fontSize: 20, color: "#2a2118", marginBottom: 2 }}>
               مرحباً بك في تمعُّن
             </h3>
-            <p style={{ fontSize: 12.5, color: "#a09480" }}>متمعّن منذ رمضان ١٤٤٧</p>
+            <p style={{ fontSize: 12.5, color: "#a09480" }}>في رحلة {APP_NAME} منذ رمضان ١٤٤٧</p>
             <div
               style={{
                 display: "inline-block",

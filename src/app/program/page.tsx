@@ -21,6 +21,7 @@ type ProgramProgressPayload = {
 export default function ProgramPage() {
   const router = useRouter();
   const [loading, setLoading] = useState(true);
+  const [redirecting, setRedirecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [totalDays, setTotalDays] = useState(28);
   const [currentDay, setCurrentDay] = useState(1);
@@ -34,12 +35,14 @@ export default function ProgramPage() {
 
       try {
         const res = await fetch("/api/program/progress", { cache: "no-store" });
-        const data = (await res.json()) as ProgramProgressPayload;
 
         if (res.status === 401) {
+          setRedirecting(true);
           router.replace("/auth?next=/program");
           return;
         }
+
+        const data = (await res.json()) as ProgramProgressPayload;
 
         if (!res.ok || data.ok === false) {
           setError("تعذر تحميل بيانات البرنامج الآن.");
@@ -66,7 +69,13 @@ export default function ProgramPage() {
 
   const completedCount = useMemo(() => completedDays.length, [completedDays]);
 
-  if (loading) return null;
+  if (loading || redirecting) {
+    return (
+      <div className="mx-auto max-w-[980px] p-6">
+        <p className="text-muted text-sm">جارٍ التحميل...</p>
+      </div>
+    );
+  }
 
   return (
     <EntitlementGate>

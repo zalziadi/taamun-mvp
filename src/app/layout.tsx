@@ -63,17 +63,20 @@ export default function RootLayout({
                   الرئيسية
                 </Link>
                 <Link href="/program" className="text-sm text-muted hover:text-text">
-                  البرنامج
-                </Link>
-                <Link href="/program" className="text-sm text-muted hover:text-text">
                   تقدمك
+                </Link>
+                <Link href="/subscribe" className="text-sm text-muted hover:text-text">
+                  الاشتراك
+                </Link>
+                <Link href="/auth" className="text-sm font-medium text-gold hover:opacity-80">
+                  تسجيل الدخول
                 </Link>
               </nav>
             </div>
           </header>
           <main className="flex-1">{children}</main>
           <footer className="border-t border-border bg-panel py-4">
-            <div className="container text-center p-muted text-sm">
+            <div className="container text-center text-muted text-sm">
               {APP_NAME} © {new Date().getFullYear()}
             </div>
           </footer>

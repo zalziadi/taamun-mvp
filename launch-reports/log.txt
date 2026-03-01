@@ -1,0 +1,152 @@
+════════════════════════════════════════════════════════════
+TAAMUN — سجل الجلسة الشاملة
+التاريخ: 2026-03-01
+النسخة: commit 74889ef
+════════════════════════════════════════════════════════════
+
+─────────────────────────────────────────────────────────────
+1. حالة الكود — ما يعمل الآن ✅
+─────────────────────────────────────────────────────────────
+
+[TypeScript]    صفر أخطاء — npx tsc --noEmit → EXIT:0
+[guard:brand]   OK — لا توكن اسم التطبيق مباشرة خارج appConfig
+[guard:runtime] OK — لا edge runtime خارج المسار المسموح
+[guard:metadata] OK
+
+[الصفحات الموجودة — 28 صفحة]
+  / → الرئيسية (TaamunEssential)
+  /auth → تسجيل الدخول / إنشاء حساب
+  /account → حساب المستخدم
+  /activate → تفعيل الكود
+  /subscribe → الاشتراك + واتساب + سلة (مشروط بـ env)
+  /program → تقدم 28 يوم (يتطلب تسجيل دخول)
+  /program/day/[id] → يوم محدد
+  /progress → redirect لـ /program
+  /day → اليوم الحالي
+  /day/[dayId] → يوم محدد
+  /book → الكتاب
+  /book/chapter/[slug] → فصل
+  /book/verse/[surah]/[ayah] → آية
+  /book/pdf → عارض PDF
+  /ramadan → رمضان
+  /daily → اليومي
+  /scan → مسح OCR
+  /admin → لوحة الأدمن
+  /privacy → سياسة الخصوصية
+  /about → حول
+
+[API Routes — 30 route]
+  /api/salla/oauth/start ← يبدأ OAuth مع سلة (يتطلب secrets)
+  /api/salla/oauth/callback ← callback سلة
+  /api/salla/webhook ← استقبال أحداث سلة (دفع، طلب)
+  /api/entitlement ← فحص الاشتراك
+  /api/activate ← تفعيل كود
+  /api/progress ← حفظ وقراءة التقدم
+  /api/program/progress ← تقدم برنامج 28 يوم
+  /api/answers ← حفظ الإجابات اليومية
+  /api/book/* ← بيانات الكتاب
+  /api/admin/* ← لوحة الإدارة
+  ... وغيرها
+
+─────────────────────────────────────────────────────────────
+2. الإصلاحات التي تمت في هذه الجلسة ✅
+─────────────────────────────────────────────────────────────
+
+[FIX-01] admin/dashboard/route.ts — خطأ TypeScript:
+  Parameter 'row' implicitly has an 'any' type → أُصلح
+
+[FIX-02] brand guard — 3 ملفات تضمّن اسم التطبيق مباشرة:
+  • LandingMerged.tsx → import APP_NAME من appConfig
+  • Account.jsx → import APP_NAME من appConfig
+  • TaamunEssential.jsx → import APP_NAME من appConfig
+
+[FIX-03] layout.tsx — روابط ناقصة في الهيدر:
+  أُضيف: "الاشتراك" → /subscribe
+  أُضيف: "تسجيل الدخول" (ذهبي) → /auth
+  حُذف: رابط "البرنامج" المكرر
+
+[FIX-04] layout.tsx — خطأ CSS في footer:
+  p-muted (غير موجود في Tailwind) → text-muted
+
+[FIX-05] program/page.tsx — تحسين معالجة الخطأ:
+  إضافة redirecting state لمنع الرسم الخاطئ أثناء الانتقال
+
+[FIX-06] .env.local — متغيرات ناقصة:
+  أُضيفت بقيم فارغة مع تعليمات:
+  NEXT_PUBLIC_SALLA_STORE_URL
+  SALLA_CLIENT_ID
+  SALLA_CLIENT_SECRET
+  SALLA_REDIRECT_URI
+  SALLA_STATE_SECRET
+  SALLA_WEBHOOK_SECRET
+  NEXT_PUBLIC_WHATSAPP_NUMBER
+  NEXT_PUBLIC_POSTHOG_KEY / HOST
+
+─────────────────────────────────────────────────────────────
+3. ما يحتاج تعبئة يدوية — لا يعمل بدونه ⚠️
+─────────────────────────────────────────────────────────────
+
+[SALLA_CLIENT_ID + SALLA_CLIENT_SECRET]
+  المصدر: لوحة تحكم سلة → التطبيقات → تطبيقك
+  الوظيفة: تفعيل OAuth لربط المشترين
+
+[SALLA_REDIRECT_URI]
+  القيمة: https://taamun-mvp.vercel.app/api/salla/oauth/callback
+  يجب تسجيله أيضاً في إعدادات التطبيق في سلة
+
+[SALLA_STATE_SECRET + SALLA_WEBHOOK_SECRET]
+  قيمة عشوائية آمنة (32 حرف+) لكل منهما
+
+[NEXT_PUBLIC_SALLA_STORE_URL]
+  رابط صفحة المنتج في متجرك على سلة
+  الوظيفة: يظهر زر "الدفع عبر سلة" في /subscribe
+
+─────────────────────────────────────────────────────────────
+4. مشاكل لم تُحل — تحتاج قرار ⛔
+─────────────────────────────────────────────────────────────
+
+[BOOK_URL_501]
+  /api/book-url → يرجع 501
+  السبب: PDF محفوظ statically في /public/book/
+  الحل المقترح: إما إبقاء static أو ربط Supabase Storage
+  التأثير: عرض PDF يعمل من /book/pdf عبر المسار الثابت
+
+[FERSEL]
+  الخدمة غير معروفة — لا credentials ولا documentation
+  لازم توضيح: ما هي Fersel وما دورها في المشروع؟
+
+[DEV_SERVER_SANDBOX]
+  npm run dev لا يكتمل في بيئة Cowork (بيئة Linux)
+  الحل: شغّله على جهازك مباشرة:
+  cd /Users/ziyadalziyadi/Projects/taamun-mvp && npm run dev
+
+─────────────────────────────────────────────────────────────
+5. خطوات تشغيل المشروع محلياً
+─────────────────────────────────────────────────────────────
+
+1. افتح Terminal على جهازك
+2. cd /Users/ziyadalziyadi/Projects/taamun-mvp
+3. npm run dev
+4. افتح http://localhost:3000
+
+للتحقق من الجودة قبل الإطلاق:
+  npm run launch:status    ← حالة Gates
+  npm run launch:gate1     ← فحص الاستراتيجية
+  npm run launch:gate2     ← بناء + TypeScript
+  npm run guard:release    ← جميع Guards + Build
+
+─────────────────────────────────────────────────────────────
+6. حالة Launch Gates
+─────────────────────────────────────────────────────────────
+
+Gate 1 (Strategy) → NOT_RUN — أكمل launch-config/strategy.json
+Gate 2 (Build)    → NOT_RUN — شغّل: npm run launch:gate2
+Gate 3 (Quality)  → NOT_RUN — أكمل launch-config/quality.json
+Gate 4 (Finance)  → NOT_RUN — أكمل launch-config/finance.json
+Gate 5 (Marketing)→ NOT_RUN — أكمل launch-config/marketing.json
+Gate 6 (Audit)    → NOT_RUN — شغّل: npm run launch:gate6
+Gate 7 (Launch)   → NOT_RUN — بعد اجتياز Gates 1-6
+
+════════════════════════════════════════════════════════════
+END OF LOG — 2026-03-01
+════════════════════════════════════════════════════════════

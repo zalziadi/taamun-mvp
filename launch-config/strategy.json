@@ -1,0 +1,22 @@
+{
+  "_instructions": "أكمل جميع الحقول قبل تشغيل Gate 1. احذف حقل _instructions عند الانتهاء.",
+  "package_name": "",
+  "package_description": "",
+  "pricing": {
+    "amount": null,
+    "currency": "SAR",
+    "billing_cycle": "one-time"
+  },
+  "target_audience": "",
+  "kpi": {
+    "metric": "",
+    "target_value": null,
+    "timeframe_days": 30
+  },
+  "post_launch_plan_30_days": {
+    "week1": "",
+    "week2": "",
+    "week3": "",
+    "week4": ""
+  }
+}

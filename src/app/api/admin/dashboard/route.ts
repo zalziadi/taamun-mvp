@@ -28,7 +28,7 @@ export async function GET() {
   for (const row of answerRows) uniqueUsers.add(row.user_id);
   for (const row of progressRows) uniqueUsers.add(row.user_id);
 
-  const completed28 = progressRows.filter((row) => (row.completed_days ?? []).length >= 28).length;
+  const completed28 = progressRows.filter((row: { completed_days?: string[] }) => (row.completed_days ?? []).length >= 28).length;
   const weeklyInsights = awarenessRows.filter((row) => row.insight_type === "weekly").length;
   const finalInsights = awarenessRows.filter((row) => row.insight_type === "final").length;
 

@@ -1,0 +1,19 @@
+{
+  "_instructions": "أكمل جميع الحقول قبل تشغيل Gate 5.",
+  "package_description_professional": "",
+  "cta_text": "",
+  "landing_page_url": "",
+  "launch_message": "",
+  "week1_ad_plan": {
+    "platform": "",
+    "budget_sar": null,
+    "ad_format": "",
+    "target_segment": ""
+  },
+  "quality_checklist": {
+    "landing_page_complete": false,
+    "cta_visible_above_fold": false,
+    "mobile_responsive": false,
+    "rtl_correct": false
+  }
+}
