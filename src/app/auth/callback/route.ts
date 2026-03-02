@@ -1,27 +1,53 @@
 import { NextRequest, NextResponse } from "next/server";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
-
-const REDIRECT_PATH = "/day";
-
-function getSafeRedirect(next: string | null): string {
-  if (!next || typeof next !== "string") return REDIRECT_PATH;
-  const trimmed = next.trim();
-  if (!trimmed.startsWith("/") || trimmed.startsWith("//") || trimmed.includes(":")) {
-    return REDIRECT_PATH;
-  }
-  return trimmed;
-}
+import { createServerClient } from "@supabase/ssr";
+import { cookies } from "next/headers";
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const next = getSafeRedirect(searchParams.get("next"));
+  const token_hash = searchParams.get("token_hash");
+  const type = searchParams.get("type");
+  const next = searchParams.get("next") ?? "/program";
 
+  const safeNext =
+    next.startsWith("/") && !next.startsWith("//") && !next.includes(":")
+      ? next
+      : "/program";
+
+  const cookieStore = cookies();
+  const supabase = createServerClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
+    {
+      cookies: {
+        getAll() { return cookieStore.getAll(); },
+        setAll(cookiesToSet) {
+          try {
+            cookiesToSet.forEach(({ name, value, options }) =>
+              cookieStore.set(name, value, options)
+            );
+          } catch {}
+        },
+      },
+    }
+  );
+
+  // Magic link (email OTP)
+  if (token_hash && type) {
+    const { error } = await supabase.auth.verifyOtp({
+      token_hash,
+      type: type as "email" | "signup" | "invite" | "magiclink" | "recovery",
+    });
+    if (!error) {
+      return NextResponse.redirect(`${origin}${safeNext}`);
+    }
+  }
+
+  // OAuth / PKCE
   if (code) {
-    const supabase = await createSupabaseServerClient();
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      return NextResponse.redirect(`${origin}${next}`);
+      return NextResponse.redirect(`${origin}${safeNext}`);
     }
   }
 
