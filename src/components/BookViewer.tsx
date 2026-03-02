@@ -3,7 +3,7 @@
 import { useState, useEffect, useCallback } from "react";
 import { APP_NAME } from "@/lib/appConfig";
 
-const PDF_PATH = "/book/City_of_Meaning_Quran_AR_EN_v0.pdf";
+const PDF_PATH = "/book/city-of-meaning-quran.pdf";
 
 /** Simple in-app PDF viewer. Uses iframe with toolbar hidden. No extra deps. */
 export function BookViewer() {
