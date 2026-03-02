@@ -66,6 +66,9 @@ export default function RootLayout({
                 <Link href="/program" className="text-sm text-muted hover:text-text">
                   البرنامج
                 </Link>
+                <Link href="/book" className="text-sm text-muted hover:text-text">
+                  الكتيّب
+                </Link>
                 <NavAuth />
               </nav>
             </div>
