@@ -1,85 +1,14 @@
 import type { DayEntry, ProgressState } from "./types";
-import type { Entitlement, Phase } from "./types";
+import type { Phase } from "./types";
 import { APP_SLUG } from "@/lib/appConfig";
 
 const STORAGE_KEY = `${APP_SLUG}.progress.v1`;
 const ADMIN_KEY = `${APP_SLUG}.admin`;
-const ENTITLEMENT_KEY = `${APP_SLUG}.entitlement.v1`;
-export const USED_CODES_KEY = `${APP_SLUG}.activation.used.v1`;
-
-export function normalizeCode(raw: string): string {
-  return raw.trim().toUpperCase();
-}
-
-function loadStringArray(key: string): string[] {
-  if (typeof window === "undefined") return [];
-  try {
-    const raw = window.localStorage.getItem(key);
-    if (!raw) return [];
-    const parsed = JSON.parse(raw) as unknown;
-    if (!Array.isArray(parsed)) return [];
-    return parsed.filter((v): v is string => typeof v === "string").map(normalizeCode);
-  } catch {
-    return [];
-  }
-}
-
-function saveStringArray(key: string, arr: string[]): void {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.setItem(key, JSON.stringify(arr));
-  } catch {
-    // ignore
-  }
-}
-
-export function getUsedCodes(): string[] {
-  return loadStringArray(USED_CODES_KEY);
-}
-
-export function isCodeUsed(code: string): boolean {
-  const normalized = normalizeCode(code);
-  return getUsedCodes().includes(normalized);
-}
-
-export function markCodeUsed(code: string): void {
-  const normalized = normalizeCode(code);
-  const used = getUsedCodes();
-  if (used.includes(normalized)) return;
-  saveStringArray(USED_CODES_KEY, [...used, normalized]);
-}
-
-export function clearUsedCodes(): void {
-  saveStringArray(USED_CODES_KEY, []);
-}
 
 /** Returns true only if localStorage has app admin flag enabled. */
 export function isAdminEnabled(): boolean {
   if (typeof window === "undefined") return false;
   return window.localStorage.getItem(ADMIN_KEY) === "1";
-}
-
-export function getEntitlement(): Entitlement {
-  if (typeof window === "undefined") return "none";
-  const v = window.localStorage.getItem(ENTITLEMENT_KEY);
-  if (v === "pending" || v === "active") return v;
-  return "none";
-}
-
-export function setEntitlement(v: Entitlement): void {
-  if (typeof window === "undefined") return;
-  try {
-    window.localStorage.setItem(ENTITLEMENT_KEY, v);
-  } catch {
-    // ignore
-  }
-}
-
-/** Returns true if admin OR entitlement is pending or active */
-export function isEntitled(): boolean {
-  if (isAdminEnabled()) return true;
-  const e = getEntitlement();
-  return e === "pending" || e === "active";
 }
 
 const PHASES: Phase[] = ["shadow", "awareness", "contemplation"];

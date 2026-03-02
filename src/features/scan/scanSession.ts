@@ -56,3 +56,16 @@ export function buildQuickAyahSession(ayahText: string): QuickAyahSession {
   if (matchKeywords(t, KEYWORDS_Rizq)) return RIZQ;
   return FALLBACK;
 }
+
+// ── localStorage helpers ──────────────────────────────────────────────
+export const SCAN_AYAH_KEY = "tmn.scan.ayahText.v1";
+
+export function getScanAyahText(): string {
+  if (typeof window === "undefined") return "";
+  return window.localStorage.getItem(SCAN_AYAH_KEY) ?? "";
+}
+
+export function setScanAyahText(text: string): void {
+  if (typeof window === "undefined") return;
+  window.localStorage.setItem(SCAN_AYAH_KEY, text);
+}

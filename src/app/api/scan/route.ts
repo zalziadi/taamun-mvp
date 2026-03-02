@@ -18,60 +18,32 @@ function getVisionClient(): ImageAnnotatorClient | null {
 
 export async function POST(request: Request) {
   try {
+    // Require login but no plan check — scan is free for all users
     const auth = await requireUser();
     if (!auth.ok) return auth.response;
 
-    const { supabase, user } = auth;
-    const { data: entitlement, error: entitlementError } = await supabase
-      .from("entitlements")
-      .select("status, plan")
-      .eq("user_id", user.id)
-      .eq("status", "active")
-      .limit(1)
-      .maybeSingle();
-
-    if (entitlementError) {
-      return NextResponse.json({ ok: false, error: "تعذر التحقق من الاشتراك" }, { status: 500 });
-    }
-    if (!entitlement) {
-      return NextResponse.json({ ok: false, error: "الاشتراك غير مفعّل" }, { status: 403 });
-    }
-    if (String(entitlement.plan ?? "").toLowerCase() !== "plan820") {
-      return NextResponse.json({ ok: false, error: "باقة 820 مطلوبة" }, { status: 403 });
-    }
     const formData = await request.formData();
     const file = formData.get("image");
     if (!file || !(file instanceof Blob)) {
-      return NextResponse.json(
-        { ok: false, error: "صورة مطلوبة" },
-        { status: 400 }
-      );
+      return NextResponse.json({ ok: false, error: "صورة مطلوبة" }, { status: 400 });
     }
+
     const buffer = Buffer.from(await file.arrayBuffer());
     const client = getVisionClient();
     if (!client) {
-      return NextResponse.json(
-        { ok: false, error: "إعدادات OCR غير مكتملة" },
-        { status: 500 }
-      );
+      return NextResponse.json({ ok: false, error: "إعدادات OCR غير مكتملة" }, { status: 500 });
     }
-    const [result] = await client.documentTextDetection({
-      image: { content: buffer },
-    });
+
+    const [result] = await client.documentTextDetection({ image: { content: buffer } });
     const text = result.fullTextAnnotation?.text?.trim() ?? "";
     if (!text) {
-      return NextResponse.json(
-        { ok: false, error: "لم يُستخرج أي نص من الصورة" },
-        { status: 200 }
-      );
+      return NextResponse.json({ ok: false, error: "لم يُستخرج أي نص من الصورة" }, { status: 200 });
     }
+
     return NextResponse.json({ ok: true, text });
   } catch (err) {
     console.error("[scan] OCR error:", err);
     const message = err instanceof Error ? err.message : "خطأ غير متوقع";
-    return NextResponse.json(
-      { ok: false, error: message },
-      { status: 500 }
-    );
+    return NextResponse.json({ ok: false, error: message }, { status: 500 });
   }
 }

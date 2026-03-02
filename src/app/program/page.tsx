@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Card } from "@/components/ui";
-import { EntitlementGate } from "@/components/EntitlementGate";
+
 import { ProgramProgressBar } from "@/components/program/ProgramProgressBar";
 import { ProgramDaysGrid } from "@/components/program/ProgramDaysGrid";
 import { programDayRoute } from "@/lib/routes";
@@ -78,7 +78,7 @@ export default function ProgramPage() {
   }
 
   return (
-    <EntitlementGate>
+
       <div className="mx-auto max-w-[980px] space-y-6">
         <Card className="space-y-5 p-6">
           <h1 className="h1">برنامج 28 يوم</h1>
@@ -108,6 +108,6 @@ export default function ProgramPage() {
           />
         </Card>
       </div>
-    </EntitlementGate>
+
   );
 }

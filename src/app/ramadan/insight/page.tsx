@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import { Alert, Button, Card } from "@/components/ui";
 import { APP_NAME } from "@/lib/appConfig";
-import { EntitlementGate } from "@/components/EntitlementGate";
+
 
 type BaseInsight = {
   dominantPattern: string;
@@ -184,7 +184,7 @@ export default function RamadanInsightPage() {
   }, [finalState.insight, weeks]);
 
   return (
-    <EntitlementGate>
+
       <div className="mx-auto max-w-[1100px] space-y-6">
       <Card className="space-y-2 p-6">
         <h1 className="h1">{`رؤى ${APP_NAME}`}</h1>
@@ -215,7 +215,7 @@ export default function RamadanInsightPage() {
         )}
       </Card>
       </div>
-    </EntitlementGate>
+
   );
 }
 

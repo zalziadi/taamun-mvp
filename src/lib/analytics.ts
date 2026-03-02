@@ -1,9 +1,9 @@
 "use client";
 
 import posthog from "posthog-js";
-import { APP_CODE_PREFIX } from "@/lib/appConfig";
 
-const ANON_ID_KEY = `${APP_CODE_PREFIX}_ANON_ID`;
+
+const ANON_ID_KEY = "taamun_ANON_ID";
 let initialized = false;
 
 function getOrCreateAnonId(): string {

@@ -1,11 +1,7 @@
-"use client";
-
 import Link from "next/link";
-import { hasPlan820 } from "../features/scan";
 
-/** Renders premium links (e.g. scan) only when user has access */
+/** Quick navigation links shown on home page */
 export function HomeLinks() {
-  if (!hasPlan820()) return null;
   return (
     <Link
       href="/scan"

@@ -5,7 +5,7 @@ import Link from "next/link";
 import { Suspense } from "react";
 import { AppShell } from "../../../components/AppShell";
 import { RequireAuth } from "../../../components/RequireAuth";
-import { RequireEntitlement } from "../../../components/RequireEntitlement";
+
 
 const PDF_PATH = "/book/city-of-meaning-quran.pdf";
 const DEFAULT_PAGE = 3;
@@ -80,9 +80,7 @@ function PdfWrapper() {
 
   return (
     <RequireAuth next={next}>
-      <RequireEntitlement subscribeReason="reference_locked">
-        <PdfViewerContent />
-      </RequireEntitlement>
+      <PdfViewerContent />
     </RequireAuth>
   );
 }

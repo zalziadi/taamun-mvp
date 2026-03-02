@@ -5,7 +5,7 @@ import Link from "next/link";
 import { AppShell } from "@/components/AppShell";
 import { Alert, Button, Card } from "@/components/ui";
 import { APP_NAME } from "@/lib/appConfig";
-import { EntitlementGate } from "@/components/EntitlementGate";
+
 
 interface DayData {
   day: number;
@@ -101,7 +101,7 @@ export default function TaamunDayPage({ day }: { day: number }) {
 
   return (
     <AppShell title={`رحلة رمضان - اليوم ${day}`}>
-      <EntitlementGate>
+
         <div className="space-y-5">
         <Card className="space-y-4 p-5">
           <div className="flex items-center justify-between">
@@ -195,7 +195,7 @@ export default function TaamunDayPage({ day }: { day: number }) {
           </Card>
         ) : null}
         </div>
-      </EntitlementGate>
+
     </AppShell>
   );
 }

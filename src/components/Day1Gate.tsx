@@ -1,9 +1,9 @@
 "use client";
 
 import { useState, useCallback } from "react";
-import { APP_CODE_PREFIX, APP_NAME } from "@/lib/appConfig";
+import { APP_NAME } from "@/lib/appConfig";
 
-const DAY1_GATE_KEY = `${APP_CODE_PREFIX}_DAY1_GATE_V1`;
+const DAY1_GATE_KEY = "taamun_DAY1_GATE_V1";
 
 export interface Day1GateData {
   observed: string;

@@ -1,21 +1,13 @@
-import { getEntitlement } from "../../lib/storage";
-import { hasPlan820 } from "./scanStorage";
-import { ENTITLEMENT_HEADER, PLAN820_HEADER } from "@/lib/appConfig";
-
 /** Client helper: call OCR API and return extracted text */
 export async function ocrImage(file: File): Promise<{ text: string }> {
   const formData = new FormData();
   formData.append("image", file);
-  const headers: Record<string, string> = {};
-  if (typeof window !== "undefined") {
-    headers[ENTITLEMENT_HEADER] = getEntitlement();
-    headers[PLAN820_HEADER] = hasPlan820() ? "1" : "0";
-  }
+
   const res = await fetch("/api/scan", {
     method: "POST",
-    headers,
     body: formData,
   });
+
   if (res.status === 403) {
     const data = (await res.json()) as { ok?: boolean; error?: string };
     throw new Error(data.error ?? "غير مصرح");
