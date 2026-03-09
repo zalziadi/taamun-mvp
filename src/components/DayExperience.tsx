@@ -72,7 +72,7 @@ function BookQuote({ quote, chapter }: { quote: string; chapter: string }) {
   return (
     <div className="rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5">
       <p className="mb-3 text-sm uppercase tracking-widest text-amber-400/60">من الكتاب</p>
-      <p className="mb-2 text-base leading-loose text-amber-100/90">"{quote}"</p>
+      <p className="mb-2 text-base leading-loose text-amber-100/90">&ldquo;{quote}&rdquo;</p>
       <p className="text-xs text-amber-400/50">{chapter}</p>
     </div>
   );
