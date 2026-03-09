@@ -9,7 +9,6 @@ export async function GET(request: NextRequest) {
   const type = searchParams.get("type");
   const next = searchParams.get("next") ?? "/program";
 
-  // Validate redirect target
   const safeNext =
     next.startsWith("/") && !next.startsWith("//") && !next.includes(":")
       ? next
@@ -21,23 +20,19 @@ export async function GET(request: NextRequest) {
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
+        getAll() { return cookieStore.getAll(); },
         setAll(cookiesToSet) {
           try {
             cookiesToSet.forEach(({ name, value, options }) =>
               cookieStore.set(name, value, options)
             );
-          } catch {
-            // setAll called from Server Component — safe to ignore
-          }
+          } catch {}
         },
       },
     }
   );
 
-  // Magic link / OTP (token_hash + type)
+  // Magic link (email OTP)
   if (token_hash && type) {
     const { error } = await supabase.auth.verifyOtp({
       token_hash,
@@ -48,7 +43,7 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // OAuth / PKCE (code)
+  // OAuth / PKCE
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
@@ -56,6 +51,5 @@ export async function GET(request: NextRequest) {
     }
   }
 
-  // Auth failed — redirect to auth with error hint
   return NextResponse.redirect(`${origin}/auth?error=auth_failed`);
 }

@@ -11,10 +11,7 @@ if (typeof window !== "undefined" && process.env.NODE_ENV === "development") {
   }
 }
 
-// Use placeholder during build when env is missing (SSR/prerender); runtime uses real env in prod.
 const url = supabaseUrl || "https://placeholder.supabase.co";
 const key = supabaseAnonKey || "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.placeholder";
 
-// createBrowserClient (from @supabase/ssr) stores the PKCE code verifier in cookies,
-// so the server-side callback route can read it via exchangeCodeForSession.
 export const supabase = createBrowserClient(url, key);

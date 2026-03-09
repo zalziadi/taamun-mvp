@@ -2,8 +2,13 @@ import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { RAMADAN_PROGRAM_KEY } from "@/lib/appConfig";
+import { checkRateLimit } from "@/lib/rateLimiter";
 
 export const dynamic = "force-dynamic";
+
+// Rate limit: max 10 AI saves per user per hour
+const RATE_LIMIT = 10;
+const RATE_WINDOW_MS = 60 * 60 * 1000;
 
 const DEFAULT_PROGRAM_KEY = RAMADAN_PROGRAM_KEY;
 const DEFAULT_VERSION = 1;
@@ -147,6 +152,15 @@ export async function POST(req: Request) {
 
   if (!observeText && !insightText && !contemplateText && !rebuildText) {
     return NextResponse.json({ ok: false, error: "empty_payload" }, { status: 400 });
+  }
+
+  // Rate limit check
+  const rl = checkRateLimit(`save:${user.id}`, RATE_LIMIT, RATE_WINDOW_MS);
+  if (!rl.ok) {
+    return NextResponse.json(
+      { ok: false, error: "rate_limited", retryAfterMs: rl.retryAfterMs },
+      { status: 429 }
+    );
   }
 
   try {
