@@ -20,6 +20,13 @@ const config: Config = {
         gold2: "hsl(42 86% 45%)",
         danger: "hsl(0 72% 55%)",
         success: "hsl(142 70% 45%)",
+        // Journey / parchment palette
+        parchment: "#F5EFE4",
+        parchment2: "#EDE5D5",
+        ink: "#2A1D10",
+        ink2: "#4A3520",
+        ink3: "#7A6048",
+        breath: "#C9A96E",
       },
       boxShadow: {
         soft: "0 4px 14px 0 rgb(0 0 0 / 0.25)",
