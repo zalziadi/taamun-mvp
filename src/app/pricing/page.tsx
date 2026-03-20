@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
-  title: "باقات تمعّن — ابدأ رحلتك",
-  description: "اختر الباقة المناسبة لرحلتك مع تمعّن",
+  title: "عيديتك هذا العام مختلفة — تمعّن",
+  description: "مو كتاب تقرأه… ولا تطبيق تستخدمه… هذه رحلة يومية مع القرآن تغيّر طريقة عيشك. بـ 82 ريال فقط.",
 };
 
 const WHATSAPP = "966553930885";
@@ -75,10 +75,16 @@ export default function PricingPage() {
           تمعّن
         </p>
         <h1 className="text-4xl md:text-5xl font-bold mb-4 leading-tight">
-          ابدأ رحلتك اليوم
+          عيديتك هذا العام مختلفة 🎁
         </h1>
-        <p className="text-zinc-400 text-lg max-w-xl mx-auto">
-          اختر الباقة التي تناسبك — كل خطوة تبدأ بقرار واحد
+        <p className="text-zinc-400 text-lg max-w-xl mx-auto leading-8">
+          مو كتاب تقرأه… ولا تطبيق تستخدمه…
+          <br />
+          هذه رحلة يومية مع القرآن تغيّر طريقة عيشك.
+          <br />
+          <span className="text-white font-medium">
+            ابدأ اليوم مع &ldquo;مدينة المعنى&rdquo; + تطبيق تمعّن — بـ 82 ريال فقط
+          </span>
         </p>
       </div>
 
