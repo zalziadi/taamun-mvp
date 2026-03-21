@@ -320,9 +320,9 @@ function StepReflection({
 // ─── Step 6: مقياس الوعي ─────────────────────────────────────────────────────
 
 const AWARENESS_OPTIONS = [
-  { level: "present", label: "كنت حاضراً" },
-  { level: "tried", label: "حاولت" },
-  { level: "distracted", label: "كنت مشتتاً" },
+  { level: "shadow", label: "الظل" },
+  { level: "gift", label: "الهدية" },
+  { level: "best_possibility", label: "أفضل احتمال" },
 ] as const;
 
 function StepAwareness({
@@ -350,7 +350,7 @@ function StepAwareness({
     <StepShell visible={visible}>
       <div className="max-w-sm px-8 w-full space-y-8 text-center">
         <p className="text-xs tracking-widest text-ink3">مقياس الوعي</p>
-        <p className="text-xl text-ink">كيف كان حضورك اليوم؟</p>
+        <p className="text-xl text-ink">أين كان وعيك اليوم؟</p>
         <div className="flex flex-col gap-4">
           {AWARENESS_OPTIONS.map((opt) => (
             <button

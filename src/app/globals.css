@@ -1,4 +1,4 @@
-@import url("https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@400;500;600;700&family=Amiri:ital,wght@0,400;0,700;1,400&display=swap");
+@import url("https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap");
 
 @tailwind base;
 @tailwind components;
@@ -6,7 +6,8 @@
 
 @layer base {
   :root {
-    color-scheme: dark;
+    /* Light parchment UI — match browser form controls & scrollbars */
+    color-scheme: light;
   }
 
   html {
@@ -15,6 +16,15 @@
 
   body {
     @apply bg-bg text-text min-h-screen;
+    background-color: #f4f1ea;
+    background-image:
+      radial-gradient(circle at 20% 30%, rgba(140, 120, 81, 0.05) 0%, transparent 48%),
+      linear-gradient(to bottom, #f4f1ea 0%, #f7f3ec 100%);
+  }
+
+  ::selection {
+    background-color: rgba(140, 120, 81, 0.22);
+    color: #1f1a12;
   }
 
   .container {
@@ -52,7 +62,57 @@
   }
 
   .focus-ring {
-    @apply focus:outline-none focus:ring-2 focus:ring-gold focus:ring-offset-2 focus:ring-offset-bg;
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8c7851]/55 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f4f1ea];
+  }
+
+  /* Modern nav / text links — keyboard-visible focus, no layout shift */
+  .tm-nav-link {
+    @apply cursor-pointer rounded-md px-1.5 py-1 text-sm text-[#5f5648] outline-none transition-colors duration-200 ease-out hover:text-[#7b694a] focus-visible:ring-2 focus-visible:ring-[#8c7851]/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f4f1ea];
+  }
+
+  .tm-shell {
+    @apply mx-auto w-full max-w-[1180px] px-4 py-8 md:py-10;
+  }
+
+  .tm-heading {
+    font-family: "Amiri", serif;
+    @apply text-[#2f2619];
+  }
+
+  .tm-mono {
+    font-family: "IBM Plex Mono", monospace;
+  }
+
+  .tm-body {
+    font-family: "IBM Plex Sans Arabic", "Noto Sans Arabic", sans-serif;
+  }
+
+  .tm-glass {
+    @apply border border-[#c9bda8]/35 bg-[#fcfaf7]/65 backdrop-blur-xl;
+  }
+
+  .tm-card {
+    @apply rounded-3xl border border-[#d8cdb9] bg-[#fcfaf7] backdrop-blur-xl shadow-[0_16px_42px_rgba(140,120,81,0.12)] transition-[box-shadow,border-color] duration-300 ease-out;
+  }
+
+  .tm-card-interactive {
+    @apply tm-card hover:border-[#c4b59a]/90 hover:shadow-[0_20px_50px_rgba(140,120,81,0.16)];
+  }
+
+  .tm-subtle {
+    @apply text-[#5f5648]/85;
+  }
+
+  .tm-muted {
+    @apply text-[#7d7362];
+  }
+
+  .tm-gold-btn {
+    @apply cursor-pointer rounded-xl bg-[#7b694a] px-5 py-2.5 text-sm font-bold text-[#f4f1ea] shadow-sm transition-[background-color,box-shadow,transform,opacity] duration-200 ease-out hover:bg-[#6d5e44] hover:shadow-md active:translate-y-px disabled:pointer-events-none disabled:opacity-60;
+  }
+
+  .tm-ghost-btn {
+    @apply cursor-pointer rounded-xl border border-[#c9bda8]/55 bg-[#f6f1e8]/70 px-5 py-2.5 text-sm text-[#4e4637] transition-[border-color,background-color,color,box-shadow] duration-200 ease-out hover:border-[#8c7851]/40 hover:bg-[#f9f4eb] hover:text-[#7b694a] active:translate-y-px disabled:pointer-events-none disabled:opacity-60;
   }
 }
 
@@ -128,4 +188,42 @@
 }
 .breathe-circle {
   animation: breathe 4s ease-in-out infinite;
+}
+
+@keyframes breathe-gold {
+  0%,
+  100% {
+    transform: scale(1);
+    opacity: 0.52;
+  }
+  50% {
+    transform: scale(1.08);
+    opacity: 0.92;
+  }
+}
+
+.tm-breathe-gold {
+  animation: breathe-gold 6s ease-in-out infinite;
+}
+
+
+@media (prefers-reduced-motion: reduce) {
+  .tm-breathe-gold,
+  .breathe-circle {
+    animation: none !important;
+  }
+
+  .journey-step-visible,
+  .journey-step-exit {
+    transition: none !important;
+  }
+}
+
+.custom-scrollbar::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-scrollbar::-webkit-scrollbar-thumb {
+  background: rgba(140, 120, 81, 0.35);
+  border-radius: 999px;
 }

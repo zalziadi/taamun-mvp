@@ -8,7 +8,13 @@ const TOTAL_DAYS = 28;
 type ReflectionBody = {
   day?: number;
   note?: string;
+  surah?: string;
+  ayah?: number;
+  emotion?: string;
+  awareness_state?: string;
 };
+
+const AWARENESS_STATES = ["shadow", "gift", "best_possibility"] as const;
 
 /** GET /api/reflections — list all reflections for the current user */
 export async function GET() {
@@ -18,7 +24,7 @@ export async function GET() {
   const { supabase, user } = auth;
   const { data, error } = await supabase
     .from("reflections")
-    .select("id, day, note, created_at, updated_at")
+    .select("id, day, note, surah, ayah, emotion, awareness_state, created_at, updated_at")
     .eq("user_id", user.id)
     .order("day", { ascending: true });
 
@@ -47,6 +53,15 @@ export async function POST(req: Request) {
   }
 
   const note = String(body.note ?? "").slice(0, 5000);
+  const surah = String(body.surah ?? "").trim().slice(0, 120);
+  const ayahValue = Number(body.ayah);
+  const ayah = Number.isInteger(ayahValue) && ayahValue > 0 ? ayahValue : null;
+  const emotion = String(body.emotion ?? "").trim().slice(0, 120);
+  const awarenessState =
+    typeof body.awareness_state === "string" &&
+    AWARENESS_STATES.includes(body.awareness_state as (typeof AWARENESS_STATES)[number])
+      ? body.awareness_state
+      : null;
 
   const { supabase, user } = auth;
   const { error } = await supabase.from("reflections").upsert(
@@ -54,6 +69,10 @@ export async function POST(req: Request) {
       user_id: user.id,
       day,
       note,
+      surah: surah || null,
+      ayah,
+      emotion: emotion || null,
+      awareness_state: awarenessState,
       updated_at: new Date().toISOString(),
     },
     { onConflict: "user_id,day" }

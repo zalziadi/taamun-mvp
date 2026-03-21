@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/authz";
 import { APP_NAME } from "@/lib/appConfig";
 import { readUserProgress } from "@/lib/progressStore";
+import { isRamadanProgramClosed } from "@/lib/season";
 
 export const dynamic = "force-dynamic";
 
@@ -12,6 +13,10 @@ type Params = {
 };
 
 export async function GET(_: Request, { params }: Params) {
+  if (isRamadanProgramClosed()) {
+    return NextResponse.json({ ok: false, error: "season_closed" }, { status: 403 });
+  }
+
   const auth = await requireUser();
   if (!auth.ok) return auth.response;
 

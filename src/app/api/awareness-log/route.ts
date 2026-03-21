@@ -1,11 +1,27 @@
 import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/authz";
+import { isRamadanProgramClosed } from "@/lib/season";
 
 export const dynamic = "force-dynamic";
 
 const TOTAL_DAYS = 28;
-const VALID_LEVELS = ["present", "tried", "distracted"] as const;
+const VALID_LEVELS = [
+  "present",
+  "tried",
+  "distracted",
+  "shadow",
+  "gift",
+  "best_possibility",
+] as const;
 type AwarenessLevel = (typeof VALID_LEVELS)[number];
+const LEVEL_TO_DB: Record<AwarenessLevel, "present" | "tried" | "distracted"> = {
+  present: "present",
+  tried: "tried",
+  distracted: "distracted",
+  shadow: "distracted",
+  gift: "tried",
+  best_possibility: "present",
+};
 
 type AwarenessLogBody = {
   day?: number;
@@ -14,6 +30,10 @@ type AwarenessLogBody = {
 
 /** POST /api/awareness-log — save the daily awareness level for a user */
 export async function POST(req: Request) {
+  if (isRamadanProgramClosed()) {
+    return NextResponse.json({ ok: false, error: "season_closed" }, { status: 403 });
+  }
+
   const auth = await requireUser();
   if (!auth.ok) return auth.response;
 
@@ -37,7 +57,7 @@ export async function POST(req: Request) {
   const { supabase, user } = auth;
 
   const { error } = await supabase.from("awareness_logs").upsert(
-    { user_id: user.id, day, level },
+    { user_id: user.id, day, level: LEVEL_TO_DB[level] },
     { onConflict: "user_id,day" }
   );
 

@@ -22,7 +22,7 @@ export function LandingHero() {
         <div className="space-y-5">
           <Reveal>
             <div className="inline-flex items-center gap-2 rounded-full px-3 py-1 border border-[color:var(--glass-border)] bg-white/30 text-[12px] text-[color:var(--text-mid)]">
-              28 يومًا • رحلة رمضان
+              رحلة اكتشاف المعنى بلغة القرآن
             </div>
           </Reveal>
 

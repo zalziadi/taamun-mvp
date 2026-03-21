@@ -9,29 +9,64 @@ export async function GET() {
 
   const { supabase, user } = auth;
 
+  // Primary source: legacy program answers.
   const { data: answers, error: answersError } = await supabase
     .from("user_answers")
     .select("day, observe, insight, contemplate, rebuild, ai_reflection, updated_at")
     .eq("user_id", user.id)
     .order("day", { ascending: true });
 
-  if (answersError) {
-    return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 });
+  if (!answersError) {
+    const days = (answers ?? []).map((row) => ({
+      day: row.day,
+      observe: row.observe ?? "",
+      insight: row.insight ?? "",
+      contemplate: row.contemplate ?? "",
+      rebuild: row.rebuild ?? "",
+      ai_reflection: row.ai_reflection ?? "",
+      updated_at: row.updated_at,
+    }));
+
+    return NextResponse.json({
+      ok: true,
+      source: "user_answers",
+      total_entries: days.length,
+      days,
+    });
   }
 
-  const days = (answers ?? []).map((row) => ({
-    day: row.day,
-    observe: row.observe ?? "",
-    insight: row.insight ?? "",
-    contemplate: row.contemplate ?? "",
-    rebuild: row.rebuild ?? "",
-    ai_reflection: row.ai_reflection ?? "",
-    updated_at: row.updated_at,
-  }));
+  // Fallback source: current reflections table.
+  const { data: reflections, error: reflectionsError } = await supabase
+    .from("reflections")
+    .select("day, note, updated_at")
+    .eq("user_id", user.id)
+    .order("day", { ascending: true });
 
+  if (!reflectionsError) {
+    const days = (reflections ?? []).map((row) => ({
+      day: row.day,
+      observe: row.note ?? "",
+      insight: "",
+      contemplate: "",
+      rebuild: "",
+      ai_reflection: "",
+      updated_at: row.updated_at,
+    }));
+
+    return NextResponse.json({
+      ok: true,
+      source: "reflections",
+      total_entries: days.length,
+      days,
+    });
+  }
+
+  // Last fallback: keep journal page functional with empty payload.
   return NextResponse.json({
     ok: true,
-    total_entries: days.length,
-    days,
+    source: "empty_fallback",
+    total_entries: 0,
+    days: [],
+    warning: "history_unavailable",
   });
 }

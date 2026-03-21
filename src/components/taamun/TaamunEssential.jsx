@@ -97,7 +97,7 @@ function Gate({ onEnter }) {
       </h1>
 
       <p style={{ ...a(0.8), fontFamily: font, fontSize: "clamp(20px, 2.4vw, 24px)", color: quiet, fontStyle: "italic", marginTop: 16, marginBottom: 48 }}>
-        ٢٨ يوما في رحلة رمضان
+        رحلة اكتشاف المعنى بلغة القرآن
       </p>
 
       <button

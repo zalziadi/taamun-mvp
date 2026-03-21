@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { getAppOriginServer } from "@/lib/appOrigin";
+import { AdminRagIngestCard } from "@/components/admin/AdminRagIngestCard";
 
 interface DashboardResponse {
   ok: boolean;
@@ -76,6 +77,7 @@ export default async function AdminPage() {
         >
           تصدير CSV (الإجابات)
         </a>
+        <AdminRagIngestCard />
       </div>
     </div>
   );

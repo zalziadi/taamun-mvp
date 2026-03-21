@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/authz";
 import { ensureUserProgress, upsertUserProgress } from "@/lib/progressStore";
+import { isRamadanProgramClosed } from "@/lib/season";
 
 export const dynamic = "force-dynamic";
 
@@ -18,6 +19,10 @@ function normalizeCompletedDays(values: unknown): number[] {
 }
 
 export async function GET() {
+  if (isRamadanProgramClosed()) {
+    return NextResponse.json({ ok: false, error: "season_closed" }, { status: 403 });
+  }
+
   const auth = await requireUser();
   if (!auth.ok) return auth.response;
 
@@ -39,6 +44,10 @@ export async function GET() {
 }
 
 export async function POST(request: Request) {
+  if (isRamadanProgramClosed()) {
+    return NextResponse.json({ ok: false, error: "season_closed" }, { status: 403 });
+  }
+
   const auth = await requireUser();
   if (!auth.ok) return auth.response;
 
