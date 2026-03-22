@@ -15,12 +15,14 @@ export function getStripe(): Stripe {
   return _stripe;
 }
 
-export type CheckoutTier = "basic" | "full" | "support";
+export type CheckoutTier = "eid" | "monthly" | "yearly" | "vip" | "support";
 
 export function priceIdForTier(tier: CheckoutTier): string | undefined {
   const map: Record<CheckoutTier, string | undefined> = {
-    basic: process.env.STRIPE_PRICE_BASIC,
-    full: process.env.STRIPE_PRICE_FULL,
+    eid: process.env.STRIPE_PRICE_EID,
+    monthly: process.env.STRIPE_PRICE_MONTHLY,
+    yearly: process.env.STRIPE_PRICE_YEARLY,
+    vip: process.env.STRIPE_PRICE_VIP,
     support: process.env.STRIPE_PRICE_SUPPORT,
   };
   return map[tier];

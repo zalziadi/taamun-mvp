@@ -1,0 +1,112 @@
+# Taamun Project Rules — Cursor + OpenClaw (شاهين)
+
+هذا الملف هو القانون للإيجنت داخل Cursor/OpenClaw. مطابق لـ `CLAUDE.md`.
+
+## المشروع
+**Taamun (تمعّن)** — تطبيق ويب Next.js للتمعّن القرآني خلال 28 يوماً (رمضان).
+
+## القواعد الصارمة (NON-NEGOTIABLE)
+
+1. **Framework**: Next.js App Router فقط
+2. **Language**: TypeScript
+3. **Styling**: Tailwind (الموجود فقط، بدون مكتبات جديدة)
+4. **Direction**: RTL افتراضي (`html dir="rtl" lang="ar"`)
+5. **Storage**: LocalStorage (`taamun.progress.v1`) + Supabase (auth, بيانات المستخدمين)
+6. **Dependencies**: لا مكتبات جديدة إلا بإذن صريح من زياد
+7. **Breaking changes**: ممنوع التغييرات الصامتة المكسورة
+8. **Refactors**: ممنوع التبسيط/إعادة الهيكلة التخمينية
+
+## هيكل الملفات
+
+| المسار | الغرض |
+|--------|-------|
+| `CLAUDE.md` | قانون المشروع (للإيجنتات الأخرى) |
+| `.cursorrules` | قانون المشروع (هذا الملف — لـ Cursor/OpenClaw) |
+| `memory/MEMORY.md` | ذاكرة المشروع — أنماط Supabase والمشاكل المتكررة (**اقرأه**) |
+| `docs/plan.md` | حدود التنفيذ |
+| `docs/commands.md` | الأوامر المسموحة |
+| `docs/verify.md` | خطوات التحقق |
+| `docs/book.md` | قواعد اقتباس/تلخيص من الكتيّب |
+| `src/lib/*` | منطق فقط (لا JSX) |
+| `src/lib/supabase/*` | عملاء Supabase (server SSR) |
+| `src/components/*` | مكوّنات واجهة فقط |
+| `src/app/*` | التوجيه والصفحات فقط |
+| `scripts/*` | سكربتات الحماية والإطلاق |
+
+لا تخلط المسؤوليات.
+
+## التخزين
+
+### LocalStorage
+- المفتاح: `taamun.progress.v1`
+- داخل `"use client"` فقط
+- التعامل مع JSON فاسد بأمان
+
+### Supabase
+- **Auth**: Magic link (email OTP) فقط — لا password
+- **Browser client**: `src/lib/supabaseClient.ts`
+- **Server (SSR)**: `src/lib/supabase/server.ts` → `createSupabaseServerClient()`
+- **Admin**: `src/lib/supabaseServer.ts` → `getSupabaseAdmin()` بـ service role key
+
+## الدفع — Tap Payments
+- **Provider**: `src/lib/checkoutProvider.ts` — يختار Tap تلقائياً
+- **Tap lib**: `src/lib/tap.ts`
+- **Checkout API**: `src/app/api/checkout/route.ts`
+- **Webhook**: `src/app/api/tap/webhook/route.ts`
+- **Verify**: `src/app/api/tap/verify/route.ts`
+- **Tiers**: `eid` | `monthly` | `yearly` | `vip` | `support`
+- **التوثيق**: `docs/PAYMENTS.md`
+
+## التحقق الإجباري
+
+بعد **كل تعديل على أي ملف**، قبل الإعلان عن الانتهاء:
+
+```bash
+npx tsc --noEmit          # أولاً: TypeScript
+npm run build             # ثانياً: البناء الكامل
+```
+
+إذا فشل أحدهما → أصلحه فوراً.
+
+## قواعد السلامة
+
+1. **اقرأ أولاً** — لا تعدّل ملفاً لم تقرأه بالكامل
+2. **تغيير واحد في كل مرة** — لا تعدّل أكثر من ملفين في طلب واحد إلا عند الضرورة
+3. **أقل ما يمكن** — إذا طُلب تعديل سطر، عدّل سطراً فقط
+4. **checkpoint قبل التعديل الكبير** — `git add -A && git commit -m "chore: checkpoint"`
+5. **لا تحذف imports** — إلا إذا تأكدت أنها غير مستخدمة
+
+## الصفحات الحية (لا تكسرها)
+
+| المسار | الملف |
+|--------|-------|
+| `/` | `src/app/page.tsx` |
+| `/day` | `src/app/ramadan/day/page.tsx` |
+| `/book` | `src/app/book/page.tsx` |
+| `/auth` | `src/app/auth/page.tsx` |
+| `/auth/callback` | `src/app/auth/callback/route.ts` |
+| `/account` | `src/app/account/page.tsx` |
+| `/admin` | `src/app/admin/page.tsx` |
+| `/progress` | `src/app/progress/` |
+| `/city` | `src/app/city/` |
+| `/guide` | `src/app/guide/` |
+| `/journal` | `src/app/journal/` |
+| `/journey` | `src/app/journey/` |
+| `/reflection` | `src/app/reflection/` |
+| `/program` | `src/app/program/` |
+| `/pricing` | `src/app/pricing/` |
+
+## التنسيق مع الإيجنتات الأخرى
+
+- **Claude Code / Cowork**: المشرف — يقرأ `CLAUDE.md` + `memory/MEMORY.md`
+- **Cursor / OpenClaw (شاهين)**: المنفذ — يقرأ هذا الملف `.cursorrules`
+- **القواعد متطابقة** — لا تخالف `CLAUDE.md`
+- **عند التعارض**: `CLAUDE.md` هو المرجع
+- **Git**: لا تشغّل عمليات git طويلة تقفل HEAD — أنهِ الـ commit بسرعة
+
+## اللغة العربية
+
+- استخدم عربية فصحى واضحة
+- لا ترجمات حرفية
+- دقة نحوية
+- RTL دائماً

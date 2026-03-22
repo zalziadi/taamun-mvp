@@ -1,18 +1,42 @@
-# Rename this file to: .cursorignore
-# OpenClaw restricted scope: program + city system
+# .cursorignore — OpenClaw (شاهين) Access Scope
+# متزامن مع CLAUDE.md و .cursorrules
 
 # Deny everything by default
 *
 
-# Allow essential project metadata
+# ─── Project context (read-only awareness) ───
+!.cursorrules
+!CLAUDE.md
 !README.md
+!memory/MEMORY.md
 !package.json
 !tsconfig.json
 !next.config.ts
 !postcss.config.mjs
+!docs/**
 
-# Allow program feature pages and APIs
+# ─── App pages ───
+!src/app/page.tsx
+!src/app/layout.tsx
+!src/app/globals.css
+!src/app/error.tsx
+!src/app/not-found.tsx
 !src/app/program/**
+!src/app/city/**
+!src/app/guide/**
+!src/app/journal/**
+!src/app/journey/**
+!src/app/reflection/**
+!src/app/auth/**
+!src/app/account/**
+!src/app/admin/**
+!src/app/book/**
+!src/app/pricing/**
+!src/app/ramadan/**
+!src/app/progress/**
+!src/app/eid/**
+
+# ─── APIs ───
 !src/app/api/program/**
 !src/app/api/awareness-log/**
 !src/app/api/awareness-tracker/**
@@ -22,41 +46,30 @@
 !src/app/api/meaning-engine/**
 !src/app/api/journey/**
 !src/app/api/answers/**
+!src/app/api/checkout/**
+!src/app/api/tap/**
+!src/app/api/stripe/**
+!src/app/api/slack/**
+!src/app/api/admin/**
 
-# Allow current reflection/city pages
-!src/app/city/**
-!src/app/guide/**
-!src/app/journal/**
-!src/app/journey/**
-!src/app/reflection/**
-!src/app/auth/**
-!src/app/layout.tsx
-!src/app/globals.css
+# ─── Components ───
+!src/components/**
 
-# Allow shared components and required dependencies
-!src/components/program/**
-!src/components/EntitlementGate.tsx
-!src/components/ui/**
-!src/components/MobileBottomNav.tsx
-!src/components/journey/**
-!src/components/admin/**
-!src/lib/appConfig.ts
-!src/lib/routes.ts
-!src/lib/progressStore.ts
-!src/lib/whatsapp.ts
-!src/lib/supabaseClient.ts
-!src/lib/city-of-meaning.ts
-!src/lib/rag.ts
-!src/lib/season.ts
+# ─── Lib (logic) ───
+!src/lib/**
 
-# Allow migrations related to current deployed features
-!supabase/migrations/20260226012000_progress_table.sql
-!supabase/migrations/20260226013000_drop_legacy_user_progress.sql
-!supabase/migrations/20260310000000_reflection_rag_analytics.sql
+# ─── Scripts ───
+!scripts/**
 
-# Explicitly keep secrets blocked
+# ─── Supabase migrations ───
+!supabase/migrations/**
+
+# ─── Explicitly BLOCKED (secrets & infra) ───
 .env*
 **/*.pem
 **/credentials*
 **/*service_account*
 .vercel/**
+node_modules/**
+.next/**
+.git/**

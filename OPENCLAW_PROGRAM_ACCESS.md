@@ -1,70 +1,50 @@
-# OpenClaw Workspace Access (Merged)
+# OpenClaw (شاهين) — نطاق العمل
 
-This guide defines a safe OpenClaw scope for the currently deployed work:
-- Ramadan program module
-- City/Guide/Reflection/Journey/Journal experience
+> آخر تحديث: 2026-03-23
 
-## 1) Access Scope
+## الدور
+شاهين هو الإيجنت المنفذ داخل Cursor/OpenClaw. يعمل تحت إشراف Cowork (Claude).
 
-OpenClaw should be limited to these paths:
+## ملفات السياق — اقرأها أولاً
+1. **`.cursorrules`** — القانون الكامل (مطابق لـ CLAUDE.md)
+2. **`memory/MEMORY.md`** — أنماط Supabase والمشاكل المتكررة
+3. **`docs/PAYMENTS.md`** — توثيق بوابة الدفع (Tap)
 
-- `src/app/program/**`
-- `src/app/api/program/**`
-- `src/app/api/awareness-log/**`
-- `src/app/api/awareness-tracker/**`
-- `src/app/api/history/**`
-- `src/app/api/reflections/**`
-- `src/app/api/guide/**`
-- `src/app/api/meaning-engine/**`
-- `src/app/api/journey/**`
-- `src/app/api/answers/**`
-- `src/app/city/**`
-- `src/app/guide/**`
-- `src/app/journal/**`
-- `src/app/journey/**`
-- `src/app/reflection/**`
-- `src/app/auth/**`
-- `src/app/layout.tsx`
-- `src/app/globals.css`
-- `src/components/program/**`
-- `src/components/EntitlementGate.tsx`
-- `src/components/MobileBottomNav.tsx`
-- `src/components/journey/**`
-- `src/components/admin/**`
-- `src/components/ui/**`
-- `src/lib/appConfig.ts`
-- `src/lib/routes.ts`
-- `src/lib/progressStore.ts`
-- `src/lib/whatsapp.ts`
-- `src/lib/supabaseClient.ts`
-- `src/lib/city-of-meaning.ts`
-- `src/lib/rag.ts`
-- `src/lib/season.ts`
-- `supabase/migrations/20260226012000_progress_table.sql`
-- `supabase/migrations/20260226013000_drop_legacy_user_progress.sql`
-- `supabase/migrations/20260310000000_reflection_rag_analytics.sql`
+## نطاق الوصول
+محدد في `.cursorignore`. يشمل حالياً:
 
-## 2) Blocked Data
+- **كل صفحات التطبيق** (`src/app/**`)
+- **كل الـ APIs** (`src/app/api/**`)
+- **كل المكوّنات** (`src/components/**`)
+- **كل المنطق** (`src/lib/**`)
+- **الهجرات** (`supabase/migrations/**`)
+- **السكربتات** (`scripts/**`)
+- **التوثيق** (`docs/**`)
 
-Never expose:
+## ممنوع الوصول
+- `.env*` — الأسرار
+- `.vercel/**` — إعدادات النشر
+- `node_modules/**`
+- أي ملف يحتوي credentials أو مفاتيح
 
-- `.env*`
-- `SUPABASE_SERVICE_ROLE_KEY`
-- Any API keys or private credentials
-- `.vercel/**`
-- System/private files outside this project
+## التنسيق مع الإيجنتات
 
-## 3) Apply Restriction
+| الإيجنت | الملف المرجعي | الدور |
+|---------|---------------|-------|
+| **Cowork (Claude)** | `CLAUDE.md` | مشرف — يراجع ويخطط |
+| **شاهين (OpenClaw)** | `.cursorrules` | منفذ — يكتب الكود |
 
-1. Copy `cursorignore.template` to `.cursorignore` (or keep the generated `.cursorignore` in this repo).
-2. Reopen OpenClaw session after adding `.cursorignore`.
-3. Confirm OpenClaw can only read/edit files in the allowed scope.
+### قواعد التنسيق
+1. **لا تعارض** — `.cursorrules` مطابق لـ `CLAUDE.md`. عند الشك، `CLAUDE.md` هو المرجع
+2. **Git**: أنهِ الـ commit بسرعة — لا تترك `HEAD.lock` مفتوحاً
+3. **tsc + build**: شغّلهم بعد كل تعديل
+4. **لا تغيّر**: `.cursorrules` أو `CLAUDE.md` أو `memory/MEMORY.md` إلا بإذن من زياد
 
-## 4) Safe Prompt to Use
-
-Use this exact prompt when starting OpenClaw:
-
-> Work only on the allowed scope in `.cursorignore`.  
-> Do not access files outside the allowed scope in `.cursorignore`.  
-> Do not read or request secrets from `.env` files.  
-> Do not change authentication or billing keys.
+## البدء السريع
+```
+1. اقرأ .cursorrules
+2. اقرأ memory/MEMORY.md
+3. نفّذ المهمة المطلوبة
+4. شغّل: npx tsc --noEmit && npm run build
+5. commit بوصف واضح
+```

@@ -20,12 +20,20 @@ function getSecret(): string {
   return k;
 }
 
+const TAP_AMOUNT_MAP: Record<Exclude<CheckoutTier, "support">, string> = {
+  eid: "TAP_AMOUNT_EID",
+  monthly: "TAP_AMOUNT_MONTHLY",
+  yearly: "TAP_AMOUNT_YEARLY",
+  vip: "TAP_AMOUNT_VIP",
+};
+
 export function tapAmountForTier(tier: Exclude<CheckoutTier, "support">): number {
-  const raw = tier === "basic" ? process.env.TAP_AMOUNT_BASIC : process.env.TAP_AMOUNT_FULL;
-  if (!raw) throw new Error(`Missing TAP_AMOUNT_${tier.toUpperCase()}`);
+  const envKey = TAP_AMOUNT_MAP[tier];
+  const raw = process.env[envKey];
+  if (!raw) throw new Error(`Missing ${envKey}`);
   const n = Number.parseFloat(raw);
   if (!Number.isFinite(n) || n <= 0) {
-    throw new Error(`Invalid TAP_AMOUNT_${tier.toUpperCase()}`);
+    throw new Error(`Invalid ${envKey}`);
   }
   return n;
 }

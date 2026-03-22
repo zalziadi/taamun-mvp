@@ -7,7 +7,7 @@ import { getStripe, priceIdForTier, type CheckoutTier } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
 
-const VALID_TIERS: CheckoutTier[] = ["basic", "full", "support"];
+const VALID_TIERS: CheckoutTier[] = ["eid", "monthly", "yearly", "vip", "support"];
 
 export async function POST(req: Request) {
   const auth = await requireUser();
@@ -20,7 +20,7 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "invalid_json" }, { status: 400 });
   }
 
-  const tier = (body.tier ?? "full") as CheckoutTier;
+  const tier = (body.tier ?? "monthly") as CheckoutTier;
   if (!VALID_TIERS.includes(tier)) {
     return NextResponse.json({ ok: false, error: "invalid_tier" }, { status: 400 });
   }
@@ -47,13 +47,13 @@ export async function POST(req: Request) {
         { status: 503 }
       );
     }
-    if (!process.env.TAP_AMOUNT_BASIC?.trim() || !process.env.TAP_AMOUNT_FULL?.trim()) {
+    if (!process.env.TAP_AMOUNT_MONTHLY?.trim()) {
       return NextResponse.json(
         {
           ok: false,
           error: "tap_amounts_missing",
           provider: "tap" as const,
-          hint: "TAP_AMOUNT_BASIC,TAP_AMOUNT_FULL",
+          hint: "TAP_AMOUNT_EID,TAP_AMOUNT_MONTHLY,TAP_AMOUNT_YEARLY,TAP_AMOUNT_VIP",
         },
         { status: 503 }
       );

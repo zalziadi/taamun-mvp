@@ -7,41 +7,55 @@ import { useRouter } from "next/navigation";
 const SESSION_KEY = "taamun_pricing_eid_welcome_v1";
 
 type TierDef = {
-  tierId: "basic" | "full" | "support";
+  tierId: "eid" | "monthly" | "yearly" | "vip" | "support";
   name: string;
   price: string;
+  period: string;
   note: string;
   feats: string[];
   highlight?: boolean;
-  /** If false, no Stripe price — show contact CTA */
-  stripe: boolean;
+  badge?: string;
+  checkout: boolean;
 };
 
 const TIERS: TierDef[] = [
   {
-    tierId: "basic",
-    name: "أساسي",
-    price: "—",
-    note: "مناسب للبداية",
+    tierId: "eid",
+    name: "عيدية التمعّن",
+    price: "28",
+    period: "شهر واحد",
+    note: "عرض خاص بمناسبة العيد",
+    badge: "عرض العيد",
     feats: ["الوصول لصفحة التأمل", "الدفتر الشخصي", "مصادر القرآن"],
-    stripe: true,
+    checkout: true,
   },
   {
-    tierId: "full",
-    name: "كامل",
-    price: "—",
-    note: "الأكثر طلبًا",
-    feats: ["كل ميزات الأساسي", "المدينة التفاعلية", "المرشد الذكي", "تحليلات الرحلة"],
+    tierId: "monthly",
+    name: "شهري",
+    price: "82",
+    period: "شهريًا",
+    note: "الأكثر مرونة",
+    feats: ["كل ميزات التمعّن", "المدينة التفاعلية", "المرشد الذكي", "تحليلات الرحلة"],
+    checkout: true,
+  },
+  {
+    tierId: "yearly",
+    name: "سنوي",
+    price: "820",
+    period: "سنويًا",
+    note: "الأكثر توفيرًا",
     highlight: true,
-    stripe: true,
+    feats: ["كل ميزات الشهري", "توفير شهرين", "أولوية في الدعم"],
+    checkout: true,
   },
   {
-    tierId: "support",
-    name: "دعم خاص",
-    price: "تواصل",
-    note: "للجهات والمجموعات",
-    feats: ["تنسيق محتوى مخصص", "دعم فني مباشر", "تفعيل جماعي"],
-    stripe: false,
+    tierId: "vip",
+    name: "VIP",
+    price: "8,200",
+    period: "سنويًا",
+    note: "للجادين في رحلتهم",
+    feats: ["كل ميزات السنوي", "جلسات تمعّن خاصة", "دعم مباشر ومخصص", "محتوى حصري"],
+    checkout: true,
   },
 ];
 
@@ -49,7 +63,7 @@ function SubscribeButton({
   tierId,
   highlight,
 }: {
-  tierId: "basic" | "full";
+  tierId: "eid" | "monthly" | "yearly" | "vip";
   highlight?: boolean;
 }) {
   const router = useRouter();
@@ -77,15 +91,11 @@ function SubscribeButton({
           hint?: string;
         };
         if (d.error === "tap_not_configured" || d.error === "tap_amounts_missing") {
-          setErr(
-            "الدفع عبر Tap غير مكتمل: أضف في Vercel → Environment Variables القيم TAP_SECRET_KEY وTAP_AMOUNT_BASIC وTAP_AMOUNT_FULL (ومثلاً TAP_CURRENCY=SAR)."
-          );
+          setErr("بوابة الدفع غير مهيأة بعد. يرجى المحاولة لاحقًا.");
         } else if (d.error === "tap_checkout_failed") {
-          setErr("تعذر بدء الدفع عبر Tap. راجع مفتاح Tap والمبالغ وTAP_CUSTOMER_PHONE في إعدادات الخادم.");
+          setErr("تعذر بدء الدفع. يرجى المحاولة لاحقًا.");
         } else if (d.error === "price_not_configured" || d.error === "stripe_not_configured") {
-          setErr(
-            "الدفع عبر Stripe غير مهيأ: أضف STRIPE_SECRET_KEY وSTRIPE_PRICE_BASIC وSTRIPE_PRICE_FULL في Vercel. أو استخدم Tap بضبط PAYMENT_PROVIDER=tap والمتغيرات أعلاه."
-          );
+          setErr("بوابة الدفع غير مهيأة بعد. يرجى المحاولة لاحقًا.");
         } else {
           setErr("تعذر بدء الدفع. حاول لاحقًا.");
         }
@@ -115,7 +125,7 @@ function SubscribeButton({
       </button>
       {err ? <p className="text-center text-xs text-[#9b5548]">{err}</p> : null}
       <p className="text-center text-[10px] text-[#a09480]">
-        يتطلب تسجيل الدخول. الدفع يتم عبر Tap أو Stripe حسب إعداد الخادم (انظر docs/PAYMENTS.md).
+        يتطلب تسجيل الدخول. الدفع يتم عبر بوابة Tap الآمنة.
       </p>
     </div>
   );
@@ -156,8 +166,6 @@ export default function PricingExperience({ forceEidWelcome = false }: { forceEi
       </div>
     );
   }
-
-  const salesEmail = process.env.NEXT_PUBLIC_SALES_EMAIL ?? "";
 
   return (
     <>
@@ -219,21 +227,12 @@ export default function PricingExperience({ forceEidWelcome = false }: { forceEi
           <p className="tm-mono text-xs tracking-[0.18em] text-[#8c7851]">PRICING</p>
           <h2 className="tm-heading mt-2 text-4xl text-[#2f2619]">الأسعار والاشتراك</h2>
           <p className="mt-3 max-w-[720px] text-sm leading-relaxed text-[#5f5648]/85">
-            ادفع بأمان عبر Stripe بعد تسجيل الدخول. الباقات <span className="font-semibold">أساسي</span> و{" "}
-            <span className="font-semibold">كامل</span> اشتراك شهري. باقة <span className="font-semibold">دعم خاص</span>{" "}
-            عبر التواصل المباشر.
+            ادفع بأمان عبر بوابة Tap بعد تسجيل الدخول. اختر الباقة المناسبة لرحلتك مع التمعّن.
           </p>
           <p className="mt-3 max-w-[720px] rounded-xl border border-[#d8cdb9]/80 bg-[#fcfaf7]/90 px-4 py-3 text-xs leading-relaxed text-[#5f5648]/90">
-            <span className="font-semibold text-[#7b694a]">للمستخدمين في السعودية:</span> صفحة الدفع الحالية (Stripe) تدعم بطاقات{" "}
-            <span className="font-medium">فيزا وماستركارد</span> و<span className="font-medium">مدى</span> عند تفعيلها في
-            إعدادات Stripe، كما يمكن ظهور <span className="font-medium">Apple Pay</span> و<span className="font-medium">Google Pay</span>{" "}
-            على الأجهزة والمتصفحات المدعومة. المبلغ يُعرض بالريال السعودي حسب إعداد الأسعار في لوحة التحكم.
-          </p>
-          <p className="mt-2 max-w-[720px] rounded-xl border border-[#cdb98f]/50 bg-[#f7f2e8]/80 px-4 py-3 text-xs leading-relaxed text-[#5f5648]/90">
-            <span className="font-semibold text-[#7b694a]">STC Pay وتابي وتمارا:</span> تُفعّل عادةً عبر{" "}
-            <span className="font-medium">بوابة سعودية</span> (مثل Tap) أو تكاملات مباشرة مع كل مزود — وليست جميعها داخل Stripe
-            بنفس الشاشة. عند ربط Tap أو تابي أو تمارا أو STC Pay للإنتاج، يمكن إضافة أزرار دفع إضافية تتزامن مع اشتراكك (راجع{" "}
-            <span className="font-medium">docs/PAYMENTS.md</span>).
+            الدفع يتم عبر بوابة <span className="font-semibold text-[#7b694a]">Tap</span> المحلية — يدعم بطاقات{" "}
+            <span className="font-medium">مدى</span> و<span className="font-medium">فيزا</span> و<span className="font-medium">ماستركارد</span>{" "}
+            و<span className="font-medium">Apple Pay</span> حسب إعدادات حسابك. المبلغ بالريال السعودي.
           </p>
           <button
             type="button"
@@ -244,7 +243,7 @@ export default function PricingExperience({ forceEidWelcome = false }: { forceEi
           </button>
         </section>
 
-        <section className="grid gap-5 md:grid-cols-3">
+        <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {TIERS.map((tier) => (
             <article
               key={tier.tierId}
@@ -259,10 +258,15 @@ export default function PricingExperience({ forceEidWelcome = false }: { forceEi
                   موصى به
                 </span>
               ) : null}
+              {tier.badge ? (
+                <span className="absolute left-4 top-4 rounded-full border border-[#c9a96e] bg-[#fdf6e3] px-2.5 py-0.5 text-[10px] font-semibold text-[#8c7851]">
+                  {tier.badge}
+                </span>
+              ) : null}
               <h3 className="tm-heading text-2xl text-[#5a4531]">{tier.name}</h3>
               <p className="mt-1 text-xs text-[#7d7362]">{tier.note}</p>
-              <p className="mt-4 text-3xl font-bold text-[#2f2619]">{tier.price}</p>
-              <p className="text-xs text-[#8c7851]">الريال السعودي / شهريًا (يحدد في Stripe)</p>
+              <p className="mt-4 text-3xl font-bold text-[#2f2619]">{tier.price} <span className="text-base font-normal">ر.س</span></p>
+              <p className="text-xs text-[#8c7851]">{tier.period}</p>
               <ul className="mt-5 space-y-2 text-sm text-[#5f5648]">
                 {tier.feats.map((f) => (
                   <li key={f} className="flex items-start gap-2">
@@ -271,24 +275,9 @@ export default function PricingExperience({ forceEidWelcome = false }: { forceEi
                   </li>
                 ))}
               </ul>
-              {tier.stripe ? (
-                <SubscribeButton tierId={tier.tierId as "basic" | "full"} highlight={tier.highlight} />
-              ) : (
-                <div className="mt-6">
-                  {salesEmail ? (
-                    <a
-                      href={`mailto:${salesEmail}?subject=${encodeURIComponent("استفسار باقة دعم خاص — تمَعُّن")}`}
-                      className="block w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] py-3 text-center text-sm font-semibold text-[#4e4637] transition duration-200 hover:border-[#8c7851]/40"
-                    >
-                      تواصل معنا
-                    </a>
-                  ) : (
-                    <p className="text-center text-xs text-[#7d7362]">
-                      عيّن <code className="rounded bg-[#f1e7d4] px-1">NEXT_PUBLIC_SALES_EMAIL</code> لزر التواصل.
-                    </p>
-                  )}
-                </div>
-              )}
+              {tier.checkout ? (
+                <SubscribeButton tierId={tier.tierId as "eid" | "monthly" | "yearly" | "vip"} highlight={tier.highlight} />
+              ) : null}
             </article>
           ))}
         </section>

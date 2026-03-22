@@ -21,7 +21,8 @@ export async function upsertSubscriptionFromTapCharge(
   const currency = (charge.currency ?? "SAR").toUpperCase();
   const priceId = `${currency}:${formatTapAmount(amount, currency)}`;
 
-  const periodEnd = addDays(new Date(), 30).toISOString();
+  const periodDays = tier === "yearly" || tier === "vip" ? 365 : 30;
+  const periodEnd = addDays(new Date(), periodDays).toISOString();
 
   const statusNormalized = charge.status === "CAPTURED" ? "active" : "inactive";
 

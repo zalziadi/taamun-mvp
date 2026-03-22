@@ -11,6 +11,6 @@ export function getCheckoutProvider(): CheckoutProvider {
   if (explicit === "stripe") return "stripe";
   // إن وُجد مفتاح Tap نفضّل مسار Tap (حتى لو ناقصة المبالغ — نُرجع خطأ واضح من الـ API)
   if (process.env.TAP_SECRET_KEY) return "tap";
-  if (process.env.TAP_AMOUNT_BASIC && process.env.TAP_AMOUNT_FULL) return "tap";
+  if (process.env.TAP_AMOUNT_MONTHLY) return "tap";
   return "stripe";
 }

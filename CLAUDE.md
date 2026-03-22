@@ -13,7 +13,7 @@
 | 2 | **Language**: TypeScript |
 | 3 | **Styling**: Tailwind (الموجود فقط، بدون مكتبات جديدة) |
 | 4 | **Direction**: RTL افتراضي (`html dir="rtl" lang="ar"`) |
-| 5 | **Storage**: LocalStorage فقط — المفتاح: `taamun.progress.v1` |
+| 5 | **Storage**: LocalStorage (`taamun.progress.v1`) + Supabase (auth, بيانات المستخدمين) |
 | 6 | **Dependencies**: لا مكتبات جديدة إلا بإذن صريح |
 | 7 | **Breaking changes**: ممنوع التغييرات الصامتة المكسورة |
 | 8 | **Refactors**: ممنوع التبسيط/إعادة الهيكلة التخمينية |
@@ -23,20 +23,30 @@
 | المسار | الغرض |
 |--------|-------|
 | `CLAUDE.md` | قانون المشروع (هذا الملف) |
+| `memory/MEMORY.md` | ذاكرة المشروع — أنماط Supabase والمشاكل المتكررة (اقرأه) |
 | `docs/plan.md` | حدود التنفيذ |
 | `docs/commands.md` | الأوامر المسموحة |
 | `docs/verify.md` | خطوات التحقق |
 | `docs/book.md` | قواعد اقتباس/تلخيص من الكتيّب |
 | `src/lib/*` | منطق فقط (لا JSX) |
+| `src/lib/supabase/*` | عملاء Supabase (server SSR) |
 | `src/components/*` | مكوّنات واجهة فقط |
 | `src/app/*` | التوجيه والصفحات فقط |
+| `scripts/*` | سكربتات الحماية والإطلاق |
 
 لا تخلط المسؤوليات.
 
-## التخزين المحلي
+## التخزين
+### LocalStorage
 - المفتاح الثابت: `taamun.progress.v1`
-- الوصول لـ LocalStorage داخل مكوّنات Client فقط (`"use client"`)
+- الوصول داخل مكوّنات Client فقط (`"use client"`)
 - التعامل مع JSON فاسد بأمان (إرجاع state فارغ)
+
+### Supabase
+- **Auth**: Magic link (email OTP) فقط — لا password
+- **Browser client**: `src/lib/supabaseClient.ts`
+- **Server (SSR)**: `src/lib/supabase/server.ts` → `createSupabaseServerClient()`
+- **Admin**: `src/lib/supabaseServer.ts` → `getSupabaseAdmin()` بـ service role key
 
 ## التحقق الإجباري — حلقة ذاتية
 بعد **كل تعديل على أي ملف**، قبل الإعلان عن الانتهاء:
@@ -63,12 +73,28 @@ npm run guard:release     # brand + runtime + metadata + tsc + build
 | S5 | **لا تحذف imports** — إلا إذا تأكدت أنها غير مستخدمة في كل الملفات |
 
 ## الصفحات الحية (لا تكسرها)
-`/` و `/day` و `/progress` و `/subscribe` و `/book`
+| المسار | الملف |
+|--------|-------|
+| `/` | `src/app/page.tsx` |
+| `/day` | `src/app/ramadan/day/page.tsx` |
+| `/book` | `src/app/book/page.tsx` |
+| `/auth` | `src/app/auth/page.tsx` |
+| `/auth/callback` | `src/app/auth/callback/route.ts` |
+| `/account` | `src/app/account/page.tsx` |
+| `/admin` | `src/app/admin/page.tsx` |
+| `/progress` | `src/app/progress/` |
+| `/city` | `src/app/city/` |
+| `/guide` | `src/app/guide/` |
+| `/journal` | `src/app/journal/` |
+| `/journey` | `src/app/journey/` |
+| `/reflection` | `src/app/reflection/` |
+| `/program` | `src/app/program/` |
+| `/pricing` | `src/app/pricing/` |
 
 ---
 
 ## Claude Code (كلاود كود)
 
-- دليل الربط: **`docs/CLAUDE_CODE_SETUP.md`**
-- من جذر المشروع شغّل **`claude`** بعد تثبيت [Claude Code](https://claude.ai/code).
 - المستودع: `git@github.com:zalziadi/taamun-mvp.git`
+- عند فتح المشروع اقرأ هذا الملف + `memory/MEMORY.md` للسياق الكامل
+- دليل التثبيت للمطوّر: `docs/CLAUDE_CODE_SETUP.md`
