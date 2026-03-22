@@ -64,3 +64,11 @@ npm run guard:release     # brand + runtime + metadata + tsc + build
 
 ## الصفحات الحية (لا تكسرها)
 `/` و `/day` و `/progress` و `/subscribe` و `/book`
+
+---
+
+## Claude Code (كلاود كود)
+
+- دليل الربط: **`docs/CLAUDE_CODE_SETUP.md`**
+- من جذر المشروع شغّل **`claude`** بعد تثبيت [Claude Code](https://claude.ai/code).
+- المستودع: `git@github.com:zalziadi/taamun-mvp.git`
