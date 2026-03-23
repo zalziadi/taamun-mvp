@@ -479,6 +479,7 @@ export async function POST(req: Request) {
   let mode: "rag" | "fallback" = "fallback";
 
   // Try RAG path
+  let debugError: string | null = null;
   try {
     const embedding = await embedText(message);
     const { data, error } = await admin.rpc("match_book_chunks", {
@@ -495,12 +496,19 @@ export async function POST(req: Request) {
     } else {
       // No RAG data — still use Claude with soul context
       reply = await completeWithContext(message, [], systemPrompt, conversationHistory);
+      mode = "rag";
     }
-  } catch {
-    // If Claude/embedding fails entirely, use deterministic fallback
+  } catch (err1) {
+    const msg1 = err1 instanceof Error ? err1.message : String(err1);
+    console.error("[guide/chat] RAG/embed failed:", msg1);
+    // If Claude/embedding fails entirely, try Claude alone
     try {
       reply = await completeWithContext(message, [], systemPrompt, conversationHistory);
-    } catch {
+      mode = "rag";
+    } catch (err2) {
+      const msg2 = err2 instanceof Error ? err2.message : String(err2);
+      console.error("[guide/chat] Claude fallback failed:", msg2);
+      debugError = `embed: ${msg1} | claude: ${msg2}`;
       reply = buildFallbackAnswer(message);
     }
   }
@@ -521,5 +529,6 @@ export async function POST(req: Request) {
     reply,
     mode,
     sessionId: session.id,
+    ...(debugError ? { debugError } : {}),
   });
 }
