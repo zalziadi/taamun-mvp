@@ -2,7 +2,7 @@ import { readFile } from "node:fs/promises";
 import path from "node:path";
 
 const DEFAULT_EMBEDDING_MODEL = process.env.OPENAI_EMBEDDING_MODEL ?? "text-embedding-3-small";
-const DEFAULT_CHAT_MODEL = process.env.OPENAI_CHAT_MODEL ?? "gpt-4o-mini";
+const DEFAULT_CLAUDE_MODEL = process.env.ANTHROPIC_CHAT_MODEL ?? "claude-sonnet-4-20250514";
 
 export type BookChunk = {
   source: string;
@@ -67,6 +67,8 @@ export function chunkText(source: string, text: string, targetSize = 900): BookC
   return chunks;
 }
 
+/* ── OpenAI (embeddings only) ────────────────────── */
+
 async function openAIRequest<T>(endpoint: string, payload: Record<string, unknown>): Promise<T> {
   const apiKey = process.env.OPENAI_API_KEY;
   if (!apiKey) {
@@ -102,31 +104,107 @@ export async function embedText(input: string): Promise<number[]> {
   return data.data[0]?.embedding ?? [];
 }
 
-type ChatResponse = {
-  choices?: Array<{ message?: { content?: string } }>;
+/* ── Claude API (chat completions) ───────────────── */
+
+export type ChatMessage = { role: "user" | "assistant"; content: string };
+
+type ClaudeResponse = {
+  content?: Array<{ type: string; text?: string }>;
 };
+
+async function claudeRequest(
+  systemPrompt: string,
+  messages: ChatMessage[],
+  maxTokens = 512
+): Promise<string> {
+  const apiKey = process.env.ANTHROPIC_API_KEY;
+  if (!apiKey) {
+    throw new Error("missing_anthropic_api_key");
+  }
+
+  const res = await fetch("https://api.anthropic.com/v1/messages", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      "x-api-key": apiKey,
+      "anthropic-version": "2023-06-01",
+    },
+    body: JSON.stringify({
+      model: DEFAULT_CLAUDE_MODEL,
+      max_tokens: maxTokens,
+      system: systemPrompt,
+      messages: messages.map((m) => ({ role: m.role, content: m.content })),
+    }),
+  });
+
+  if (!res.ok) {
+    const message = await res.text();
+    throw new Error(`claude_failed:${res.status}:${message.slice(0, 200)}`);
+  }
+
+  const data = (await res.json()) as ClaudeResponse;
+  const textBlock = data.content?.find((b) => b.type === "text");
+  return textBlock?.text?.trim() ?? "";
+}
+
+/* ── Main completion function ────────────────────── */
 
 export async function completeWithContext(
   question: string,
   contextChunks: string[],
-  systemPrompt: string
+  systemPrompt: string,
+  conversationHistory?: ChatMessage[]
 ): Promise<string> {
   const context = contextChunks.map((chunk, i) => `مقتطف ${i + 1}:\n${chunk}`).join("\n\n");
 
-  const data = await openAIRequest<ChatResponse>("chat/completions", {
-    model: DEFAULT_CHAT_MODEL,
-    temperature: 0.3,
-    messages: [
-      { role: "system", content: systemPrompt },
-      {
-        role: "user",
-        content: `السؤال:\n${question}\n\nالمراجع من الكتاب:\n${context}`,
-      },
-    ],
+  const messages: ChatMessage[] = [];
+
+  // Inject conversation history (last 10 exchanges max)
+  if (conversationHistory && conversationHistory.length > 0) {
+    const recent = conversationHistory.slice(-20);
+    for (const msg of recent) {
+      messages.push({ role: msg.role, content: msg.content });
+    }
+  }
+
+  messages.push({
+    role: "user",
+    content: context
+      ? `${question}\n\nالمراجع من الكتاب:\n${context}`
+      : question,
   });
 
-  return (
-    data.choices?.[0]?.message?.content?.trim() ??
-    "تعذر تكوين جواب الآن. حاول إعادة صياغة السؤال."
-  );
+  const reply = await claudeRequest(systemPrompt, messages);
+
+  return reply || "تعذر تكوين جواب الآن. حاول إعادة صياغة السؤال.";
+}
+
+/* ── Soul summary generation ─────────────────────── */
+
+export async function generateSoulSummary(
+  existingSummary: string,
+  recentMessages: ChatMessage[]
+): Promise<string> {
+  const systemPrompt = `أنت محلل سلوكي صامت. مهمتك تحديث ملخص شخصية المشترك بناءً على المحادثة الجديدة.
+
+القواعد:
+- اكتب بصيغة الغائب ("يميل إلى..."، "يظهر عنده نمط...")
+- ركّز على: الأنماط المتكررة، المشاعر السائدة، المواضيع المهمة، نقاط القوة والتحديات
+- حدّث الملخص الموجود — لا تبدأ من الصفر. أضف الجديد واحذف ما لم يعد دقيقاً
+- الحد الأقصى: 300 كلمة
+- لا تذكر أرقام أيام أو تواريخ محددة
+- اكتب بعربية فصيحة واضحة`;
+
+  const conversationText = recentMessages
+    .map((m) => `${m.role === "user" ? "المشترك" : "المرشد"}: ${m.content}`)
+    .join("\n");
+
+  const messages: ChatMessage[] = [
+    {
+      role: "user",
+      content: `الملخص الحالي:\n${existingSummary || "(لا يوجد ملخص سابق)"}\n\nالمحادثة الجديدة:\n${conversationText}\n\nحدّث الملخص:`,
+    },
+  ];
+
+  return claudeRequest(systemPrompt, messages, 600);
 }

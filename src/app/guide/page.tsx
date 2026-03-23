@@ -1,6 +1,6 @@
 "use client";
 
-import { FormEvent, useState } from "react";
+import { FormEvent, useCallback, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
 type Message = {
@@ -13,9 +13,16 @@ type ChatPayload = {
   ok?: boolean;
   reply?: string;
   mode?: "rag" | "fallback";
+  sessionId?: string;
 };
 
-const QUICK_PROMPTS = [
+type PromptsPayload = {
+  ok?: boolean;
+  prompts?: string[];
+  day?: number;
+};
+
+const DEFAULT_PROMPTS = [
   "كيف أتحول من الظل إلى الهدية في موقف متكرر؟",
   "كيف أعيش أفضل احتمال اليوم بشكل عملي؟",
   "أعطني تمرين تمعّن قصير قبل النوم.",
@@ -30,6 +37,8 @@ export default function GuidePage() {
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<"rag" | "fallback">("fallback");
+  const [sessionId, setSessionId] = useState<string | null>(null);
+  const [quickPrompts, setQuickPrompts] = useState<string[]>(DEFAULT_PROMPTS);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
@@ -37,6 +46,23 @@ export default function GuidePage() {
       time: nowLabel(),
     },
   ]);
+
+  // Load personalized quick prompts on mount
+  useEffect(() => {
+    async function loadPrompts() {
+      try {
+        const res = await fetch("/api/guide/prompts");
+        if (!res.ok) return;
+        const data = (await res.json()) as PromptsPayload;
+        if (data.ok && data.prompts && data.prompts.length > 0) {
+          setQuickPrompts(data.prompts);
+        }
+      } catch {
+        // Keep defaults
+      }
+    }
+    void loadPrompts();
+  }, []);
 
   function pushUserMessage(text: string) {
     setMessages((prev) => [...prev, { role: "user", text, time: nowLabel() }]);
@@ -46,34 +72,48 @@ export default function GuidePage() {
     setMessages((prev) => [...prev, { role: "assistant", text, time: nowLabel() }]);
   }
 
+  const sendMessage = useCallback(
+    async (text: string) => {
+      if (!text || loading) return;
+
+      pushUserMessage(text);
+      setInput("");
+      setLoading(true);
+
+      try {
+        const res = await fetch("/api/guide/chat", {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            message: text,
+            sessionId: sessionId ?? undefined,
+          }),
+        });
+        if (res.status === 401) {
+          router.replace("/auth?next=/guide");
+          return;
+        }
+        const data = (await res.json()) as ChatPayload;
+        if (data.mode) setMode(data.mode);
+        if (data.sessionId) setSessionId(data.sessionId);
+        const reply =
+          res.ok && data.ok !== false && data.reply
+            ? data.reply
+            : "تعذر الرد الآن. حاول مجددًا.";
+        pushAssistantMessage(reply);
+      } catch {
+        pushAssistantMessage("حدث انقطاع مؤقت. حاول مرة أخرى.");
+      } finally {
+        setLoading(false);
+      }
+    },
+    [loading, sessionId, router]
+  );
+
   async function onSubmit(e: FormEvent) {
     e.preventDefault();
     const text = input.trim();
-    if (!text || loading) return;
-
-    pushUserMessage(text);
-    setInput("");
-    setLoading(true);
-
-    try {
-      const res = await fetch("/api/guide/chat", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ message: text }),
-      });
-      if (res.status === 401) {
-        router.replace("/auth?next=/guide");
-        return;
-      }
-      const data = (await res.json()) as ChatPayload;
-      if (data.mode) setMode(data.mode);
-      const reply = res.ok && data.ok !== false && data.reply ? data.reply : "تعذر الرد الآن. حاول مجددًا.";
-      pushAssistantMessage(reply);
-    } catch {
-      pushAssistantMessage("حدث انقطاع مؤقت. حاول مرة أخرى.");
-    } finally {
-      setLoading(false);
-    }
+    await sendMessage(text);
   }
 
   function applyPrompt(prompt: string) {
@@ -81,6 +121,7 @@ export default function GuidePage() {
   }
 
   function resetChat() {
+    setSessionId(null);
     setMessages([
       {
         role: "assistant",
@@ -158,7 +199,7 @@ export default function GuidePage() {
           <section className="tm-card p-5">
             <h2 className="mb-3 text-sm font-semibold text-[#2f2619]">أسئلة مقترحة</h2>
             <div className="space-y-2">
-              {QUICK_PROMPTS.map((prompt) => (
+              {quickPrompts.map((prompt) => (
                 <button
                   key={prompt}
                   type="button"
@@ -176,7 +217,7 @@ export default function GuidePage() {
             <ul className="space-y-1 text-sm text-[#7d7362]">
               <li>• عدد الرسائل: {messages.length}</li>
               <li>• آخر وضع إجابة: {mode === "rag" ? "مراجع الكتاب" : "أساسي"}</li>
-              <li>• التركيز: ظل / هدية / أفضل احتمال</li>
+              <li>• الجلسة: {sessionId ? "محفوظة" : "جديدة"}</li>
             </ul>
           </section>
 
