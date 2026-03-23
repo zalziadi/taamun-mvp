@@ -477,23 +477,25 @@ export async function POST(req: Request) {
 
   let reply: string;
   let mode: "rag" | "claude" | "fallback" = "fallback";
+  const hasOpenAI = !!process.env.OPENAI_API_KEY;
 
-  // Step 1: Try RAG (embeddings + book chunks) — optional, skip if no OpenAI key
+  // Step 1: Try RAG (embeddings + book chunks) — skip if no OpenAI key
   let ragContexts: string[] = [];
-  try {
-    const embedding = await embedText(message);
-    const { data, error } = await admin.rpc("match_book_chunks", {
-      query_embedding: embedding,
-      match_count: 5,
-    });
-    if (!error && Array.isArray(data) && data.length > 0) {
-      ragContexts = data
-        .map((row: { content?: unknown }) => (typeof row.content === "string" ? row.content : ""))
-        .filter(Boolean);
+  if (hasOpenAI) {
+    try {
+      const embedding = await embedText(message);
+      const { data, error } = await admin.rpc("match_book_chunks", {
+        query_embedding: embedding,
+        match_count: 5,
+      });
+      if (!error && Array.isArray(data) && data.length > 0) {
+        ragContexts = data
+          .map((row: { content?: unknown }) => (typeof row.content === "string" ? row.content : ""))
+          .filter(Boolean);
+      }
+    } catch (ragErr) {
+      console.warn("[guide/chat] RAG skipped:", ragErr instanceof Error ? ragErr.message : String(ragErr));
     }
-  } catch (ragErr) {
-    console.warn("[guide/chat] RAG skipped:", ragErr instanceof Error ? ragErr.message : String(ragErr));
-    // RAG is optional — continue without it
   }
 
   // Step 2: Claude completion (required — this is the core)
@@ -522,6 +524,5 @@ export async function POST(req: Request) {
     reply,
     mode,
     sessionId: session.id,
-    ...(debugError ? { debugError } : {}),
   });
 }
