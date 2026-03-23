@@ -1,0 +1,33 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="flame6" cx="50%" cy="60%" r="50%">
+      <stop offset="0%" style="stop-color:#e6d4a4;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#c9b88a;stop-opacity:0.6" />
+      <stop offset="100%" style="stop-color:#e6d4a4;stop-opacity:0" />
+    </radialGradient>
+    <filter id="glow6">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="4" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="#15130f"/>
+
+  <!-- Glow halo -->
+  <circle cx="400" cy="340" r="100" fill="url(#flame6)" filter="url(#glow6)"/>
+
+  <!-- Flame shape -->
+  <path d="M 400 500 Q 370 450 380 380 Q 390 300 400 250 Q 410 300 420 380 Q 430 450 400 500" fill="#e6d4a4" opacity="0.9"/>
+
+  <!-- Inner flame bright core -->
+  <path d="M 400 480 Q 385 450 388 400 Q 392 340 400 300 Q 408 340 412 400 Q 415 450 400 480" fill="#d7c596" opacity="0.8"/>
+
+  <!-- Brightest center -->
+  <path d="M 400 460 Q 393 440 395 410 Q 398 370 400 340 Q 402 370 405 410 Q 407 440 400 460" fill="#e6d4a4"/>
+
+  <!-- Subtle flickering effect (opacity variations for depth) -->
+  <g opacity="0.3">
+    <path d="M 380 420 Q 375 400 378 380 Q 382 360 390 340" stroke="#c9b88a" stroke-width="3" fill="none"/>
+    <path d="M 420 420 Q 425 400 422 380 Q 418 360 410 340" stroke="#c9b88a" stroke-width="3" fill="none"/>
+  </g>
+</svg>

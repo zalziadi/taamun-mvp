@@ -1,0 +1,40 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="crescentGlow9" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" style="stop-color:#e6d4a4;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#c9b88a;stop-opacity:0.1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="#15130f"/>
+
+  <!-- Bowed crescent shape (figure bowing in humility) -->
+  <g opacity="0.85">
+    <!-- Head -->
+    <circle cx="400" cy="200" r="25" fill="#c9b88a"/>
+
+    <!-- Curved back line (main bow) -->
+    <path d="M 400 225 Q 420 300 420 400" stroke="#d7c596" stroke-width="20" fill="none" stroke-linecap="round"/>
+
+    <!-- Arm lines -->
+    <path d="M 390 270 Q 360 320 350 380" stroke="#c9b88a" stroke-width="12" fill="none" stroke-linecap="round" opacity="0.7"/>
+    <path d="M 410 270 Q 440 320 450 380" stroke="#c9b88a" stroke-width="12" fill="none" stroke-linecap="round" opacity="0.7"/>
+
+    <!-- Legs flowing down -->
+    <path d="M 410 400 Q 405 450 400 500" stroke="#d7c596" stroke-width="14" fill="none" stroke-linecap="round" opacity="0.8"/>
+    <path d="M 430 400 Q 435 450 440 500" stroke="#c9b88a" stroke-width="12" fill="none" stroke-linecap="round" opacity="0.7"/>
+  </g>
+
+  <!-- Subtle light glow around the figure -->
+  <ellipse cx="400" cy="350" rx="120" ry="180" fill="url(#crescentGlow9)" opacity="0.4"/>
+
+  <!-- Ground line -->
+  <line x1="200" y1="520" x2="600" y2="520" stroke="#c9b88a" stroke-width="1" opacity="0.2"/>
+
+  <!-- Prayer mat suggestion -->
+  <g opacity="0.15">
+    <rect x="300" y="480" width="200" height="40" fill="#37342f" rx="2"/>
+    <line x1="300" y1="490" x2="500" y2="490" stroke="#c9b88a" stroke-width="1" opacity="0.5"/>
+  </g>
+</svg>

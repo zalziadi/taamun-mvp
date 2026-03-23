@@ -1,0 +1,59 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="handGlow18" cx="50%" cy="50%" r="40%">
+      <stop offset="0%" style="stop-color:#d7c596;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#d7c596;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="#15130f"/>
+
+  <!-- Left hand -->
+  <g transform="translate(280, 300)">
+    <!-- Palm -->
+    <ellipse cx="0" cy="0" rx="35" ry="45" fill="#c9b88a"/>
+    <!-- Wrist -->
+    <rect x="-25" y="40" width="50" height="30" fill="#c9b88a" opacity="0.8"/>
+    <!-- Fingers -->
+    <rect x="-28" y="-50" width="10" height="55" rx="5" fill="#c9b88a"/>
+    <rect x="-12" y="-55" width="10" height="60" rx="5" fill="#c9b88a"/>
+    <rect x="4" y="-55" width="10" height="60" rx="5" fill="#c9b88a"/>
+    <rect x="20" y="-50" width="10" height="55" rx="5" fill="#c9b88a"/>
+    <!-- Thumb -->
+    <path d="M -35 -10 Q -50 -15 -48 5" stroke="#c9b88a" stroke-width="10" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- Right hand -->
+  <g transform="translate(520, 300)">
+    <!-- Palm -->
+    <ellipse cx="0" cy="0" rx="35" ry="45" fill="#d7c596"/>
+    <!-- Wrist -->
+    <rect x="-25" y="40" width="50" height="30" fill="#d7c596" opacity="0.8"/>
+    <!-- Fingers -->
+    <rect x="-28" y="-50" width="10" height="55" rx="5" fill="#d7c596"/>
+    <rect x="-12" y="-55" width="10" height="60" rx="5" fill="#d7c596"/>
+    <rect x="4" y="-55" width="10" height="60" rx="5" fill="#d7c596"/>
+    <rect x="20" y="-50" width="10" height="55" rx="5" fill="#d7c596"/>
+    <!-- Thumb -->
+    <path d="M 35 -10 Q 50 -15 48 5" stroke="#d7c596" stroke-width="10" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- Hands touching/meeting -->
+  <g opacity="0.6">
+    <path d="M 315 300 L 485 300" stroke="#e6d4a4" stroke-width="3"/>
+  </g>
+
+  <!-- Light connection between hands -->
+  <circle cx="400" cy="300" r="50" fill="url(#handGlow18)"/>
+
+  <!-- Trust/bond emphasized with lines -->
+  <g opacity="0.3" stroke="#c9b88a">
+    <line x1="350" y1="270" x2="450" y2="270" stroke-width="1"/>
+    <line x1="340" y1="300" x2="460" y2="300" stroke-width="2"/>
+    <line x1="350" y1="330" x2="450" y2="330" stroke-width="1"/>
+  </g>
+
+  <!-- Subtle glow beneath hands -->
+  <ellipse cx="400" cy="380" rx="100" ry="40" fill="#e6d4a4" opacity="0.1"/>
+</svg>

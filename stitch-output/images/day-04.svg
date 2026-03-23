@@ -1,0 +1,44 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="water4" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#37342f;stop-opacity:1" />
+      <stop offset="50%" style="stop-color:#2c2a24;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#1e1b16;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="#15130f"/>
+
+  <!-- Water surface -->
+  <ellipse cx="400" cy="350" rx="300" ry="150" fill="url(#water4)" opacity="0.6"/>
+
+  <!-- Reflection of stars -->
+  <g opacity="0.7">
+    <!-- Star 1 and reflection -->
+    <circle cx="250" cy="150" r="2" fill="#e6d4a4"/>
+    <circle cx="250" cy="550" r="2" fill="#c9b88a"/>
+    <!-- Star 2 and reflection -->
+    <circle cx="350" cy="100" r="1.5" fill="#e6d4a4"/>
+    <circle cx="350" cy="600" r="1.5" fill="#c9b88a"/>
+    <!-- Star 3 and reflection -->
+    <circle cx="450" cy="120" r="2" fill="#e6d4a4"/>
+    <circle cx="450" cy="580" r="2" fill="#c9b88a"/>
+    <!-- Star 4 and reflection -->
+    <circle cx="550" cy="140" r="1.5" fill="#e6d4a4"/>
+    <circle cx="550" cy="560" r="1.5" fill="#c9b88a"/>
+    <!-- Star 5 and reflection -->
+    <circle cx="650" cy="170" r="2" fill="#e6d4a4"/>
+    <circle cx="650" cy="530" r="2" fill="#c9b88a"/>
+  </g>
+
+  <!-- Water ripples -->
+  <g stroke="#c9b88a" fill="none" opacity="0.3">
+    <circle cx="400" cy="350" r="50" stroke-width="1"/>
+    <circle cx="400" cy="350" r="100" stroke-width="1"/>
+    <circle cx="400" cy="350" r="150" stroke-width="0.8"/>
+  </g>
+
+  <!-- Horizon line -->
+  <line x1="0" y1="350" x2="800" y2="350" stroke="#d7c596" stroke-width="1" opacity="0.2"/>
+</svg>

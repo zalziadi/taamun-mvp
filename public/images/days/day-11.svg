@@ -1,0 +1,46 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="lineGlow11" x1="0%" y1="50%" x2="100%" y2="50%">
+      <stop offset="0%" style="stop-color:#e6d4a4;stop-opacity:0.3" />
+      <stop offset="50%" style="stop-color:#e6d4a4;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#e6d4a4;stop-opacity:0.3" />
+    </linearGradient>
+    <filter id="straightGlow11">
+      <feGaussianBlur in="SourceGraphic" stdDeviation="2" />
+    </filter>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="#15130f"/>
+
+  <!-- Primary straight golden line -->
+  <line x1="80" y1="300" x2="720" y2="300" stroke="url(#lineGlow11)" stroke-width="8" filter="url(#straightGlow11)"/>
+
+  <!-- Bright core line -->
+  <line x1="80" y1="300" x2="720" y2="300" stroke="#e6d4a4" stroke-width="3" opacity="0.9"/>
+
+  <!-- Secondary supporting lines - subtle parallels -->
+  <line x1="100" y1="250" x2="700" y2="250" stroke="#c9b88a" stroke-width="1" opacity="0.3"/>
+  <line x1="100" y1="350" x2="700" y2="350" stroke="#c9b88a" stroke-width="1" opacity="0.3"/>
+
+  <!-- End points emphasis -->
+  <circle cx="80" cy="300" r="6" fill="#d7c596" opacity="0.8"/>
+  <circle cx="720" cy="300" r="6" fill="#d7c596" opacity="0.8"/>
+
+  <!-- Points along the line for continuity emphasis -->
+  <g opacity="0.4" fill="#c9b88a">
+    <circle cx="200" cy="300" r="2"/>
+    <circle cx="320" cy="300" r="2"/>
+    <circle cx="400" cy="300" r="2"/>
+    <circle cx="480" cy="300" r="2"/>
+    <circle cx="600" cy="300" r="2"/>
+  </g>
+
+  <!-- Very subtle perspective vanishing points above and below -->
+  <g opacity="0.1" stroke="#e6d4a4" stroke-width="1">
+    <line x1="400" y1="300" x2="350" y2="200"/>
+    <line x1="400" y1="300" x2="450" y2="200"/>
+    <line x1="400" y1="300" x2="350" y2="400"/>
+    <line x1="400" y1="300" x2="450" y2="400"/>
+  </g>
+</svg>

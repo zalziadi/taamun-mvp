@@ -1,0 +1,36 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="sandFlow12" x1="0%" y1="0%" x2="100%" y2="50%">
+      <stop offset="0%" style="stop-color:#d7c596;stop-opacity:0.5" />
+      <stop offset="50%" style="stop-color:#e6d4a4;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#c9b88a;stop-opacity:0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="#15130f"/>
+
+  <!-- Flowing sand patterns - organic curves -->
+  <path d="M 0 250 Q 100 200 200 240 T 400 250 T 600 240 T 800 250 L 800 350 Q 600 300 400 320 Q 200 340 0 350 Z" fill="url(#sandFlow12)" opacity="0.6"/>
+
+  <!-- Second layer - darker sand curves -->
+  <path d="M 0 300 Q 150 260 300 290 T 600 300 T 800 290 L 800 450 Q 400 420 0 450 Z" fill="#37342f" opacity="0.5"/>
+
+  <!-- Organic flowing lines - smoothness -->
+  <path d="M 0 280 Q 100 250 200 270 T 400 280 T 600 270 T 800 280" stroke="#c9b88a" stroke-width="2" fill="none" opacity="0.4"/>
+
+  <path d="M 0 320 Q 120 290 240 310 T 480 320 T 720 310 T 800 320" stroke="#d7c596" stroke-width="1.5" fill="none" opacity="0.3"/>
+
+  <path d="M 0 350 Q 140 330 280 345 T 560 350 T 800 345" stroke="#c9b88a" stroke-width="1" fill="none" opacity="0.2"/>
+
+  <!-- Subtle sand drifts -->
+  <g opacity="0.2" fill="#e6d4a4">
+    <ellipse cx="150" cy="280" rx="30" ry="15"/>
+    <ellipse cx="350" cy="290" rx="25" ry="12"/>
+    <ellipse cx="550" cy="285" rx="28" ry="14"/>
+    <ellipse cx="700" cy="295" rx="22" ry="11"/>
+  </g>
+
+  <!-- Desert horizon -->
+  <line x1="0" y1="480" x2="800" y2="480" stroke="#2c2a24" stroke-width="40" opacity="0.8"/>
+</svg>

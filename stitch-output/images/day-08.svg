@@ -1,0 +1,42 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="dawn8" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#1e1b16;stop-opacity:1" />
+      <stop offset="30%" style="stop-color:#2c2a24;stop-opacity:1" />
+      <stop offset="60%" style="stop-color:#c9b88a;stop-opacity:0.3" />
+      <stop offset="100%" style="stop-color:#e6d4a4;stop-opacity:0.2" />
+    </linearGradient>
+    <radialGradient id="sunRise8" cx="50%" cy="120%" r="60%">
+      <stop offset="0%" style="stop-color:#d7c596;stop-opacity:0.8" />
+      <stop offset="100%" style="stop-color:#e6d4a4;stop-opacity:0" />
+    </radialGradient>
+  </defs>
+
+  <!-- Background gradient from night to dawn -->
+  <rect width="800" height="600" fill="url(#dawn8)"/>
+
+  <!-- Sun rising glow -->
+  <circle cx="400" cy="500" r="150" fill="url(#sunRise8)"/>
+
+  <!-- Horizon line and dunes silhouette -->
+  <path d="M 0 380 Q 150 330 300 370 Q 450 410 600 360 Q 700 330 800 380 L 800 600 L 0 600 Z" fill="#37342f" opacity="0.8"/>
+
+  <!-- Light rays breaking through -->
+  <g opacity="0.5">
+    <line x1="300" y1="380" x2="250" y2="150" stroke="#e6d4a4" stroke-width="3"/>
+    <line x1="400" y1="380" x2="400" y2="100" stroke="#d7c596" stroke-width="4"/>
+    <line x1="500" y1="380" x2="550" y2="150" stroke="#e6d4a4" stroke-width="3"/>
+  </g>
+
+  <!-- Breaking dawn light mist -->
+  <g opacity="0.3">
+    <ellipse cx="400" cy="300" rx="250" ry="100" fill="#e6d4a4"/>
+  </g>
+
+  <!-- Stars fading (remaining few) -->
+  <g opacity="0.3">
+    <circle cx="150" cy="100" r="1" fill="#e6d4a4"/>
+    <circle cx="700" cy="120" r="1" fill="#e6d4a4"/>
+    <circle cx="100" cy="200" r="0.8" fill="#e6d4a4"/>
+  </g>
+</svg>

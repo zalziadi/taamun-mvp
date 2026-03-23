@@ -1,0 +1,70 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <radialGradient id="rainGlow13" cx="50%" cy="40%" r="50%">
+      <stop offset="0%" style="stop-color:#d7c596;stop-opacity:0.4" />
+      <stop offset="100%" style="stop-color:#d7c596;stop-opacity:0" />
+    </radialGradient>
+    <linearGradient id="sandGrad13" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#37342f;stop-opacity:1" />
+      <stop offset="100%" style="stop-color:#2c2a24;stop-opacity:1" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="#15130f"/>
+
+  <!-- Desert sand base -->
+  <path d="M 0 400 Q 200 350 400 380 T 800 400 L 800 600 L 0 600 Z" fill="url(#sandGrad13)"/>
+
+  <!-- Gentle rain -->
+  <g opacity="0.6">
+    <line x1="150" y1="150" x2="145" y2="400" stroke="#c9b88a" stroke-width="1.5"/>
+    <line x1="250" y1="120" x2="248" y2="400" stroke="#d7c596" stroke-width="1.5"/>
+    <line x1="350" y1="140" x2="352" y2="400" stroke="#c9b88a" stroke-width="1.5"/>
+    <line x1="450" y1="130" x2="448" y2="400" stroke="#d7c596" stroke-width="1.5"/>
+    <line x1="550" y1="150" x2="552" y2="400" stroke="#c9b88a" stroke-width="1.5"/>
+    <line x1="650" y1="125" x2="648" y2="400" stroke="#d7c596" stroke-width="1.5"/>
+  </g>
+
+  <!-- Small desert flowers emerging -->
+  <g opacity="0.7">
+    <!-- Flower 1 -->
+    <circle cx="120" cy="395" r="5" fill="#e6d4a4"/>
+    <circle cx="110" cy="388" r="2" fill="#c9b88a"/>
+    <circle cx="130" cy="388" r="2" fill="#c9b88a"/>
+    <circle cx="115" cy="380" r="2" fill="#c9b88a"/>
+    <circle cx="125" cy="380" r="2" fill="#c9b88a"/>
+
+    <!-- Flower 2 -->
+    <circle cx="320" cy="398" r="5" fill="#d7c596"/>
+    <circle cx="310" cy="391" r="2" fill="#c9b88a"/>
+    <circle cx="330" cy="391" r="2" fill="#c9b88a"/>
+    <circle cx="315" cy="383" r="2" fill="#c9b88a"/>
+    <circle cx="325" cy="383" r="2" fill="#c9b88a"/>
+
+    <!-- Flower 3 -->
+    <circle cx="520" cy="395" r="5" fill="#e6d4a4"/>
+    <circle cx="510" cy="388" r="2" fill="#c9b88a"/>
+    <circle cx="530" cy="388" r="2" fill="#c9b88a"/>
+    <circle cx="515" cy="380" r="2" fill="#c9b88a"/>
+    <circle cx="525" cy="380" r="2" fill="#c9b88a"/>
+
+    <!-- Flower 4 -->
+    <circle cx="680" cy="398" r="5" fill="#d7c596"/>
+    <circle cx="670" cy="391" r="2" fill="#c9b88a"/>
+    <circle cx="690" cy="391" r="2" fill="#c9b88a"/>
+    <circle cx="675" cy="383" r="2" fill="#c9b88a"/>
+    <circle cx="685" cy="383" r="2" fill="#c9b88a"/>
+  </g>
+
+  <!-- Gentle stems for flowers -->
+  <g opacity="0.4" stroke="#c9b88a" stroke-width="1">
+    <line x1="120" y1="395" x2="120" y2="420"/>
+    <line x1="320" y1="398" x2="320" y2="420"/>
+    <line x1="520" y1="395" x2="520" y2="420"/>
+    <line x1="680" y1="398" x2="680" y2="420"/>
+  </g>
+
+  <!-- Rain glow effect -->
+  <circle cx="400" cy="250" r="80" fill="url(#rainGlow13)"/>
+</svg>

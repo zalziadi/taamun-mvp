@@ -1,0 +1,48 @@
+<svg viewBox="0 0 800 600" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="windGrad15" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" style="stop-color:#e6d4a4;stop-opacity:0.3" />
+      <stop offset="50%" style="stop-color:#e6d4a4;stop-opacity:0.1" />
+      <stop offset="100%" style="stop-color:#e6d4a4;stop-opacity:0" />
+    </linearGradient>
+  </defs>
+
+  <!-- Background -->
+  <rect width="800" height="600" fill="#15130f"/>
+
+  <!-- Wind current visualization -->
+  <g opacity="0.4">
+    <path d="M 100 100 Q 150 120 200 110 T 300 115 T 400 100 T 500 110 T 600 105 T 700 115" stroke="#c9b88a" stroke-width="2" fill="none"/>
+    <path d="M 80 150 Q 130 170 180 160 T 280 165 T 380 150 T 480 160 T 580 155 T 680 165 T 780 160" stroke="#d7c596" stroke-width="2" fill="none"/>
+    <path d="M 100 200 Q 150 220 200 210 T 300 215 T 400 200 T 500 210 T 600 205 T 700 215" stroke="#c9b88a" stroke-width="1.5" fill="none"/>
+  </g>
+
+  <!-- Falling leaf -->
+  <g transform="translate(400, 250)">
+    <!-- Leaf vein structure -->
+    <ellipse cx="0" cy="0" rx="18" ry="25" fill="#c9b88a" opacity="0.8"/>
+    <path d="M 0 -25 L 0 25" stroke="#d7c596" stroke-width="1" opacity="0.6"/>
+    <path d="M -8 -15 Q 0 -18 8 -15" stroke="#d7c596" stroke-width="0.8" fill="none" opacity="0.5"/>
+    <path d="M -10 -5 Q 0 -8 10 -5" stroke="#d7c596" stroke-width="0.8" fill="none" opacity="0.5"/>
+    <path d="M -12 5 Q 0 2 12 5" stroke="#d7c596" stroke-width="0.8" fill="none" opacity="0.5"/>
+    <path d="M -10 15 Q 0 12 10 15" stroke="#d7c596" stroke-width="0.8" fill="none" opacity="0.5"/>
+  </g>
+
+  <!-- Wind currents around leaf showing motion -->
+  <path d="M 300 240 Q 350 260 400 280 Q 450 300 500 320" stroke="url(#windGrad15)" stroke-width="8" fill="none" opacity="0.5"/>
+
+  <!-- Additional falling leaves (smaller, further) -->
+  <g opacity="0.4">
+    <!-- Leaf 2 -->
+    <g transform="translate(250, 380)">
+      <ellipse cx="0" cy="0" rx="14" ry="20" fill="#d7c596" opacity="0.6"/>
+    </g>
+    <!-- Leaf 3 -->
+    <g transform="translate(550, 420)">
+      <ellipse cx="0" cy="0" rx="12" ry="18" fill="#c9b88a" opacity="0.5"/>
+    </g>
+  </g>
+
+  <!-- Ground/stillness -->
+  <path d="M 0 500 Q 200 480 400 500 T 800 500 L 800 600 L 0 600 Z" fill="#37342f" opacity="0.4"/>
+</svg>
