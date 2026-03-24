@@ -504,7 +504,9 @@ export async function POST(req: Request) {
     mode = ragContexts.length > 0 ? "rag" : "claude";
   } catch (claudeErr) {
     const errMsg = claudeErr instanceof Error ? claudeErr.message : String(claudeErr);
-    console.error("[guide/chat] Claude failed:", errMsg);
+    const hasKey = !!process.env.ANTHROPIC_API_KEY;
+    const model = process.env.ANTHROPIC_CHAT_MODEL ?? "claude-sonnet-4-20250514";
+    console.error(`[guide/chat] Claude failed | hasKey=${hasKey} | model=${model} | error=${errMsg}`);
     reply = buildFallbackAnswer(message);
   }
 
