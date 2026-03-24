@@ -39,7 +39,7 @@ export const HomePage: React.FC<HomePageProps> = ({
       className="dark bg-background min-h-screen flex flex-col overflow-x-hidden"
     >
       <TopBar
-        title="تَمَأن"
+        title="تمعّن"
         showMenu={true}
         onMenuClick={handleMenuClick}
         avatarSrc={userAvatarSrc}

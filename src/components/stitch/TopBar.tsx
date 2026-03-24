@@ -55,7 +55,7 @@ export const TopBar: React.FC<TopBarProps> = ({
         )}
       </div>
 
-      <h1 className="arabic-serif font-serif text-3xl font-medium tracking-wide text-[#e6d4a4]">{title}</h1>
+      <h1 className="arabic-serif font-serif text-4xl font-bold tracking-wide text-[#e6d4a4]">{title}</h1>
 
       <div className="flex items-center gap-4">
         {showBack && (
