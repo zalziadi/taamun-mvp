@@ -476,41 +476,34 @@ export async function POST(req: Request) {
   }
 
   let reply: string;
-  let mode: "rag" | "fallback" = "fallback";
+  let mode: "rag" | "claude" | "fallback" = "fallback";
 
-  // Try RAG path
-  let debugError: string | null = null;
+  // Step 1: Try RAG (embeddings + book chunks) — optional, skip if no OpenAI key
+  let ragContexts: string[] = [];
   try {
     const embedding = await embedText(message);
     const { data, error } = await admin.rpc("match_book_chunks", {
       query_embedding: embedding,
       match_count: 5,
     });
-
     if (!error && Array.isArray(data) && data.length > 0) {
-      const contexts = data
+      ragContexts = data
         .map((row: { content?: unknown }) => (typeof row.content === "string" ? row.content : ""))
         .filter(Boolean);
-      reply = await completeWithContext(message, contexts, systemPrompt, conversationHistory);
-      mode = "rag";
-    } else {
-      // No RAG data — still use Claude with soul context
-      reply = await completeWithContext(message, [], systemPrompt, conversationHistory);
-      mode = "rag";
     }
-  } catch (err1) {
-    const msg1 = err1 instanceof Error ? err1.message : String(err1);
-    console.error("[guide/chat] RAG/embed failed:", msg1);
-    // If Claude/embedding fails entirely, try Claude alone
-    try {
-      reply = await completeWithContext(message, [], systemPrompt, conversationHistory);
-      mode = "rag";
-    } catch (err2) {
-      const msg2 = err2 instanceof Error ? err2.message : String(err2);
-      console.error("[guide/chat] Claude fallback failed:", msg2);
-      debugError = `embed: ${msg1} | claude: ${msg2}`;
-      reply = buildFallbackAnswer(message);
-    }
+  } catch (ragErr) {
+    console.warn("[guide/chat] RAG skipped:", ragErr instanceof Error ? ragErr.message : String(ragErr));
+    // RAG is optional — continue without it
+  }
+
+  // Step 2: Claude completion (required — this is the core)
+  try {
+    reply = await completeWithContext(message, ragContexts, systemPrompt, conversationHistory);
+    mode = ragContexts.length > 0 ? "rag" : "claude";
+  } catch (claudeErr) {
+    const errMsg = claudeErr instanceof Error ? claudeErr.message : String(claudeErr);
+    console.error("[guide/chat] Claude failed:", errMsg);
+    reply = buildFallbackAnswer(message);
   }
 
   // Save messages to session
