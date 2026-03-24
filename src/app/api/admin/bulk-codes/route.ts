@@ -25,8 +25,6 @@ export async function POST(req: NextRequest) {
   const allRows: Array<{
     code: string;
     tier: string;
-    note: string;
-    created_at: string;
   }> = [];
 
   for (const tier of tiers) {
@@ -36,12 +34,7 @@ export async function POST(req: NextRequest) {
         code = `TAAMUN-${crypto.randomBytes(4).toString("hex").toUpperCase()}`;
       } while (usedCodes.has(code));
       usedCodes.add(code);
-      allRows.push({
-        code,
-        tier,
-        note: "bulk-gen",
-        created_at: now,
-      });
+      allRows.push({ code, tier });
     }
   }
 
