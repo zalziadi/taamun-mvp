@@ -76,7 +76,6 @@ export async function POST(req: Request) {
                           email: auth.user.email ?? `${auth.user.id}@users.invalid`,
                           userName: fullName,
                           origin,
-                          sourceId: sourceOverride,
                 });
                 return NextResponse.json({ ok: true, url, provider: "tap" as const });
         } catch (e) {
