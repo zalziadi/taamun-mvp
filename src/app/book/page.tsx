@@ -9,9 +9,9 @@ export default async function BookPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#0B0F14] p-6 max-w-xl mx-auto">
-        <h1 className="mb-2 text-2xl font-bold text-white">مدينة المعنى</h1>
-        <p className="mb-6 text-white/50 text-sm">رحلة في الوعي بلغة القرآن</p>
+      <div className="min-h-screen bg-[#15130f] p-6 max-w-xl mx-auto">
+        <h1 className="mb-2 text-2xl font-bold text-[#e8e1d9]">مدينة المعنى</h1>
+        <p className="mb-6 text-[#c9b88a] text-sm">رحلة في الوعي بلغة القرآن</p>
         <Paywall reason="book" title="الكتاب للمشتركين" message="اشترك بـ 82 ريال وتحصل على الكتاب كاملاً + تطبيق تمعّن سنة كاملة" />
       </div>
     );
@@ -27,18 +27,18 @@ export default async function BookPage() {
 
   if (!hasAccess) {
     return (
-      <div className="min-h-screen bg-[#0B0F14] p-6 max-w-xl mx-auto">
-        <h1 className="mb-2 text-2xl font-bold text-white">مدينة المعنى</h1>
-        <p className="mb-6 text-white/50 text-sm">رحلة في الوعي بلغة القرآن</p>
+      <div className="min-h-screen bg-[#15130f] p-6 max-w-xl mx-auto">
+        <h1 className="mb-2 text-2xl font-bold text-[#e8e1d9]">مدينة المعنى</h1>
+        <p className="mb-6 text-[#c9b88a] text-sm">رحلة في الوعي بلغة القرآن</p>
         <Paywall reason="book" title="الكتاب للمشتركين" message="اشترك بـ 82 ريال وتحصل على الكتاب كاملاً + تطبيق تمعّن سنة كاملة" />
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#0B0F14] p-6">
-      <h1 className="mb-4 text-2xl font-bold text-white">مدينة المعنى بلغة القرآن</h1>
-      <p className="mb-6 text-white/70">الدليل والتطبيق — اقرأ في المتصفح</p>
+    <div className="min-h-screen bg-[#15130f] p-6">
+      <h1 className="mb-4 text-2xl font-bold text-[#e8e1d9]">مدينة المعنى بلغة القرآن</h1>
+      <p className="mb-6 text-[#c9b88a]">الدليل والتطبيق — اقرأ في المتصفح</p>
       <BookViewer />
     </div>
   );

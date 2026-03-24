@@ -7,21 +7,16 @@ interface AppShellProps {
 
 export function AppShell({ children }: AppShellProps) {
   return (
-    <div className="relative overflow-hidden">
+    <div className="relative min-h-screen overflow-hidden bg-[#15130f] text-[#e8e1d9]">
       <div
         className="pointer-events-none fixed inset-0 -z-10"
         aria-hidden
-        style={{ background: "linear-gradient(180deg, #05070C 0%, #0A0F1A 40%, #0B0F14 100%)" }}
-      />
-      <div
-        className="pointer-events-none fixed inset-0 -z-10 opacity-60"
-        aria-hidden
-        style={{ background: "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(109,139,255,0.08) 0%, transparent 60%)" }}
+        style={{ background: "linear-gradient(180deg, #15130f 0%, #1c1a15 40%, #15130f 100%)" }}
       />
       <div
         className="pointer-events-none fixed inset-0 -z-10 opacity-40"
         aria-hidden
-        style={{ background: "radial-gradient(ellipse 60% 40% at 50% 80%, rgba(255,255,255,0.03) 0%, transparent 70%)" }}
+        style={{ background: "radial-gradient(ellipse 80% 50% at 50% 0%, rgba(201,184,138,0.06) 0%, transparent 60%)" }}
       />
       <div className="mx-auto max-w-3xl px-4 pb-8">
         {children}

@@ -23,9 +23,9 @@ type PromptsPayload = {
 };
 
 const DEFAULT_PROMPTS = [
-  "كيف أتحول من الظل إلى الهدية في موقف متكرر؟",
-  "كيف أعيش أفضل احتمال اليوم بشكل عملي؟",
-  "أعطني تمرين تمعّن قصير قبل النوم.",
+  "ما معنى التمعّن في القرآن؟",
+  "كيف أبدأ رحلة التمعّن؟",
+  "ما هي مدينة المعنى؟",
 ];
 
 function nowLabel() {
@@ -133,16 +133,20 @@ export default function GuidePage() {
 
   return (
     <div className="tm-shell space-y-6">
+      {/* ── Welcome Section ────────────────────────────────────────────── */}
+      <section className="text-center space-y-4">
+        <h1 className="tm-heading text-4xl sm:text-5xl leading-tight">
+          المرشد الذكي
+        </h1>
+        <p className="text-sm text-[#5f5648]/85 max-w-2xl mx-auto">
+          اسأل أي سؤال عن القرآن أو كتاب مدينة المعنى وسأجيبك من سياق الكتاب.
+        </p>
+      </section>
+
       <section className="tm-card p-6 sm:p-7">
-        <div className="mb-2 inline-flex items-center rounded-full border border-[#b39b71]/35 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#7b694a]">
-          المرشد التفاعلي
-        </div>
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <h1 className="tm-heading text-4xl leading-tight">المرشد</h1>
-            <p className="mt-2 text-sm leading-relaxed text-[#5f5648]/85">
-              رفيقك الذكي في رحلة التأمل القرآني وربط المعنى بسلوك اليوم.
-            </p>
+            <p className="text-xs text-[#7b694a] font-semibold">الوضع الحالي</p>
           </div>
           <span
             className={[
@@ -152,7 +156,7 @@ export default function GuidePage() {
                 : "border-amber-300/40 bg-amber-500/10 text-amber-300",
             ].join(" ")}
           >
-            {mode === "rag" ? "RAG متصل بالكتاب" : "وضع أساسي"}
+            {mode === "rag" ? "متصل بالكتاب" : "وضع أساسي"}
           </span>
         </div>
       </section>
@@ -185,8 +189,8 @@ export default function GuidePage() {
           <form onSubmit={onSubmit} className="mt-4 flex gap-2">
             <input
               value={input}
-              onChange={(e) => setInput(e.target.value)}
-              placeholder="اسأل المرشد..."
+              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
+              placeholder="اسأل سؤالاً عن القرآن أو مدينة المعنى..."
               className="flex-1 rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-3 text-sm text-[#2f2619] placeholder:text-[#7d7362] focus:outline-none focus:ring-2 focus:ring-[#8c7851]/25"
             />
             <button type="submit" disabled={loading} className="tm-gold-btn px-6 py-3">
@@ -197,14 +201,14 @@ export default function GuidePage() {
 
         <aside className="space-y-4">
           <section className="tm-card p-5">
-            <h2 className="mb-3 text-sm font-semibold text-[#2f2619]">أسئلة مقترحة</h2>
+            <h2 className="mb-3 text-sm font-semibold text-[#2f2619]">أسئلة سريعة — اضغط للبدء</h2>
             <div className="space-y-2">
               {quickPrompts.map((prompt) => (
                 <button
                   key={prompt}
                   type="button"
                   onClick={() => applyPrompt(prompt)}
-                  className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-right text-sm text-[#5f5648] transition hover:border-[#8c7851]/35 hover:text-[#2f2619]"
+                  className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-right text-sm text-[#5f5648] transition hover:border-[#8c7851]/35 hover:text-[#2f2619] hover:bg-[#f5ede2]"
                 >
                   {prompt}
                 </button>

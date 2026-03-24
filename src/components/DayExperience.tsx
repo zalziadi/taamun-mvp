@@ -27,7 +27,7 @@ function SilenceGate({ prompt, onStart }: { prompt: string; onStart: () => void 
       <button
         type="button"
         onClick={onStart}
-        className="rounded-2xl bg-white px-10 py-4 text-base font-semibold text-[#0B0F14] transition-opacity hover:opacity-90 active:scale-95"
+        className="rounded-2xl bg-white px-10 py-4 text-base font-semibold text-[#15130f] transition-opacity hover:opacity-90 active:scale-95"
       >
         ابدأ التمعّن
       </button>
@@ -97,7 +97,7 @@ function ReflectionJournal({ day, question }: { day: number; question: string })
           return;
         }
         const { error } = await supabase.from("reflections").upsert(
-          { user_id: session.user.id, day, text: value },
+          { user_id: session.user.id, day, note: value },
           { onConflict: "user_id,day" }
         );
         setStatus(error ? "error" : "saved");

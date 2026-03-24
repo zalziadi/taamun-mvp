@@ -132,25 +132,25 @@ export function AuthClient({ embedded }: AuthClientProps) {
 
   if (checkingSession) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#fff8f0] py-12">
-        <p className="text-[#7d7362]">جارٍ التحقق...</p>
+      <div className="flex min-h-screen items-center justify-center bg-[#15130f] py-12">
+        <p className="text-[#c9b88a]">جارٍ التحقق...</p>
       </div>
     );
   }
 
   const content = (
-    <div className="w-full max-w-md rounded-lg border border-[#d8cdb9]/70 bg-[#fcfaf7]/85 p-8 shadow-[0_10px_36px_rgba(122,101,66,0.12)] backdrop-blur-md md:p-10">
-      <h1 className="tm-heading mb-2 text-center text-4xl font-bold text-[#2f2619]">تسجيل الدخول</h1>
-      <p className="mb-8 text-center text-[#7d7362]">عُد إلى رحلة السكون</p>
+    <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 shadow-[0_10px_36px_rgba(0,0,0,0.3)] backdrop-blur-md md:p-10">
+      <h1 className="mb-2 text-center font-['Amiri'] text-4xl font-bold text-[#e8e1d9]">تسجيل الدخول</h1>
+      <p className="mb-8 text-center text-sm text-[#c9b88a]">عُد إلى رحلة التمعّن</p>
 
       {sent ? (
-        <div className="rounded-xl border border-emerald-500/40 bg-emerald-500/10 p-6 text-center">
-          <p className="mb-2 text-lg font-semibold text-emerald-300">تحقق من بريدك</p>
-          <p className="text-sm text-[#4e4637]">
-            أرسلنا رابط الدخول إلى <span className="font-semibold text-[#2f2619]">{email}</span>
+        <div className="rounded-xl border border-[#c9b88a]/30 bg-[#c9b88a]/10 p-6 text-center">
+          <p className="mb-2 text-lg font-semibold text-[#c9b88a]">تحقق من بريدك</p>
+          <p className="text-sm text-[#e8e1d9]/70">
+            أرسلنا رابط الدخول إلى <span className="font-semibold text-[#e8e1d9]">{email}</span>
           </p>
           {notice ? (
-            <p className="mt-3 rounded-lg border border-[#d8cdb9] bg-[#f8f3ea] px-3 py-2 text-xs text-[#6f6455]">
+            <p className="mt-3 rounded-lg border border-[#c9b88a]/20 bg-[#c9b88a]/5 px-3 py-2 text-xs text-[#c9b88a]/80">
               {notice}
             </p>
           ) : null}
@@ -161,34 +161,34 @@ export function AuthClient({ embedded }: AuthClientProps) {
               setEmail("");
               setNotice(null);
             }}
-            className="mt-4 text-sm text-[#7d7362] underline hover:text-[#2f2619]"
+            className="mt-4 text-sm text-[#c9b88a]/70 underline hover:text-[#c9b88a]"
           >
             تغيير البريد
           </button>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
-          <label className="mr-1 block text-[0.7rem] uppercase tracking-[0.2em] text-[#7d7362]">البريد الإلكتروني</label>
+          <label className="mr-1 block text-[0.7rem] uppercase tracking-[0.2em] text-[#c9b88a]/70">البريد الإلكتروني</label>
           <input
             type="email"
             value={email}
-            onChange={(e) => {
+            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
               setEmail(e.target.value);
               if (error) setError(null);
             }}
             placeholder="بريدك الإلكتروني"
             dir="ltr"
             required
-            className="w-full border-x-0 border-t-0 border-b border-[#cdbfa9] bg-transparent px-1 py-3 text-[#2f2619] placeholder:text-[#8f8576] focus:border-[#7b5804] focus:outline-none"
+            className="w-full border-x-0 border-t-0 border-b border-[#c9b88a]/30 bg-transparent px-1 py-3 text-[#e8e1d9] placeholder:text-[#c9b88a]/40 focus:border-[#c9b88a] focus:outline-none"
           />
 
           {error && (
-            <p className="rounded-lg border border-amber-500/40 bg-amber-500/10 px-3 py-2 text-sm text-amber-700">
+            <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-400">
               {error}
             </p>
           )}
           {notice ? (
-            <p className="rounded-lg border border-[#d8cdb9] bg-[#f8f3ea] px-3 py-2 text-sm text-[#6f6455]">
+            <p className="rounded-lg border border-[#c9b88a]/20 bg-[#c9b88a]/5 px-3 py-2 text-sm text-[#c9b88a]/80">
               {notice}
             </p>
           ) : null}
@@ -196,7 +196,7 @@ export function AuthClient({ embedded }: AuthClientProps) {
           <button
             type="submit"
             disabled={loading || cooldownRemainingSec > 0}
-            className="mt-2 w-full rounded-lg bg-[#7b5804] px-6 py-3 font-semibold tracking-[0.15em] text-[#fff8f0] transition hover:bg-[#6d4f04] disabled:opacity-50"
+            className="mt-2 w-full rounded-xl bg-[#c9b88a] px-6 py-3 font-semibold tracking-[0.15em] text-[#15130f] transition hover:bg-[#e6d4a4] disabled:opacity-50"
           >
             {loading
               ? "جارٍ الإرسال..."
@@ -207,7 +207,7 @@ export function AuthClient({ embedded }: AuthClientProps) {
         </form>
       )}
 
-      <Link href="/" className="mt-6 block text-center text-sm text-[#7d7362] transition hover:text-[#2f2619]">
+      <Link href="/" className="mt-6 block text-center text-sm text-[#c9b88a]/60 transition hover:text-[#c9b88a]">
         العودة للرئيسية
       </Link>
     </div>
@@ -220,20 +220,14 @@ export function AuthClient({ embedded }: AuthClientProps) {
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-[#fff8f0] text-[#1f1b10]">
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-[#15130f] text-[#e8e1d9]">
       <div className="pointer-events-none fixed inset-0 z-0">
-        <img
-          className="absolute inset-0 h-full w-full object-cover opacity-75"
-          src="https://lh3.googleusercontent.com/aida-public/AB6AXuCeZmCD9UFmRblNw_0POYhOyuoI5XsZ8_stlS2VagkD5XB0WRE_bvwYByj2VXLIocXaZ08_qaCxOHLlpZGIvoYK1yuzbh4rVZBLKytFQeCaWNoWLuoLnJtBgQ7T5jnHn000NKvi0Hqz4IOD5QFs-nSiys7slI9pOS5ctaw4stHMZywG5T1KBEQbfN9-P5pwrkTuJHUTGyev7tJt36hU2uUMWZWEMS9H4dWWctG0KhyFONHmuJUHP2f7rntesa9A6q3c4Zk6sXziPjM"
-          alt=""
-        />
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_25%_20%,rgba(123,88,4,0.05),transparent_45%)]" />
-        <div className="absolute inset-0 bg-gradient-to-t from-[#fff8f0] via-transparent to-transparent" />
+        <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_30%,rgba(201,184,138,0.06),transparent_70%)]" />
       </div>
 
       <header className="relative z-10 flex w-full items-center justify-between px-8 py-8 md:px-12">
-        <div className="font-['Amiri'] text-2xl text-[#2f2619]">تمعّن</div>
-        <span className="text-[11px] tracking-[0.2em] text-[#6f6658]">SUKUN AL-HADIYA</span>
+        <div className="font-['Amiri'] text-2xl text-[#e6d4a4]">تمعّن</div>
+        <span className="text-[11px] tracking-[0.2em] text-[#c9b88a]/50">TAAMUN</span>
       </header>
 
       <main className="relative z-10 flex flex-1 items-center justify-center px-6 py-10">
@@ -241,7 +235,7 @@ export function AuthClient({ embedded }: AuthClientProps) {
       </main>
 
       <footer className="relative z-10 pb-10 text-center">
-        <p className="text-[11px] tracking-[0.2em] text-[#7d7362]">© TAAMUN AL-HADIYA</p>
+        <p className="text-[11px] tracking-[0.2em] text-[#c9b88a]/40">© تمعّن</p>
       </footer>
     </div>
   );

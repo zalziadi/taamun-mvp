@@ -152,25 +152,51 @@ export default function CityPage() {
         <h1 className="tm-heading text-4xl sm:text-5xl leading-tight">
           مدينة المعنى
         </h1>
+        <p className="text-sm text-[#5f5648]/85 max-w-2xl mx-auto">
+          تسع مجالات في حياتك مربوطة بالقرآن — كلما تعمّقت أضأت جزءاً من مدينتك.
+        </p>
         {allDomainsLit ? (
-          <p className="text-sm text-[#c4a265] font-semibold">
+          <p className="text-sm text-[#c4a265] font-semibold mt-2">
             مدينتك أصبحت مضيئة
           </p>
-        ) : (
-          <p className="text-sm text-[#5f5648]/85 max-w-md mx-auto">
-            &ldquo;القرآن ليس مجرد نص، بل نظام تحويل داخلي&rdquo;
-          </p>
-        )}
+        ) : null}
       </section>
 
       {/* ── Interactive Map ─────────────────────────────────────────────── */}
-      <section className="relative">
+      <section className="relative space-y-4">
         <InteractiveCityMap
           entries={tracker}
           completedDays={completedDays}
           activeDomain={activeDomain}
           onDomainClick={setActiveDomain}
         />
+
+        {/* ── States Legend ──────────────────────────────────────────────── */}
+        <div className="tm-card p-4 sm:p-5">
+          <div className="grid grid-cols-3 gap-3 text-center">
+            <div className="space-y-1.5">
+              <div className="flex justify-center">
+                <div className="w-5 h-5 rounded-full border-2 border-[#5a4a38] bg-[#2a2118]" />
+              </div>
+              <p className="text-xs font-semibold text-[#5f5648]">الظل</p>
+              <p className="text-[11px] text-[#7d7362]">لم تبدأ بعد — المجال في ظلام</p>
+            </div>
+            <div className="space-y-1.5">
+              <div className="flex justify-center">
+                <div className="w-5 h-5 rounded-full border-2 border-[#c4a265] bg-[#4a3d2a]" />
+              </div>
+              <p className="text-xs font-semibold text-[#5f5648]">الهدية</p>
+              <p className="text-[11px] text-[#7d7362]">بدأت الرحلة — ضوء يتشكّل</p>
+            </div>
+            <div className="space-y-1.5">
+              <div className="flex justify-center">
+                <div className="w-5 h-5 rounded-full border-2 border-[#e7c468] bg-[#6b5830]" />
+              </div>
+              <p className="text-xs font-semibold text-[#5f5648]">أفضل إمكانية</p>
+              <p className="text-[11px] text-[#7d7362]">تمعّنت بعمق — المجال مُشرق</p>
+            </div>
+          </div>
+        </div>
       </section>
 
       {/* ── Illumination Progress Ring ─────────────────────────────────── */}
@@ -427,9 +453,9 @@ export default function CityPage() {
         </section>
       )}
 
-      {/* ── CTA ────────────────────────────────────────────────────────── */}
-      {!allDomainsLit && (
-        <div className="text-center pt-2">
+      {/* ── Navigation Section ─────────────────────────────────────────── */}
+      <section className="text-center space-y-3 pt-2">
+        {!allDomainsLit && (
           <button
             type="button"
             onClick={() => router.push(programDayRoute(currentDay))}
@@ -437,8 +463,16 @@ export default function CityPage() {
           >
             ✦ استكمل الرحلة اليومية
           </button>
+        )}
+        <div className="flex justify-center gap-3">
+          <Link
+            href="/program"
+            className="tm-ghost-btn rounded-xl px-5 py-2.5 text-sm"
+          >
+            العودة للبرنامج
+          </Link>
         </div>
-      )}
+      </section>
     </div>
   );
 }

@@ -24,7 +24,7 @@ export default async function AdminPage() {
 
   if (!allowed) {
     return (
-      <div className="min-h-screen bg-[#0B0F14] p-6">
+      <div className="min-h-screen bg-[#15130f] p-6">
         <nav className="mb-8">
           <Link href="/" className="text-white/70 hover:text-white">
             الرئيسية
@@ -48,7 +48,7 @@ export default async function AdminPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0F14] p-6">
+    <div className="min-h-screen bg-[#15130f] p-6">
       <nav className="mb-8">
         <Link href="/" className="text-white/70 hover:text-white">
           الرئيسية

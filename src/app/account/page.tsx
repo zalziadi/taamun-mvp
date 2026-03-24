@@ -18,6 +18,7 @@ export default async function AccountPage() {
       <AccountClient
         embedded
         userEmail={user.email ?? null}
+        userCreatedAt={user.created_at ?? null}
       />
     </AppShell>
   );

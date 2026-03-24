@@ -45,23 +45,23 @@ export default function ScanPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0B0F14] p-6">
+    <div className="min-h-screen bg-[#15130f] p-6">
       <nav className="mb-8 flex gap-4">
-        <Link href="/" className="text-white/70 hover:text-white">
+        <Link href="/" className="text-[#c9b88a] hover:text-[#e8e1d9]">
           الرئيسية
         </Link>
-        <Link href="/day" className="text-white/70 hover:text-white">
+        <Link href="/day" className="text-[#c9b88a] hover:text-[#e8e1d9]">
           اليوم
         </Link>
       </nav>
 
-      <h1 className="mb-8 text-2xl font-bold text-white">التقاط آية</h1>
+      <h1 className="mb-8 text-2xl font-bold text-[#e8e1d9]">التقاط آية</h1>
 
       <div className="max-w-md space-y-6">
         <div>
           <label
             htmlFor="scan-file"
-            className="mb-2 block cursor-pointer rounded-lg border border-white/20 bg-white/5 p-4 text-center text-white/90 transition-colors hover:bg-white/10"
+            className="mb-2 block cursor-pointer rounded-lg border border-white/20 bg-white/5 p-4 text-center text-[#e8e1d9] transition-colors hover:bg-white/10"
           >
             اختر صورة
           </label>
@@ -78,17 +78,17 @@ export default function ScanPage() {
             type="button"
             onClick={handleExtract}
             disabled={!selectedFile || loading}
-            className="mt-2 w-full rounded-lg border border-white/20 bg-white/10 px-6 py-3 text-white disabled:cursor-not-allowed disabled:opacity-40"
+            className="mt-2 w-full rounded-lg border border-white/20 bg-white/10 px-6 py-3 text-[#e8e1d9] disabled:cursor-not-allowed disabled:opacity-40"
           >
             استخراج النص
           </button>
         </div>
 
-        {loading && <p className="text-white/70">جاري استخراج النص...</p>}
+        {loading && <p className="text-[#c9b88a]">جاري استخراج النص...</p>}
         {error && <StatusCard title="خطأ" message={error} variant="warning" />}
 
         <div>
-          <label htmlFor="extracted" className="mb-2 block text-white/90">
+          <label htmlFor="extracted" className="mb-2 block text-[#e8e1d9]">
             النص المستخرج (يمكنك التعديل)
           </label>
           <textarea
@@ -96,7 +96,7 @@ export default function ScanPage() {
             value={extractedText}
             onChange={(e) => setExtractedText(e.target.value)}
             rows={5}
-            className="w-full rounded-lg border border-white/20 bg-white/5 p-3 text-white placeholder:text-white/40"
+            className="w-full rounded-lg border border-white/20 bg-white/5 p-3 text-[#e8e1d9] placeholder:text-[#c9b88a]/60"
             placeholder="سيظهر النص هنا بعد الاستخراج..."
           />
         </div>
@@ -105,7 +105,7 @@ export default function ScanPage() {
           type="button"
           onClick={handleStartContemplation}
           disabled={!extractedText.trim()}
-          className="w-full rounded-lg bg-white px-6 py-3 font-medium text-[#0B0F14] disabled:cursor-not-allowed disabled:opacity-40"
+          className="w-full rounded-lg bg-[#c9b88a] px-6 py-3 font-medium text-[#15130f] disabled:cursor-not-allowed disabled:opacity-40"
         >
           {`ابدأ ${APP_NAME}`}
         </button>
