@@ -3,7 +3,7 @@ import PricingExperience from "./PricingExperience";
 
 export const metadata: Metadata = {
   title: "الأسعار",
-  description: "باقات اشتراك تمَعُّن — عرض ترحيبي بمناسبة العيد ثم الأسعار.",
+  description: "باقات اشتراك تمَعُّن.",
 };
 
 export default function PricingPage() {
