@@ -26,7 +26,6 @@ export async function POST(req: NextRequest) {
     code: string;
     tier: string;
     note: string;
-    created_by: string;
     created_at: string;
   }> = [];
 
@@ -41,7 +40,6 @@ export async function POST(req: NextRequest) {
         code,
         tier,
         note: "bulk-gen",
-        created_by: auth.user.id,
         created_at: now,
       });
     }
