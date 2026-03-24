@@ -3,12 +3,20 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { AWARENESS_STATES, LIFE_DOMAINS, type AwarenessState } from "@/lib/city-of-meaning";
+import InteractiveCityMap from "@/components/city/InteractiveCityMap";
+import {
+  AWARENESS_STATES,
+  LIFE_DOMAINS,
+  getDomainState,
+  getCityIllumination,
+  type AwarenessState,
+  type DomainKey,
+} from "@/lib/city-of-meaning";
+import { programDayRoute } from "@/lib/routes";
 
-type TrackerEntry = {
-  day: number;
-  state: AwarenessState;
-};
+// ─── Types ────────────────────────────────────────────────────────────────────
+
+type TrackerEntry = { day: number; state: AwarenessState };
 
 type TrackerPayload = {
   ok?: boolean;
@@ -16,255 +24,421 @@ type TrackerPayload = {
   counts?: Record<AwarenessState, number>;
 };
 
-const TOTAL_DAYS = 28;
+type ProgressPayload = {
+  ok?: boolean;
+  completed_days?: number[];
+  current_day?: number;
+  percent?: number;
+};
+
+// ─── State badge labels ───────────────────────────────────────────────────────
+
+const STATE_LABELS: Record<AwarenessState | "locked", string> = {
+  locked: "مقفل",
+  shadow: "الظل",
+  gift: "الهدية",
+  best_possibility: "أفضل احتمال",
+};
+
+const STATE_DESCRIPTIONS: Record<AwarenessState | "locked", string> = {
+  locked: "أكمل أيام هذا المجال لفتحه",
+  shadow: "بدأت الرحلة — واصل لتكشف الهدية",
+  gift: "اقتربت من الإضاءة الكاملة",
+  best_possibility: "هذا المجال مضيء بالكامل",
+};
+
+// ─── Page ─────────────────────────────────────────────────────────────────────
 
 export default function CityPage() {
   const router = useRouter();
-  const [today, setToday] = useState(1);
-  const [selected, setSelected] = useState<AwarenessState | null>(null);
-  const [saving, setSaving] = useState(false);
   const [tracker, setTracker] = useState<TrackerEntry[]>([]);
-  const [counts, setCounts] = useState<Record<AwarenessState, number>>({
-    shadow: 0,
-    gift: 0,
-    best_possibility: 0,
-  });
-  const [activeDomain, setActiveDomain] = useState<string>(LIFE_DOMAINS[0].key);
+  const [completedDays, setCompletedDays] = useState<number[]>([]);
+  const [currentDay, setCurrentDay] = useState(1);
+  const [activeDomain, setActiveDomain] = useState<DomainKey | null>(null);
+  const [saving, setSaving] = useState(false);
+  const [loading, setLoading] = useState(true);
 
-  useEffect(() => {
-    const day = Math.max(1, Math.min(TOTAL_DAYS, new Date().getDate()));
-    setToday(day);
-  }, []);
-
+  // Load tracker + progress data
   useEffect(() => {
     const load = async () => {
       try {
-        const res = await fetch("/api/awareness-tracker", { cache: "no-store" });
-        if (res.status === 401) {
+        const [trackerRes, progressRes] = await Promise.all([
+          fetch("/api/awareness-tracker", { cache: "no-store" }),
+          fetch("/api/program/progress", { cache: "no-store" }),
+        ]);
+
+        if (trackerRes.status === 401 || progressRes.status === 401) {
           router.replace("/auth?next=/city");
           return;
         }
-        const data = (await res.json()) as TrackerPayload;
-        if (!res.ok || data.ok === false) return;
-        setTracker(data.entries ?? []);
-        if (data.counts) setCounts(data.counts);
+
+        const trackerData = (await trackerRes.json()) as TrackerPayload;
+        const progressData = (await progressRes.json()) as ProgressPayload;
+
+        if (trackerRes.ok && trackerData.ok !== false) {
+          setTracker(trackerData.entries ?? []);
+        }
+        if (progressRes.ok && progressData.ok !== false) {
+          setCompletedDays(
+            Array.isArray(progressData.completed_days)
+              ? progressData.completed_days.sort((a, b) => a - b)
+              : []
+          );
+          setCurrentDay(progressData.current_day ?? 1);
+        }
       } catch {
-        // Non-blocking for city map.
+        // Non-blocking
+      } finally {
+        setLoading(false);
       }
     };
-    load();
+    void load();
   }, [router]);
 
-  const todayState = useMemo(
-    () => tracker.find((entry) => entry.day === today)?.state ?? null,
-    [today, tracker]
+  // Derived data
+  const illumination = useMemo(() => getCityIllumination(tracker), [tracker]);
+  const activeDomainData = useMemo(() => {
+    if (!activeDomain) return null;
+    const d = LIFE_DOMAINS.find((item) => item.key === activeDomain);
+    if (!d) return null;
+    const ds = getDomainState(d.days, tracker);
+    return { ...d, ...ds };
+  }, [activeDomain, tracker]);
+
+  const allDomainsLit = useMemo(
+    () =>
+      LIFE_DOMAINS.every(
+        (d) => getDomainState(d.days, tracker).state === "best_possibility"
+      ),
+    [tracker]
   );
 
-  async function saveState(state: AwarenessState) {
-    setSelected(state);
+  // Save awareness state for a specific day
+  async function saveState(day: number, state: AwarenessState) {
     setSaving(true);
     try {
       const res = await fetch("/api/awareness-tracker", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ day: today, state }),
+        body: JSON.stringify({ day, state }),
       });
       if (!res.ok) return;
+
       setTracker((prev) => {
-        const next = prev.filter((entry) => entry.day !== today);
-        next.push({ day: today, state });
+        const next = prev.filter((e) => e.day !== day);
+        next.push({ day, state });
         return next.sort((a, b) => a.day - b.day);
-      });
-      setCounts((prev) => {
-        const next = { ...prev };
-        const previousState = tracker.find((entry) => entry.day === today)?.state;
-        if (previousState) next[previousState] = Math.max(0, next[previousState] - 1);
-        next[state] += 1;
-        return next;
       });
     } finally {
       setSaving(false);
     }
   }
 
-  const domain = LIFE_DOMAINS.find((item) => item.key === activeDomain) ?? LIFE_DOMAINS[0];
+  if (loading) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <p className="text-sm text-[#7d7362]">جارٍ تحميل المدينة...</p>
+      </div>
+    );
+  }
 
   return (
-    <div className="tm-shell space-y-7">
-      <section className="relative overflow-hidden rounded-3xl border border-[#d8cdb9] bg-[#fcfaf7]/80 p-7 shadow-[0_14px_36px_rgba(140,120,81,0.15)]">
-        <div
-          className="pointer-events-none absolute -right-16 -top-20 h-64 w-64 rounded-full"
-          style={{ background: "radial-gradient(circle, rgba(231,196,104,0.22) 0%, rgba(231,196,104,0) 70%)" }}
-        />
-        <p className="relative text-xs tracking-[0.26em] text-[#8c7851]">CITY OF MEANING</p>
-        <h1 className="tm-heading relative text-4xl leading-tight">مدينة المعنى</h1>
-        <p className="relative mt-2 max-w-[780px] text-sm leading-relaxed text-[#5f5648]/85">
-          القرآن ليس مجرد نص، بل نظام تحويل داخلي. هنا تنتقل عبر دوائر الحياة بتوازن: من الظل إلى الهدية ثم أفضل
-          احتمال، مع أثر عملي يومي.
+    <div className="tm-shell space-y-6">
+      {/* ── Header ──────────────────────────────────────────────────────── */}
+      <section className="text-center space-y-3">
+        <p className="text-xs tracking-[0.26em] text-[#8c7851] uppercase">
+          City of Meaning
         </p>
+        <h1 className="tm-heading text-4xl sm:text-5xl leading-tight">
+          مدينة المعنى
+        </h1>
+        {allDomainsLit ? (
+          <p className="text-sm text-[#c4a265] font-semibold">
+            مدينتك أصبحت مضيئة
+          </p>
+        ) : (
+          <p className="text-sm text-[#5f5648]/85 max-w-md mx-auto">
+            &ldquo;القرآن ليس مجرد نص، بل نظام تحويل داخلي&rdquo;
+          </p>
+        )}
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-[1.65fr_1fr]">
-        <div className="rounded-3xl border border-[#d8cdb9] bg-[#fcfaf7]/80 p-5 shadow-[0_10px_30px_rgba(140,120,81,0.14)] backdrop-blur-xl">
-          <div className="flex flex-wrap items-center justify-between gap-2">
-            <h2 className="tm-heading text-[1.7rem]">الخريطة التفاعلية</h2>
-            <span className="text-xs text-[#7d7362]">اضغط على أي نطاق</span>
-          </div>
-          <div className="rounded-2xl border border-[#d8cdb9] bg-[#f8f4ec] p-4">
-            <svg viewBox="0 0 740 420" className="w-full h-auto" role="img" aria-label="خريطة مدينة المعنى">
-              <defs>
-                <linearGradient id="cityGlow" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#6D8BFF" stopOpacity="0.28" />
-                  <stop offset="100%" stopColor="#E7C468" stopOpacity="0.2" />
-                </linearGradient>
-                <radialGradient id="coreGlow" cx="50%" cy="50%" r="60%">
-                  <stop offset="0%" stopColor="#E7C468" stopOpacity="0.28" />
-                  <stop offset="100%" stopColor="#E7C468" stopOpacity="0" />
-                </radialGradient>
-              </defs>
+      {/* ── Interactive Map ─────────────────────────────────────────────── */}
+      <section className="relative">
+        <InteractiveCityMap
+          entries={tracker}
+          completedDays={completedDays}
+          activeDomain={activeDomain}
+          onDomainClick={setActiveDomain}
+        />
+      </section>
 
-              <rect x="0" y="0" width="740" height="420" rx="22" fill="#f6f1e8" />
-              <circle cx="370" cy="210" r="150" fill="url(#cityGlow)" />
-              <circle cx="370" cy="210" r="120" fill="url(#coreGlow)" />
-
-              {LIFE_DOMAINS.map((item, index) => {
-                const angle = (Math.PI * 2 * index) / LIFE_DOMAINS.length - Math.PI / 2;
-                const cx = 370 + Math.cos(angle) * 170;
-                const cy = 210 + Math.sin(angle) * 145;
-                const isActive = item.key === activeDomain;
-                return (
-                  <g key={item.key}>
-                    <line x1={370} y1={210} x2={cx} y2={cy} stroke="#c9bda8" strokeWidth="1.2" />
-                    <g
-                      onClick={() => setActiveDomain(item.key)}
-                      className="cursor-pointer"
-                      transform={`translate(${cx}, ${cy})`}
-                    >
-                      <circle
-                        r={isActive ? 34 : 26}
-                        fill={isActive ? "#8c7851" : "#e7dece"}
-                        fillOpacity={isActive ? 0.95 : 1}
-                        stroke={isActive ? "#7b694a" : "#b7ab98"}
-                        strokeWidth={isActive ? 2.8 : 1.2}
-                      />
-                      {isActive ? <circle r="39" fill="none" stroke="#E7C468" strokeOpacity="0.35" strokeWidth="1.6" /> : null}
-                      <text
-                        x="0"
-                        y="5"
-                        textAnchor="middle"
-                        className={`text-[11px] font-semibold ${isActive ? "fill-[#f4f1ea]" : "fill-[#4e4637]"}`}
-                      >
-                        {item.title}
-                      </text>
-                    </g>
-                  </g>
-                );
-              })}
-
-              <g>
-                <circle cx="370" cy="210" r="48" fill="#f1e7d4" stroke="#8c7851" strokeWidth="2.4" />
-                <text x="370" y="203" textAnchor="middle" className="fill-[#7b694a] text-[11px] font-semibold">
-                  مدينة المعنى
-                </text>
-                <text x="370" y="220" textAnchor="middle" className="fill-[#7d7362] text-[10px]">
-                  وعي - إدراك - أثر
-                </text>
-              </g>
-            </svg>
-          </div>
+      {/* ── Illumination Progress Ring ─────────────────────────────────── */}
+      <section className="flex items-center justify-center gap-6">
+        <div className="relative w-20 h-20">
+          <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
+            <circle
+              cx="50"
+              cy="50"
+              r="42"
+              fill="none"
+              stroke="#2a2118"
+              strokeWidth="6"
+            />
+            <circle
+              cx="50"
+              cy="50"
+              r="42"
+              fill="none"
+              stroke={illumination >= 80 ? "#e7c468" : "#c4a265"}
+              strokeWidth="6"
+              strokeLinecap="round"
+              strokeDasharray={`${(illumination / 100) * 2 * Math.PI * 42} ${2 * Math.PI * 42}`}
+              className="city-progress-ring"
+            />
+          </svg>
+          <span className="absolute inset-0 flex items-center justify-center text-sm font-bold text-[#c4a265]">
+            {illumination}%
+          </span>
         </div>
+        <div className="text-right space-y-1">
+          <p className="text-sm font-semibold text-[#2f2619]">
+            {completedDays.length}/28 يوماً من التدبر
+          </p>
+          <p className="text-xs text-[#7d7362]">
+            {illumination < 30
+              ? "المدينة في ظلامها — ابدأ الرحلة"
+              : illumination < 60
+              ? "بدأ النور يظهر — واصل"
+              : illumination < 90
+              ? "المدينة تقترب من الإضاءة"
+              : allDomainsLit
+              ? "رحلتك اكتملت بنور"
+              : "لمسات أخيرة نحو الاكتمال"}
+          </p>
+        </div>
+      </section>
 
-        <aside className="space-y-4">
-          <section className="rounded-3xl border border-[#d8cdb9] bg-[#fcfaf7]/80 p-5 shadow-[0_10px_30px_rgba(140,120,81,0.14)] backdrop-blur-xl">
-            <h3 className="tm-heading text-[1.45rem]">{domain.title}</h3>
-            <p className="mt-2 text-sm leading-relaxed text-[#5f5648]/85">{domain.hint}</p>
-            <div className="grid gap-2 sm:grid-cols-3 lg:grid-cols-1">
-              {AWARENESS_STATES.map((state) => {
-                const active = (selected ?? todayState) === state.value;
+      {/* ── Domain Detail Card ──────────────────────────────────────────── */}
+      {activeDomainData && (
+        <section
+          key={activeDomainData.key}
+          className="tm-card p-5 sm:p-6 space-y-4 city-card-enter"
+        >
+          <div className="flex items-start justify-between gap-3">
+            <div className="space-y-1">
+              <h2 className="tm-heading text-2xl">{activeDomainData.title}</h2>
+              <p className="text-sm text-[#5f5648]/85">
+                {activeDomainData.hint}
+              </p>
+            </div>
+            <span
+              className={[
+                "city-state-badge inline-flex items-center rounded-full border px-3 py-1 text-xs font-semibold",
+                activeDomainData.state === "best_possibility"
+                  ? "border-[#e7c468]/50 bg-[#e7c468]/15 text-[#e7c468]"
+                  : activeDomainData.state === "gift"
+                  ? "border-[#c4a265]/50 bg-[#c4a265]/15 text-[#c4a265]"
+                  : activeDomainData.state === "shadow"
+                  ? "border-[#5a4a38]/50 bg-[#5a4a38]/15 text-[#8a7b66]"
+                  : "border-[#3d3226]/50 bg-[#3d3226]/15 text-[#5a5044]",
+              ].join(" ")}
+            >
+              {STATE_LABELS[activeDomainData.state]}
+            </span>
+          </div>
+
+          {/* Mini progress bar */}
+          <div className="space-y-1.5">
+            <div className="flex justify-between text-xs text-[#7d7362]">
+              <span>
+                {activeDomainData.completedDays} من {activeDomainData.totalDays}{" "}
+                أيام
+              </span>
+              <span>
+                {STATE_DESCRIPTIONS[activeDomainData.state]}
+              </span>
+            </div>
+            <div className="h-2 rounded-full bg-[#2a2118] overflow-hidden">
+              <div
+                className="h-full rounded-full transition-all duration-700"
+                style={{
+                  width: `${(activeDomainData.completedDays / activeDomainData.totalDays) * 100}%`,
+                  backgroundColor:
+                    activeDomainData.state === "best_possibility"
+                      ? "#e7c468"
+                      : activeDomainData.state === "gift"
+                      ? "#c4a265"
+                      : "#5a4a38",
+                }}
+              />
+            </div>
+          </div>
+
+          {/* Days in this domain */}
+          <div className="space-y-2">
+            <p className="text-xs text-[#7d7362]">أيام المجال:</p>
+            <div className="flex flex-wrap gap-2">
+              {activeDomainData.days.map((day) => {
+                const entry = tracker.find((e) => e.day === day);
+                const isCompleted = completedDays.includes(day);
+                const isAvailable = day <= currentDay;
+
                 return (
-                  <button
-                    key={state.value}
-                    type="button"
-                    disabled={saving}
-                    onClick={() => saveState(state.value)}
-                    className={[
-                      "rounded-xl border px-3 py-2.5 text-sm transition-colors text-right duration-200",
-                      active
-                        ? "border-[#8c7851] bg-[#cdb98f]/18 text-[#7b694a]"
-                        : "border-[#d8cdb9] bg-[#f8f4ec] text-[#7d7362] hover:border-[#8c7851]/40 hover:text-[#2f2619]",
-                    ].join(" ")}
-                  >
-                    {state.label}
-                  </button>
+                  <div key={day} className="space-y-1.5">
+                    <button
+                      type="button"
+                      disabled={!isAvailable}
+                      onClick={() => router.push(programDayRoute(day))}
+                      className={[
+                        "flex flex-col items-center rounded-xl border px-3 py-2 min-w-[64px] transition-all",
+                        isCompleted
+                          ? "border-[#c4a265]/40 bg-[#c4a265]/10 text-[#c4a265]"
+                          : isAvailable
+                          ? "border-[#5a4a38]/40 bg-[#2a2118]/50 text-[#8a7b66] hover:border-[#c4a265]/40"
+                          : "border-[#2a2118]/40 bg-[#1a1610]/50 text-[#4a4038] cursor-not-allowed opacity-50",
+                      ].join(" ")}
+                    >
+                      <span className="text-[10px]">اليوم</span>
+                      <span className="text-lg font-semibold">{day}</span>
+                      <span className="text-[10px]">
+                        {isCompleted ? "مكتمل" : isAvailable ? "متاح" : "مقفل"}
+                      </span>
+                    </button>
+
+                    {/* Awareness state selector for completed days */}
+                    {isCompleted && (
+                      <div className="flex gap-1 justify-center">
+                        {AWARENESS_STATES.map((s) => (
+                          <button
+                            key={s.value}
+                            type="button"
+                            disabled={saving}
+                            onClick={() => saveState(day, s.value)}
+                            title={s.label}
+                            className={[
+                              "w-5 h-5 rounded-full border transition-all text-[8px]",
+                              entry?.state === s.value
+                                ? s.value === "best_possibility"
+                                  ? "border-[#e7c468] bg-[#e7c468]/30"
+                                  : s.value === "gift"
+                                  ? "border-[#c4a265] bg-[#c4a265]/30"
+                                  : "border-[#5a4a38] bg-[#5a4a38]/30"
+                                : "border-[#3d3226] bg-transparent hover:border-[#5a4a38]",
+                            ].join(" ")}
+                            aria-label={s.label}
+                          />
+                        ))}
+                      </div>
+                    )}
+                  </div>
                 );
               })}
             </div>
-            <p className="text-xs text-[#7d7362]">اليوم {today}</p>
-          </section>
+          </div>
+        </section>
+      )}
 
-          <section className="rounded-3xl border border-[#d8cdb9] bg-[#fcfaf7]/80 p-5 shadow-[0_10px_30px_rgba(140,120,81,0.14)] backdrop-blur-xl">
-            <h3 className="text-sm font-semibold text-[#2f2619]">مؤشر حالتك عبر الأيام</h3>
-            <div className="space-y-2">
-              <StatRow
-                label="الظل"
-                value={counts.shadow}
-                tone="text-rose-300"
-                barClass="bg-rose-500/30"
-                percent={Math.round((counts.shadow / Math.max(1, tracker.length)) * 100)}
-              />
-              <StatRow
-                label="الهدية"
-                value={counts.gift}
-                tone="text-amber-300"
-                barClass="bg-amber-500/30"
-                percent={Math.round((counts.gift / Math.max(1, tracker.length)) * 100)}
-              />
-              <StatRow
-                label="أفضل احتمال"
-                value={counts.best_possibility}
-                tone="text-emerald-300"
-                barClass="bg-emerald-500/30"
-                percent={Math.round((counts.best_possibility / Math.max(1, tracker.length)) * 100)}
-              />
-            </div>
-          </section>
-
-          <section className="rounded-3xl border border-[#d8cdb9] bg-[#fcfaf7]/80 p-5 shadow-[0_10px_30px_rgba(140,120,81,0.14)] backdrop-blur-xl">
-            <Link href="/program" className="block rounded-xl bg-[#7b694a] px-4 py-2.5 text-center text-sm font-semibold text-[#f4f1ea] transition hover:opacity-90">
-              متابعة البرنامج
-            </Link>
-            <Link href="/journal" className="mt-2 block text-center text-sm text-[#7d7362] transition hover:text-[#2f2619]">
-              فتح دفتر التأملات
-            </Link>
-          </section>
-        </aside>
+      {/* ── Domain Overview Grid ───────────────────────────────────────── */}
+      <section className="tm-card p-5 sm:p-6 space-y-4">
+        <h2 className="tm-heading text-xl">مجالات المدينة</h2>
+        <div className="grid grid-cols-3 gap-3">
+          {LIFE_DOMAINS.map((d) => {
+            const ds = getDomainState(d.days, tracker);
+            const isActive = d.key === activeDomain;
+            return (
+              <button
+                key={d.key}
+                type="button"
+                onClick={() => setActiveDomain(d.key as DomainKey)}
+                className={[
+                  "rounded-xl border p-3 text-center transition-all space-y-1",
+                  isActive
+                    ? "border-[#c4a265] bg-[#c4a265]/10"
+                    : "border-[#3d3226] bg-[#1a1610]/30 hover:border-[#5a4a38]",
+                ].join(" ")}
+              >
+                <p
+                  className={[
+                    "text-sm font-semibold",
+                    ds.state === "best_possibility"
+                      ? "text-[#e7c468]"
+                      : ds.state === "gift"
+                      ? "text-[#c4a265]"
+                      : ds.state === "shadow"
+                      ? "text-[#8a7b66]"
+                      : "text-[#5a5044]",
+                  ].join(" ")}
+                >
+                  {d.title}
+                </p>
+                <p className="text-[10px] text-[#7d7362]">
+                  {STATE_LABELS[ds.state]}
+                </p>
+                {/* Mini dots for day progress */}
+                <div className="flex justify-center gap-1 pt-1">
+                  {d.days.map((day) => {
+                    const entry = tracker.find((e) => e.day === day);
+                    return (
+                      <div
+                        key={day}
+                        className={[
+                          "w-2 h-2 rounded-full",
+                          entry?.state === "best_possibility"
+                            ? "bg-[#e7c468]"
+                            : entry?.state === "gift"
+                            ? "bg-[#c4a265]"
+                            : entry?.state === "shadow"
+                            ? "bg-[#5a4a38]"
+                            : "bg-[#2a2118]",
+                        ].join(" ")}
+                      />
+                    );
+                  })}
+                </div>
+              </button>
+            );
+          })}
+        </div>
       </section>
-    </div>
-  );
-}
 
-function StatRow({
-  label,
-  value,
-  tone,
-  barClass,
-  percent,
-}: {
-  label: string;
-  value: number;
-  tone: string;
-  barClass: string;
-  percent: number;
-}) {
-  return (
-    <div className="space-y-1.5 rounded-lg border border-[#d8cdb9] bg-[#f8f4ec] px-3 py-2">
-      <div className="flex items-center justify-between">
-        <span className={`text-sm ${tone}`}>{label}</span>
-        <span className="text-sm font-semibold text-[#2f2619]">{value}</span>
-      </div>
-      <div className="h-1.5 rounded-full bg-black/20 overflow-hidden">
-        <div className={`h-full ${barClass}`} style={{ width: `${percent}%` }} />
-      </div>
+      {/* ── Completion Message ──────────────────────────────────────────── */}
+      {allDomainsLit && (
+        <section className="tm-card p-6 text-center space-y-4 city-card-enter">
+          <p className="tm-heading text-3xl">رحلتك اكتملت بنور</p>
+          <p className="text-sm text-[#5f5648]/85 max-w-md mx-auto">
+            لقد أتممت 28 يوماً من التمعّن والبناء. مدينتك الآن تشع بالتوازن
+            والانسجام بين كافة جوانب الحياة.
+          </p>
+          <div className="flex justify-center gap-3">
+            <Link
+              href="/progress"
+              className="tm-ghost-btn rounded-xl px-5 py-2.5 text-sm"
+            >
+              عرض السجل الكامل
+            </Link>
+            <Link
+              href="/program"
+              className="tm-gold-btn rounded-xl px-5 py-2.5 text-sm"
+            >
+              العودة للبرنامج
+            </Link>
+          </div>
+        </section>
+      )}
+
+      {/* ── CTA ────────────────────────────────────────────────────────── */}
+      {!allDomainsLit && (
+        <div className="text-center pt-2">
+          <button
+            type="button"
+            onClick={() => router.push(programDayRoute(currentDay))}
+            className="tm-gold-btn rounded-2xl px-8 py-3 text-base"
+          >
+            ✦ استكمل الرحلة اليومية
+          </button>
+        </div>
+      )}
     </div>
   );
 }
