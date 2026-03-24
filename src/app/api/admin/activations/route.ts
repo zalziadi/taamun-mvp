@@ -10,17 +10,38 @@ export async function GET() {
   const auth = await requireAdmin();
   if (!auth.ok) return auth.response;
 
-  const { data, error } = await auth.admin
+  /* جلب الأكواد المستخدمة + أول 50 كود متاح لكل باقة */
+  const { data: usedData } = await auth.admin
     .from("activation_codes")
     .select("*")
-    .order("created_at", { ascending: false });
+    .not("used_by", "is", null)
+    .order("id", { ascending: false });
 
-  if (error) {
-    console.error("[admin/activations] GET error:", error.message);
-    return NextResponse.json({ ok: false, error: "db_error" }, { status: 500 });
-  }
+  const { data: availData } = await auth.admin
+    .from("activation_codes")
+    .select("*")
+    .is("used_by", null)
+    .order("id", { ascending: false })
+    .limit(200);
 
-  return NextResponse.json({ ok: true, codes: data ?? [] });
+  const { count: totalCount } = await auth.admin
+    .from("activation_codes")
+    .select("*", { count: "exact", head: true });
+
+  const { count: availCount } = await auth.admin
+    .from("activation_codes")
+    .select("*", { count: "exact", head: true })
+    .is("used_by", null);
+
+  const data = [...(availData ?? []), ...(usedData ?? [])];
+
+  return NextResponse.json({
+    ok: true,
+    codes: data,
+    totalCount: totalCount ?? 0,
+    availCount: availCount ?? 0,
+    usedCount: (totalCount ?? 0) - (availCount ?? 0),
+  });
 }
 
 /**
@@ -32,7 +53,7 @@ export async function POST(req: NextRequest) {
   const auth = await requireAdmin();
   if (!auth.ok) return auth.response;
 
-  let body: { tier?: string; note?: string };
+  let body: { tier?: string };
   try {
     body = await req.json();
   } catch {
@@ -40,7 +61,6 @@ export async function POST(req: NextRequest) {
   }
 
   const tier = body.tier || "monthly";
-  const note = body.note?.trim() || null;
 
   /* توليد كود عشوائي فريد */
   const suffix = crypto.randomBytes(4).toString("hex").toUpperCase();
@@ -48,13 +68,7 @@ export async function POST(req: NextRequest) {
 
   const { data, error } = await auth.admin
     .from("activation_codes")
-    .insert({
-      code,
-      tier,
-      note,
-      created_by: auth.user.id,
-      created_at: new Date().toISOString(),
-    })
+    .insert({ code, tier })
     .select()
     .single();
 

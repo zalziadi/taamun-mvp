@@ -7,11 +7,9 @@ interface ActivationCode {
   id: string;
   code: string;
   tier: string;
-  note: string | null;
   used_by: string | null;
   used_at: string | null;
   used_email: string | null;
-  created_at: string;
 }
 
 const TIER_LABELS: Record<string, string> = {
@@ -23,10 +21,13 @@ const TIER_LABELS: Record<string, string> = {
 
 export default function ActivationsPage() {
   const [codes, setCodes] = useState<ActivationCode[]>([]);
+  const [totalCount, setTotalCount] = useState(0);
+  const [availCount, setAvailCount] = useState(0);
+  const [usedCount, setUsedCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
   const [tier, setTier] = useState("monthly");
-  const [note, setNote] = useState("");
+  const [filterTierView, setFilterTierView] = useState<string>("all");
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
 
@@ -35,7 +36,12 @@ export default function ActivationsPage() {
     try {
       const res = await fetch("/api/admin/activations", { cache: "no-store" });
       const data = await res.json();
-      if (data.ok) setCodes(data.codes ?? []);
+      if (data.ok) {
+        setCodes(data.codes ?? []);
+        setTotalCount(data.totalCount ?? 0);
+        setAvailCount(data.availCount ?? 0);
+        setUsedCount(data.usedCount ?? 0);
+      }
     } catch {
       /* silent */
     } finally {
@@ -55,12 +61,11 @@ export default function ActivationsPage() {
       const res = await fetch("/api/admin/activations", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ tier, note: note.trim() || undefined }),
+        body: JSON.stringify({ tier }),
       });
       const data = await res.json();
       if (res.ok && data.ok) {
         setMsg({ ok: true, text: `تم إنشاء الكود: ${data.code.code}` });
-        setNote("");
         void fetchCodes();
       } else {
         setMsg({ ok: false, text: data.error || "فشل الإنشاء" });
@@ -88,7 +93,7 @@ export default function ActivationsPage() {
     setTimeout(() => setMsg(null), 2000);
   }
 
-  const unused = codes.filter((c) => !c.used_by);
+  const unused = codes.filter((c) => !c.used_by && (filterTierView === "all" || c.tier === filterTierView));
   const used = codes.filter((c) => c.used_by);
 
   return (
@@ -104,9 +109,9 @@ export default function ActivationsPage() {
           </div>
           <div className="text-left">
             <p className="text-xs text-white/40">إجمالي الأكواد</p>
-            <p className="text-2xl font-bold text-[#c9b88a]">{codes.length}</p>
+            <p className="text-2xl font-bold text-[#c9b88a]">{totalCount}</p>
             <p className="text-[10px] text-white/30">
-              {unused.length} متاح · {used.length} مستخدم
+              {availCount} متاح · {usedCount} مستخدم
             </p>
           </div>
         </div>
@@ -114,7 +119,7 @@ export default function ActivationsPage() {
         {/* إنشاء كود جديد */}
         <section className="rounded-3xl border border-[#c9b88a]/25 bg-[#2b2824] p-6">
           <h2 className="text-lg font-bold text-[#e8e1d9]">إنشاء كود جديد</h2>
-          <div className="mt-4 grid gap-4 sm:grid-cols-3">
+          <div className="mt-4 grid gap-4 sm:grid-cols-2">
             <div>
               <label className="text-xs text-white/50">الباقة</label>
               <select
@@ -127,16 +132,6 @@ export default function ActivationsPage() {
                 <option value="yearly">سنوي (820 ر.س)</option>
                 <option value="vip">VIP (8,200 ر.س)</option>
               </select>
-            </div>
-            <div>
-              <label className="text-xs text-white/50">ملاحظة (اختياري)</label>
-              <input
-                type="text"
-                value={note}
-                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setNote(e.target.value)}
-                placeholder="اسم العميل أو ملاحظة"
-                className="mt-1 w-full rounded-xl border border-white/15 bg-[#1c1a15] px-4 py-3 text-sm text-[#e8e1d9] placeholder:text-white/25 focus:border-[#c9b88a]/50 focus:outline-none"
-              />
             </div>
             <div className="flex items-end">
               <button
@@ -158,9 +153,22 @@ export default function ActivationsPage() {
 
         {/* الأكواد المتاحة */}
         <section className="rounded-3xl border border-white/10 bg-[#2b2824] p-6">
-          <h2 className="text-lg font-bold text-[#e8e1d9]">
-            الأكواد المتاحة <span className="text-sm font-normal text-[#c9b88a]">({unused.length})</span>
-          </h2>
+          <div className="flex flex-wrap items-center justify-between gap-3">
+            <h2 className="text-lg font-bold text-[#e8e1d9]">
+              الأكواد المتاحة <span className="text-sm font-normal text-[#c9b88a]">({availCount})</span>
+            </h2>
+            <select
+              value={filterTierView}
+              onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setFilterTierView(e.target.value)}
+              className="rounded-lg border border-white/15 bg-[#1c1a15] px-3 py-1.5 text-xs text-[#e8e1d9]"
+            >
+              <option value="all">كل الباقات</option>
+              <option value="eid">عيدية</option>
+              <option value="monthly">شهري</option>
+              <option value="yearly">سنوي</option>
+              <option value="vip">VIP</option>
+            </select>
+          </div>
           {loading ? (
             <p className="mt-4 text-sm text-white/40">جاري التحميل...</p>
           ) : unused.length === 0 ? (
@@ -178,8 +186,6 @@ export default function ActivationsPage() {
                     </p>
                     <div className="flex gap-3 text-[11px] text-white/40">
                       <span>{TIER_LABELS[c.tier] || c.tier}</span>
-                      {c.note && <span>· {c.note}</span>}
-                      <span>· {new Date(c.created_at).toLocaleDateString("ar-SA")}</span>
                     </div>
                   </div>
                   <div className="flex gap-2">
@@ -222,7 +228,6 @@ export default function ActivationsPage() {
                     </p>
                     <div className="flex gap-3 text-[11px] text-white/30">
                       <span>{TIER_LABELS[c.tier] || c.tier}</span>
-                      {c.note && <span>· {c.note}</span>}
                     </div>
                   </div>
                   <div className="text-left text-[11px] text-white/40">
