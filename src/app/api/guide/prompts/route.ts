@@ -24,31 +24,38 @@ export async function GET() {
   const auth = await requireUser();
   if (!auth.ok) return auth.response;
 
-  const admin = getSupabaseAdmin();
-
-  const [progressRes, awarenessRes] = await Promise.all([
-    admin.from("progress").select("current_day").eq("user_id", auth.user.id).maybeSingle(),
-    admin
-      .from("awareness_logs")
-      .select("level")
-      .eq("user_id", auth.user.id)
-      .order("day", { ascending: false })
-      .limit(3),
-  ]);
-
-  const progress = progressRes.data as ProgressRow | null;
-  const awarenessLogs = (awarenessRes.data ?? []) as AwarenessRow[];
-  const currentDay = progress?.current_day ?? 1;
-
-  // Get today's theme
+  let currentDay = 1;
+  let awarenessLogs: AwarenessRow[] = [];
   let theme = "";
-  if (currentDay) {
-    const { data } = await admin
-      .from("ramadan_verses")
-      .select("theme_title")
-      .eq("day", currentDay)
-      .maybeSingle();
-    theme = (data as VerseRow | null)?.theme_title ?? "";
+
+  try {
+    const admin = getSupabaseAdmin();
+
+    const [progressRes, awarenessRes] = await Promise.all([
+      admin.from("progress").select("current_day").eq("user_id", auth.user.id).maybeSingle(),
+      admin
+        .from("awareness_logs")
+        .select("level")
+        .eq("user_id", auth.user.id)
+        .order("day", { ascending: false })
+        .limit(3),
+    ]);
+
+    const progress = progressRes.data as ProgressRow | null;
+    awarenessLogs = (awarenessRes.data ?? []) as AwarenessRow[];
+    currentDay = progress?.current_day ?? 1;
+
+    // Get today's theme
+    if (currentDay) {
+      const { data } = await admin
+        .from("ramadan_verses")
+        .select("theme_title")
+        .eq("day", currentDay)
+        .maybeSingle();
+      theme = (data as VerseRow | null)?.theme_title ?? "";
+    }
+  } catch (err) {
+    console.warn("[guide/prompts] DB query failed, using defaults:", err instanceof Error ? err.message : String(err));
   }
 
   // Determine awareness state

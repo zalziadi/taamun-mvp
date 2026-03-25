@@ -457,8 +457,13 @@ export async function POST(req: Request) {
 
   const admin = getSupabaseAdmin();
 
-  // Load or create session
-  const session = await getOrCreateSession(admin, auth.user.id, body.sessionId);
+  // Load or create session (graceful — chat works even if session table is missing)
+  let session: { id: string; messages: SessionMessage[] } = { id: "", messages: [] };
+  try {
+    session = await getOrCreateSession(admin, auth.user.id, body.sessionId);
+  } catch (sessionErr) {
+    console.warn("[guide/chat] Session load failed (continuing without history):", sessionErr instanceof Error ? sessionErr.message : String(sessionErr));
+  }
 
   // Build conversation history from session
   const conversationHistory: ChatMessage[] = session.messages.slice(-20).map((m) => ({
@@ -517,9 +522,11 @@ export async function POST(req: Request) {
     { role: "assistant", content: reply },
   ];
 
-  // Fire-and-forget: save session + maybe update soul
-  void saveSessionMessages(admin, session.id, updatedMessages);
-  void maybeUpdateSoulSummary(admin, auth.user.id, updatedMessages);
+  // Fire-and-forget: save session + maybe update soul (safe — won't break response)
+  if (session.id) {
+    void saveSessionMessages(admin, session.id, updatedMessages).catch(() => {});
+    void maybeUpdateSoulSummary(admin, auth.user.id, updatedMessages).catch(() => {});
+  }
 
   return NextResponse.json({
     ok: true,
