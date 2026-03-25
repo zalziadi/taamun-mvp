@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "../../lib/supabaseClient";
@@ -10,13 +10,28 @@ interface AuthClientProps {
   embedded?: boolean;
 }
 
+type AuthMethod = "email" | "phone";
+type PhoneStep = "input" | "verify";
+
 const RESEND_COOLDOWN_MS = 60_000;
+const OTP_LENGTH = 6;
 
 export function AuthClient({ embedded }: AuthClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [checkingSession, setCheckingSession] = useState(true);
+  const [authMethod, setAuthMethod] = useState<AuthMethod>("phone");
+
+  // Email state
   const [email, setEmail] = useState("");
+
+  // Phone state
+  const [phone, setPhone] = useState("");
+  const [phoneStep, setPhoneStep] = useState<PhoneStep>("input");
+  const [otpDigits, setOtpDigits] = useState<string[]>(Array(OTP_LENGTH).fill(""));
+  const otpRefs = useRef<(HTMLInputElement | null)[]>([]);
+
+  // Shared state
   const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [notice, setNotice] = useState<string | null>(null);
@@ -87,7 +102,30 @@ export function AuthClient({ embedded }: AuthClientProps) {
     }
   }
 
-  const handleSubmit = async (e: React.FormEvent) => {
+  /** Normalize phone: ensure it starts with + and country code */
+  function normalizePhone(raw: string): string {
+    let cleaned = raw.replace(/[\s\-()]/g, "");
+    // If starts with 05 → Saudi number, prepend +966
+    if (cleaned.startsWith("05")) {
+      cleaned = "+966" + cleaned.slice(1);
+    }
+    // If starts with 5 and is 9 digits → Saudi
+    if (cleaned.startsWith("5") && cleaned.length === 9) {
+      cleaned = "+966" + cleaned;
+    }
+    // If starts with 966 without + → add +
+    if (cleaned.startsWith("966") && !cleaned.startsWith("+")) {
+      cleaned = "+" + cleaned;
+    }
+    // If no + at all → add +
+    if (!cleaned.startsWith("+")) {
+      cleaned = "+" + cleaned;
+    }
+    return cleaned;
+  }
+
+  // ── Email submit ──
+  const handleEmailSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (cooldownRemainingSec > 0) {
@@ -130,6 +168,140 @@ export function AuthClient({ embedded }: AuthClientProps) {
     }
   };
 
+  // ── Phone: send OTP ──
+  const handlePhoneSend = async (e: React.FormEvent) => {
+    e.preventDefault();
+
+    if (cooldownRemainingSec > 0) {
+      setNotice(`تم إرسال الكود قبل قليل. انتظر ${cooldownRemainingSec} ثانية ثم حاول مجددًا.`);
+      setError(null);
+      return;
+    }
+
+    const normalized = normalizePhone(phone);
+    if (normalized.length < 10) {
+      setError("أدخل رقم جوال صحيح.");
+      return;
+    }
+
+    setError(null);
+    setNotice(null);
+    setLoading(true);
+    try {
+      const { error: otpError } = await supabase.auth.signInWithOtp({
+        phone: normalized,
+      });
+      if (otpError) throw otpError;
+      setPhoneStep("verify");
+      setResendCooldown();
+      setNotice("تم إرسال كود التحقق إلى جوالك.");
+      // Focus first OTP input after render
+      setTimeout(() => otpRefs.current[0]?.focus(), 100);
+    } catch (e) {
+      const raw = e instanceof Error ? e.message : "";
+      const lowered = raw.toLowerCase();
+      if (lowered.includes("rate limit") || lowered.includes("security purposes")) {
+        setPhoneStep("verify");
+        setResendCooldown();
+        setError(null);
+        setNotice("تم إرسال كود مؤخرًا. أدخل الكود الذي وصلك أو انتظر قليلًا.");
+      } else {
+        setError("تعذر إرسال كود التحقق. تأكد من صحة الرقم وحاول مجددًا.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ── Phone: verify OTP ──
+  const handlePhoneVerify = async (codeStr?: string) => {
+    const code = codeStr ?? otpDigits.join("");
+    if (code.length !== OTP_LENGTH) {
+      setError("أدخل الكود المكون من 6 أرقام.");
+      return;
+    }
+
+    const normalized = normalizePhone(phone);
+    setError(null);
+    setNotice(null);
+    setLoading(true);
+    try {
+      const { error: verifyError } = await supabase.auth.verifyOtp({
+        phone: normalized,
+        token: code,
+        type: "sms",
+      });
+      if (verifyError) throw verifyError;
+      router.replace("/program");
+    } catch (e) {
+      const raw = e instanceof Error ? e.message : "";
+      if (raw.toLowerCase().includes("expired")) {
+        setError("انتهت صلاحية الكود. أعد الإرسال وحاول مجددًا.");
+      } else {
+        setError("الكود غير صحيح. تأكد وأعد المحاولة.");
+      }
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  // ── OTP input handlers ──
+  const handleOtpChange = (index: number, value: string) => {
+    // Allow only digits
+    const digit = value.replace(/\D/g, "").slice(-1);
+    const newDigits = [...otpDigits];
+    newDigits[index] = digit;
+    setOtpDigits(newDigits);
+    if (error) setError(null);
+
+    // Auto-focus next
+    if (digit && index < OTP_LENGTH - 1) {
+      otpRefs.current[index + 1]?.focus();
+    }
+
+    // Auto-submit when all filled
+    if (digit && index === OTP_LENGTH - 1) {
+      const full = newDigits.join("");
+      if (full.length === OTP_LENGTH) {
+        handlePhoneVerify(full);
+      }
+    }
+  };
+
+  const handleOtpKeyDown = (index: number, e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (e.key === "Backspace" && !otpDigits[index] && index > 0) {
+      otpRefs.current[index - 1]?.focus();
+    }
+  };
+
+  const handleOtpPaste = (e: React.ClipboardEvent) => {
+    e.preventDefault();
+    const pasted = e.clipboardData.getData("text").replace(/\D/g, "").slice(0, OTP_LENGTH);
+    if (!pasted) return;
+    const newDigits = [...otpDigits];
+    for (let i = 0; i < pasted.length; i++) {
+      newDigits[i] = pasted[i];
+    }
+    setOtpDigits(newDigits);
+    // Focus last filled or the next empty
+    const focusIdx = Math.min(pasted.length, OTP_LENGTH - 1);
+    otpRefs.current[focusIdx]?.focus();
+    // Auto-submit if complete
+    if (pasted.length === OTP_LENGTH) {
+      handlePhoneVerify(pasted);
+    }
+  };
+
+  // ── Reset on method change ──
+  const switchMethod = (method: AuthMethod) => {
+    setAuthMethod(method);
+    setError(null);
+    setNotice(null);
+    setSent(false);
+    setPhoneStep("input");
+    setOtpDigits(Array(OTP_LENGTH).fill(""));
+  };
+
   if (checkingSession) {
     return (
       <div className="flex min-h-screen items-center justify-center bg-[#15130f] py-12">
@@ -138,74 +310,233 @@ export function AuthClient({ embedded }: AuthClientProps) {
     );
   }
 
+  // ── Method toggle ──
+  const methodToggle = (
+    <div className="mb-6 flex items-center justify-center gap-1 rounded-xl bg-white/5 p-1">
+      <button
+        type="button"
+        onClick={() => switchMethod("phone")}
+        className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition ${
+          authMethod === "phone"
+            ? "bg-[#c9b88a]/20 text-[#c9b88a]"
+            : "text-[#c9b88a]/50 hover:text-[#c9b88a]/70"
+        }`}
+      >
+        رقم الجوال
+      </button>
+      <button
+        type="button"
+        onClick={() => switchMethod("email")}
+        className={`flex-1 rounded-lg px-4 py-2 text-sm font-medium transition ${
+          authMethod === "email"
+            ? "bg-[#c9b88a]/20 text-[#c9b88a]"
+            : "text-[#c9b88a]/50 hover:text-[#c9b88a]/70"
+        }`}
+      >
+        البريد الإلكتروني
+      </button>
+    </div>
+  );
+
+  // ── Email sent confirmation ──
+  const emailSentView = (
+    <div className="rounded-xl border border-[#c9b88a]/30 bg-[#c9b88a]/10 p-6 text-center">
+      <p className="mb-2 text-lg font-semibold text-[#c9b88a]">تحقق من بريدك</p>
+      <p className="text-sm text-[#e8e1d9]/70">
+        أرسلنا رابط الدخول إلى <span className="font-semibold text-[#e8e1d9]">{email}</span>
+      </p>
+      {notice ? (
+        <p className="mt-3 rounded-lg border border-[#c9b88a]/20 bg-[#c9b88a]/5 px-3 py-2 text-xs text-[#c9b88a]/80">
+          {notice}
+        </p>
+      ) : null}
+      <button
+        type="button"
+        onClick={() => {
+          setSent(false);
+          setEmail("");
+          setNotice(null);
+        }}
+        className="mt-4 text-sm text-[#c9b88a]/70 underline hover:text-[#c9b88a]"
+      >
+        تغيير البريد
+      </button>
+    </div>
+  );
+
+  // ── Email form ──
+  const emailForm = (
+    <form onSubmit={handleEmailSubmit} className="space-y-4">
+      <label className="mr-1 block text-[0.7rem] uppercase tracking-[0.2em] text-[#c9b88a]/70">البريد الإلكتروني</label>
+      <input
+        type="email"
+        value={email}
+        onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+          setEmail(e.target.value);
+          if (error) setError(null);
+        }}
+        placeholder="بريدك الإلكتروني"
+        dir="ltr"
+        required
+        className="w-full border-x-0 border-t-0 border-b border-[#c9b88a]/30 bg-transparent px-1 py-3 text-[#e8e1d9] placeholder:text-[#c9b88a]/40 focus:border-[#c9b88a] focus:outline-none"
+      />
+
+      {error && (
+        <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-400">
+          {error}
+        </p>
+      )}
+      {notice ? (
+        <p className="rounded-lg border border-[#c9b88a]/20 bg-[#c9b88a]/5 px-3 py-2 text-sm text-[#c9b88a]/80">
+          {notice}
+        </p>
+      ) : null}
+
+      <button
+        type="submit"
+        disabled={loading || cooldownRemainingSec > 0}
+        className="mt-2 w-full rounded-xl bg-[#c9b88a] px-6 py-3 font-semibold tracking-[0.15em] text-[#15130f] transition hover:bg-[#e6d4a4] disabled:opacity-50"
+      >
+        {loading
+          ? "جارٍ الإرسال..."
+          : cooldownRemainingSec > 0
+          ? `انتظر ${cooldownRemainingSec}ث`
+          : "دخول"}
+      </button>
+    </form>
+  );
+
+  // ── Phone: input step ──
+  const phoneInputForm = (
+    <form onSubmit={handlePhoneSend} className="space-y-4">
+      <label className="mr-1 block text-[0.7rem] uppercase tracking-[0.2em] text-[#c9b88a]/70">رقم الجوال</label>
+      <div className="flex items-center gap-2" dir="ltr">
+        <span className="shrink-0 text-sm text-[#c9b88a]/60">+966</span>
+        <input
+          type="tel"
+          inputMode="numeric"
+          value={phone}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
+            setPhone(e.target.value.replace(/[^\d+\s\-()]/g, ""));
+            if (error) setError(null);
+          }}
+          placeholder="5XXXXXXXX"
+          dir="ltr"
+          required
+          className="w-full border-x-0 border-t-0 border-b border-[#c9b88a]/30 bg-transparent px-1 py-3 text-[#e8e1d9] placeholder:text-[#c9b88a]/40 focus:border-[#c9b88a] focus:outline-none"
+        />
+      </div>
+
+      {error && (
+        <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-400">
+          {error}
+        </p>
+      )}
+      {notice ? (
+        <p className="rounded-lg border border-[#c9b88a]/20 bg-[#c9b88a]/5 px-3 py-2 text-sm text-[#c9b88a]/80">
+          {notice}
+        </p>
+      ) : null}
+
+      <button
+        type="submit"
+        disabled={loading || cooldownRemainingSec > 0}
+        className="mt-2 w-full rounded-xl bg-[#c9b88a] px-6 py-3 font-semibold tracking-[0.15em] text-[#15130f] transition hover:bg-[#e6d4a4] disabled:opacity-50"
+      >
+        {loading
+          ? "جارٍ الإرسال..."
+          : cooldownRemainingSec > 0
+          ? `انتظر ${cooldownRemainingSec}ث`
+          : "إرسال كود التحقق"}
+      </button>
+    </form>
+  );
+
+  // ── Phone: OTP verify step ──
+  const phoneVerifyForm = (
+    <div className="space-y-5">
+      <div className="rounded-xl border border-[#c9b88a]/30 bg-[#c9b88a]/10 p-4 text-center">
+        <p className="mb-1 text-sm text-[#c9b88a]">أدخل كود التحقق المرسل إلى</p>
+        <p className="text-lg font-semibold text-[#e8e1d9]" dir="ltr">{normalizePhone(phone)}</p>
+      </div>
+
+      {/* OTP Inputs */}
+      <div className="flex items-center justify-center gap-2" dir="ltr" onPaste={handleOtpPaste}>
+        {otpDigits.map((digit, i) => (
+          <input
+            key={i}
+            ref={(el) => { otpRefs.current[i] = el; }}
+            type="text"
+            inputMode="numeric"
+            maxLength={1}
+            value={digit}
+            onChange={(e) => handleOtpChange(i, e.target.value)}
+            onKeyDown={(e) => handleOtpKeyDown(i, e)}
+            className="h-14 w-11 rounded-xl border border-[#c9b88a]/30 bg-white/5 text-center text-2xl font-bold text-[#e8e1d9] outline-none transition focus:border-[#c9b88a] focus:ring-1 focus:ring-[#c9b88a]/30"
+          />
+        ))}
+      </div>
+
+      {error && (
+        <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-center text-sm text-amber-400">
+          {error}
+        </p>
+      )}
+      {notice ? (
+        <p className="rounded-lg border border-[#c9b88a]/20 bg-[#c9b88a]/5 px-3 py-2 text-center text-sm text-[#c9b88a]/80">
+          {notice}
+        </p>
+      ) : null}
+
+      <button
+        type="button"
+        onClick={() => handlePhoneVerify()}
+        disabled={loading || otpDigits.join("").length !== OTP_LENGTH}
+        className="w-full rounded-xl bg-[#c9b88a] px-6 py-3 font-semibold tracking-[0.15em] text-[#15130f] transition hover:bg-[#e6d4a4] disabled:opacity-50"
+      >
+        {loading ? "جارٍ التحقق..." : "تحقق"}
+      </button>
+
+      <div className="flex items-center justify-between text-sm">
+        <button
+          type="button"
+          onClick={() => {
+            setPhoneStep("input");
+            setOtpDigits(Array(OTP_LENGTH).fill(""));
+            setError(null);
+            setNotice(null);
+          }}
+          className="text-[#c9b88a]/70 underline hover:text-[#c9b88a]"
+        >
+          تغيير الرقم
+        </button>
+        <button
+          type="button"
+          onClick={(e) => handlePhoneSend(e as unknown as React.FormEvent)}
+          disabled={cooldownRemainingSec > 0 || loading}
+          className="text-[#c9b88a]/70 underline hover:text-[#c9b88a] disabled:opacity-40 disabled:no-underline"
+        >
+          {cooldownRemainingSec > 0 ? `إعادة الإرسال (${cooldownRemainingSec}ث)` : "إعادة إرسال الكود"}
+        </button>
+      </div>
+    </div>
+  );
+
+  // ── Determine body content ──
+  let bodyContent: React.ReactNode;
+  if (authMethod === "email") {
+    bodyContent = sent ? emailSentView : emailForm;
+  } else {
+    bodyContent = phoneStep === "verify" ? phoneVerifyForm : phoneInputForm;
+  }
+
   const content = (
     <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 shadow-[0_10px_36px_rgba(0,0,0,0.3)] backdrop-blur-md md:p-10">
       <h1 className="mb-2 text-center font-['Amiri'] text-4xl font-bold text-[#e8e1d9]">تسجيل الدخول</h1>
       <p className="mb-8 text-center text-sm text-[#c9b88a]">عُد إلى رحلة التمعّن</p>
 
-      {sent ? (
-        <div className="rounded-xl border border-[#c9b88a]/30 bg-[#c9b88a]/10 p-6 text-center">
-          <p className="mb-2 text-lg font-semibold text-[#c9b88a]">تحقق من بريدك</p>
-          <p className="text-sm text-[#e8e1d9]/70">
-            أرسلنا رابط الدخول إلى <span className="font-semibold text-[#e8e1d9]">{email}</span>
-          </p>
-          {notice ? (
-            <p className="mt-3 rounded-lg border border-[#c9b88a]/20 bg-[#c9b88a]/5 px-3 py-2 text-xs text-[#c9b88a]/80">
-              {notice}
-            </p>
-          ) : null}
-          <button
-            type="button"
-            onClick={() => {
-              setSent(false);
-              setEmail("");
-              setNotice(null);
-            }}
-            className="mt-4 text-sm text-[#c9b88a]/70 underline hover:text-[#c9b88a]"
-          >
-            تغيير البريد
-          </button>
-        </div>
-      ) : (
-        <form onSubmit={handleSubmit} className="space-y-4">
-          <label className="mr-1 block text-[0.7rem] uppercase tracking-[0.2em] text-[#c9b88a]/70">البريد الإلكتروني</label>
-          <input
-            type="email"
-            value={email}
-            onChange={(e: React.ChangeEvent<HTMLInputElement>) => {
-              setEmail(e.target.value);
-              if (error) setError(null);
-            }}
-            placeholder="بريدك الإلكتروني"
-            dir="ltr"
-            required
-            className="w-full border-x-0 border-t-0 border-b border-[#c9b88a]/30 bg-transparent px-1 py-3 text-[#e8e1d9] placeholder:text-[#c9b88a]/40 focus:border-[#c9b88a] focus:outline-none"
-          />
-
-          {error && (
-            <p className="rounded-lg border border-amber-500/30 bg-amber-500/10 px-3 py-2 text-sm text-amber-400">
-              {error}
-            </p>
-          )}
-          {notice ? (
-            <p className="rounded-lg border border-[#c9b88a]/20 bg-[#c9b88a]/5 px-3 py-2 text-sm text-[#c9b88a]/80">
-              {notice}
-            </p>
-          ) : null}
-
-          <button
-            type="submit"
-            disabled={loading || cooldownRemainingSec > 0}
-            className="mt-2 w-full rounded-xl bg-[#c9b88a] px-6 py-3 font-semibold tracking-[0.15em] text-[#15130f] transition hover:bg-[#e6d4a4] disabled:opacity-50"
-          >
-            {loading
-              ? "جارٍ الإرسال..."
-              : cooldownRemainingSec > 0
-              ? `انتظر ${cooldownRemainingSec}ث`
-              : "دخول"}
-          </button>
-        </form>
-      )}
+      {methodToggle}
+      {bodyContent}
 
       <Link href="/" className="mt-6 block text-center text-sm text-[#c9b88a]/60 transition hover:text-[#c9b88a]">
         العودة للرئيسية

@@ -47,7 +47,7 @@ npx tsc --noEmit && npm run build
 | S5 | **لا تحذف imports** — إلا إذا تأكدت أنها غير مستخدمة في كل الملفات |
 
 ## الصفحات الحية (لا تكسرها)
-`/` و `/day` و `/progress` و `/subscribe` و `/book` و `/auth` و `/program` و `/account`
+`/` و `/day` و `/progress` و `/pricing` و `/book` و `/auth` و `/program` و `/account`
 
 ## البنية المعمارية
 
