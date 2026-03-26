@@ -1,0 +1,158 @@
+import { NextResponse } from "next/server";
+import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import crypto from "crypto";
+
+export const dynamic = "force-dynamic";
+
+type SallaWebhookPayload = {
+  event?: string;
+  merchant?: number;
+  data?: {
+    id?: number;
+    status?: { slug?: string; name?: string };
+    payment?: { method?: string; status?: string };
+    customer?: { email?: string; mobile?: string; first_name?: string };
+    amounts?: { total?: { amount?: number }; currency?: string };
+    meta?: Record<string, string>;
+    reference_id?: string;
+  };
+};
+
+function verifySallaSignature(
+  rawBody: string,
+  secret: string,
+  receivedSignature: string | null
+): boolean {
+  if (!receivedSignature || !secret) return false;
+  const expected = crypto
+    .createHmac("sha256", secret)
+    .update(rawBody, "utf8")
+    .digest("hex");
+  return crypto.timingSafeEqual(
+    Buffer.from(expected, "hex"),
+    Buffer.from(receivedSignature, "hex")
+  );
+}
+
+/**
+ * POST /api/salla/webhook
+ * يستقبل أحداث الدفع من سلة ويفعّل الاشتراك.
+ */
+export async function POST(req: Request) {
+  const secret = process.env.SALLA_WEBHOOK_SECRET;
+  if (!secret) {
+    return NextResponse.json(
+      { ok: false, error: "salla_webhook_not_configured" },
+      { status: 500 }
+    );
+  }
+
+  const raw = await req.text();
+  const signature = req.headers.get("x-salla-signature");
+
+  if (!verifySallaSignature(raw, secret, signature)) {
+    console.warn("Salla webhook: invalid signature");
+    return NextResponse.json({ ok: false, error: "invalid_signature" }, { status: 401 });
+  }
+
+  let body: SallaWebhookPayload;
+  try {
+    body = JSON.parse(raw) as SallaWebhookPayload;
+  } catch {
+    return NextResponse.json({ ok: false, error: "invalid_json" }, { status: 400 });
+  }
+
+  const event = body.event ?? "";
+  console.log(`Salla webhook received: ${event}`);
+
+  // نعالج فقط أحداث الطلبات المكتملة
+  const paymentEvents = [
+    "order.created",
+    "order.payment.updated",
+    "order.updated",
+  ];
+
+  if (!paymentEvents.includes(event)) {
+    return NextResponse.json({ received: true });
+  }
+
+  const data = body.data;
+  if (!data) {
+    return NextResponse.json({ received: true });
+  }
+
+  // التحقق من حالة الدفع
+  const paymentStatus = data.payment?.status ?? data.status?.slug ?? "";
+  const isPaid =
+    paymentStatus === "paid" ||
+    paymentStatus === "completed" ||
+    paymentStatus === "in_progress"; // بعض الحالات في سلة
+
+  if (!isPaid && event !== "order.created") {
+    return NextResponse.json({ received: true });
+  }
+
+  // البحث عن المستخدم عبر البريد
+  const email = data.customer?.email;
+  if (!email) {
+    console.warn("Salla webhook: no customer email");
+    return NextResponse.json({ received: true });
+  }
+
+  const admin = getSupabaseAdmin();
+
+  // البحث عن المستخدم بالبريد
+  const { data: users, error: listError } = await admin.auth.admin.listUsers();
+  if (listError) {
+    console.error("Salla webhook: listUsers failed", listError);
+    return NextResponse.json({ ok: false, error: "user_lookup_failed" }, { status: 500 });
+  }
+
+  const matchedUser = users.users.find(
+    (u) => u.email?.toLowerCase() === email.toLowerCase()
+  );
+
+  if (!matchedUser) {
+    console.warn(`Salla webhook: no user found for email ${email}`);
+    // نسجّل الطلب للمعالجة اليدوية لاحقًا
+    return NextResponse.json({ received: true, note: "user_not_found" });
+  }
+
+  // تحديد الباقة من المبلغ أو البيانات الوصفية
+  const amount = data.amounts?.total?.amount ?? 0;
+  const meta = data.meta ?? {};
+  let tier = meta.tier ?? "monthly";
+  if (!meta.tier) {
+    if (amount >= 8000) tier = "vip";
+    else if (amount >= 700) tier = "yearly";
+    else if (amount >= 60) tier = "monthly";
+    else tier = "eid";
+  }
+
+  const periodDays = tier === "yearly" || tier === "vip" ? 365 : 30;
+  const periodEnd = new Date(Date.now() + periodDays * 24 * 60 * 60 * 1000).toISOString();
+
+  const { error: upsertError } = await admin.from("customer_subscriptions").upsert(
+    {
+      user_id: matchedUser.id,
+      payment_provider: "salla",
+      tap_charge_id: null,
+      stripe_customer_id: null,
+      stripe_subscription_id: null,
+      status: isPaid ? "active" : "pending",
+      price_id: `SAR:${amount.toFixed(2)}`,
+      tier,
+      current_period_end: periodEnd,
+      updated_at: new Date().toISOString(),
+    },
+    { onConflict: "user_id" }
+  );
+
+  if (upsertError) {
+    console.error("Salla webhook: subscription upsert failed", upsertError);
+    return NextResponse.json({ ok: false, error: "upsert_failed" }, { status: 500 });
+  }
+
+  console.log(`Salla webhook: activated ${tier} for ${matchedUser.id} (${email})`);
+  return NextResponse.json({ received: true, activated: true });
+}

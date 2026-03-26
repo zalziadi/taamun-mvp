@@ -1,0 +1,869 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>شاهين — خط إدارة الأمور المالية</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Tajawal', sans-serif;
+    background: #0a0e1a;
+    color: #e8e8e8;
+    min-height: 100vh;
+    direction: rtl;
+  }
+
+  .page-header {
+    text-align: center;
+    padding: 48px 24px 24px;
+    background: linear-gradient(180deg, #111827 0%, #0a0e1a 100%);
+    border-bottom: 1px solid rgba(99, 179, 237, 0.15);
+  }
+
+  .page-header h1 {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #63b3ed;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+  }
+
+  .page-header p {
+    font-size: 1rem;
+    color: #94a3b8;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+
+  .badge {
+    display: inline-block;
+    background: rgba(99, 179, 237, 0.12);
+    color: #63b3ed;
+    padding: 4px 14px;
+    border-radius: 20px;
+    font-size: 0.8rem;
+    font-weight: 500;
+    margin-bottom: 16px;
+    border: 1px solid rgba(99, 179, 237, 0.2);
+  }
+
+  /* ── Flow Container ── */
+  .flow-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 24px;
+  }
+
+  .section-title {
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 8px;
+  }
+
+  .section-subtitle {
+    font-size: 0.9rem;
+    color: #64748b;
+    margin-bottom: 32px;
+  }
+
+  /* ── Layers ── */
+  .layer {
+    margin-bottom: 32px;
+    position: relative;
+  }
+
+  .layer-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    padding: 6px 16px;
+    border-radius: 6px;
+    display: inline-block;
+    margin-bottom: 16px;
+  }
+
+  .layer-label.platforms { background: rgba(129, 140, 248, 0.15); color: #818cf8; }
+  .layer-label.shaheen { background: rgba(52, 211, 153, 0.15); color: #34d399; }
+  .layer-label.salla { background: rgba(251, 191, 36, 0.15); color: #fbbf24; }
+  .layer-label.payment { background: rgba(244, 114, 182, 0.15); color: #f472b6; }
+  .layer-label.accounting { background: rgba(167, 139, 250, 0.15); color: #a78bfa; }
+  .layer-label.reports { background: rgba(96, 165, 250, 0.15); color: #60a5fa; }
+
+  .layer-cards {
+    display: flex;
+    gap: 16px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .card {
+    background: #141b2d;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 14px;
+    padding: 20px 24px;
+    min-width: 200px;
+    max-width: 280px;
+    flex: 1;
+    position: relative;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover { border-color: rgba(99, 179, 237, 0.3); }
+
+  .card-icon {
+    font-size: 1.8rem;
+    margin-bottom: 10px;
+    display: block;
+  }
+
+  .card h3 {
+    font-size: 1rem;
+    font-weight: 700;
+    color: #f1f5f9;
+    margin-bottom: 6px;
+  }
+
+  .card p {
+    font-size: 0.82rem;
+    color: #64748b;
+    line-height: 1.6;
+  }
+
+  .card .tag {
+    display: inline-block;
+    font-size: 0.7rem;
+    padding: 2px 8px;
+    border-radius: 4px;
+    margin-top: 8px;
+    font-weight: 500;
+  }
+
+  .tag.auto { background: rgba(52, 211, 153, 0.12); color: #34d399; }
+  .tag.manual { background: rgba(251, 191, 36, 0.12); color: #fbbf24; }
+  .tag.webhook { background: rgba(244, 114, 182, 0.12); color: #f472b6; }
+
+  /* ── Connector Lines ── */
+  .connector {
+    display: flex;
+    justify-content: center;
+    padding: 8px 0;
+  }
+
+  .connector svg {
+    width: 40px;
+    height: 40px;
+  }
+
+  .arrow-down {
+    width: 0; height: 0;
+    border-left: 10px solid transparent;
+    border-right: 10px solid transparent;
+    border-top: 12px solid rgba(99, 179, 237, 0.4);
+    margin: 0 auto;
+  }
+
+  .connector-label {
+    text-align: center;
+    font-size: 0.72rem;
+    color: #475569;
+    margin-bottom: 4px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+  }
+
+  /* ── Big Flow Diagram ── */
+  .diagram-section {
+    background: #111827;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 20px;
+    padding: 40px 32px;
+    margin: 48px auto;
+    max-width: 1000px;
+  }
+
+  .flow-row {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+  }
+
+  .flow-node {
+    padding: 12px 20px;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 600;
+    text-align: center;
+    min-width: 140px;
+    position: relative;
+  }
+
+  .flow-node.platform {
+    background: rgba(129, 140, 248, 0.12);
+    border: 1px solid rgba(129, 140, 248, 0.3);
+    color: #818cf8;
+  }
+
+  .flow-node.shaheen-node {
+    background: rgba(52, 211, 153, 0.12);
+    border: 2px solid rgba(52, 211, 153, 0.4);
+    color: #34d399;
+    font-size: 1rem;
+    padding: 16px 28px;
+    box-shadow: 0 0 30px rgba(52, 211, 153, 0.08);
+  }
+
+  .flow-node.salla-node {
+    background: rgba(251, 191, 36, 0.12);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    color: #fbbf24;
+  }
+
+  .flow-node.payment-node {
+    background: rgba(244, 114, 182, 0.12);
+    border: 1px solid rgba(244, 114, 182, 0.3);
+    color: #f472b6;
+  }
+
+  .flow-node.accounting-node {
+    background: rgba(167, 139, 250, 0.12);
+    border: 1px solid rgba(167, 139, 250, 0.3);
+    color: #a78bfa;
+  }
+
+  .flow-node.report-node {
+    background: rgba(96, 165, 250, 0.12);
+    border: 1px solid rgba(96, 165, 250, 0.3);
+    color: #60a5fa;
+  }
+
+  .flow-arrow {
+    color: rgba(99, 179, 237, 0.4);
+    font-size: 1.2rem;
+  }
+
+  .flow-arrow.vertical {
+    display: block;
+    text-align: center;
+    margin: 4px 0;
+    font-size: 1.4rem;
+  }
+
+  /* ── Summary Table ── */
+  .summary-section {
+    max-width: 1000px;
+    margin: 48px auto;
+  }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #111827;
+    border-radius: 14px;
+    overflow: hidden;
+    border: 1px solid rgba(255,255,255,0.06);
+  }
+
+  th {
+    background: #1a2236;
+    padding: 14px 20px;
+    text-align: right;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: #94a3b8;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+
+  td {
+    padding: 14px 20px;
+    font-size: 0.88rem;
+    color: #cbd5e1;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    line-height: 1.7;
+  }
+
+  tr:hover td { background: rgba(99, 179, 237, 0.03); }
+
+  .status-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    margin-left: 6px;
+  }
+
+  .status-dot.green { background: #34d399; }
+  .status-dot.yellow { background: #fbbf24; }
+  .status-dot.blue { background: #60a5fa; }
+
+  /* ── Agent Coordination ── */
+  .agents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 16px;
+    margin-top: 16px;
+  }
+
+  .agent-card {
+    background: #141b2d;
+    border: 1px solid rgba(255,255,255,0.06);
+    border-radius: 12px;
+    padding: 20px;
+  }
+
+  .agent-card h4 {
+    font-size: 0.95rem;
+    color: #f1f5f9;
+    margin-bottom: 8px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  .agent-card ul {
+    list-style: none;
+    padding: 0;
+  }
+
+  .agent-card li {
+    font-size: 0.82rem;
+    color: #64748b;
+    padding: 3px 0;
+    padding-right: 16px;
+    position: relative;
+  }
+
+  .agent-card li::before {
+    content: '→';
+    position: absolute;
+    right: 0;
+    color: #475569;
+  }
+
+  .footer-note {
+    text-align: center;
+    padding: 40px 24px;
+    font-size: 0.78rem;
+    color: #475569;
+  }
+
+  @media (max-width: 768px) {
+    .layer-cards { flex-direction: column; align-items: center; }
+    .card { max-width: 100%; min-width: auto; }
+    .flow-row { flex-direction: column; }
+    .flow-arrow { transform: rotate(90deg); }
+  }
+</style>
+</head>
+<body>
+
+<!-- ════ HEADER ════ -->
+<div class="page-header">
+  <div class="badge">Shaheen Financial Agent</div>
+  <h1>شاهين — خط إدارة الأمور المالية</h1>
+  <p>خارطة الربط الكامل والأتمتة للدفوعات والاشتراكات عبر منظومة زياد الزيادي</p>
+</div>
+
+<!-- ════ MAIN FLOW ════ -->
+<div class="flow-container">
+
+  <!-- LAYER 1: Platforms -->
+  <div class="layer">
+    <div class="layer-label platforms">الطبقة ١ — المنصات</div>
+    <div class="layer-cards">
+      <div class="card">
+        <span class="card-icon">🔭</span>
+        <h3>تمعّن</h3>
+        <p>تطبيق التمعّن القرآني — اشتراكات 28 يوم، أكواد التفعيل (TAAMUN-XXX / TAAMUN-820-XXX)</p>
+        <span class="tag webhook">Entitlement Codes</span>
+      </div>
+      <div class="card">
+        <span class="card-icon">🧿</span>
+        <h3>مسخّر</h3>
+        <p>كورسات وتقارير وخدمات — micro courses، flagship، العقد الذهبي، استشارات</p>
+        <span class="tag webhook">musakhar.sa@gmail.com</span>
+      </div>
+      <div class="card">
+        <span class="card-icon">📦</span>
+        <h3>خدمات مستقبلية</h3>
+        <p>أي منصة أو خدمة جديدة تضاف للمنظومة لاحقاً</p>
+        <span class="tag manual">قابل للتوسع</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connector -->
+  <div class="connector">
+    <div>
+      <div class="connector-label">API / Webhooks</div>
+      <div class="arrow-down"></div>
+    </div>
+  </div>
+
+  <!-- LAYER 2: Shaheen -->
+  <div class="layer">
+    <div class="layer-label shaheen">الطبقة ٢ — شاهين (الإيجنت المالي)</div>
+    <div class="layer-cards">
+      <div class="card" style="border-color: rgba(52, 211, 153, 0.25);">
+        <span class="card-icon">🦅</span>
+        <h3>إدارة المنتجات</h3>
+        <p>مزامنة المنتجات والأسعار بين المنصات ومتجر سلة — إنشاء، تعديل، إيقاف</p>
+        <span class="tag auto">أتمتة كاملة</span>
+      </div>
+      <div class="card" style="border-color: rgba(52, 211, 153, 0.25);">
+        <span class="card-icon">🔄</span>
+        <h3>إدارة الاشتراكات</h3>
+        <p>تتبع دورة حياة الاشتراك: تفعيل → تجديد → إيقاف → استرجاع</p>
+        <span class="tag auto">أتمتة كاملة</span>
+      </div>
+      <div class="card" style="border-color: rgba(52, 211, 153, 0.25);">
+        <span class="card-icon">📊</span>
+        <h3>التسويات المالية</h3>
+        <p>مطابقة الدفعات المستلمة مع الطلبات — كشف الفروقات والتنبيه</p>
+        <span class="tag auto">أتمتة + مراجعة</span>
+      </div>
+      <div class="card" style="border-color: rgba(52, 211, 153, 0.25);">
+        <span class="card-icon">🤝</span>
+        <h3>التنسيق مع الإيجنتات</h3>
+        <p>إرسال تأكيدات للعميل، تحديث حالة الطلب، إشعارات داخلية</p>
+        <span class="tag webhook">Webhooks</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connector -->
+  <div class="connector">
+    <div>
+      <div class="connector-label">Salla API Integration</div>
+      <div class="arrow-down"></div>
+    </div>
+  </div>
+
+  <!-- LAYER 3: Salla -->
+  <div class="layer">
+    <div class="layer-label salla">الطبقة ٣ — متجر سلة</div>
+    <div class="layer-cards">
+      <div class="card">
+        <span class="card-icon">🛒</span>
+        <h3>كتالوج المنتجات</h3>
+        <p>كل خدمات تمعّن ومسخّر تظهر كمنتجات في سلة مع أسعارها وأوصافها</p>
+        <span class="tag auto">مزامنة تلقائية</span>
+      </div>
+      <div class="card">
+        <span class="card-icon">💳</span>
+        <h3>عمليات الشراء</h3>
+        <p>استقبال الطلبات — إصدار الفواتير — تحصيل المدفوعات</p>
+        <span class="tag auto">تلقائي</span>
+      </div>
+      <div class="card">
+        <span class="card-icon">🔐</span>
+        <h3>إدارة العملاء</h3>
+        <p>بيانات العملاء — سجل المشتريات — حالة الاشتراك</p>
+        <span class="tag auto">مزامنة</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connector -->
+  <div class="connector">
+    <div>
+      <div class="connector-label">Payment Processing</div>
+      <div class="arrow-down"></div>
+    </div>
+  </div>
+
+  <!-- LAYER 4: Payment Gateways -->
+  <div class="layer">
+    <div class="layer-label payment">الطبقة ٤ — بوابات الدفع</div>
+    <div class="layer-cards">
+      <div class="card">
+        <span class="card-icon">🏦</span>
+        <h3>تمارا</h3>
+        <p>الدفع بالتقسيط — 4 دفعات بدون فوائد</p>
+        <span class="tag auto">مدمج مع سلة</span>
+      </div>
+      <div class="card">
+        <span class="card-icon">💰</span>
+        <h3>تابي</h3>
+        <p>الدفع الآجل — خيار "اشتر الآن وادفع لاحقاً"</p>
+        <span class="tag auto">مدمج مع سلة</span>
+      </div>
+      <div class="card">
+        <span class="card-icon">🌐</span>
+        <h3>مدى / فيزا / مادا</h3>
+        <p>الدفع المباشر — بطاقات ائتمان وخصم مباشر</p>
+        <span class="tag auto">مدمج مع سلة</span>
+      </div>
+      <div class="card">
+        <span class="card-icon">📱</span>
+        <h3>Apple Pay / STC Pay</h3>
+        <p>محافظ رقمية — دفع سريع بلمسة</p>
+        <span class="tag auto">مدمج مع سلة</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connector -->
+  <div class="connector">
+    <div>
+      <div class="connector-label">Settlement & Reconciliation</div>
+      <div class="arrow-down"></div>
+    </div>
+  </div>
+
+  <!-- LAYER 5: Accounting -->
+  <div class="layer">
+    <div class="layer-label accounting">الطبقة ٥ — المحاسبة والتسويات</div>
+    <div class="layer-cards">
+      <div class="card">
+        <span class="card-icon">📋</span>
+        <h3>تسوية يومية</h3>
+        <p>مطابقة دفعات سلة مع الحساب البنكي — كشف الفروقات تلقائياً</p>
+        <span class="tag auto">يومي — أتمتة</span>
+      </div>
+      <div class="card">
+        <span class="card-icon">🧾</span>
+        <h3>الفواتير والضرائب</h3>
+        <p>إصدار فواتير ضريبية متوافقة مع هيئة الزكاة (ZATCA)</p>
+        <span class="tag auto">تلقائي عبر سلة</span>
+      </div>
+      <div class="card">
+        <span class="card-icon">💸</span>
+        <h3>المرتجعات والاسترداد</h3>
+        <p>معالجة طلبات الاسترداد — خصم من الرصيد — تحديث الحالة</p>
+        <span class="tag manual">يتطلب موافقة</span>
+      </div>
+    </div>
+  </div>
+
+  <!-- Connector -->
+  <div class="connector">
+    <div>
+      <div class="connector-label">Reporting & Analytics</div>
+      <div class="arrow-down"></div>
+    </div>
+  </div>
+
+  <!-- LAYER 6: Reports -->
+  <div class="layer">
+    <div class="layer-label reports">الطبقة ٦ — التقارير المالية</div>
+    <div class="layer-cards">
+      <div class="card">
+        <span class="card-icon">📈</span>
+        <h3>تقرير الإيرادات</h3>
+        <p>إجمالي الإيرادات لكل منصة — يومي / أسبوعي / شهري</p>
+        <span class="tag auto">أتمتة</span>
+      </div>
+      <div class="card">
+        <span class="card-icon">👥</span>
+        <h3>تقرير الاشتراكات</h3>
+        <p>عدد المشتركين — معدل التجديد — معدل الإلغاء (Churn)</p>
+        <span class="tag auto">أتمتة</span>
+      </div>
+      <div class="card">
+        <span class="card-icon">🎯</span>
+        <h3>تقرير الأداء</h3>
+        <p>أفضل المنتجات مبيعاً — متوسط قيمة الطلب — مصادر الدخل</p>
+        <span class="tag auto">أتمتة</span>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ FLOW DIAGRAM ════ -->
+<div class="diagram-section">
+  <h2 class="section-title" style="text-align:center; margin-bottom:32px;">مسار العملية المالية الكامل</h2>
+
+  <div class="flow-row">
+    <div class="flow-node platform">تمعّن</div>
+    <div class="flow-node platform">مسخّر</div>
+    <div class="flow-node platform">خدمات أخرى</div>
+  </div>
+  <div class="flow-arrow vertical">⬇</div>
+  <div style="text-align:center; font-size:0.75rem; color:#475569; margin-bottom:4px;">يرسل بيانات المنتج/الخدمة</div>
+
+  <div class="flow-row">
+    <div class="flow-node shaheen-node">🦅 شاهين — الإيجنت المالي</div>
+  </div>
+  <div class="flow-arrow vertical">⬇</div>
+  <div style="text-align:center; font-size:0.75rem; color:#475569; margin-bottom:4px;">ينشئ/يحدّث المنتجات</div>
+
+  <div class="flow-row">
+    <div class="flow-node salla-node">🛒 متجر سلة</div>
+  </div>
+  <div class="flow-arrow vertical">⬇</div>
+  <div style="text-align:center; font-size:0.75rem; color:#475569; margin-bottom:4px;">العميل يشتري ويدفع</div>
+
+  <div class="flow-row">
+    <div class="flow-node payment-node">تمارا</div>
+    <div class="flow-node payment-node">تابي</div>
+    <div class="flow-node payment-node">مدى/فيزا</div>
+    <div class="flow-node payment-node">Apple Pay</div>
+  </div>
+  <div class="flow-arrow vertical">⬇</div>
+  <div style="text-align:center; font-size:0.75rem; color:#475569; margin-bottom:4px;">تأكيد الدفع → Webhook</div>
+
+  <div class="flow-row">
+    <div class="flow-node shaheen-node">🦅 شاهين — يعالج الـ Webhook</div>
+  </div>
+
+  <div style="display: flex; justify-content: center; gap: 40px; margin-top: 16px; flex-wrap: wrap;">
+    <div style="text-align: center;">
+      <div class="flow-arrow vertical">⬇</div>
+      <div class="flow-node platform" style="margin-top:4px;">تفعيل الخدمة<br><small>إرسال كود / فتح وصول</small></div>
+    </div>
+    <div style="text-align: center;">
+      <div class="flow-arrow vertical">⬇</div>
+      <div class="flow-node accounting-node" style="margin-top:4px;">تسجيل محاسبي<br><small>فاتورة + تسوية</small></div>
+    </div>
+    <div style="text-align: center;">
+      <div class="flow-arrow vertical">⬇</div>
+      <div class="flow-node report-node" style="margin-top:4px;">إشعار الإيجنتات<br><small>تحديث الحالة</small></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ COORDINATION TABLE ════ -->
+<div class="summary-section">
+  <h2 class="section-title">جدول مهام شاهين المالية</h2>
+  <div class="section-subtitle">كل مهمة مرتبطة بالمنصة والتكرار ونوع الأتمتة</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>المهمة</th>
+        <th>المنصة</th>
+        <th>التكرار</th>
+        <th>النوع</th>
+        <th>المخرج</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td><span class="status-dot green"></span>مزامنة المنتجات مع سلة</td>
+        <td>تمعّن + مسخّر → سلة</td>
+        <td>عند التغيير</td>
+        <td>أتمتة كاملة</td>
+        <td>منتج محدّث في سلة</td>
+      </tr>
+      <tr>
+        <td><span class="status-dot green"></span>معالجة الدفع الناجح</td>
+        <td>سلة → شاهين</td>
+        <td>فوري (Webhook)</td>
+        <td>أتمتة كاملة</td>
+        <td>تفعيل الخدمة + إشعار</td>
+      </tr>
+      <tr>
+        <td><span class="status-dot green"></span>إصدار كود التفعيل (تمعّن)</td>
+        <td>شاهين → تمعّن</td>
+        <td>بعد الدفع</td>
+        <td>أتمتة كاملة</td>
+        <td>كود TAAMUN-XXX للعميل</td>
+      </tr>
+      <tr>
+        <td><span class="status-dot green"></span>فتح وصول الكورس (مسخّر)</td>
+        <td>شاهين → مسخّر</td>
+        <td>بعد الدفع</td>
+        <td>أتمتة كاملة</td>
+        <td>وصول مفعّل + رسالة ترحيب</td>
+      </tr>
+      <tr>
+        <td><span class="status-dot green"></span>تجديد الاشتراكات</td>
+        <td>سلة → شاهين</td>
+        <td>دوري (حسب الباقة)</td>
+        <td>أتمتة كاملة</td>
+        <td>تمديد الوصول أو تعليقه</td>
+      </tr>
+      <tr>
+        <td><span class="status-dot yellow"></span>معالجة الاسترداد</td>
+        <td>سلة → شاهين → البنك</td>
+        <td>عند الطلب</td>
+        <td>أتمتة + موافقة</td>
+        <td>استرداد مبلغ + إلغاء وصول</td>
+      </tr>
+      <tr>
+        <td><span class="status-dot green"></span>التسوية اليومية</td>
+        <td>سلة + البنك</td>
+        <td>يومي</td>
+        <td>أتمتة كاملة</td>
+        <td>تقرير مطابقة</td>
+      </tr>
+      <tr>
+        <td><span class="status-dot blue"></span>تقرير الإيرادات</td>
+        <td>كل المنصات</td>
+        <td>أسبوعي / شهري</td>
+        <td>أتمتة</td>
+        <td>تقرير مالي شامل</td>
+      </tr>
+      <tr>
+        <td><span class="status-dot blue"></span>تنبيه الفروقات</td>
+        <td>شاهين → زياد</td>
+        <td>عند الكشف</td>
+        <td>أتمتة + إشعار</td>
+        <td>تنبيه فوري بالفرق</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<!-- ════ AGENT COORDINATION ════ -->
+<div class="summary-section">
+  <h2 class="section-title">تنسيق شاهين مع الإيجنتات الأخرى</h2>
+  <div class="section-subtitle">كيف يتواصل شاهين مع باقي إيجنتات المنظومة</div>
+
+  <div class="agents-grid">
+    <div class="agent-card">
+      <h4>🦅 شاهين → إيجنت المبيعات</h4>
+      <ul>
+        <li>إرسال تأكيد الدفع الناجح</li>
+        <li>تحديث حالة العميل (مدفوع/معلّق)</li>
+        <li>إشعار بالاشتراكات القريبة من الانتهاء</li>
+      </ul>
+    </div>
+    <div class="agent-card">
+      <h4>🦅 شاهين → إيجنت المحتوى</h4>
+      <ul>
+        <li>فتح الوصول للمحتوى بعد الدفع</li>
+        <li>إغلاق الوصول عند انتهاء الاشتراك</li>
+        <li>تفعيل المحتوى الإضافي (باقة 820)</li>
+      </ul>
+    </div>
+    <div class="agent-card">
+      <h4>🦅 شاهين → إيجنت التواصل</h4>
+      <ul>
+        <li>إرسال إيصال الدفع للعميل</li>
+        <li>تذكير بموعد التجديد</li>
+        <li>إشعار بنجاح الاسترداد</li>
+      </ul>
+    </div>
+    <div class="agent-card">
+      <h4>🦅 شاهين → زياد (التقارير)</h4>
+      <ul>
+        <li>ملخص مالي أسبوعي</li>
+        <li>تنبيه فوري عند أي مشكلة مالية</li>
+        <li>تقرير شهري شامل بالإيرادات</li>
+      </ul>
+    </div>
+  </div>
+</div>
+
+<!-- ════ SHAHEEN TASK: PAYMENT GATEWAY SETUP ════ -->
+<div class="diagram-section" style="border-color: rgba(52, 211, 153, 0.25);">
+  <h2 class="section-title" style="text-align:center; margin-bottom:8px; color: #34d399;">مهمة شاهين: تفعيل بوابات الدفع عبر سلة</h2>
+  <p style="text-align:center; font-size:0.85rem; color:#64748b; margin-bottom:32px;">خطوات الربط الكامل بين تمعّن ومتجر سلة</p>
+
+  <div style="max-width:700px; margin:0 auto;">
+    <!-- Step 1 -->
+    <div style="display:flex; gap:16px; align-items:flex-start; margin-bottom:20px;">
+      <div style="min-width:36px; height:36px; border-radius:50%; background:rgba(52,211,153,0.15); border:2px solid rgba(52,211,153,0.4); display:flex; align-items:center; justify-content:center; color:#34d399; font-weight:700; font-size:0.9rem;">١</div>
+      <div>
+        <h4 style="color:#f1f5f9; font-size:0.95rem; margin-bottom:4px;">إنشاء المنتجات على سلة</h4>
+        <p style="color:#64748b; font-size:0.82rem; line-height:1.7;">أنشئ ٤ منتجات في متجر سلة تُمثّل الباقات: عيدية (28 ر.س) — شهري (82 ر.س) — سنوي (820 ر.س) — VIP (8,200 ر.س)</p>
+      </div>
+    </div>
+
+    <!-- Step 2 -->
+    <div style="display:flex; gap:16px; align-items:flex-start; margin-bottom:20px;">
+      <div style="min-width:36px; height:36px; border-radius:50%; background:rgba(52,211,153,0.15); border:2px solid rgba(52,211,153,0.4); display:flex; align-items:center; justify-content:center; color:#34d399; font-weight:700; font-size:0.9rem;">٢</div>
+      <div>
+        <h4 style="color:#f1f5f9; font-size:0.95rem; margin-bottom:4px;">إضافة متغيرات البيئة على Vercel</h4>
+        <p style="color:#64748b; font-size:0.82rem; line-height:1.7; direction:ltr; text-align:left; font-family:monospace; background:rgba(0,0,0,0.3); padding:12px; border-radius:8px; margin-top:8px;">
+PAYMENT_PROVIDER=salla<br>
+SALLA_PRODUCT_EID=https://store.salla.sa/.../product/...<br>
+SALLA_PRODUCT_MONTHLY=https://store.salla.sa/.../product/...<br>
+SALLA_PRODUCT_YEARLY=https://store.salla.sa/.../product/...<br>
+SALLA_PRODUCT_VIP=https://store.salla.sa/.../product/...<br>
+SALLA_WEBHOOK_SECRET=... (للـ webhook)
+        </p>
+      </div>
+    </div>
+
+    <!-- Step 3 -->
+    <div style="display:flex; gap:16px; align-items:flex-start; margin-bottom:20px;">
+      <div style="min-width:36px; height:36px; border-radius:50%; background:rgba(52,211,153,0.15); border:2px solid rgba(52,211,153,0.4); display:flex; align-items:center; justify-content:center; color:#34d399; font-weight:700; font-size:0.9rem;">٣</div>
+      <div>
+        <h4 style="color:#f1f5f9; font-size:0.95rem; margin-bottom:4px;">تفعيل Webhook على سلة</h4>
+        <p style="color:#64748b; font-size:0.82rem; line-height:1.7;">من لوحة تحكم سلة → الإعدادات → Webhooks → أضف:<br>
+        <code style="background:rgba(0,0,0,0.3); padding:2px 8px; border-radius:4px; direction:ltr;">https://taamun-mvp.vercel.app/api/salla/webhook</code><br>
+        الأحداث: order.created, order.payment.updated, order.updated</p>
+      </div>
+    </div>
+
+    <!-- Step 4 -->
+    <div style="display:flex; gap:16px; align-items:flex-start; margin-bottom:20px;">
+      <div style="min-width:36px; height:36px; border-radius:50%; background:rgba(52,211,153,0.15); border:2px solid rgba(52,211,153,0.4); display:flex; align-items:center; justify-content:center; color:#34d399; font-weight:700; font-size:0.9rem;">٤</div>
+      <div>
+        <h4 style="color:#f1f5f9; font-size:0.95rem; margin-bottom:4px;">Deploy + اختبار</h4>
+        <p style="color:#64748b; font-size:0.82rem; line-height:1.7;">انشر التعديلات على Vercel → اختبر عملية الشراء من الباقة الشهرية → تأكد أن الـ Webhook يُفعّل الاشتراك</p>
+      </div>
+    </div>
+
+    <!-- Step 5 -->
+    <div style="display:flex; gap:16px; align-items:flex-start;">
+      <div style="min-width:36px; height:36px; border-radius:50%; background:rgba(52,211,153,0.15); border:2px solid rgba(52,211,153,0.4); display:flex; align-items:center; justify-content:center; color:#34d399; font-weight:700; font-size:0.9rem;">٥</div>
+      <div>
+        <h4 style="color:#f1f5f9; font-size:0.95rem; margin-bottom:4px;">تنسيق مع مسخّر</h4>
+        <p style="color:#64748b; font-size:0.82rem; line-height:1.7;">نفس المتجر على سلة يمكن أن يضم منتجات مسخّر — نفس الـ Webhook يعالج كل المنصات</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ CODE CHANGES SUMMARY ════ -->
+<div class="summary-section">
+  <h2 class="section-title">التعديلات البرمجية المُنجزة</h2>
+  <div class="section-subtitle">ملخص التغييرات في كود تمعّن لربط سلة كبوابة دفع رئيسية</div>
+
+  <table>
+    <thead>
+      <tr>
+        <th>الملف</th>
+        <th>التعديل</th>
+        <th>الحالة</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td style="direction:ltr; text-align:left; font-family:monospace; font-size:0.8rem;">src/lib/checkoutProvider.ts</td>
+        <td>إضافة "salla" كـ provider جديد مع أولوية عند وجود SALLA_PRODUCT_* أو SALLA_STORE_SLUG</td>
+        <td><span class="status-dot green"></span>مكتمل</td>
+      </tr>
+      <tr>
+        <td style="direction:ltr; text-align:left; font-family:monospace; font-size:0.8rem;">src/lib/salla.ts</td>
+        <td>ملف جديد — دوال sallaProductUrl() وisSallaConfigured() لبناء روابط منتجات سلة</td>
+        <td><span class="status-dot green"></span>مكتمل</td>
+      </tr>
+      <tr>
+        <td style="direction:ltr; text-align:left; font-family:monospace; font-size:0.8rem;">src/app/api/checkout/route.ts</td>
+        <td>إضافة مسار سلة — يُرجع رابط منتج سلة المباشر عند اختيار provider=salla</td>
+        <td><span class="status-dot green"></span>مكتمل</td>
+      </tr>
+      <tr>
+        <td style="direction:ltr; text-align:left; font-family:monospace; font-size:0.8rem;">src/app/pricing/PricingExperience.tsx</td>
+        <td>زر واحد "ادفع والاشتراك" بدل ٣ أزرار — يتوجه مباشرة لسلة</td>
+        <td><span class="status-dot green"></span>مكتمل</td>
+      </tr>
+      <tr>
+        <td style="direction:ltr; text-align:left; font-family:monospace; font-size:0.8rem;">src/app/api/salla/webhook/route.ts</td>
+        <td>موجود مسبقاً ويعمل — يستقبل أحداث الدفع ويفعّل الاشتراك</td>
+        <td><span class="status-dot blue"></span>جاهز</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
+
+<div class="footer-note">
+  شاهين — إيجنت الإدارة المالية | منظومة زياد الزيادي | musakhar.sa@gmail.com
+</div>
+
+</body>
+</html>

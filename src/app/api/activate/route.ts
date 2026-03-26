@@ -71,29 +71,14 @@ export async function POST(req: NextRequest) {
   }
 
   /* ── 5. حدّث profile المستخدم ── */
-  const profileUpdate: Record<string, unknown> = {
-    id: auth.user.id,
-    subscription_status: "active",
-    subscription_tier: tier,
-    activated_at: new Date().toISOString(),
-  };
-
-  // أكواد المسبحة تمنح tasbeeh_access
-  const product = codeRow.product as string | null;
-  if (product === "tasbeeh" || code.startsWith("TAAMUN-TSB")) {
-    profileUpdate.tasbeeh_access = true;
-    profileUpdate.tasbeeh_activated_at = new Date().toISOString();
-  }
-
-  // الباقة السنوية تمنح كل الخدمات
-  if (tier === "yearly") {
-    profileUpdate.book_access = true;
-    profileUpdate.tasbeeh_access = true;
-  }
-
   await admin
     .from("profiles")
-    .upsert(profileUpdate, { onConflict: "id" });
+    .upsert({
+      id: auth.user.id,
+      subscription_status: "active",
+      subscription_tier: tier,
+      activated_at: new Date().toISOString(),
+    }, { onConflict: "id" });
 
   /* ── 6. أنشئ entitlement token واكتبه في cookie ── */
   const token = makeEntitlementToken(auth.user.id, tier);
