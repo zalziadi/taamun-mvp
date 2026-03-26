@@ -9,6 +9,7 @@ export const REFLECTION_ROUTE = "/reflection" as const;
 export const SOURCES_ROUTE = "/sources" as const;
 export const PRICING_ROUTE = "/pricing" as const;
 export const EID_ROUTE = "/eid" as const;
+export const TASBEEH_ROUTE = "/tasbeeh" as const;
 
 export function dayRoute(day: number): string {
   const safeDay = Math.min(28, Math.max(1, Math.floor(day)));
