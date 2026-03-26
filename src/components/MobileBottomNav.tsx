@@ -6,7 +6,7 @@ import { usePathname } from "next/navigation";
 type NavItem = {
   href: string;
   label: string;
-  icon: "home" | "program" | "city" | "journey" | "reflection" | "sources";
+  icon: "home" | "program" | "city" | "journey" | "reflection" | "sources" | "account";
   activeWhen: (pathname: string) => boolean;
 };
 
@@ -55,6 +55,13 @@ function NavGlyph({ name, className }: { name: NavItem["icon"]; className?: stri
           <path d="M9 4v16a2 2 0 0 1 2-2h7a2 2 0 0 1 2 2V8a4 4 0 0 0-4-4H9z" />
         </svg>
       );
+    case "account":
+      return (
+        <svg className={cn} viewBox="0 0 24 24" fill="none" stroke="currentColor" aria-hidden {...stroke}>
+          <path d="M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0z" />
+          <path d="M12 14a7 7 0 0 0-7 7h14a7 7 0 0 0-7-7z" />
+        </svg>
+      );
     default:
       return null;
   }
@@ -79,7 +86,7 @@ export function MobileBottomNav({ ramadanClosed }: { ramadanClosed: boolean }) {
       : { href: "/program", label: "البرنامج", icon: "program", activeWhen: (p) => p.startsWith("/program") },
     { href: "/journey", label: "الرحلة", icon: "journey", activeWhen: (p) => p.startsWith("/journey") },
     { href: "/reflection", label: "التأمل", icon: "reflection", activeWhen: (p) => p.startsWith("/reflection") },
-    { href: "/sources", label: "مصادر", icon: "sources", activeWhen: (p) => p.startsWith("/sources") },
+    { href: "/account", label: "حسابي", icon: "account", activeWhen: (p) => p.startsWith("/account") },
   ];
 
   return (

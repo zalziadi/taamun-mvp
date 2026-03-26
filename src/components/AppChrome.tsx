@@ -77,6 +77,9 @@ export function AppChrome({
               <Link href={SOURCES_ROUTE} className="tm-nav-link">
                 مصادر
               </Link>
+              <Link href="/account" className="tm-nav-link">
+                حسابي
+              </Link>
             </nav>
 
             <div className="flex items-center gap-3">
