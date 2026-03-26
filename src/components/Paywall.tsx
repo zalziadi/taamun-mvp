@@ -43,6 +43,10 @@ const REASONS: Record<string, { title: string; message: string }> = {
     title: "الكتيّب مقفل",
     message: "الوصول للكتيّب متاح بعد الاشتراك.",
   },
+  tasbeeh: {
+    title: "المسبحة للمشتركين",
+    message: "اشترك بـ 28 ريال للمسبحة، أو بـ 82 ريال للباقة السنوية الشاملة.",
+  },
   default: {
     title: "الوصول مقفل",
     message: "اشترك في البرنامج للوصول.",
