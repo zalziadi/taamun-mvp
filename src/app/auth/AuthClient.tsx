@@ -20,7 +20,7 @@ export function AuthClient({ embedded }: AuthClientProps) {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [checkingSession, setCheckingSession] = useState(true);
-  const [authMethod, setAuthMethod] = useState<AuthMethod>("phone");
+  const [authMethod, setAuthMethod] = useState<AuthMethod>("email");
 
   // Email state
   const [email, setEmail] = useState("");
@@ -168,7 +168,7 @@ export function AuthClient({ embedded }: AuthClientProps) {
     }
   };
 
-  // ── Phone: send OTP ──
+  // ── Phone: send OTP via Twilio Verify ──
   const handlePhoneSend = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -188,32 +188,33 @@ export function AuthClient({ embedded }: AuthClientProps) {
     setNotice(null);
     setLoading(true);
     try {
-      const { error: otpError } = await supabase.auth.signInWithOtp({
-        phone: normalized,
+      const res = await fetch("/api/auth/phone/send", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: normalized }),
       });
-      if (otpError) throw otpError;
+      const data = await res.json();
+      if (!res.ok) {
+        if (data.error === "invalid_phone") {
+          setError("رقم الجوال غير صحيح. تأكد من الرقم وحاول مجددًا.");
+        } else {
+          setError("تعذر إرسال كود التحقق. حاول مجددًا.");
+        }
+        return;
+      }
       setPhoneStep("verify");
       setResendCooldown();
       setNotice("تم إرسال كود التحقق إلى جوالك.");
-      // Focus first OTP input after render
       setTimeout(() => otpRefs.current[0]?.focus(), 100);
     } catch (e) {
-      const raw = e instanceof Error ? e.message : "";
-      const lowered = raw.toLowerCase();
-      if (lowered.includes("rate limit") || lowered.includes("security purposes")) {
-        setPhoneStep("verify");
-        setResendCooldown();
-        setError(null);
-        setNotice("تم إرسال كود مؤخرًا. أدخل الكود الذي وصلك أو انتظر قليلًا.");
-      } else {
-        setError("تعذر إرسال كود التحقق. تأكد من صحة الرقم وحاول مجددًا.");
-      }
+      console.error("[Phone OTP] Send error:", e);
+      setError("تعذر إرسال كود التحقق. حاول مجددًا.");
     } finally {
       setLoading(false);
     }
   };
 
-  // ── Phone: verify OTP ──
+  // ── Phone: verify OTP via Twilio Verify → Supabase session ──
   const handlePhoneVerify = async (codeStr?: string) => {
     const code = codeStr ?? otpDigits.join("");
     if (code.length !== OTP_LENGTH) {
@@ -226,20 +227,33 @@ export function AuthClient({ embedded }: AuthClientProps) {
     setNotice(null);
     setLoading(true);
     try {
+      const res = await fetch("/api/auth/phone/verify", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ phone: normalized, code }),
+      });
+      const data = await res.json();
+      if (!res.ok) {
+        if (data.error === "wrong_code") {
+          setError("الكود غير صحيح. تأكد وأعد المحاولة.");
+        } else if (data.error === "max_attempts") {
+          setError("تم تجاوز عدد المحاولات. أعد إرسال الكود.");
+        } else {
+          setError("فشل التحقق. حاول مجددًا.");
+        }
+        return;
+      }
+
+      // Use the hashed_token to create a Supabase session
       const { error: verifyError } = await supabase.auth.verifyOtp({
-        phone: normalized,
-        token: code,
-        type: "sms",
+        token_hash: data.hashed_token,
+        type: "magiclink",
       });
       if (verifyError) throw verifyError;
       router.replace("/program");
     } catch (e) {
-      const raw = e instanceof Error ? e.message : "";
-      if (raw.toLowerCase().includes("expired")) {
-        setError("انتهت صلاحية الكود. أعد الإرسال وحاول مجددًا.");
-      } else {
-        setError("الكود غير صحيح. تأكد وأعد المحاولة.");
-      }
+      console.error("[Phone OTP] Verify error:", e);
+      setError("فشل تسجيل الدخول. حاول مجددًا.");
     } finally {
       setLoading(false);
     }
@@ -535,7 +549,7 @@ export function AuthClient({ embedded }: AuthClientProps) {
       <h1 className="mb-2 text-center font-['Amiri'] text-4xl font-bold text-[#e8e1d9]">تسجيل الدخول</h1>
       <p className="mb-8 text-center text-sm text-[#c9b88a]">عُد إلى رحلة التمعّن</p>
 
-      {methodToggle}
+      {/* Phone login disabled temporarily — email only */}
       {bodyContent}
 
       <Link href="/" className="mt-6 block text-center text-sm text-[#c9b88a]/60 transition hover:text-[#c9b88a]">
