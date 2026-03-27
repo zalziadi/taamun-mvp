@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Amiri, Manrope, Noto_Serif } from "next/font/google";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { AppChrome } from "@/components/AppChrome";
+import { MetaPixel } from "@/components/MetaPixel";
 import { APP_DESCRIPTION, APP_DOMAIN, APP_NAME } from "@/lib/appConfig";
 import { isRamadanProgramClosed } from "@/lib/season";
 import "./globals.css";
@@ -77,6 +78,7 @@ export default function RootLayout({
         className={`${amiri.variable} ${manrope.variable} ${notoSerif.variable} tm-body antialiased`}
       >
         <AnalyticsProvider />
+        <MetaPixel />
         <AppChrome ramadanClosed={ramadanClosed}>{children}</AppChrome>
       </body>
     </html>
