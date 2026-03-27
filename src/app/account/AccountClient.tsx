@@ -40,42 +40,55 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
           setPlanTier(profile.tier);
         }
 
-        // Fetch completed days from reflections table
-        const { data: reflections, error: refError } = await supabase
-          .from("reflections")
-          .select("day, created_at")
-          .limit(1000);
+        // Fetch completed days from progress API (source of truth)
+        try {
+          const progressRes = await fetch("/api/program/progress");
+          if (progressRes.ok) {
+            const progressData = await progressRes.json();
+            if (progressData.ok) {
+              const days: number[] = progressData.completed_days ?? [];
+              setCompletedDays(days.length);
 
-        if (refError) {
-          console.error("Error fetching reflections:", refError);
-          setCompletedDays(0);
-        } else {
-          const uniqueDays = new Set(reflections?.map(r => r.day) || []);
-          setCompletedDays(uniqueDays.size);
-
-          // Calculate streak
-          if (reflections && reflections.length > 0) {
-            const dayNumbers = [...new Set(reflections.map(r => r.day))].sort((a, b) => b - a);
-            let streak = 0;
-            for (let i = 0; i < dayNumbers.length; i++) {
-              if (i === 0 || dayNumbers[i] === dayNumbers[i - 1] - 1) {
-                streak++;
-              } else {
-                break;
+              // Calculate streak from completed_days
+              if (days.length > 0) {
+                const sorted = [...days].sort((a, b) => b - a);
+                let streak = 1;
+                for (let i = 1; i < sorted.length; i++) {
+                  if (sorted[i] === sorted[i - 1] - 1) {
+                    streak++;
+                  } else {
+                    break;
+                  }
+                }
+                setCurrentStreak(streak);
               }
+            } else {
+              setCompletedDays(0);
             }
-            setCurrentStreak(streak);
+          } else {
+            setCompletedDays(0);
           }
+        } catch {
+          setCompletedDays(0);
         }
 
-        // Fetch average awareness
+        // Fetch average awareness — level is a string, map to score
+        const levelScore: Record<string, number> = {
+          present: 3,
+          tried: 2,
+          distracted: 1,
+        };
         const { data: awarenessData } = await supabase
           .from("awareness_logs")
           .select("level")
           .limit(1000);
 
         if (awarenessData && awarenessData.length > 0) {
-          const avg = awarenessData.reduce((sum, a) => sum + (a.level || 0), 0) / awarenessData.length;
+          const total = awarenessData.reduce(
+            (sum, a) => sum + (levelScore[a.level as string] ?? 0),
+            0
+          );
+          const avg = total / awarenessData.length;
           setAvgAwareness(Math.round(avg * 10) / 10);
         }
       } catch (err) {
