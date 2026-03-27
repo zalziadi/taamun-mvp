@@ -1,7 +1,14 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
+
+/* ── Meta Pixel helpers ── */
+function fbTrack(event: string, params?: Record<string, unknown>) {
+  if (typeof window !== "undefined" && typeof (window as any).fbq === "function") {
+    (window as any).fbq("track", event, params);
+  }
+}
 
 /* ── الباقات ── */
 type TierDef = {
@@ -72,6 +79,7 @@ function ActivateCode() {
       });
       const data = await res.json();
       if (res.ok && data.ok) {
+        fbTrack("Purchase", { content_name: "taamun_subscription", currency: "SAR" });
         setMsg({ ok: true, text: "تم التفعيل بنجاح! جاري التوجيه..." });
         setTimeout(() => router.push("/program"), 1500);
       } else if (res.status === 401) {
@@ -143,6 +151,10 @@ function CopyButton({ text, label }: { text: string; label: string }) {
 /* ── الصفحة الرئيسية ── */
 export default function PricingExperience() {
   const router = useRouter();
+
+  useEffect(() => {
+    fbTrack("ViewContent", { content_name: "pricing_page", content_type: "product" });
+  }, []);
 
   return (
     <div dir="rtl" className="min-h-screen bg-[#15130f] px-4 pb-16 pt-6 text-[#e8e1d9]">
@@ -273,6 +285,7 @@ export default function PricingExperience() {
                 rel="noopener noreferrer"
                 dir="ltr"
                 className="inline-block font-mono text-[#c9b88a] underline underline-offset-2"
+                onClick={() => fbTrack("InitiateCheckout", { content_name: "whatsapp_payment" })}
               >
                 +966553930885
               </a>
