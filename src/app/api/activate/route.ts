@@ -2,6 +2,7 @@ import { NextRequest, NextResponse } from "next/server";
 import { requireUser } from "@/lib/authz";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { makeEntitlementToken, COOKIE_NAME } from "@/lib/entitlement";
+import { calcExpiresAt, cookieMaxAge } from "@/lib/subscriptionDurations";
 
 /**
  * POST /api/activate
@@ -71,25 +72,29 @@ export async function POST(req: NextRequest) {
   }
 
   /* ── 5. حدّث profile المستخدم ── */
+  const now = new Date();
+  const expiresAt = calcExpiresAt(tier, now);
+
   await admin
     .from("profiles")
     .upsert({
       id: auth.user.id,
       subscription_status: "active",
       subscription_tier: tier,
-      activated_at: new Date().toISOString(),
+      activated_at: now.toISOString(),
+      expires_at: expiresAt,
     }, { onConflict: "id" });
 
   /* ── 6. أنشئ entitlement token واكتبه في cookie ── */
-  const token = makeEntitlementToken(auth.user.id, tier);
+  const token = makeEntitlementToken(auth.user.id, tier, expiresAt);
 
-  const res = NextResponse.json({ ok: true, tier });
+  const res = NextResponse.json({ ok: true, tier, expires_at: expiresAt });
   res.cookies.set(COOKIE_NAME, token, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",
     path: "/",
-    maxAge: 60 * 60 * 24 * 365, // سنة
+    maxAge: cookieMaxAge(tier),
   });
 
   return res;
