@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "../../lib/supabaseClient";
 import { JOURNEY_ROUTE, PRICING_ROUTE } from "@/lib/routes";
+import { daysRemaining, isSubscriptionExpired } from "@/lib/subscriptionDurations";
 
 interface AccountClientProps {
   embedded?: boolean;
@@ -21,6 +22,7 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
   const [currentStreak, setCurrentStreak] = useState<number>(0);
   const [subscriptionStatus, setSubscriptionStatus] = useState<"subscribed" | "not-subscribed">("not-subscribed");
   const [planTier, setPlanTier] = useState<string | null>(null);
+  const [expiresAt, setExpiresAt] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -34,10 +36,17 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
         // Try to get profile tier info
         const { data: profile } = await supabase
           .from("profiles")
-          .select("tier")
+          .select("tier, expires_at, subscription_status")
           .single();
         if (profile?.tier) {
           setPlanTier(profile.tier);
+        }
+        if (profile?.expires_at) {
+          setExpiresAt(profile.expires_at);
+        }
+        // Override subscription status if expired
+        if (profile?.subscription_status === "active" && isSubscriptionExpired(profile?.expires_at)) {
+          setSubscriptionStatus("not-subscribed");
         }
 
         // Fetch completed days from progress API (source of truth)
@@ -208,9 +217,24 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
                 {planTier && (
                   <p className="text-xs text-white/50 mt-1">{tierLabel(planTier)}</p>
                 )}
+                {expiresAt && !isSubscriptionExpired(expiresAt) && (
+                  <p className="text-xs text-white/40 mt-1">
+                    متبقي {daysRemaining(expiresAt)} يوم — ينتهي {formatDate(expiresAt)}
+                  </p>
+                )}
+                {expiresAt && daysRemaining(expiresAt) <= 7 && daysRemaining(expiresAt) > 0 && (
+                  <p className="text-xs text-amber-400 mt-1">⚠ اشتراكك ينتهي قريباً</p>
+                )}
               </div>
             ) : (
-              <p className="text-base font-medium text-white/50">غير مشترك</p>
+              <div>
+                <p className="text-base font-medium text-white/50">
+                  {expiresAt && isSubscriptionExpired(expiresAt) ? "انتهى الاشتراك" : "غير مشترك"}
+                </p>
+                {expiresAt && isSubscriptionExpired(expiresAt) && (
+                  <p className="text-xs text-amber-400 mt-1">انتهى بتاريخ {formatDate(expiresAt)}</p>
+                )}
+              </div>
             )}
           </div>
           {subscriptionStatus !== "subscribed" && (
@@ -218,7 +242,7 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
               href={PRICING_ROUTE}
               className="rounded-lg bg-[#c9b88a] px-4 py-2 text-sm font-semibold text-[#15130f] transition-colors hover:bg-[#dcc9a0]"
             >
-              اشترك الآن
+              {expiresAt && isSubscriptionExpired(expiresAt) ? "جدّد اشتراكك" : "اشترك الآن"}
             </Link>
           )}
         </div>
