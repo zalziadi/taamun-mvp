@@ -9,6 +9,7 @@ type TierDef = {
   name: string;
   price: string;
   period: string;
+  duration: string;
   note: string;
   feats: string[];
   highlight?: boolean;
@@ -21,6 +22,7 @@ const TIERS: TierDef[] = [
     name: "عيدية التمعّن",
     price: "28",
     period: "شهر واحد",
+    duration: "٣٠ يوم",
     note: "عرض مرن للمبتدئين",
     badge: "محدود",
     feats: ["صفحة التأمل", "الدفتر الشخصي", "الوصول للمصادر"],
@@ -30,6 +32,7 @@ const TIERS: TierDef[] = [
     name: "شهري",
     price: "82",
     period: "شهريًا",
+    duration: "٣٠ يوم",
     note: "الأكثر مرونة",
     feats: ["كل ميزات التمعّن", "المدينة التفاعلية", "المرشد الذكي", "تحليلات الرحلة"],
   },
@@ -38,6 +41,7 @@ const TIERS: TierDef[] = [
     name: "سنوي",
     price: "820",
     period: "سنويًا",
+    duration: "٣٦٥ يوم",
     note: "الأكثر توفيرًا",
     highlight: true,
     feats: ["كل ميزات الشهري", "توفير شهرين", "أولوية في الدعم"],
@@ -47,6 +51,7 @@ const TIERS: TierDef[] = [
     name: "VIP",
     price: "8,200",
     period: "سنويًا",
+    duration: "٣٦٥ يوم",
     note: "للجادين في رحلتهم",
     feats: ["كل ميزات السنوي", "جلسات تمعّن خاصة", "دعم مباشر ومخصص", "محتوى حصري"],
   },
@@ -184,6 +189,7 @@ export default function PricingExperience() {
                 {tier.price} <span className="text-base font-normal">ر.س</span>
               </p>
               <p className="text-xs text-[#c9b88a]">{tier.period}</p>
+              <p className="text-[10px] text-white/40 mt-0.5">المدة: {tier.duration}</p>
               <ul className="mt-5 space-y-2 text-sm text-[#e8e1d9]/85">
                 {tier.feats.map((f) => (
                   <li key={f} className="flex items-start gap-2">
