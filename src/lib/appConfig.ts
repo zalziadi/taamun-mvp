@@ -2,12 +2,14 @@
 export const APP_NAME = "تمَعُّن" as const;
 export const APP_TAGLINE = "رحلة اكتشاف المعنى بلغة القرآن" as const;
 export const APP_DESCRIPTION =
-  "برنامج رمضان 28 يوم للانتقال من الظل إلى الهدية إلى أفضل احتمال." as const;
+  "برنامج 28 يوم للانتقال من الظل إلى الهدية إلى أفضل احتمال." as const;
 export const APP_SLUG = "taamun" as const;
-export const RAMADAN_PROGRAM_KEY = "taamun-ramadan-28" as const;
-export const RAMADAN_PROGRAM_ACTIVE = true as const;
-export const RAMADAN_ENDS_AT_ISO = "2026-03-29T23:59:59+03:00" as const;
-export const RAMADAN_ENDS_AT_LABEL =
-  "30 رمضان 1447 هـ الموافق 29 مارس 2026" as const;
+export const PROGRAM_KEY = "taamun-28" as const;
+/** @deprecated alias للتوافق مع APIs رمضان القديمة */
+export const RAMADAN_PROGRAM_KEY = PROGRAM_KEY;
+/** @deprecated لم يعد البرنامج مربوطاً برمضان — دائماً false */
+export const RAMADAN_PROGRAM_ACTIVE = false as const;
+export const RAMADAN_ENDS_AT_ISO = "2099-12-31T23:59:59+03:00" as const;
+export const RAMADAN_ENDS_AT_LABEL = "" as const;
 export const APP_DOMAIN = "https://www.taamun.com" as const;
-export const RAMADAN_PROGRAM_STATUS_NOTE = "تم إيقاف برنامج رمضان مؤقتًا وسيعود ضمن العضويات المدفوعة." as const;
+export const RAMADAN_PROGRAM_STATUS_NOTE = "" as const;

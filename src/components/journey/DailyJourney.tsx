@@ -37,7 +37,7 @@ function streakLabel(streak: number): string {
 }
 
 function buildShareText(content: JourneyContent): string {
-  return `تمعّن — اليوم ${content.day}\n${content.verseText}\n${content.question}\ntaamun-mvp.vercel.app`;
+  return `تمعّن — اليوم ${content.day}\n${content.verseText}\n${content.question}\ntaamun.com`;
 }
 
 async function copyToClipboard(text: string): Promise<boolean> {

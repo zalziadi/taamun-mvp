@@ -41,7 +41,7 @@ export default function SuccessPage() {
           </a>
 
           <a
-            href="https://taamun-mvp.vercel.app"
+            href="https://taamun.com"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-4 bg-[#131820] border border-white/10 rounded-2xl p-5 hover:border-[#6D8BFF]/50 transition-all group"

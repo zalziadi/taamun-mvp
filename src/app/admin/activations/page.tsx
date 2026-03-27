@@ -87,7 +87,7 @@ export default function ActivationsPage() {
 
   /* نسخ رسالة واتساب */
   function copyWhatsAppMsg(code: string) {
-    const msg = `مرحباً! هذا كود تفعيل اشتراكك في تمعّن:\n\n${code}\n\nادخل على الرابط وسجّل دخولك ثم أدخل الكود:\nhttps://taamun-mvp.vercel.app/pricing`;
+    const msg = `مرحباً! هذا كود تفعيل اشتراكك في تمعّن:\n\n${code}\n\nادخل على الرابط وسجّل دخولك ثم أدخل الكود:\nhttps://taamun.com/pricing`;
     navigator.clipboard.writeText(msg);
     setMsg({ ok: true, text: "تم نسخ رسالة الواتساب" });
     setTimeout(() => setMsg(null), 2000);

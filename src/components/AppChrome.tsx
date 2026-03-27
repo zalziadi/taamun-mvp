@@ -51,11 +51,9 @@ export function AppChrome({
               <Link href="/" className="tm-nav-link">
                 الرئيسية
               </Link>
-              {!ramadanClosed ? (
-                <Link href="/program" className="tm-nav-link">
-                  البرنامج
-                </Link>
-              ) : null}
+              <Link href="/program" className="tm-nav-link">
+                البرنامج
+              </Link>
               <Link href={JOURNEY_ROUTE} className="tm-nav-link">
                 الرحلة
               </Link>

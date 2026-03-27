@@ -19,11 +19,14 @@ export default async function BookPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("book_access, role")
+    .select("book_access, role, subscription_tier, subscription_status")
     .eq("id", user.id)
     .maybeSingle();
 
-  const hasAccess = profile?.book_access === true || profile?.role === "admin";
+  const hasAccess =
+    profile?.book_access === true ||
+    profile?.role === "admin" ||
+    (profile?.subscription_tier === "yearly" && profile?.subscription_status === "active");
 
   if (!hasAccess) {
     return (

@@ -8,10 +8,10 @@ interface DayExperienceProps {
   day: number;
 }
 
-type AwarenessLevel = "aware" | "tried" | "distracted";
+type AwarenessLevel = "present" | "tried" | "distracted";
 
 const AWARENESS_OPTIONS: { value: AwarenessLevel; label: string; emoji: string }[] = [
-  { value: "aware", label: "كنت واعياً فعلاً", emoji: "✦" },
+  { value: "present", label: "كنت واعياً فعلاً", emoji: "✦" },
   { value: "tried", label: "حاولت", emoji: "◎" },
   { value: "distracted", label: "كنت مشتتاً", emoji: "○" },
 ];
