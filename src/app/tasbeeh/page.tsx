@@ -28,14 +28,17 @@ export default async function TasbeehPage() {
 
   const { data: profile } = await supabase
     .from("profiles")
-    .select("tasbeeh_access, book_access, role, subscription_tier, subscription_status")
+    .select("tasbeeh_access, book_access, role, subscription_tier, subscription_status, expires_at")
     .eq("id", user.id)
     .maybeSingle();
 
   const hasAccess =
     profile?.tasbeeh_access === true ||
     profile?.role === "admin" ||
-    (profile?.subscription_tier === "yearly" && profile?.subscription_status === "active");
+    (profile?.subscription_tier === "yearly" &&
+     profile?.subscription_status === "active" &&
+     profile?.expires_at &&
+     new Date(profile.expires_at) > new Date());
 
   if (!hasAccess) {
     return (
