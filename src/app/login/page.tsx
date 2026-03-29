@@ -19,14 +19,19 @@ function LoginContent() {
   const [checkingSession, setCheckingSession] = useState(true);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) {
+    let active = true;
+    supabase.auth.getUser().then(({ data, error }) => {
+      if (!active) return;
+      if (!error && data.user) {
         router.replace(next);
       } else {
         setCheckingSession(false);
       }
     });
-  }, []);
+    return () => {
+      active = false;
+    };
+  }, [next, router, supabase.auth]);
 
   const handleGoogle = async () => {
     setError("");
@@ -36,7 +41,7 @@ function LoginContent() {
         redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
       },
     });
-    if (err) setError(err.message);
+    if (err) setError("تعذر تسجيل الدخول عبر Google. تأكد من صلاحية الحساب أو جرّب البريد الإلكتروني.");
   };
 
   const handleEmail = async () => {
@@ -51,7 +56,7 @@ function LoginContent() {
         emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
       },
     });
-    if (err) setError(err.message);
+    if (err) setError("تعذر تسجيل الدخول عبر Google. تأكد من صلاحية الحساب أو جرّب البريد الإلكتروني.");
     else setSent(true);
   };
 

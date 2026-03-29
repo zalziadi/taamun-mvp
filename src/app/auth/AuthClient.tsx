@@ -49,11 +49,11 @@ export function AuthClient({ embedded }: AuthClientProps) {
     }, 5000);
 
     supabase.auth
-      .getSession()
-      .then(({ data }) => {
+      .getUser()
+      .then(({ data, error }) => {
         clearTimeout(timeoutId);
         if (!active) return;
-        if (data.session) {
+        if (!error && data.user) {
           router.replace("/program");
         } else {
           setCheckingSession(false);

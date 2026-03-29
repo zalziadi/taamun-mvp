@@ -16,6 +16,7 @@ export default function AdminPage() {
   const [allowed, setAllowed] = useState<boolean | null>(null); // null = loading
   const [error, setError] = useState<string | null>(null);
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loginLoading, setLoginLoading] = useState(false);
 
   async function loadDashboard() {
@@ -110,14 +111,24 @@ export default function AdminPage() {
         <form onSubmit={handleLogin} className="w-full max-w-sm space-y-4">
           <h1 className="text-2xl font-bold text-white text-center">لوحة الأدمن</h1>
           <p className="text-sm text-white/50 text-center">أدخل كلمة المرور للدخول</p>
-          <input
-            type="password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            placeholder="كلمة المرور"
-            className="w-full rounded-xl border border-white/20 bg-white/5 px-4 py-3 text-white placeholder-white/30 outline-none focus:border-white/40"
-            autoFocus
-          />
+          <div className="relative">
+            <input
+              type={showPassword ? "text" : "password"}
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              placeholder="كلمة المرور"
+              className="w-full rounded-xl border border-white/20 bg-white/5 px-4 py-3 pe-24 text-white placeholder-white/30 outline-none focus:border-white/40"
+              autoFocus
+            />
+            <button
+              type="button"
+              onClick={() => setShowPassword((prev) => !prev)}
+              className="absolute inset-y-0 start-2 my-1.5 rounded-lg px-3 text-xs font-medium text-white/70 transition-all duration-200 hover:bg-white/10 hover:text-white"
+              aria-label={showPassword ? "إخفاء كلمة المرور" : "إظهار كلمة المرور"}
+            >
+              {showPassword ? "إخفاء" : "إظهار"}
+            </button>
+          </div>
           {error && <p className="text-sm text-red-400 text-center">{error}</p>}
           <button
             type="submit"

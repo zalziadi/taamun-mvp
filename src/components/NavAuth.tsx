@@ -9,8 +9,8 @@ export function NavAuth() {
   const [ready, setReady] = useState(false);
 
   useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setLoggedIn(!!session);
+    supabase.auth.getUser().then(({ data, error }) => {
+      setLoggedIn(!error && !!data.user);
       setReady(true);
     });
 

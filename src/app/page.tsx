@@ -14,8 +14,8 @@ export default function Home() {
       process.env.NEXT_PUBLIC_SUPABASE_URL!,
       process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
     );
-    supabase.auth.getSession().then(({ data }) => {
-      if (data.session) {
+    supabase.auth.getUser().then(({ data, error }) => {
+      if (!error && data.user) {
         router.replace("/program");
       } else {
         setReady(true);
