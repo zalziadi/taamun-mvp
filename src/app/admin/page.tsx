@@ -18,50 +18,78 @@ export default function AdminPage() {
   const [password, setPassword] = useState("");
   const [loginLoading, setLoginLoading] = useState(false);
 
-  function loadDashboard() {
-    fetch("/api/admin/dashboard", { cache: "no-store" })
-      .then(async (res) => {
-        if (!res.ok) {
-          setAllowed(false);
-          return;
-        }
-        const data = await res.json();
-        if (!data.ok) {
-          setAllowed(false);
-          return;
-        }
-        setMetrics(data.metrics);
-        setAllowed(true);
-      })
-      .catch(() => {
+  async function loadDashboard() {
+    try {
+      const res = await fetch("/api/admin/dashboard", { cache: "no-store" });
+      if (!res.ok) {
         setAllowed(false);
-      });
+        return false;
+      }
+      const data = await res.json();
+      if (!data.ok) {
+        setAllowed(false);
+        return false;
+      }
+      setMetrics(data.metrics);
+      setAllowed(true);
+      return true;
+    } catch {
+      setAllowed(false);
+      return false;
+    }
+  }
+
+  async function loginWithPassword(candidate: string) {
+    const res = await fetch("/api/admin/login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ password: candidate }),
+    });
+
+    const data = await res.json().catch(() => ({ ok: false }));
+    if (!res.ok || !data.ok) {
+      return false;
+    }
+
+    return loadDashboard();
   }
 
   useEffect(() => {
-    loadDashboard();
+    void (async () => {
+      const keyFromQuery = new URLSearchParams(window.location.search).get("admin");
+
+      if (keyFromQuery) {
+        setLoginLoading(true);
+        setError(null);
+        const ok = await loginWithPassword(keyFromQuery);
+        setLoginLoading(false);
+
+        if (ok) {
+          setPassword("");
+          window.history.replaceState({}, "", "/admin");
+          return;
+        }
+      }
+
+      await loadDashboard();
+    })();
   }, []);
 
   async function handleLogin(e: FormEvent) {
     e.preventDefault();
     setLoginLoading(true);
     setError(null);
+
     try {
-      const res = await fetch("/api/admin/login", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ password }),
-      });
-      const data = await res.json();
-      if (!data.ok) {
+      const ok = await loginWithPassword(password);
+      if (!ok) {
         setError("كلمة المرور غير صحيحة");
-        setLoginLoading(false);
-        return;
+      } else {
+        setPassword("");
       }
-      setPassword("");
-      loadDashboard();
     } catch {
       setError("تعذر الاتصال بالخادم");
+    } finally {
       setLoginLoading(false);
     }
   }
@@ -90,9 +118,7 @@ export default function AdminPage() {
             className="w-full rounded-xl border border-white/20 bg-white/5 px-4 py-3 text-white placeholder-white/30 outline-none focus:border-white/40"
             autoFocus
           />
-          {error && (
-            <p className="text-sm text-red-400 text-center">{error}</p>
-          )}
+          {error && <p className="text-sm text-red-400 text-center">{error}</p>}
           <button
             type="submit"
             disabled={loginLoading || !password}
@@ -101,7 +127,9 @@ export default function AdminPage() {
             {loginLoading ? "جارٍ التحقق..." : "دخول"}
           </button>
           <div className="text-center">
-            <Link href="/" className="text-sm text-white/40 hover:text-white/70">الرئيسية</Link>
+            <Link href="/" className="text-sm text-white/40 hover:text-white/70">
+              الرئيسية
+            </Link>
           </div>
         </form>
       </div>
@@ -119,7 +147,9 @@ export default function AdminPage() {
   return (
     <div dir="rtl" className="min-h-screen bg-[#15130f] p-6">
       <nav className="mb-8">
-        <Link href="/" className="text-white/70 hover:text-white">الرئيسية</Link>
+        <Link href="/" className="text-white/70 hover:text-white">
+          الرئيسية
+        </Link>
       </nav>
       <h1 className="mb-8 text-2xl font-bold text-white">لوحة الأدمن</h1>
 
