@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ستوريز يوم الإطلاق — عيدية تمعّن</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600;700;800;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    background: #0a0a0a;
+    display: flex; flex-wrap: wrap; gap: 24px; padding: 32px; justify-content: center;
+  }
+  .story {
+    width: 1080px; height: 1920px;
+    background: #15130F;
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; flex-shrink: 0;
+  }
+  .story::before {
+    content: '';
+    position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+    background: radial-gradient(ellipse at 50% 30%, rgba(201,184,138,0.04) 0%, transparent 60%);
+    pointer-events: none;
+  }
+  .story::after {
+    content: ''; position: absolute;
+    top: 60px; left: 48px; right: 48px; bottom: 60px;
+    border: 1px solid rgba(201,184,138,0.08);
+    pointer-events: none;
+  }
+  .gold { color: #C9B88A; }
+  .white { color: #FFFFFF; }
+  .dim { color: rgba(255,255,255,0.45); }
+  .brand-top {
+    position: absolute; top: 120px;
+    font-size: 28px; color: rgba(201,184,138,0.35);
+    letter-spacing: 6px;
+  }
+  .time-label {
+    position: absolute; top: 80px; left: 80px;
+    font-size: 22px; color: rgba(201,184,138,0.3);
+    font-weight: 400;
+  }
+
+  h3 { color: #C9B88A; font-size: 22px; margin-bottom: 16px; text-align: center; font-weight: 400; }
+
+  /* Story 1 - Poll */
+  .poll .question { font-size: 64px; font-weight: 700; line-height: 1.6; margin-bottom: 80px; padding: 0 80px; }
+  .poll .options { display: flex; gap: 32px; }
+  .poll .option {
+    padding: 28px 64px;
+    border: 2px solid rgba(201,184,138,0.3);
+    border-radius: 16px;
+    font-size: 44px; font-weight: 600;
+  }
+
+  /* Story 2 - Truth */
+  .truth .lead { font-size: 52px; font-weight: 600; margin-bottom: 60px; line-height: 1.6; padding: 0 80px; }
+  .truth .real-q { font-size: 56px; font-weight: 700; line-height: 1.8; padding: 0 80px; }
+  .truth .arrow { font-size: 60px; margin-top: 40px; }
+
+  /* Story 3 - Intro */
+  .intro .today { font-size: 44px; font-weight: 500; margin-bottom: 60px; }
+  .intro .name { font-size: 96px; font-weight: 900; margin-bottom: 32px; }
+  .intro .desc { font-size: 44px; font-weight: 500; line-height: 1.8; padding: 0 80px; }
+  .intro .note { font-size: 36px; margin-top: 60px; }
+
+  /* Story 4 - How it works */
+  .how .title { font-size: 48px; font-weight: 700; margin-bottom: 72px; }
+  .how .features { display: flex; flex-direction: column; gap: 40px; text-align: right; padding: 0 120px; }
+  .how .feat { font-size: 44px; font-weight: 500; display: flex; gap: 20px; align-items: center; justify-content: flex-end; }
+  .how .feat .ico { order: -1; font-size: 36px; }
+  .how .bottom { font-size: 40px; font-weight: 700; margin-top: 72px; }
+
+  /* Story 5 - Offer */
+  .offer-s .gift { font-size: 120px; margin-bottom: 48px; }
+  .offer-s .name { font-size: 56px; font-weight: 700; margin-bottom: 40px; }
+  .offer-s .price { font-size: 112px; font-weight: 900; margin-bottom: 16px; }
+  .offer-s .sub { font-size: 36px; margin-bottom: 56px; }
+  .offer-s .checks { display: flex; flex-direction: column; gap: 28px; text-align: right; padding: 0 160px; }
+  .offer-s .check { font-size: 40px; font-weight: 500; }
+  .offer-s .swipe { font-size: 40px; margin-top: 64px; }
+
+  /* Story 6 - Gift */
+  .gift-s .top-text { font-size: 64px; font-weight: 800; margin-bottom: 48px; }
+  .gift-s .desc { font-size: 44px; font-weight: 500; line-height: 1.8; padding: 0 100px; margin-bottom: 56px; }
+  .gift-s .detail { font-size: 40px; font-weight: 500; }
+  .gift-s .link { font-size: 36px; margin-top: 56px; }
+
+  /* Story 7 - Closing */
+  .closing .line { font-size: 52px; font-weight: 600; margin-bottom: 40px; }
+  .closing .quote { font-size: 44px; font-weight: 500; line-height: 1.8; padding: 0 100px; margin-top: 40px; border-right: 3px solid rgba(201,184,138,0.3); padding-right: 32px; text-align: right; }
+  .closing .cta-link { font-size: 36px; margin-top: 64px; letter-spacing: 2px; }
+</style>
+</head>
+<body>
+
+<!-- STORY 1 — استطلاع (9:00 ص) -->
+<div>
+<h3>ستوري 1 — استطلاع | 9:00 ص</h3>
+<div class="story poll">
+  <div class="time-label">9:00 ص</div>
+  <div class="brand-top gold">تمعّن</div>
+  <div class="question gold">تقرأ القرآن كل يوم؟</div>
+  <div class="options">
+    <div class="option gold">نعم 🤲</div>
+    <div class="option gold">أحياناً 🌙</div>
+  </div>
+</div>
+</div>
+
+<!-- STORY 2 — الحقيقة (9:05 ص) -->
+<div>
+<h3>ستوري 2 — الحقيقة | 9:05 ص</h3>
+<div class="story truth">
+  <div class="time-label">9:05 ص</div>
+  <div class="brand-top gold">تمعّن</div>
+  <div class="lead dim">أغلبنا يقول "نعم"</div>
+  <div class="real-q white">لكن السؤال الحقيقي:<br><br><span class="gold">"متى آخر مرة حسيت إن الآية تكلّمك أنت؟"</span></div>
+  <div class="arrow dim">↓</div>
+</div>
+</div>
+
+<!-- STORY 3 — التقديم (10:00 ص) -->
+<div>
+<h3>ستوري 3 — التقديم | 10:00 ص</h3>
+<div class="story intro">
+  <div class="time-label">10:00 ص</div>
+  <div class="brand-top gold">تمعّن</div>
+  <div class="today dim">اليوم نطلق شي مختلف.</div>
+  <div class="name gold">تمعّن</div>
+  <div class="desc white">رحلة 28 يوم<br>لاكتشاف المعنى بلغة القرآن.</div>
+  <div class="note dim">مو تطبيق قراءة. تجربة تحوّل.</div>
+</div>
+</div>
+
+<!-- STORY 4 — كيف يشتغل (12:00 ظ) -->
+<div>
+<h3>ستوري 4 — كيف يشتغل | 12:00 ظ</h3>
+<div class="story how">
+  <div class="time-label">12:00 ظ</div>
+  <div class="brand-top gold">تمعّن</div>
+  <div class="title gold">كل يوم في 15 دقيقة:</div>
+  <div class="features">
+    <div class="feat white"><span>صمت (60 ثانية)</span><span class="ico">⬛</span></div>
+    <div class="feat white"><span>آية مختارة بعناية</span><span class="ico">📖</span></div>
+    <div class="feat white"><span>سؤال تأمل</span><span class="ico">❓</span></div>
+    <div class="feat white"><span>طبقة معنى مخفية</span><span class="ico">🔍</span></div>
+    <div class="feat white"><span>تكتب تأملك</span><span class="ico">📝</span></div>
+    <div class="feat white"><span>مقياس وعيك</span><span class="ico">📊</span></div>
+  </div>
+  <div class="bottom gold">28 يوم. من الظل إلى النور.</div>
+</div>
+</div>
+
+<!-- STORY 5 — العرض (3:00 ع) -->
+<div>
+<h3>ستوري 5 — العرض | 3:00 ع</h3>
+<div class="story offer-s">
+  <div class="time-label">3:00 ع</div>
+  <div class="brand-top gold">تمعّن</div>
+  <div class="gift">🎁</div>
+  <div class="name gold">عيدية تمعّن</div>
+  <div class="price white">28 <span style="font-size:56px;" class="gold">ريال</span></div>
+  <div class="sub dim">(أرخص من قهوة ☕)</div>
+  <div class="checks">
+    <div class="check white">✓ رحلة 28 يوم كاملة</div>
+    <div class="check white">✓ صلاحية 3 أشهر</div>
+    <div class="check white">✓ لنفسك أو هدية</div>
+  </div>
+  <div class="swipe gold">⬆ اسحب لفوق</div>
+</div>
+</div>
+
+<!-- STORY 6 — الإهداء (6:00 م) -->
+<div>
+<h3>ستوري 6 — الإهداء | 6:00 م</h3>
+<div class="story gift-s">
+  <div class="time-label">6:00 م</div>
+  <div class="brand-top gold">تمعّن</div>
+  <div class="top-text gold">"أحلى عيدية"</div>
+  <div class="desc white">هدية تفتح قلب من تحب<br>على القرآن<br>بطريقة ما جرّبها قبل.</div>
+  <div class="detail white">🎁 28 ريال — كود تفعيل + بطاقة عيدية رقمية</div>
+  <div class="link dim">الرابط في البايو 👆</div>
+</div>
+</div>
+
+<!-- STORY 7 — تذكير ختامي (9:00 م) -->
+<div>
+<h3>ستوري 7 — تذكير ختامي | 9:00 م</h3>
+<div class="story closing">
+  <div class="time-label">9:00 م</div>
+  <div class="brand-top gold">تمعّن</div>
+  <div class="line white">اليوم أول يوم.</div>
+  <div class="line dim">كثير بدأوا رحلتهم.</div>
+  <div class="quote gold">"من الظل إلى أفضل احتمالك —<br>28 يوماً في كل مرة."</div>
+  <div class="cta-link white">🔗 taamun.com/pricing</div>
+</div>
+</div>
+
+</body>
+</html>

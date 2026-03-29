@@ -1,0 +1,90 @@
+chmod +x ~/Projects/taamun-mvp/full_openclow_pipeline_v6.sh
+#!/bin/bash
+# Full OpenClow Pipeline v6
+# تشغيل تلقائي كامل لمشروع تمعن على Mac
+
+set -e
+
+PROJECT_DIR=~/Projects/taamun-mvp
+LOG_FILE="$PROJECT_DIR/full_pipeline_v6.log"
+REPORT_FILE="$PROJECT_DIR/daily_report_v6.json"
+
+echo "✅ Starting Full OpenClow Pipeline v6..." | tee -a $LOG_FILE
+
+cd $PROJECT_DIR
+
+# --- البيئة ---
+echo "✅ Project directory OK" | tee -a $LOG_FILE
+
+# --- إزالة البناء القديم ---
+if [ -d ".next" ]; then
+  echo "⚠️ Old build removed" | tee -a $LOG_FILE
+  rm -rf .next
+fi
+
+# --- تثبيت الحزم ---
+echo "📦 Installing npm packages..." | tee -a $LOG_FILE
+npm install
+
+# --- بناء المشروع ---
+echo "🚀 Building project..." | tee -a $LOG_FILE
+npm run build
+echo "✅ Build succeeded" | tee -a $LOG_FILE
+
+# --- محاكاة مستخدم جديد ---
+echo "👤 Simulating new user workflow..." | tee -a $LOG_FILE
+
+# هنا استخدم curl و Node.js scripts لمحاكاة التسجيل، تسجيل الدخول، والتصفح
+# مثال بسيط للتوضيح
+node <<'EOF'
+import fetch from "node-fetch";
+
+const baseUrl = "https://taamun-mvp.vercel.app";
+const report = {
+  active_users: 0,
+  failed_pages: [],
+  improvements: []
+};
+
+async function simulateUser() {
+  try {
+    // تسجيل مستخدم جديد
+    const signup = await fetch(`${baseUrl}/auth/signup`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({email: `testuser+${Date.now()}@example.com`, password: "Test1234!"})
+    });
+    if (!signup.ok) report.failed_pages.push("/auth/signup");
+
+    // تسجيل الدخول
+    const login = await fetch(`${baseUrl}/auth/login`, {
+      method: "POST",
+      headers: {"Content-Type": "application/json"},
+      body: JSON.stringify({email: `testuser+${Date.now()}@example.com`, password: "Test1234!"})
+    });
+    if (!login.ok) report.failed_pages.push("/auth/login");
+
+    // الوصول لصفحات رئيسية
+    const pages = ["/account", "/program", "/ramadan", "/subscribe", "/scan", "/book"];
+    for (const page of pages) {
+      const res = await fetch(`${baseUrl}${page}`);
+      if (!res.ok) report.failed_pages.push(page);
+    }
+
+    // تحديث التقرير
+    report.active_users = 1;
+    require("fs").writeFileSync("daily_report_v6.json", JSON.stringify(report, null, 2));
+  } catch (err) {
+    console.error("Simulation failed:", err);
+  }
+}
+
+simulateUser();
+EOF
+
+echo "📊 Report generated at $REPORT_FILE" | tee -a $LOG_FILE
+
+# --- إشعارات على Slack (اختياري) ---
+# curl -X POST -H 'Content-type: application/json' --data '{"text":"Daily pipeline completed."}' YOUR_SLACK_WEBHOOK_URL
+
+echo "✅ Full OpenClow Pipeline v6 completed" | tee -a $LOG_FILE

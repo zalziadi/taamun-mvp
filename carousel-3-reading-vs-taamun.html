@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>كاروسيل — القراءة مقابل التمعّن</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600;700;800;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    background: #0a0a0a;
+    display: flex; flex-wrap: wrap; gap: 24px; padding: 32px; justify-content: center;
+  }
+  .slide {
+    width: 1080px; height: 1080px;
+    background: #15130F;
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; flex-shrink: 0;
+  }
+  .slide::after {
+    content: ''; position: absolute;
+    top: 40px; left: 40px; right: 40px; bottom: 40px;
+    border: 1px solid rgba(201,184,138,0.12);
+    pointer-events: none;
+  }
+  .gold { color: #C9B88A; }
+  .white { color: #FFFFFF; }
+  .dim { color: rgba(255,255,255,0.5); }
+  .brand-mark {
+    position: absolute; top: 70px;
+    font-size: 24px; color: rgba(201,184,138,0.4);
+    letter-spacing: 4px;
+  }
+  .dots {
+    position: absolute; bottom: 60px;
+    display: flex; gap: 8px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(201,184,138,0.25); }
+  .dot.active { background: #C9B88A; }
+
+  h3 { color: #C9B88A; font-size: 20px; margin-bottom: 16px; text-align: center; font-weight: 400; }
+
+  /* Cover */
+  .cover .vs-badge {
+    font-size: 48px; font-weight: 300;
+    padding: 16px 48px;
+    border: 1px solid rgba(201,184,138,0.3);
+    border-radius: 60px;
+    margin: 32px 0;
+  }
+  .cover .title { font-size: 56px; font-weight: 700; line-height: 1.6; }
+  .cover .subtitle { font-size: 36px; font-weight: 400; margin-top: 40px; }
+
+  /* Reading slide */
+  .reading .section-title { font-size: 56px; font-weight: 700; margin-bottom: 48px; }
+  .reading .items { display: flex; flex-direction: column; gap: 28px; padding: 0 120px; text-align: right; }
+  .reading .item { font-size: 44px; font-weight: 500; }
+  .reading .but { font-size: 48px; font-weight: 600; margin-top: 48px; }
+
+  /* Taamun slide */
+  .taamun-s .section-title { font-size: 56px; font-weight: 700; margin-bottom: 48px; }
+  .taamun-s .items { display: flex; flex-direction: column; gap: 24px; padding: 0 100px; text-align: right; }
+  .taamun-s .item { font-size: 40px; font-weight: 500; }
+
+  /* Table slide */
+  .table-slide table {
+    border-collapse: collapse;
+    font-size: 40px;
+  }
+  .table-slide th {
+    padding: 24px 48px;
+    font-weight: 700;
+    font-size: 44px;
+    border-bottom: 2px solid rgba(201,184,138,0.3);
+  }
+  .table-slide td {
+    padding: 20px 48px;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    font-weight: 400;
+  }
+
+  /* CTA */
+  .cta-slide .question { font-size: 48px; font-weight: 600; margin-bottom: 56px; line-height: 1.6; }
+  .cta-slide .offer { font-size: 40px; margin-bottom: 16px; }
+  .cta-slide .price { font-size: 96px; font-weight: 900; }
+  .cta-slide .desc { font-size: 36px; margin-top: 20px; }
+  .cta-slide .link { font-size: 32px; margin-top: 48px; }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1 — الغلاف -->
+<div>
+<h3>سلايد 1 — الغلاف</h3>
+<div class="slide cover">
+  <div class="brand-mark gold">تمعّن</div>
+  <div class="title white">"قراءة القرآن"</div>
+  <div class="vs-badge gold">🆚</div>
+  <div class="title gold">"التمعّن في القرآن"</div>
+  <div class="subtitle dim">الفرق اللي ما حد يحكيه.</div>
+  <div class="dots"><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+</div>
+</div>
+
+<!-- SLIDE 2 — القراءة -->
+<div>
+<h3>سلايد 2 — القراءة</h3>
+<div class="slide reading">
+  <div class="brand-mark gold">تمعّن</div>
+  <div class="section-title dim">القراءة:</div>
+  <div class="items">
+    <div class="item white">✅ عينك تمر على الكلمات</div>
+    <div class="item white">✅ تختم بسرعة</div>
+    <div class="item white">✅ أجر إن شاء الله</div>
+  </div>
+  <div class="but gold">لكن... وش تغيّر فيك؟</div>
+  <div class="dots"><div class="dot"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+</div>
+</div>
+
+<!-- SLIDE 3 — التمعّن -->
+<div>
+<h3>سلايد 3 — التمعّن</h3>
+<div class="slide taamun-s">
+  <div class="brand-mark gold">تمعّن</div>
+  <div class="section-title gold">التمعّن:</div>
+  <div class="items">
+    <div class="item white">⬛ تتوقف عند آية واحدة</div>
+    <div class="item white">❓ تسأل: "وش تقول لي أنا؟"</div>
+    <div class="item white">🔍 تكتشف معنى ما شفته قبل</div>
+    <div class="item white">📝 تكتب تأملك</div>
+    <div class="item gold" style="font-size:44px; font-weight:700; margin-top:16px;">تتغيّر — فعلاً.</div>
+  </div>
+  <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+</div>
+</div>
+
+<!-- SLIDE 4 — الجدول -->
+<div>
+<h3>سلايد 4 — المقارنة</h3>
+<div class="slide table-slide">
+  <div class="brand-mark gold">تمعّن</div>
+  <table>
+    <tr>
+      <th class="gold">التمعّن</th>
+      <th class="dim">القراءة</th>
+    </tr>
+    <tr><td class="white">آية واحدة</td><td class="dim">صفحات كثيرة</td></tr>
+    <tr><td class="white">15 دقيقة</td><td class="dim">5 دقائق</td></tr>
+    <tr><td class="white">عمق</td><td class="dim">كمية</td></tr>
+    <tr><td class="gold" style="font-weight:700;">تحوّل</td><td class="dim">عادة</td></tr>
+  </table>
+  <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot active"></div><div class="dot"></div></div>
+</div>
+</div>
+
+<!-- SLIDE 5 — CTA -->
+<div>
+<h3>سلايد 5 — CTA</h3>
+<div class="slide cta-slide">
+  <div class="brand-mark gold">تمعّن</div>
+  <div class="question white">تبي تتحول من قارئ<br>إلى <span class="gold">متمعّن</span>؟</div>
+  <div class="offer white">🎁 عيدية تمعّن</div>
+  <div class="price gold">28 <span style="font-size:48px; font-weight:400;">ريال</span></div>
+  <div class="desc white">28 يوم. آية واحدة كل يوم.</div>
+  <div class="link dim">الرابط في البايو 👆</div>
+  <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot active"></div></div>
+</div>
+</div>
+
+</body>
+</html>

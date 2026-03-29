@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>كاروسيل — 5 إشارات إنك تحتاج تمعّن</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600;700;800;900&display=swap');
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    background: #0a0a0a;
+    display: flex; flex-wrap: wrap; gap: 24px; padding: 32px; justify-content: center;
+  }
+  .slide {
+    width: 1080px; height: 1080px;
+    background: #15130F;
+    position: relative; overflow: hidden;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    text-align: center; flex-shrink: 0;
+  }
+  .slide::after {
+    content: ''; position: absolute;
+    top: 40px; left: 40px; right: 40px; bottom: 40px;
+    border: 1px solid rgba(201,184,138,0.12);
+    pointer-events: none;
+  }
+  .gold { color: #C9B88A; }
+  .white { color: #FFFFFF; }
+  .dim { color: rgba(255,255,255,0.5); }
+  .brand-mark {
+    position: absolute; top: 70px;
+    font-size: 24px; color: rgba(201,184,138,0.4);
+    letter-spacing: 4px;
+  }
+  .dots {
+    position: absolute; bottom: 60px;
+    display: flex; gap: 8px;
+  }
+  .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(201,184,138,0.25); }
+  .dot.active { background: #C9B88A; }
+
+  .s1 .main-title { font-size: 72px; font-weight: 800; line-height: 1.6; padding: 0 80px; }
+  .s1 .subtitle { font-size: 36px; font-weight: 400; margin-top: 32px; }
+
+  .sign-slide .number { font-size: 120px; font-weight: 900; margin-bottom: 40px; opacity: 0.2; }
+  .sign-slide .number.gold-num { color: #C9B88A; }
+  .sign-slide .text { font-size: 52px; font-weight: 600; line-height: 1.8; padding: 0 100px; }
+
+  .cta-slide .main { font-size: 48px; font-weight: 700; margin-bottom: 48px; }
+  .cta-slide .offer { font-size: 40px; font-weight: 500; margin-bottom: 16px; }
+  .cta-slide .price { font-size: 96px; font-weight: 900; }
+  .cta-slide .desc { font-size: 36px; font-weight: 400; margin-top: 24px; }
+  .cta-slide .link { font-size: 32px; margin-top: 48px; }
+
+  h3 { color: #C9B88A; font-size: 20px; margin-bottom: 16px; text-align: center; font-weight: 400; }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1 — الغلاف -->
+<div>
+<h3>سلايد 1 — الغلاف</h3>
+<div class="slide s1">
+  <div class="brand-mark gold">تمعّن</div>
+  <div class="main-title gold">5 إشارات إنك<br>تحتاج تمعّن</div>
+  <div class="subtitle dim">(لو واحدة فيك — هذا لك)</div>
+  <div class="dots"><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+</div>
+</div>
+
+<!-- SLIDE 2 — إشارة 1 -->
+<div>
+<h3>سلايد 2 — إشارة 1</h3>
+<div class="slide sign-slide">
+  <div class="brand-mark gold">تمعّن</div>
+  <div class="number gold-num white">1</div>
+  <div class="text white">تقرأ القرآن...<br><span class="dim">لكن تحس إنك تمر على كلمات مو أكثر.</span></div>
+  <div class="dots"><div class="dot"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+</div>
+</div>
+
+<!-- SLIDE 3 — إشارة 2 -->
+<div>
+<h3>سلايد 3 — إشارة 2</h3>
+<div class="slide sign-slide">
+  <div class="brand-mark gold">تمعّن</div>
+  <div class="number gold-num white">2</div>
+  <div class="text white">تبي تتعمّق...<br><span class="dim">لكن ما تعرف من وين تبدأ.</span></div>
+  <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+</div>
+</div>
+
+<!-- SLIDE 4 — إشارة 3 -->
+<div>
+<h3>سلايد 4 — إشارة 3</h3>
+<div class="slide sign-slide">
+  <div class="brand-mark gold">تمعّن</div>
+  <div class="number gold-num white">3</div>
+  <div class="text white">عندك 15 دقيقة...<br><span class="dim">لكن تضيعها في التصفح العشوائي.</span></div>
+  <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+</div>
+</div>
+
+<!-- SLIDE 5 — إشارة 4 -->
+<div>
+<h3>سلايد 5 — إشارة 4</h3>
+<div class="slide sign-slide">
+  <div class="brand-mark gold">تمعّن</div>
+  <div class="number gold-num white">4</div>
+  <div class="text white">تحس بفجوة روحية...<br><span class="dim">رغم إنك "ملتزم" ظاهرياً.</span></div>
+  <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div></div>
+</div>
+</div>
+
+<!-- SLIDE 6 — إشارة 5 -->
+<div>
+<h3>سلايد 6 — إشارة 5</h3>
+<div class="slide sign-slide">
+  <div class="brand-mark gold">تمعّن</div>
+  <div class="number gold-num white">5</div>
+  <div class="text white">تبي نظام يأخذك خطوة خطوة...<br><span class="dim">مو فوضى ومعلومات مبعثرة.</span></div>
+  <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot active"></div><div class="dot"></div></div>
+</div>
+</div>
+
+<!-- SLIDE 7 — CTA -->
+<div>
+<h3>سلايد 7 — CTA</h3>
+<div class="slide cta-slide">
+  <div class="brand-mark gold">تمعّن</div>
+  <div class="main gold">لو واحدة فيك:</div>
+  <div class="offer white">🎁 عيدية تمعّن</div>
+  <div class="price gold">28 <span style="font-size:48px; font-weight:400;">ريال</span></div>
+  <div class="desc white">28 يوم تغيّر علاقتك مع القرآن.</div>
+  <div class="link dim">الرابط في البايو 👆</div>
+  <div class="dots"><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot active"></div></div>
+</div>
+</div>
+
+</body>
+</html>

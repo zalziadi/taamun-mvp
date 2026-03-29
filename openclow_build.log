@@ -1,0 +1,93 @@
+
+> taamun-mvp@0.1.0 build
+> next build
+
+  ▲ Next.js 14.2.18
+  - Environments: .env.local
+
+   Creating an optimized production build ...
+ ✓ Compiled successfully
+   Linting and checking validity of types ...
+   Collecting page data ...
+   Generating static pages (0/30) ...
+   Generating static pages (7/30) 
+   Generating static pages (14/30) 
+   Generating static pages (22/30) 
+ ✓ Generating static pages (30/30)
+   Finalizing page optimization ...
+   Collecting build traces ...
+
+Route (app)                              Size     First Load JS
+┌ ○ /                                    15.6 kB         103 kB
+├ ○ /_not-found                          157 B          87.4 kB
+├ ○ /about                               182 B          94.2 kB
+├ ƒ /account                             4.39 kB         149 kB
+├ ○ /activate                            3.93 kB         142 kB
+├ ƒ /admin                               182 B          94.2 kB
+├ ƒ /admin/activations                   1.89 kB        95.9 kB
+├ ○ /admin/codes                         558 B          94.6 kB
+├ ○ /admin/ramadan                       2.02 kB          96 kB
+├ ○ /admin/test                          157 B          87.4 kB
+├ ƒ /api/activate                        0 B                0 B
+├ ƒ /api/admin/activations               0 B                0 B
+├ ƒ /api/admin/activations/export        0 B                0 B
+├ ƒ /api/admin/dashboard                 0 B                0 B
+├ ƒ /api/admin/export                    0 B                0 B
+├ ƒ /api/admin/ramadan/export            0 B                0 B
+├ ƒ /api/admin/ramadan/heatmap           0 B                0 B
+├ ƒ /api/admin/ramadan/summary           0 B                0 B
+├ ƒ /api/admin/ramadan/users             0 B                0 B
+├ ƒ /api/admin/verify                    0 B                0 B
+├ ƒ /api/answers                         0 B                0 B
+├ ƒ /api/awareness                       0 B                0 B
+├ ƒ /api/book-url                        0 B                0 B
+├ ○ /api/book/chapters                   0 B                0 B
+├ ƒ /api/day/[dayId]                     0 B                0 B
+├ ƒ /api/entitlement                     0 B                0 B
+├ ƒ /api/history                         0 B                0 B
+├ ƒ /api/program/day/[id]                0 B                0 B
+├ ƒ /api/program/progress                0 B                0 B
+├ ƒ /api/progress                        0 B                0 B
+├ ƒ /api/progress/complete               0 B                0 B
+├ ƒ /api/ramadan/day                     0 B                0 B
+├ ƒ /api/ramadan/history                 0 B                0 B
+├ ƒ /api/ramadan/insight                 0 B                0 B
+├ ƒ /api/ramadan/progress                0 B                0 B
+├ ƒ /api/ramadan/save                    0 B                0 B
+├ ƒ /api/salla/oauth/callback            0 B                0 B
+├ ƒ /api/salla/oauth/start               0 B                0 B
+├ ƒ /api/salla/webhook                   0 B                0 B
+├ ƒ /api/scan                            0 B                0 B
+├ ƒ /api/validate-code                   0 B                0 B
+├ ƒ /auth                                3.81 kB         148 kB
+├ ƒ /auth/callback                       0 B                0 B
+├ ○ /auth/test                           158 B          87.4 kB
+├ ○ /book                                3.16 kB         204 kB
+├ ƒ /book/chapter/[slug]                 532 B          94.5 kB
+├ ○ /book/pdf                            1.28 kB        95.3 kB
+├ ƒ /book/topic/[topic]                  532 B          94.5 kB
+├ ƒ /book/verse/[surah]/[ayah]           532 B          94.5 kB
+├ ƒ /daily                               182 B          94.2 kB
+├ ○ /day                                 158 B          87.4 kB
+├ ƒ /day/[dayId]                         157 B          87.4 kB
+├ ƒ /og.png                              0 B                0 B
+├ ○ /privacy                             532 B          94.5 kB
+├ ○ /program                             2.52 kB        89.8 kB
+├ ƒ /program/day/[id]                    2.96 kB          97 kB
+├ ○ /progress                            158 B          87.4 kB
+├ ƒ /ramadan                             3.24 kB        97.3 kB
+├ ƒ /ramadan/day                         3.24 kB        97.3 kB
+├ ○ /ramadan/insight                     3.71 kB        90.9 kB
+├ ○ /scan                                2.34 kB        96.4 kB
+└ ○ /subscribe                           4 kB             98 kB
++ First Load JS shared by all            87.2 kB
+  ├ chunks/117-a1b6b16739d6c073.js       31.6 kB
+  ├ chunks/fd9d1056-8b6b2725b33a5841.js  53.7 kB
+  └ other shared chunks (total)          1.98 kB
+
+
+ƒ Middleware                             25.5 kB
+
+○  (Static)   prerendered as static content
+ƒ  (Dynamic)  server-rendered on demand
+

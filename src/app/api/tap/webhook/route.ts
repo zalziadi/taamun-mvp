@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import type { TapChargeResponse } from "@/lib/tap";
 import { verifyTapChargeWebhookHash } from "@/lib/tapWebhookVerify";
 import { upsertSubscriptionFromTapCharge } from "@/lib/tapSubscriptionSync";
+import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const dynamic = "force-dynamic";
 
@@ -49,6 +50,31 @@ export async function POST(req: Request) {
   } catch (e) {
     console.error("Tap webhook upsert failed", e);
     return NextResponse.json({ ok: false, error: "upsert_failed" }, { status: 500 });
+  }
+
+  // جدولة إيميل التفعيل — يُرسل بعد 5 دقائق
+  try {
+    const customer = body.customer as Record<string, unknown> | undefined;
+    const customerEmail = customer?.email as string | undefined;
+    const customerName = (customer?.first_name as string) ?? "";
+
+    if (customerEmail) {
+      const sendAfter = new Date(Date.now() + 5 * 60 * 1000).toISOString();
+      const admin = getSupabaseAdmin();
+      await admin.from("email_queue").insert({
+        user_id: userId,
+        email: customerEmail,
+        template: "activation",
+        payload: {
+          userName: customerName || customerEmail.split("@")[0],
+          tier,
+        },
+        send_after: sendAfter,
+      });
+    }
+  } catch (emailErr) {
+    // لا نوقف الـ webhook بسبب خطأ في الإيميل
+    console.error("Tap webhook: email queue insert failed", emailErr);
   }
 
   return NextResponse.json({ received: true });

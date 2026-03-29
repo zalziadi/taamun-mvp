@@ -93,3 +93,56 @@ export function parseTwitterDMEvent(body: Record<string, unknown>): {
     return null;
   }
 }
+
+/**
+ * Parses Twitter webhook event for mentions/replies.
+ */
+export function parseTwitterMentionEvent(body: Record<string, unknown>): {
+  tweetId: string;
+  senderId: string;
+  text: string;
+} | null {
+  try {
+    const events = body.tweet_create_events as Array<{
+      id_str: string;
+      user: { id_str: string };
+      text: string;
+    }>;
+
+    if (!events || events.length === 0) return null;
+
+    const tweet = events[0];
+    return {
+      tweetId: tweet.id_str,
+      senderId: tweet.user.id_str,
+      text: tweet.text,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Replies to a tweet.
+ */
+export async function replyToTweet(
+  tweetId: string,
+  text: string
+): Promise<boolean> {
+  const token = process.env.TWITTER_BEARER_TOKEN;
+  if (!token) throw new Error("TWITTER_BEARER_TOKEN not set");
+
+  const res = await fetch(`${TWITTER_API_BASE}/tweets`, {
+    method: "POST",
+    headers: {
+      Authorization: `Bearer ${token}`,
+      "Content-Type": "application/json",
+    },
+    body: JSON.stringify({
+      text,
+      reply: { in_reply_to_tweet_id: tweetId },
+    }),
+  });
+
+  return res.ok;
+}

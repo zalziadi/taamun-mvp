@@ -23,6 +23,15 @@ npm run setup:admin    # إعداد حساب الأدمن الأولي
 npx tsc --noEmit && npm run build
 ```
 
+## بعد كل عملية ناجحة (إلزامي)
+
+1. **ذكّر المستخدم يدفع من Cursor:**
+   ```
+   ✅ تم! الحين ادفع التحديثات من Cursor:
+   Terminal → git push (أو Cmd+Shift+P → Git: Push)
+   ```
+2. **احفظ المهارة في CJ:** أنشئ ملف في `~/.claude/skills/cj-supervisor/` يوثّق الخطوات للرجوع لها لاحقاً
+
 ## القواعد الصارمة (NON-NEGOTIABLE)
 
 | # | القاعدة |

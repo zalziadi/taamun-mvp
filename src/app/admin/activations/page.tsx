@@ -85,11 +85,29 @@ export default function ActivationsPage() {
     });
   }
 
-  /* نسخ رسالة واتساب */
+  /* نسخ رسالة وردة — واتساب */
   function copyWhatsAppMsg(code: string) {
-    const msg = `مرحباً! هذا كود تفعيل اشتراكك في تمعّن:\n\n${code}\n\nادخل على الرابط وسجّل دخولك ثم أدخل الكود:\nhttps://taamun.com/pricing`;
-    navigator.clipboard.writeText(msg);
-    setMsg({ ok: true, text: "تم نسخ رسالة الواتساب" });
+    const wardaMsg = `السلام عليكم ورحمة الله 🌸
+
+أنا وردة، من فريق تمعّن.
+
+هذا كود تفعيل اشتراكك في عيدية تمعّن:
+
+🔑 ${code}
+
+طريقة التفعيل:
+١. ادخل على taamun.com
+٢. سجّل دخولك
+٣. أدخل الكود في صفحة التفعيل
+٤. استمتع برحلة 28 يوم مع القرآن ✨
+
+إذا عندك أي سؤال أو تحتاج أي مساعدة، أنا هنا دائماً 🌷
+
+بكل ودّ،
+وردة 🌸
+فريق تمعّن`;
+    navigator.clipboard.writeText(wardaMsg);
+    setMsg({ ok: true, text: "✓ تم نسخ رسالة وردة" });
     setTimeout(() => setMsg(null), 2000);
   }
 
@@ -201,7 +219,7 @@ export default function ActivationsPage() {
                       onClick={() => copyWhatsAppMsg(c.code)}
                       className="rounded-lg border border-emerald-500/20 bg-emerald-500/10 px-3 py-1.5 text-xs text-emerald-400 transition-colors hover:bg-emerald-500/20"
                     >
-                      نسخ رسالة واتساب
+                      🌸 رسالة وردة
                     </button>
                   </div>
                 </div>

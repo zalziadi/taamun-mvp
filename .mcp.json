@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "nano-banana-2": {
+      "type": "stdio",
+      "command": "node",
+      "args": [
+        "/Users/ziyadalziyadi/Projects/nano-banana-2-mcp/dist/index.js"
+      ],
+      "env": {
+        "GEMINI_API_KEY": "AIzaSyCxpp3Br1ohd39V-Vd0LbDloZG3bDnR5Tk"
+      }
+    }
+  }
+}

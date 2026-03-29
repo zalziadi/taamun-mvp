@@ -1,0 +1,6 @@
+{
+  "active_users": 5,
+  "retention_7d": 80,
+  "biggest_risk": "Slow login on high load",
+  "improvements": ["Optimize auth microservice", "Add CDN caching"]
+}

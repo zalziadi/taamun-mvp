@@ -1,6 +1,6 @@
 // ─── Instagram Graph API Integration ───
 
-const GRAPH_API_BASE = "https://graph.facebook.com/v19.0";
+const GRAPH_API_BASE = "https://graph.instagram.com/v19.0";
 
 /**
  * Sends a reply via Instagram Messaging API.
@@ -78,4 +78,70 @@ export function parseInstagramMessageEvent(body: Record<string, unknown>): {
   } catch {
     return null;
   }
+}
+
+/**
+ * Parses Instagram webhook event for comments.
+ */
+export function parseInstagramCommentEvent(body: Record<string, unknown>): {
+  commentId: string;
+  senderId: string;
+  text: string;
+  mediaId: string;
+} | null {
+  try {
+    const obj = body.object as string;
+    if (obj !== "instagram") return null;
+
+    const entries = body.entry as Array<{
+      changes?: Array<{
+        field: string;
+        value: {
+          id: string;
+          from: { id: string; username?: string };
+          text: string;
+          media: { id: string };
+        };
+      }>;
+    }>;
+
+    if (!entries || entries.length === 0) return null;
+
+    const changes = entries[0].changes;
+    if (!changes || changes.length === 0) return null;
+
+    const change = changes.find((c) => c.field === "comments");
+    if (!change) return null;
+
+    return {
+      commentId: change.value.id,
+      senderId: change.value.from.id,
+      text: change.value.text,
+      mediaId: change.value.media.id,
+    };
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Replies to an Instagram comment.
+ */
+export async function replyToInstagramComment(
+  commentId: string,
+  text: string
+): Promise<boolean> {
+  const pageToken = process.env.INSTAGRAM_PAGE_TOKEN;
+  if (!pageToken) throw new Error("INSTAGRAM_PAGE_TOKEN not set");
+
+  const res = await fetch(
+    `${GRAPH_API_BASE}/${commentId}/replies?access_token=${pageToken}`,
+    {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: text }),
+    }
+  );
+
+  return res.ok;
 }

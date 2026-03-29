@@ -1,0 +1,760 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=390,height=844,initial-scale=1">
+<title>تمعّن — قبل وبعد</title>
+<link href="https://fonts.googleapis.com/css2?family=Amiri:wght@400;700&family=Tajawal:wght@300;400;500;700&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --black:#0A0A0A;--gold:#C9A84C;--white:#F2EDE4;
+  --amiri:'Amiri',serif;--tajawal:'Tajawal',sans-serif;
+}
+body{
+  background:var(--black);color:var(--white);
+  width:390px;height:844px;overflow:hidden;
+  font-family:var(--tajawal);position:relative;
+  display:flex;align-items:center;justify-content:center;
+}
+#canvas{
+  width:390px;height:844px;position:relative;overflow:hidden;
+  background:var(--black);
+}
+
+/* Progress bar */
+#progress-bar{
+  position:absolute;top:0;left:0;width:0%;height:3px;
+  background:var(--gold);z-index:100;transition:width 0.3s linear;
+}
+
+/* Play / Replay overlay */
+#overlay{
+  position:absolute;inset:0;z-index:200;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  background:rgba(10,10,10,0.92);cursor:pointer;
+}
+#overlay.hidden{display:none}
+#overlay .btn{
+  width:80px;height:80px;border-radius:50%;
+  border:2px solid var(--gold);background:transparent;
+  display:flex;align-items:center;justify-content:center;
+  cursor:pointer;transition:transform .3s;
+}
+#overlay .btn:hover{transform:scale(1.1)}
+#overlay .btn svg{fill:var(--gold);width:32px;height:32px}
+#overlay .label{
+  font-family:var(--tajawal);color:var(--gold);
+  margin-top:16px;font-size:16px;font-weight:500;
+}
+
+/* Scenes */
+.scene{
+  position:absolute;inset:0;opacity:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  transition:opacity 0.8s ease-in-out;pointer-events:none;
+}
+.scene.active{opacity:1;pointer-events:auto}
+
+/* Scene 1 — Chaos */
+#scene1{overflow:hidden}
+#notif-container{position:absolute;inset:0;overflow:hidden}
+.notif{
+  position:absolute;
+  padding:10px 16px;border-radius:14px;
+  background:rgba(255,255,255,0.08);backdrop-filter:blur(4px);
+  display:flex;align-items:center;gap:10px;
+  font-family:var(--tajawal);font-size:13px;color:var(--white);
+  white-space:nowrap;opacity:0;
+  transform:translateX(100px);
+  box-shadow:0 2px 12px rgba(0,0,0,0.4);
+}
+.notif .badge{
+  width:20px;height:20px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:10px;font-weight:700;color:#fff;
+}
+.notif .badge.wa{background:#25D366}
+.notif .badge.tw{background:#1DA1F2}
+.notif .badge.em{background:#EA4335}
+.notif .badge.ig{background:#C13584}
+.notif .badge.cal{background:#FF9500}
+#counter-box{
+  position:absolute;bottom:180px;left:50%;transform:translateX(-50%);
+  text-align:center;z-index:10;
+}
+#counter{
+  font-family:var(--amiri);font-size:56px;color:var(--gold);
+  font-weight:700;direction:rtl;
+}
+#counter-label{
+  font-family:var(--tajawal);font-size:16px;color:rgba(242,237,228,0.6);
+  margin-top:4px;
+}
+#scene1-text{
+  position:absolute;bottom:100px;width:100%;text-align:center;
+  font-family:var(--tajawal);font-size:18px;color:var(--white);
+  opacity:0;transform:translateY(20px);
+  transition:all 0.6s ease;
+}
+#scene1-text.show{opacity:1;transform:translateY(0)}
+
+/* Scene 2 — The Question */
+#scene2 .q-text{
+  font-family:var(--amiri);font-size:36px;color:var(--white);
+  text-align:center;line-height:1.6;
+  opacity:0;transform:translateY(20px);
+  transition:all 0.8s ease;
+}
+#scene2 .q-text.show{opacity:1;transform:translateY(0)}
+#scene2 .gold-line{
+  width:0;height:2px;background:var(--gold);
+  margin-top:20px;transition:width 1s ease 0.4s;
+}
+#scene2 .gold-line.show{width:120px}
+
+/* Scene 3 — Breath */
+#scene3 .phone-mock{
+  width:260px;height:520px;border-radius:44px;
+  border:2px solid rgba(255,255,255,0.08);
+  background:rgba(10,10,10,0.95);
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+}
+#scene3 .notch{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:120px;height:28px;background:var(--black);
+  border-radius:0 0 18px 18px;
+}
+.breath-circle{
+  width:140px;height:140px;border-radius:50%;
+  border:2px solid var(--gold);
+  display:flex;align-items:center;justify-content:center;
+  font-family:var(--amiri);font-size:22px;color:var(--gold);
+  animation:breathe 8s ease-in-out infinite;
+}
+@keyframes breathe{
+  0%,100%{transform:scale(0.6);opacity:0.6}
+  50%{transform:scale(1.15);opacity:1}
+}
+#scene3 .overlay-text{
+  position:absolute;bottom:60px;width:100%;text-align:center;
+  font-family:var(--tajawal);font-size:16px;color:rgba(242,237,228,0.7);
+  opacity:0;transform:translateY(20px);transition:all 0.8s ease;
+}
+#scene3 .overlay-text.show{opacity:1;transform:translateY(0)}
+
+/* Scene 4 — Verse */
+#scene4 .phone-mock{
+  width:260px;height:520px;border-radius:44px;
+  border:2px solid rgba(255,255,255,0.08);
+  background:rgba(10,10,10,0.95);
+  position:relative;overflow:hidden;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:40px 24px;
+}
+#scene4 .notch{
+  position:absolute;top:0;left:50%;transform:translateX(-50%);
+  width:120px;height:28px;background:var(--black);
+  border-radius:0 0 18px 18px;
+}
+.verse-word{
+  display:inline;font-family:var(--amiri);font-size:30px;
+  color:var(--gold);opacity:0;
+  transition:opacity 0.5s ease;
+  line-height:2;
+}
+.verse-word.show{opacity:1}
+#verse-ref{
+  font-family:var(--tajawal);font-size:13px;
+  color:rgba(242,237,228,0.5);margin-top:16px;
+  opacity:0;transition:opacity 0.6s ease 0.4s;
+}
+#verse-ref.show{opacity:1}
+#scene4 .overlay-text{
+  position:absolute;bottom:60px;width:100%;text-align:center;
+  font-family:var(--tajawal);font-size:16px;color:rgba(242,237,228,0.7);
+  opacity:0;transform:translateY(20px);transition:all 0.8s ease;
+}
+#scene4 .overlay-text.show{opacity:1;transform:translateY(0)}
+
+/* Scene 5 — Transformation */
+#scene5{overflow:hidden}
+#split-container{
+  width:390px;height:844px;position:relative;
+}
+#chaos-half{
+  position:absolute;inset:0;
+  background:var(--black);
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  overflow:hidden;
+}
+#chaos-half .chaos-icons{
+  display:flex;flex-wrap:wrap;gap:12px;
+  justify-content:center;opacity:0.5;
+}
+.chaos-icon{
+  width:44px;height:44px;border-radius:12px;
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;position:relative;
+}
+.chaos-icon .red-badge{
+  position:absolute;top:-4px;right:-4px;
+  width:16px;height:16px;border-radius:50%;
+  background:#FF3B30;font-size:9px;color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-weight:700;
+}
+#calm-half{
+  position:absolute;inset:0;
+  background:var(--black);
+  clip-path:inset(0 100% 0 0);
+  transition:clip-path 3s linear;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  gap:20px;
+}
+#calm-half.sweep{clip-path:inset(0 0 0 0)}
+.calm-line{
+  width:200px;height:1px;background:rgba(201,168,76,0.3);
+}
+.calm-text{
+  font-family:var(--amiri);font-size:22px;color:var(--gold);
+  text-align:center;
+}
+.calm-small{
+  font-family:var(--tajawal);font-size:14px;color:rgba(242,237,228,0.4);
+}
+#gold-divider{
+  position:absolute;top:0;bottom:0;width:3px;
+  background:var(--gold);left:0%;
+  transition:left 3s linear;
+  box-shadow:0 0 20px rgba(201,168,76,0.5);
+  z-index:5;
+}
+#gold-divider.sweep{left:100%}
+#scene5 .overlay-text{
+  position:absolute;bottom:80px;width:100%;text-align:center;
+  font-family:var(--tajawal);font-size:18px;color:var(--white);
+  z-index:10;opacity:0;transform:translateY(20px);
+  transition:all 0.8s ease;
+}
+#scene5 .overlay-text.show{opacity:1;transform:translateY(0)}
+
+/* Scene 6 — Stats */
+#scene6{gap:40px}
+.stat-item{
+  text-align:center;opacity:0;transform:translateY(30px);
+  transition:all 0.7s ease;
+}
+.stat-item.show{opacity:1;transform:translateY(0)}
+.stat-number{
+  font-family:var(--amiri);font-size:64px;color:var(--gold);
+  font-weight:700;line-height:1;
+}
+.stat-label{
+  font-family:var(--tajawal);font-size:16px;color:var(--white);
+  margin-top:4px;
+}
+
+/* Scene 7 — Brand */
+#scene7{gap:16px}
+#brand-name{
+  font-family:var(--amiri);font-size:64px;color:var(--gold);
+  font-weight:700;opacity:0;transform:scale(0.8);
+  transition:all 1s ease;position:relative;
+}
+#brand-name.show{opacity:1;transform:scale(1)}
+#brand-glow{
+  position:absolute;width:300px;height:300px;
+  border-radius:50%;
+  background:radial-gradient(circle,rgba(201,168,76,0.12) 0%,transparent 70%);
+  pointer-events:none;
+}
+#brand-sub{
+  font-family:var(--tajawal);font-size:20px;color:var(--white);
+  opacity:0;transform:translateY(20px);transition:all 0.8s ease 0.3s;
+}
+#brand-sub.show{opacity:1;transform:translateY(0)}
+
+/* Scene 8 — CTA */
+#scene8{gap:20px}
+#cta-brand{
+  font-family:var(--amiri);font-size:56px;color:var(--gold);
+  font-weight:700;animation:pulse 2s ease-in-out infinite;
+}
+@keyframes pulse{
+  0%,100%{opacity:1;transform:scale(1)}
+  50%{opacity:0.8;transform:scale(1.05)}
+}
+#cta-text{
+  font-family:var(--tajawal);font-size:18px;color:var(--white);
+  opacity:0;transform:translateY(20px);transition:all 0.8s ease;
+}
+#cta-text.show{opacity:1;transform:translateY(0)}
+#cta-url{
+  font-family:var(--tajawal);font-size:14px;color:var(--gold);
+  opacity:0;transition:opacity 0.8s ease 0.3s;
+}
+#cta-url.show{opacity:1}
+</style>
+</head>
+<body>
+<div id="canvas">
+  <div id="progress-bar"></div>
+
+  <!-- Play/Replay Overlay -->
+  <div id="overlay">
+    <button class="btn" id="play-btn">
+      <svg viewBox="0 0 24 24"><polygon points="6,3 20,12 6,21"/></svg>
+    </button>
+    <div class="label" id="overlay-label">تشغيل</div>
+  </div>
+
+  <!-- Scene 1: Chaos -->
+  <div class="scene" id="scene1">
+    <div id="notif-container"></div>
+    <div id="counter-box">
+      <div id="counter">٠</div>
+      <div id="counter-label">إشعار</div>
+    </div>
+    <div id="scene1-text">كل يوم نبدأ بهذا الشكل</div>
+  </div>
+
+  <!-- Scene 2: The Question -->
+  <div class="scene" id="scene2">
+    <div class="q-text" id="q1">ماذا لو…</div>
+    <div class="q-text" id="q2">بدأت يومك بدقيقة صمت؟</div>
+    <div class="gold-line" id="q-line"></div>
+  </div>
+
+  <!-- Scene 3: The Breath -->
+  <div class="scene" id="scene3">
+    <div class="phone-mock">
+      <div class="notch"></div>
+      <div class="breath-circle" id="breath-circle">شهيق</div>
+    </div>
+    <div class="overlay-text" id="breath-text">تبدأ بتنفس… تسمع صمتك</div>
+  </div>
+
+  <!-- Scene 4: The Verse -->
+  <div class="scene" id="scene4">
+    <div class="phone-mock">
+      <div class="notch"></div>
+      <div id="verse-container" style="text-align:center;padding:0 10px"></div>
+      <div id="verse-ref">سورة الشرح — الآية ٦</div>
+    </div>
+    <div class="overlay-text" id="verse-overlay">آية تتأملها… مو بس تقرأها</div>
+  </div>
+
+  <!-- Scene 5: Transformation -->
+  <div class="scene" id="scene5">
+    <div id="split-container">
+      <div id="chaos-half">
+        <div class="chaos-icons">
+          <div class="chaos-icon" style="background:#25D366">📱<div class="red-badge">9</div></div>
+          <div class="chaos-icon" style="background:#1DA1F2">🐦<div class="red-badge">23</div></div>
+          <div class="chaos-icon" style="background:#EA4335">✉<div class="red-badge">47</div></div>
+          <div class="chaos-icon" style="background:#C13584">📷<div class="red-badge">5</div></div>
+          <div class="chaos-icon" style="background:#FF9500">📅<div class="red-badge">3</div></div>
+          <div class="chaos-icon" style="background:#5856D6">💬<div class="red-badge">12</div></div>
+          <div class="chaos-icon" style="background:#FF2D55">🔔<div class="red-badge">8</div></div>
+          <div class="chaos-icon" style="background:#34C759">📞<div class="red-badge">2</div></div>
+          <div class="chaos-icon" style="background:#007AFF">📨<div class="red-badge">31</div></div>
+        </div>
+      </div>
+      <div id="calm-half">
+        <div class="calm-line"></div>
+        <div class="calm-text">تمعّن</div>
+        <div class="calm-small">يوم ١٤ — سورة الشرح</div>
+        <div class="calm-line"></div>
+        <div class="calm-small" style="color:rgba(201,168,76,0.5)">دقيقة صمت</div>
+        <div class="calm-line"></div>
+      </div>
+      <div id="gold-divider"></div>
+    </div>
+    <div class="overlay-text" id="transform-text">نفس الحياة… بس أنت تغيّرت</div>
+  </div>
+
+  <!-- Scene 6: Stats -->
+  <div class="scene" id="scene6">
+    <div class="stat-item" id="stat1">
+      <div class="stat-number" id="stat-num1">٠</div>
+      <div class="stat-label">يوم من الوعي</div>
+    </div>
+    <div class="stat-item" id="stat2">
+      <div class="stat-number" id="stat-num2">٠</div>
+      <div class="stat-label">دقائق باليوم</div>
+    </div>
+    <div class="stat-item" id="stat3">
+      <div class="stat-number">∞</div>
+      <div class="stat-label">أثر يبقى</div>
+    </div>
+  </div>
+
+  <!-- Scene 7: Brand -->
+  <div class="scene" id="scene7">
+    <div id="brand-glow"></div>
+    <div id="brand-name">تمعّن</div>
+    <div id="brand-sub">ابدأ صباحك بوعي</div>
+  </div>
+
+  <!-- Scene 8: CTA -->
+  <div class="scene" id="scene8">
+    <div id="cta-brand">تمعّن</div>
+    <div id="cta-text">جرّبه ٧ أيام مجاناً</div>
+    <div id="cta-url">taamun.com</div>
+  </div>
+</div>
+
+<script>
+// ======== AUDIO ENGINE ========
+class AudioEngine {
+  constructor() {
+    this.ctx = null;
+    this.drones = [];
+    this.masterGain = null;
+  }
+  init() {
+    this.ctx = new (window.AudioContext || window.webkitAudioContext)();
+    this.masterGain = this.ctx.createGain();
+    this.masterGain.gain.value = 0.015;
+    this.masterGain.connect(this.ctx.destination);
+  }
+  startDrone(freqs) {
+    freqs.forEach(f => {
+      const osc = this.ctx.createOscillator();
+      const gain = this.ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = f;
+      gain.gain.value = 1;
+      osc.connect(gain);
+      gain.connect(this.masterGain);
+      osc.start();
+      this.drones.push({ osc, gain, freq: f });
+    });
+  }
+  addDissonance() {
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = 93;
+    gain.gain.value = 0.8;
+    osc.connect(gain);
+    gain.connect(this.masterGain);
+    osc.start();
+    this.drones.push({ osc, gain, freq: 93, dissonant: true });
+  }
+  removeDissonance() {
+    this.drones = this.drones.filter(d => {
+      if (d.dissonant) {
+        d.gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 1);
+        setTimeout(() => { try { d.osc.stop(); } catch(e){} }, 1200);
+        return false;
+      }
+      return true;
+    });
+  }
+  chime(freq) {
+    if (!this.ctx) return;
+    const osc = this.ctx.createOscillator();
+    const gain = this.ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = freq || 700;
+    gain.gain.value = 0.3;
+    gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.6);
+    osc.connect(gain);
+    gain.connect(this.masterGain);
+    osc.start();
+    osc.stop(this.ctx.currentTime + 0.6);
+  }
+  whoosh() {
+    if (!this.ctx) return;
+    const bufferSize = this.ctx.sampleRate * 0.4;
+    const buffer = this.ctx.createBuffer(1, bufferSize, this.ctx.sampleRate);
+    const data = buffer.getChannelData(0);
+    for (let i = 0; i < bufferSize; i++) data[i] = (Math.random() * 2 - 1) * 0.3;
+    const src = this.ctx.createBufferSource();
+    const gain = this.ctx.createGain();
+    const filter = this.ctx.createBiquadFilter();
+    filter.type = 'lowpass';
+    filter.frequency.value = 800;
+    src.buffer = buffer;
+    gain.gain.setValueAtTime(0, this.ctx.currentTime);
+    gain.gain.linearRampToValueAtTime(0.6, this.ctx.currentTime + 0.1);
+    gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.4);
+    src.connect(filter);
+    filter.connect(gain);
+    gain.connect(this.masterGain);
+    src.start();
+  }
+  stop() {
+    this.drones.forEach(d => {
+      d.gain.gain.linearRampToValueAtTime(0, this.ctx.currentTime + 0.5);
+      setTimeout(() => { try { d.osc.stop(); } catch(e){} }, 600);
+    });
+    this.drones = [];
+  }
+}
+
+const audio = new AudioEngine();
+
+// ======== UTILITIES ========
+const $ = id => document.getElementById(id);
+const toArabicNum = n => n.toString().replace(/\d/g, d => '٠١٢٣٤٥٦٧٨٩'[d]);
+
+function animateCounter(el, from, to, duration, cb) {
+  const start = performance.now();
+  const ease = t => t < 0.5 ? 2*t*t : -1+(4-2*t)*t;
+  function tick(now) {
+    const p = Math.min((now - start) / duration, 1);
+    const val = Math.round(from + (to - from) * ease(p));
+    el.textContent = toArabicNum(val);
+    if (p < 1) requestAnimationFrame(tick);
+    else if (cb) cb();
+  }
+  requestAnimationFrame(tick);
+}
+
+// ======== NOTIFICATION TEMPLATES ========
+const notifData = [
+  { text: 'محمد أرسل رسالة صوتية', cls: 'wa', icon: 'W' },
+  { text: '٣ رسائل جديدة في المجموعة', cls: 'wa', icon: 'W' },
+  { text: 'أحمد ذكرك في تغريدة', cls: 'tw', icon: 'T' },
+  { text: 'لديك ٥ رسائل غير مقروءة', cls: 'em', icon: '@' },
+  { text: 'سارة نشرت ستوري جديد', cls: 'ig', icon: 'I' },
+  { text: 'اجتماع بعد ١٥ دقيقة', cls: 'cal', icon: '!' },
+  { text: 'فاطمة أرسلت صورة', cls: 'wa', icon: 'W' },
+  { text: 'تنبيه: فاتورة مستحقة', cls: 'em', icon: '@' },
+  { text: 'خالد علّق على صورتك', cls: 'ig', icon: 'I' },
+  { text: 'تحديث: ١٢ إشعار من تويتر', cls: 'tw', icon: 'T' },
+  { text: 'رسالة جديدة من الدعم', cls: 'em', icon: '@' },
+  { text: 'علي يتصل بك', cls: 'wa', icon: 'W' },
+  { text: 'موعدك غداً الساعة ٩', cls: 'cal', icon: '!' },
+  { text: 'نورة أرسلت مقطع', cls: 'wa', icon: 'W' },
+  { text: 'عرض خاص — ينتهي اليوم', cls: 'em', icon: '@' },
+];
+
+function spawnNotifications() {
+  const container = $('notif-container');
+  container.innerHTML = '';
+  notifData.forEach((n, i) => {
+    const el = document.createElement('div');
+    el.className = 'notif';
+    const side = Math.random() > 0.5 ? 'right' : 'left';
+    const top = 60 + Math.random() * 650;
+    el.style.top = top + 'px';
+    el.style[side] = '-300px';
+    el.innerHTML = `<div class="badge ${n.cls}">${n.icon}</div><span>${n.text}</span>`;
+    container.appendChild(el);
+    setTimeout(() => {
+      el.style.transition = 'all 0.4s cubic-bezier(0.2,0.8,0.3,1)';
+      el.style.opacity = '1';
+      el.style[side] = (10 + Math.random() * 40) + 'px';
+    }, i * 80);
+  });
+}
+
+// ======== BREATH TOGGLE ========
+let breathInterval;
+function startBreathText() {
+  const el = $('breath-circle');
+  let inhale = true;
+  el.textContent = 'شهيق';
+  breathInterval = setInterval(() => {
+    inhale = !inhale;
+    el.textContent = inhale ? 'شهيق' : 'زفير';
+  }, 4000);
+}
+function stopBreathText() { clearInterval(breathInterval); }
+
+// ======== VERSE WORDS ========
+function buildVerse() {
+  const words = ['إِنَّ', 'مَعَ', 'الْعُسْرِ', 'يُسْرًا'];
+  const container = $('verse-container');
+  container.innerHTML = '';
+  words.forEach(w => {
+    const span = document.createElement('span');
+    span.className = 'verse-word';
+    span.textContent = w + ' ';
+    container.appendChild(span);
+  });
+}
+function revealVerseWords() {
+  const words = document.querySelectorAll('.verse-word');
+  words.forEach((w, i) => {
+    setTimeout(() => {
+      w.classList.add('show');
+      audio.whoosh();
+    }, i * 500);
+  });
+  setTimeout(() => $('verse-ref').classList.add('show'), words.length * 500 + 200);
+}
+
+// ======== SCENE MANAGER ========
+const TOTAL_DURATION = 45000;
+const scenes = [
+  { id: 'scene1', start: 0, end: 4000 },
+  { id: 'scene2', start: 4000, end: 8000 },
+  { id: 'scene3', start: 8000, end: 14000 },
+  { id: 'scene4', start: 14000, end: 20000 },
+  { id: 'scene5', start: 20000, end: 28000 },
+  { id: 'scene6', start: 28000, end: 35000 },
+  { id: 'scene7', start: 35000, end: 40000 },
+  { id: 'scene8', start: 40000, end: 45000 },
+];
+
+let startTime = 0;
+let rafId = null;
+let currentScene = -1;
+
+function showScene(idx) {
+  if (idx === currentScene) return;
+  const prev = currentScene;
+  currentScene = idx;
+  document.querySelectorAll('.scene').forEach((s, i) => {
+    s.classList.toggle('active', i === idx);
+  });
+
+  // Chime on transition
+  const chimeFreqs = [600, 650, 700, 750, 800, 850, 900, 750];
+  if (idx >= 0) audio.chime(chimeFreqs[idx] || 700);
+
+  // Scene-specific triggers
+  switch (idx) {
+    case 0: // Chaos
+      spawnNotifications();
+      animateCounter($('counter'), 0, 47, 2500);
+      setTimeout(() => $('scene1-text').classList.add('show'), 2000);
+      audio.addDissonance();
+      break;
+    case 1: // Question
+      audio.removeDissonance();
+      setTimeout(() => { $('q1').classList.add('show'); audio.whoosh(); }, 300);
+      setTimeout(() => { $('q2').classList.add('show'); audio.whoosh(); }, 1800);
+      setTimeout(() => $('q-line').classList.add('show'), 2200);
+      break;
+    case 2: // Breath
+      startBreathText();
+      setTimeout(() => { $('breath-text').classList.add('show'); audio.whoosh(); }, 1500);
+      break;
+    case 3: // Verse
+      stopBreathText();
+      buildVerse();
+      setTimeout(() => revealVerseWords(), 500);
+      setTimeout(() => { $('verse-overlay').classList.add('show'); audio.whoosh(); }, 3500);
+      break;
+    case 4: // Transformation
+      setTimeout(() => {
+        $('calm-half').classList.add('sweep');
+        $('gold-divider').classList.add('sweep');
+      }, 500);
+      setTimeout(() => { $('transform-text').classList.add('show'); audio.whoosh(); }, 4000);
+      break;
+    case 5: // Stats
+      setTimeout(() => {
+        $('stat1').classList.add('show');
+        animateCounter($('stat-num1'), 0, 28, 1500);
+        audio.whoosh();
+      }, 300);
+      setTimeout(() => {
+        $('stat2').classList.add('show');
+        animateCounter($('stat-num2'), 0, 7, 1200);
+        audio.whoosh();
+      }, 1500);
+      setTimeout(() => {
+        $('stat3').classList.add('show');
+        audio.whoosh();
+      }, 2800);
+      break;
+    case 6: // Brand
+      setTimeout(() => { $('brand-name').classList.add('show'); audio.whoosh(); }, 300);
+      setTimeout(() => { $('brand-sub').classList.add('show'); audio.whoosh(); }, 800);
+      break;
+    case 7: // CTA
+      setTimeout(() => { $('cta-text').classList.add('show'); audio.whoosh(); }, 300);
+      setTimeout(() => $('cta-url').classList.add('show'), 800);
+      break;
+  }
+}
+
+function resetAll() {
+  currentScene = -1;
+  document.querySelectorAll('.scene').forEach(s => s.classList.remove('active'));
+  // Reset scene 1
+  $('notif-container').innerHTML = '';
+  $('counter').textContent = '٠';
+  $('scene1-text').classList.remove('show');
+  // Reset scene 2
+  $('q1').classList.remove('show');
+  $('q2').classList.remove('show');
+  $('q-line').classList.remove('show');
+  // Reset scene 3
+  stopBreathText();
+  $('breath-text').classList.remove('show');
+  $('breath-circle').textContent = 'شهيق';
+  // Reset scene 4
+  $('verse-container').innerHTML = '';
+  $('verse-ref').classList.remove('show');
+  $('verse-overlay').classList.remove('show');
+  // Reset scene 5
+  $('calm-half').classList.remove('sweep');
+  $('gold-divider').classList.remove('sweep');
+  $('transform-text').classList.remove('show');
+  // Reset scene 6
+  ['stat1','stat2','stat3'].forEach(id => $(id).classList.remove('show'));
+  $('stat-num1').textContent = '٠';
+  $('stat-num2').textContent = '٠';
+  // Reset scene 7
+  $('brand-name').classList.remove('show');
+  $('brand-sub').classList.remove('show');
+  // Reset scene 8
+  $('cta-text').classList.remove('show');
+  $('cta-url').classList.remove('show');
+  // Progress bar
+  $('progress-bar').style.width = '0%';
+}
+
+function tick() {
+  const elapsed = performance.now() - startTime;
+  const pct = Math.min(elapsed / TOTAL_DURATION * 100, 100);
+  $('progress-bar').style.width = pct + '%';
+
+  for (let i = scenes.length - 1; i >= 0; i--) {
+    if (elapsed >= scenes[i].start) {
+      showScene(i);
+      break;
+    }
+  }
+
+  if (elapsed < TOTAL_DURATION) {
+    rafId = requestAnimationFrame(tick);
+  } else {
+    // Done — show replay
+    audio.stop();
+    stopBreathText();
+    setTimeout(() => {
+      $('overlay-label').textContent = 'إعادة';
+      $('overlay').classList.remove('hidden');
+    }, 500);
+  }
+}
+
+function play() {
+  resetAll();
+  if (!audio.ctx) audio.init();
+  else if (audio.ctx.state === 'suspended') audio.ctx.resume();
+  audio.startDrone([85, 170, 127.5]);
+  $('overlay').classList.add('hidden');
+  startTime = performance.now();
+  rafId = requestAnimationFrame(tick);
+}
+
+// ======== INIT ========
+buildVerse();
+$('play-btn').addEventListener('click', play);
+$('overlay').addEventListener('click', e => {
+  if (e.target === $('overlay') || e.target === $('overlay-label')) play();
+});
+</script>
+</body>
+</html>

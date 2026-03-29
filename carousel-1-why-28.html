@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html dir="rtl" lang="ar">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>كاروسيل — ليش 28 ريال؟</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Kufi+Arabic:wght@400;600;700;800;900&display=swap');
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Kufi Arabic', sans-serif;
+    background: #0a0a0a;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    padding: 32px;
+    justify-content: center;
+  }
+
+  .slide {
+    width: 1080px;
+    height: 1080px;
+    background: #15130F;
+    position: relative;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    flex-shrink: 0;
+  }
+
+  /* Subtle geometric pattern overlay */
+  .slide::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background:
+      radial-gradient(circle at 20% 20%, rgba(201,184,138,0.03) 0%, transparent 50%),
+      radial-gradient(circle at 80% 80%, rgba(201,184,138,0.03) 0%, transparent 50%);
+    pointer-events: none;
+  }
+
+  /* Gold border accent */
+  .slide::after {
+    content: '';
+    position: absolute;
+    top: 40px; left: 40px; right: 40px; bottom: 40px;
+    border: 1px solid rgba(201,184,138,0.12);
+    pointer-events: none;
+  }
+
+  .gold { color: #C9B88A; }
+  .white { color: #FFFFFF; }
+  .dim { color: rgba(255,255,255,0.5); }
+
+  .slide-number {
+    position: absolute;
+    bottom: 60px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    gap: 8px;
+  }
+  .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    background: rgba(201,184,138,0.25);
+  }
+  .dot.active { background: #C9B88A; }
+
+  .brand-mark {
+    position: absolute;
+    top: 70px;
+    font-size: 24px;
+    color: rgba(201,184,138,0.4);
+    letter-spacing: 4px;
+  }
+
+  /* Slide 1 - Cover */
+  .s1 .main-text {
+    font-size: 72px;
+    font-weight: 800;
+    line-height: 1.6;
+    padding: 0 80px;
+  }
+  .s1 .emoji {
+    font-size: 80px;
+    margin-top: 40px;
+  }
+
+  /* Slide 2 */
+  .s2 .main-text {
+    font-size: 64px;
+    font-weight: 700;
+    line-height: 1.8;
+    padding: 0 100px;
+  }
+
+  /* Slide 3 - Equation */
+  .s3 .equation {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+  }
+  .s3 .eq-num {
+    font-size: 72px;
+    font-weight: 800;
+  }
+  .s3 .eq-op {
+    font-size: 48px;
+    font-weight: 300;
+    opacity: 0.4;
+  }
+  .s3 .eq-result {
+    font-size: 80px;
+    font-weight: 900;
+    margin-top: 20px;
+  }
+  .s3 .eq-line {
+    width: 120px;
+    height: 2px;
+    background: rgba(201,184,138,0.3);
+  }
+
+  /* Slide 4 - Features */
+  .s4 .title {
+    font-size: 48px;
+    font-weight: 700;
+    margin-bottom: 60px;
+  }
+  .s4 .feature-list {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    text-align: right;
+    padding: 0 160px;
+  }
+  .s4 .feature {
+    font-size: 42px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 20px;
+    justify-content: flex-end;
+  }
+  .s4 .feature .icon {
+    font-size: 36px;
+    order: -1;
+  }
+
+  /* Slide 5 - Comparison */
+  .s5 .comparison {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    padding: 0 80px;
+  }
+  .s5 .comp-item {
+    font-size: 52px;
+    font-weight: 600;
+    line-height: 1.6;
+  }
+  .s5 .comp-price {
+    font-size: 80px;
+    font-weight: 900;
+    margin-bottom: 20px;
+  }
+  .s5 .vs-text {
+    font-size: 40px;
+    font-weight: 300;
+    padding: 12px 40px;
+    border: 1px solid rgba(201,184,138,0.2);
+    border-radius: 50px;
+  }
+
+  /* Slide 6 - CTA */
+  .s6 .gift-emoji {
+    font-size: 100px;
+    margin-bottom: 40px;
+  }
+  .s6 .offer-name {
+    font-size: 56px;
+    font-weight: 700;
+    margin-bottom: 24px;
+  }
+  .s6 .price {
+    font-size: 96px;
+    font-weight: 900;
+    margin-bottom: 16px;
+  }
+  .s6 .price-unit {
+    font-size: 48px;
+    font-weight: 400;
+  }
+  .s6 .cta {
+    margin-top: 48px;
+    font-size: 40px;
+    font-weight: 600;
+    padding: 20px 60px;
+    border: 2px solid #C9B88A;
+    display: inline-block;
+  }
+  .s6 .link {
+    margin-top: 32px;
+    font-size: 32px;
+    letter-spacing: 2px;
+  }
+
+  h3 {
+    color: #C9B88A;
+    font-size: 20px;
+    margin-bottom: 16px;
+    text-align: center;
+    font-weight: 400;
+  }
+</style>
+</head>
+<body>
+
+<!-- SLIDE 1 — الغلاف -->
+<div>
+<h3>سلايد 1 — الغلاف</h3>
+<div class="slide s1">
+  <div class="brand-mark gold">تمعّن</div>
+  <div class="main-text gold">ليش عيدية تمعّن<br>بـ 28 ريال فقط؟</div>
+  <div class="emoji">🤔</div>
+  <div class="slide-number">
+    <div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 2 -->
+<div>
+<h3>سلايد 2</h3>
+<div class="slide s2">
+  <div class="brand-mark gold">تمعّن</div>
+  <div class="main-text white">لأن هدفنا مو الربح.<br><br><span class="gold">هدفنا إنك تبدأ.</span></div>
+  <div class="slide-number">
+    <div class="dot"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 3 — المعادلة -->
+<div>
+<h3>سلايد 3 — المعادلة</h3>
+<div class="slide s3">
+  <div class="brand-mark gold">تمعّن</div>
+  <div class="equation">
+    <div class="eq-num gold">28 يوم</div>
+    <div class="eq-op white">×</div>
+    <div class="eq-num white">آية واحدة</div>
+    <div class="eq-op white">×</div>
+    <div class="eq-num white">15 دقيقة</div>
+    <div class="eq-line"></div>
+    <div class="eq-result gold">حياة مختلفة</div>
+  </div>
+  <div class="slide-number">
+    <div class="dot"></div><div class="dot"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 4 — المميزات -->
+<div>
+<h3>سلايد 4 — المميزات</h3>
+<div class="slide s4">
+  <div class="brand-mark gold">تمعّن</div>
+  <div class="title gold">كل يوم فيه:</div>
+  <div class="feature-list">
+    <div class="feature white"><span>صمت</span> <span class="icon">⬛</span></div>
+    <div class="feature white"><span>آية</span> <span class="icon">📖</span></div>
+    <div class="feature white"><span>سؤال تأمل</span> <span class="icon">❓</span></div>
+    <div class="feature white"><span>طبقة مخفية</span> <span class="icon">🔍</span></div>
+    <div class="feature white"><span>تأمل شخصي</span> <span class="icon">📝</span></div>
+    <div class="feature white"><span>مقياس وعي</span> <span class="icon">📊</span></div>
+  </div>
+  <div class="slide-number">
+    <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot active"></div><div class="dot"></div><div class="dot"></div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 5 — المقارنة -->
+<div>
+<h3>سلايد 5 — المقارنة</h3>
+<div class="slide s5">
+  <div class="brand-mark gold">تمعّن</div>
+  <div class="comparison">
+    <div class="comp-price gold">28 ريال =</div>
+    <div class="comp-item dim">☕ قهوة تنتهي في 5 دقائق</div>
+    <div class="vs-text gold">أو</div>
+    <div class="comp-item white">🌙 رحلة تغيّر علاقتك مع القرآن</div>
+  </div>
+  <div class="slide-number">
+    <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot active"></div><div class="dot"></div>
+  </div>
+</div>
+</div>
+
+<!-- SLIDE 6 — CTA -->
+<div>
+<h3>سلايد 6 — CTA</h3>
+<div class="slide s6">
+  <div class="brand-mark gold">تمعّن</div>
+  <div class="gift-emoji">🎁</div>
+  <div class="offer-name gold">عيدية تمعّن</div>
+  <div class="price white">28 <span class="price-unit gold">ريال</span></div>
+  <div class="cta gold">ابدأ الحين</div>
+  <div class="link dim">الرابط في البايو 👆</div>
+  <div class="link" style="margin-top:16px; font-size:28px; letter-spacing:3px; color: rgba(201,184,138,0.6);">taamun.com</div>
+  <div class="slide-number">
+    <div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot"></div><div class="dot active"></div>
+  </div>
+</div>
+</div>
+
+</body>
+</html>

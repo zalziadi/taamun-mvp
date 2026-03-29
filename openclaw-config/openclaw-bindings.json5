@@ -1,0 +1,88 @@
+// ═══════════════════════════════════════════════════════════════
+// OpenClaw Multi-Agent Routing — إعدادات التوجيه
+// ═══════════════════════════════════════════════════════════════
+// هذا الملف يُدمج في ~/.openclaw/openclaw.json
+// وردة = الواجهة الافتراضية على واتساب (خدمة عملاء + مبيعات)
+// ═══════════════════════════════════════════════════════════════
+
+{
+  agents: {
+    list: [
+      // ── وردة: الافتراضية على واتساب ──
+      {
+        id: "warda",
+        name: "وردة — خدمة العملاء والمبيعات",
+        default: true,
+        workspace: "~/.openclaw/workspace-warda",
+        model: "anthropic/claude-haiku-4-5",
+      },
+
+      // ── مسخر: الأسئلة العامة والترحيب ──
+      {
+        id: "musakhar",
+        name: "مسخر — الأسئلة العامة",
+        workspace: "~/.openclaw/workspace-musakhar",
+        model: "anthropic/claude-haiku-4-5",
+      },
+
+      // ── سمرا: الدعم الفني ──
+      {
+        id: "samraa",
+        name: "سمرا — الدعم الفني",
+        workspace: "~/.openclaw/workspace-samraa",
+        model: "anthropic/claude-haiku-4-5",
+      },
+
+      // ── ذئب الشمال: القائد التسويقي (لا يرد على العملاء مباشرة) ──
+      {
+        id: "wolf",
+        name: "ذئب الشمال — القائد التسويقي",
+        workspace: "~/.openclaw/workspace-wolf",
+        model: "anthropic/claude-sonnet-4-6",
+      },
+
+      // ── المستشار الاستراتيجي (لزياد فقط) ──
+      {
+        id: "mustashar",
+        name: "المستشار الاستراتيجي",
+        workspace: "~/.openclaw/workspace-mustashar",
+        model: "anthropic/claude-sonnet-4-6",
+      },
+
+      // ── الرئيسي (fallback) ──
+      {
+        id: "main",
+        name: "Main",
+        workspace: "~/.openclaw/workspace",
+      },
+    ],
+  },
+
+  // ═══════════════════════════════════════════════════════════════
+  // التوجيه: الأكثر تحديداً يفوز
+  // peer match > accountId match > channel match > default
+  // ═══════════════════════════════════════════════════════════════
+  bindings: [
+    // ── رسائل زياد الخاصة → المستشار الاستراتيجي ──
+    // غيّر الرقم لرقم زياد الحقيقي
+    {
+      agentId: "mustashar",
+      match: {
+        channel: "whatsapp",
+        peer: { kind: "direct", id: "+966553930885" },
+      },
+    },
+
+    // ── كل رسائل واتساب الأخرى → وردة (الافتراضي) ──
+    {
+      agentId: "warda",
+      match: { channel: "whatsapp" },
+    },
+
+    // ── تلقرام (إذا أضفته لاحقاً) → مسخر ──
+    {
+      agentId: "musakhar",
+      match: { channel: "telegram" },
+    },
+  ],
+}

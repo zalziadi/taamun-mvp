@@ -1,0 +1,164 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 1130" width="800" height="1130" font-family="Georgia, 'Times New Roman', serif">
+  <defs>
+    <!-- Background gradient: warm sand -->
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#F5EFE4"/>
+      <stop offset="60%"  stop-color="#EDE3D0"/>
+      <stop offset="100%" stop-color="#E0D4BC"/>
+    </linearGradient>
+
+    <!-- Ground surface gradient -->
+    <linearGradient id="ground" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#D4C4A0" stop-opacity="0.6"/>
+      <stop offset="100%" stop-color="#C4B08A" stop-opacity="0.9"/>
+    </linearGradient>
+
+    <!-- Shadow gradient: fades to nothing -->
+    <linearGradient id="shadowGrad" x1="0" y1="0" x2="1" y2="0">
+      <stop offset="0%"   stop-color="#3D2B1A" stop-opacity="0.55"/>
+      <stop offset="45%"  stop-color="#5A3E28" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#5A3E28" stop-opacity="0"/>
+    </linearGradient>
+
+    <!-- Soft vignette -->
+    <radialGradient id="vignette" cx="50%" cy="50%" r="70%">
+      <stop offset="0%"   stop-color="transparent"/>
+      <stop offset="100%" stop-color="#C8AE88" stop-opacity="0.25"/>
+    </radialGradient>
+
+    <!-- Stone texture via filter -->
+    <filter id="rough" x="-5%" y="-5%" width="110%" height="110%">
+      <feTurbulence type="fractalNoise" baseFrequency="0.65" numOctaves="3" result="noise"/>
+      <feDisplacementMap in="SourceGraphic" in2="noise" scale="1.5" xChannelSelector="R" yChannelSelector="G"/>
+    </filter>
+  </defs>
+
+  <!-- ░░ BACKGROUND ░░ -->
+  <rect width="800" height="1130" fill="url(#bg)"/>
+  <rect width="800" height="1130" fill="url(#vignette)"/>
+
+  <!-- ░░ SUBTLE HORIZON LINE ░░ -->
+  <line x1="60" y1="660" x2="740" y2="660" stroke="#C4A87A" stroke-width="0.6" stroke-opacity="0.5"/>
+
+  <!-- ░░ GROUND PLANE ░░ -->
+  <ellipse cx="400" cy="670" rx="310" ry="22" fill="url(#ground)"/>
+
+  <!-- ░░ SHADOW OF THE STAFF ░░ -->
+  <!-- Elongated shadow to the left — "طريق" shape -->
+  <polygon
+    points="388,648  395,652  185,660  60,664"
+    fill="url(#shadowGrad)"
+    opacity="0.85"
+  />
+  <!-- Shadow softening second pass -->
+  <polygon
+    points="388,650  396,655  200,662  80,666"
+    fill="url(#shadowGrad)"
+    opacity="0.35"
+  />
+
+  <!-- ░░ STAFF — عصا مغروسة ░░ -->
+  <!-- Shadow of staff on ground (thin) -->
+  <rect x="392" y="650" width="3" height="18" fill="#3D2B1A" opacity="0.3" rx="1"/>
+  <!-- Staff body -->
+  <rect x="390" y="430" width="5" height="222" fill="#3D2B1A" rx="2.5" filter="url(#rough)"/>
+  <!-- Staff top — slight taper -->
+  <ellipse cx="392.5" cy="431" rx="2.5" ry="4" fill="#2A1D10"/>
+  <!-- Staff planted point -->
+  <polygon points="389,650 396,650 392.5,656" fill="#2A1D10"/>
+
+  <!-- ░░ THREE STONES — حجارة ░░ -->
+  <!-- Stone 1 — left of staff, larger -->
+  <ellipse cx="356" cy="655" rx="11" ry="6.5" fill="#7A6248" opacity="0.88" filter="url(#rough)"/>
+  <ellipse cx="354" cy="653" rx="5" ry="2.5" fill="#9A8268" opacity="0.4"/>
+
+  <!-- Stone 2 — right of staff, medium -->
+  <ellipse cx="428" cy="657" rx="8" ry="5" fill="#6A5238" opacity="0.85" filter="url(#rough)"/>
+  <ellipse cx="426" cy="655.5" rx="3.5" ry="2" fill="#8A7258" opacity="0.4"/>
+
+  <!-- Stone 3 — slightly behind staff, small -->
+  <ellipse cx="408" cy="661" rx="5.5" ry="3.5" fill="#5A4228" opacity="0.80" filter="url(#rough)"/>
+  <ellipse cx="407" cy="660" rx="2.5" ry="1.5" fill="#7A6248" opacity="0.4"/>
+
+  <!-- ░░ VERY SUBTLE GROUND TEXTURE (sand lines) ░░ -->
+  <line x1="140" y1="665" x2="240" y2="663" stroke="#C0A878" stroke-width="0.6" stroke-opacity="0.5"/>
+  <line x1="130" y1="668" x2="210" y2="666" stroke="#C0A878" stroke-width="0.5" stroke-opacity="0.35"/>
+  <line x1="500" y1="664" x2="600" y2="663" stroke="#C0A878" stroke-width="0.6" stroke-opacity="0.4"/>
+  <line x1="520" y1="667" x2="590" y2="667" stroke="#C0A878" stroke-width="0.5" stroke-opacity="0.3"/>
+
+  <!-- ░░ DECORATIVE THIN RULE — top ░░ -->
+  <line x1="90" y1="118" x2="710" y2="118" stroke="#B09060" stroke-width="0.7" stroke-opacity="0.55"/>
+
+  <!-- ░░ TEXT — TITLE ░░ -->
+  <!-- Main Arabic title -->
+  <text
+    x="400" y="88"
+    text-anchor="middle"
+    font-size="62"
+    font-weight="700"
+    letter-spacing="3"
+    fill="#2A1D10"
+    font-family="'Amiri', 'Traditional Arabic', Georgia, serif"
+  >مدينة المعنى</text>
+
+  <!-- Subtitle -->
+  <text
+    x="400" y="148"
+    text-anchor="middle"
+    font-size="20"
+    fill="#6B4F30"
+    font-weight="400"
+    letter-spacing="1.5"
+    font-family="'Amiri', 'Traditional Arabic', Georgia, serif"
+  >رحلة الوعي بين الهدية والظل</text>
+
+  <!-- ░░ DECORATIVE THIN RULE — bottom of title ░░ -->
+  <line x1="90" y1="168" x2="710" y2="168" stroke="#B09060" stroke-width="0.7" stroke-opacity="0.55"/>
+
+  <!-- Three pillars label — levels of consciousness (very subtle) -->
+  <text x="400" y="210" text-anchor="middle" font-size="13" fill="#9A7A50" opacity="0.7"
+    font-family="'Amiri', 'Traditional Arabic', Georgia, serif" letter-spacing="6">
+    الهدية  ·  الواقع  ·  الظل
+  </text>
+
+  <!-- ░░ QUOTE — bottom ░░ -->
+  <!-- Quote rule -->
+  <line x1="160" y1="910" x2="640" y2="910" stroke="#B09060" stroke-width="0.6" stroke-opacity="0.5"/>
+
+  <text
+    x="400" y="952"
+    text-anchor="middle"
+    font-size="19"
+    fill="#4A3520"
+    font-style="italic"
+    font-family="'Amiri', 'Traditional Arabic', Georgia, serif"
+    letter-spacing="0.5"
+  >"النتيجة المادية يحدد جودتها القرار الواعي."</text>
+
+  <line x1="160" y1="970" x2="640" y2="970" stroke="#B09060" stroke-width="0.6" stroke-opacity="0.5"/>
+
+  <!-- Author placeholder line — minimal -->
+  <text
+    x="400" y="1060"
+    text-anchor="middle"
+    font-size="14"
+    fill="#9A7A50"
+    letter-spacing="4"
+    font-family="Georgia, serif"
+    opacity="0.7"
+  >CITY OF MEANING</text>
+
+  <!-- ░░ BORDER — hairline ░░ -->
+  <rect x="28" y="28" width="744" height="1074"
+    fill="none"
+    stroke="#B09060"
+    stroke-width="1"
+    stroke-opacity="0.4"
+  />
+  <rect x="34" y="34" width="732" height="1062"
+    fill="none"
+    stroke="#C8A870"
+    stroke-width="0.4"
+    stroke-opacity="0.25"
+  />
+</svg>
