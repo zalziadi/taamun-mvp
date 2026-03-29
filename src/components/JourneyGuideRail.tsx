@@ -31,7 +31,7 @@ function getGuideState(pathname: string): GuideState {
       primaryHref: "/journal",
       primaryLabel: "افتح الدفتر",
       secondaryHref: "/program",
-      secondaryLabel: "العودة للبرنامج",
+      secondaryLabel: "مسار الرحلة",
     };
   }
 
@@ -98,6 +98,12 @@ export function JourneyGuideRail() {
           className="rounded-lg border border-[#c9b88a]/35 px-3 py-1.5 text-xs text-[#e8e1d9] transition-colors hover:bg-[#c9b88a]/10"
         >
           {state.secondaryLabel}
+        </Link>
+        <Link
+          href="/"
+          className="rounded-lg border border-[#d8cdb9]/35 px-3 py-1.5 text-xs text-[#e8e1d9]/85 transition-colors hover:bg-[#d8cdb9]/10"
+        >
+          الرئيسية
         </Link>
       </div>
     </aside>

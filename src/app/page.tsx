@@ -10,10 +10,13 @@ type UserLite = {
   email?: string | null;
 } | null;
 
-function isActiveSubscription(profile: {
+type ProfileLite = {
   subscription_status?: string | null;
   expires_at?: string | null;
-}) {
+  activated_at?: string | null;
+};
+
+function isActiveSubscription(profile: ProfileLite) {
   return (
     profile?.subscription_status === "active" &&
     !!profile?.expires_at &&
@@ -35,6 +38,7 @@ export default function Home() {
   const [user, setUser] = useState<UserLite>(null);
   const [subscribed, setSubscribed] = useState(false);
   const [showEidPopup, setShowEidPopup] = useState(false);
+  const [activationMarker, setActivationMarker] = useState<string | null>(null);
 
   useEffect(() => {
     let active = true;
@@ -56,7 +60,7 @@ export default function Home() {
 
         const { data: profile } = await supabase
           .from("profiles")
-          .select("subscription_status, expires_at")
+          .select("subscription_status, expires_at, activated_at")
           .eq("id", data.user.id)
           .maybeSingle();
 
@@ -65,13 +69,15 @@ export default function Home() {
         const activeSub = isActiveSubscription(profile ?? {});
         setSubscribed(activeSub);
 
-        if (activeSub) {
-          const seenKey = `eid-popup-seen:${data.user.id}`;
-          const seen = window.localStorage.getItem(seenKey);
-          if (!seen) {
-            setShowEidPopup(true);
-            window.localStorage.setItem(seenKey, "1");
-          }
+        const marker = profile?.activated_at ?? null;
+        setActivationMarker(marker);
+
+        const seenMarker = String(data.user.user_metadata?.eid_popup_seen_activation_at ?? "");
+
+        // Account-level popup rule:
+        // Show only once per subscription activation (works across devices/browsers).
+        if (activeSub && marker && seenMarker !== marker) {
+          setShowEidPopup(true);
         }
       } finally {
         if (active) setReady(true);
@@ -84,6 +90,19 @@ export default function Home() {
       active = false;
     };
   }, [supabase]);
+
+  async function dismissEidPopup() {
+    setShowEidPopup(false);
+    if (!user || !activationMarker) return;
+
+    try {
+      await supabase.auth.updateUser({
+        data: { eid_popup_seen_activation_at: activationMarker },
+      });
+    } catch {
+      // Ignore: popup is already hidden in UI.
+    }
+  }
 
   if (!ready) return null;
 
@@ -99,7 +118,7 @@ export default function Home() {
             <p className="text-xs tracking-[0.2em] text-[#c9b88a]">عيدية تمعّن</p>
             <h2 className="mt-2 font-[var(--font-amiri)] text-3xl text-[#e8e1d9]">مرحبًا بك</h2>
             <p className="mt-3 text-sm leading-relaxed text-white/75">
-              هذه نافذة تعريف سريعة بالعروض والمزايا. ستظهر لك مرة واحدة فقط في أول دخول.
+              هذه نافذة تعريف سريعة بالعروض والمزايا. ستظهر لك مرة واحدة فقط بعد أول تفعيل للاشتراك.
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-2">
               <Link
@@ -110,7 +129,7 @@ export default function Home() {
               </Link>
               <button
                 type="button"
-                onClick={() => setShowEidPopup(false)}
+                onClick={() => void dismissEidPopup()}
                 className="rounded-lg border border-[#c9b88a]/30 px-4 py-2 text-sm text-[#e8e1d9]"
               >
                 إغلاق
