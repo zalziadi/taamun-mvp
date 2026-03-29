@@ -29,12 +29,19 @@ export function NavAuth() {
     return (
       <Link
         href="/account"
-        className="text-sm font-medium text-[#7b694a] hover:opacity-80"
+        className="rounded-lg border border-[#d8cdb9] bg-[#fcfaf7]/80 px-4 py-1.5 text-sm font-medium text-[#7b694a] transition-colors hover:bg-[#f4efe7]"
       >
         حسابي
       </Link>
     );
   }
 
-  return null;
+  return (
+    <Link
+      href="/login"
+      className="rounded-lg border border-[#c9b88a] bg-[#c9b88a]/10 px-4 py-1.5 text-sm font-medium text-[#7b694a] transition-colors hover:bg-[#c9b88a]/20"
+    >
+      تسجيل الدخول
+    </Link>
+  );
 }

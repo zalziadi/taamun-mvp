@@ -84,15 +84,7 @@ export function AppChrome({
             </nav>
 
             <div className="flex items-center gap-3">
-              <Link
-                href="/login"
-                className="rounded-lg border border-[#c9b88a] bg-[#c9b88a]/10 px-4 py-1.5 text-sm font-medium text-[#7b694a] transition-colors hover:bg-[#c9b88a]/20"
-              >
-                تسجيل الدخول
-              </Link>
-              <div className="hidden rounded-lg border border-[#d8cdb9] bg-[#fcfaf7]/80 px-3 py-1.5 lg:block">
-                <NavAuth />
-              </div>
+              <NavAuth />
             </div>
           </div>
         </header>
