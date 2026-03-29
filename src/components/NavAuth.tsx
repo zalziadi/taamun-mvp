@@ -13,21 +13,28 @@ export function NavAuth() {
       setLoggedIn(!!session);
       setReady(true);
     });
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
       setLoggedIn(!!session);
     });
+
     return () => subscription.unsubscribe();
   }, []);
 
   if (!ready) return null;
 
-  return loggedIn ? (
-    <Link href="/account" className="text-sm font-medium text-gold hover:opacity-80">
-      حسابي
-    </Link>
-  ) : (
-    <Link href="/auth" className="text-sm font-medium text-gold hover:opacity-80">
-      تسجيل الدخول
-    </Link>
-  );
+  if (loggedIn) {
+    return (
+      <Link
+        href="/account"
+        className="text-sm font-medium text-[#7b694a] hover:opacity-80"
+      >
+        حسابي
+      </Link>
+    );
+  }
+
+  return null;
 }
