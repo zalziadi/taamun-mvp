@@ -28,25 +28,25 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
   useEffect(() => {
     const loadAccountData = async () => {
       try {
-        // Check entitlement cookie
-        const cookies = document.cookie.split("; ");
-        const entitlementCookie = cookies.find(c => c.startsWith("taamun_entitled="));
-        setSubscriptionStatus(entitlementCookie ? "subscribed" : "not-subscribed");
-
-        // Try to get profile tier info
-        const { data: profile } = await supabase
+        // Source of truth for subscription state is the profile row.
+        // (entitlement cookie is httpOnly, so client-side code cannot read it reliably)
+        const { data: profile, error: profileError } = await supabase
           .from("profiles")
-          .select("tier, expires_at, subscription_status")
+          .select("subscription_tier, expires_at, subscription_status")
           .single();
-        if (profile?.tier) {
-          setPlanTier(profile.tier);
-        }
-        if (profile?.expires_at) {
-          setExpiresAt(profile.expires_at);
-        }
-        // Override subscription status if expired
-        if (profile?.subscription_status === "active" && isSubscriptionExpired(profile?.expires_at)) {
+
+        if (!profileError && profile) {
+          const active =
+            profile.subscription_status === "active" &&
+            !isSubscriptionExpired(profile.expires_at);
+
+          setSubscriptionStatus(active ? "subscribed" : "not-subscribed");
+          setPlanTier(profile.subscription_tier ?? null);
+          setExpiresAt(profile.expires_at ?? null);
+        } else {
           setSubscriptionStatus("not-subscribed");
+          setPlanTier(null);
+          setExpiresAt(null);
         }
 
         // Fetch completed days from progress API (source of truth)

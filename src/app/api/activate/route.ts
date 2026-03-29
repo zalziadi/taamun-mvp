@@ -75,7 +75,7 @@ export async function POST(req: NextRequest) {
   const now = new Date();
   const expiresAt = calcExpiresAt(tier, now);
 
-  await admin
+  const { error: profileError } = await admin
     .from("profiles")
     .upsert({
       id: auth.user.id,
@@ -84,6 +84,11 @@ export async function POST(req: NextRequest) {
       activated_at: now.toISOString(),
       expires_at: expiresAt,
     }, { onConflict: "id" });
+
+  if (profileError) {
+    console.error("[activate] profile upsert error:", profileError.message);
+    return NextResponse.json({ ok: false, error: "تعذر تحديث حالة الاشتراك." }, { status: 500 });
+  }
 
   /* ── 6. أنشئ entitlement token واكتبه في cookie ── */
   const token = makeEntitlementToken(auth.user.id, tier, expiresAt);
