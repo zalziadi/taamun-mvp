@@ -18,13 +18,7 @@ import {
 
 function shouldHideGlobalChrome(pathname: string | null) {
   if (!pathname) return false;
-  if (
-    pathname === "/" ||
-    pathname === "/breathing" ||
-    pathname === "/journal" ||
-    pathname === "/tasbeeh"
-  )
-    return true;
+  if (pathname === "/" || pathname === "/breathing" || pathname === "/journal" || pathname === "/tasbeeh") return true;
   if (pathname.startsWith("/ramadan")) return true;
   return false;
 }
@@ -45,7 +39,6 @@ export function AppChrome({
         <header className="sticky top-0 z-40 border-b border-[#e5dfd3] bg-[#f4f1ea]/80 backdrop-blur-md">
           <div className="mx-auto flex h-16 w-full max-w-[1240px] items-center justify-between px-4 sm:px-6 lg:px-8">
             <div className="flex items-center gap-3 text-[#8c7851]">
-              <span className="text-sm opacity-70">✦</span>
               <Link
                 href="/"
                 className="tm-heading rounded-md text-2xl font-bold text-[#7b694a] outline-none transition-colors duration-200 hover:text-[#6d5e44] focus-visible:ring-2 focus-visible:ring-[#8c7851]/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f4f1ea]"
@@ -54,10 +47,7 @@ export function AppChrome({
               </Link>
             </div>
 
-            <nav
-              aria-label="الرئيسية"
-              className="hidden items-center gap-6 lg:flex"
-            >
+            <nav aria-label="الرئيسية" className="hidden items-center gap-6 lg:flex">
               <Link href="/" className="tm-nav-link">
                 الرئيسية
               </Link>
@@ -94,7 +84,6 @@ export function AppChrome({
             </nav>
 
             <div className="flex items-center gap-3">
-              <span className="hidden text-[#8c7851] md:inline">⧧</span>
               <div className="rounded-lg border border-[#d8cdb9] bg-[#fcfaf7]/80 px-3 py-1.5">
                 <NavAuth />
               </div>
@@ -108,9 +97,8 @@ export function AppChrome({
       {!hide ? (
         <footer className="border-t border-[#e5dfd3] bg-[#f4f1ea]/70 py-10">
           <div className="mx-auto flex w-full max-w-[1240px] flex-col items-center gap-3 px-4 text-center sm:px-6 lg:px-8">
-            <span className="text-xs text-[#8c7851]/90">✦</span>
             <p className="text-sm text-[#7d7362]">
-              {APP_NAME} © {new Date().getFullYear()} · من مشاريع الدير الرقمي
+              {APP_NAME} &copy; {new Date().getFullYear()} &middot; من مشاريع الدير الرقمي
             </p>
           </div>
         </footer>

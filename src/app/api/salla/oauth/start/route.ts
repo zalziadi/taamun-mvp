@@ -28,7 +28,7 @@ export async function GET() {
     `${origin.replace(/\/$/, "")}/api/salla/oauth/callback`;
 
   const stateSecret = process.env.SALLA_STATE_SECRET ?? "";
-  const statePayload = `${auth.user!.id}:${Date.now()}`;
+  const statePayload = `${auth.user?.id ?? "admin"}:${Date.now()}`;
   const hmac = crypto.createHmac("sha256", stateSecret).update(statePayload).digest("hex");
   const state = `${statePayload}:${hmac}`;
 
