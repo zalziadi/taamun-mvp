@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { isAdminRequest } from "@/lib/admin";
 
 const ADMIN_COOKIE = "taamun_admin";
 
@@ -21,29 +22,6 @@ export async function requireUser() {
 }
 
 export async function requireAdmin() {
-  // 1. Check admin password cookie first
-  const adminKey = process.env.ADMIN_KEY;
-  if (adminKey) {
-    const cookieStore = await cookies();
-    const adminCookie = cookieStore.get(ADMIN_COOKIE)?.value;
-    if (adminCookie === adminKey) {
-      let admin;
-      try {
-        admin = getSupabaseAdmin();
-      } catch {
-        return {
-          ok: false as const,
-          response: NextResponse.json({ ok: false, error: "server_misconfig" }, { status: 500 }),
-        };
-      }
-      return { ok: true as const, user: null, admin };
-    }
-  }
-
-  // 2. Fallback: Supabase Auth-based admin check
-  const authResult = await requireUser();
-  if (!authResult.ok) return authResult;
-
   let admin;
   try {
     admin = getSupabaseAdmin();
@@ -53,6 +31,15 @@ export async function requireAdmin() {
       response: NextResponse.json({ ok: false, error: "server_misconfig" }, { status: 500 }),
     };
   }
+
+  const cookieStore = cookies();
+  const bypassKey = cookieStore.get(ADMIN_COOKIE)?.value;
+  if (isAdminRequest(bypassKey)) {
+    return { ok: true as const, user: null as any, admin, bypass: true as const };
+  }
+
+  const authResult = await requireUser();
+  if (!authResult.ok) return authResult;
 
   const adminEmail = process.env.ADMIN_EMAIL;
   const userEmail = authResult.user.email;
