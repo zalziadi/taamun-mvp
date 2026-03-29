@@ -19,6 +19,13 @@ function LoginContent() {
   const [checkingSession, setCheckingSession] = useState(true);
 
   useEffect(() => {
+    const errorCode = searchParams.get("error");
+    if (errorCode === "oauth_failed") {
+      setError("تعذر إكمال تسجيل الدخول عبر Google. حاول مرة أخرى أو استخدم رابط البريد الإلكتروني.");
+    }
+  }, [searchParams]);
+
+  useEffect(() => {
     let active = true;
     supabase.auth.getUser().then(({ data, error }) => {
       if (!active) return;
@@ -56,7 +63,7 @@ function LoginContent() {
         emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
       },
     });
-    if (err) setError("تعذر تسجيل الدخول عبر Google. تأكد من صلاحية الحساب أو جرّب البريد الإلكتروني.");
+    if (err) setError("تعذر إرسال رابط الدخول الآن. حاول مرة أخرى.");
     else setSent(true);
   };
 

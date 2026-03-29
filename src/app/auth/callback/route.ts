@@ -1,55 +1,63 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
+
+function getSafeNext(nextParam: string | null): string {
+  const next = nextParam ?? "/program";
+  if (next.startsWith("/") && !next.startsWith("//") && !next.includes(":")) {
+    return next;
+  }
+  return "/program";
+}
 
 export async function GET(request: NextRequest) {
   const { searchParams, origin } = new URL(request.url);
   const code = searchParams.get("code");
-  const token_hash = searchParams.get("token_hash");
+  const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type");
-  const next = searchParams.get("next") ?? "/program";
+  const safeNext = getSafeNext(searchParams.get("next"));
 
-  const safeNext =
-    next.startsWith("/") && !next.startsWith("//") && !next.includes(":")
-      ? next
-      : "/program";
+  const successUrl = new URL(safeNext, origin);
+  const fallbackUrl = new URL("/login", origin);
+  fallbackUrl.searchParams.set("next", safeNext);
+  fallbackUrl.searchParams.set("error", "oauth_failed");
 
-  const cookieStore = cookies();
+  const response = NextResponse.redirect(successUrl);
   const supabase = createServerClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
       cookies: {
-        getAll() { return cookieStore.getAll(); },
+        getAll() {
+          return request.cookies.getAll();
+        },
         setAll(cookiesToSet) {
-          try {
-            cookiesToSet.forEach(({ name, value, options }) =>
-              cookieStore.set(name, value, options)
-            );
-          } catch {}
+          cookiesToSet.forEach(({ name, value, options }) => {
+            response.cookies.set(name, value, options);
+          });
         },
       },
     }
   );
 
-  // Magic link (email OTP)
-  if (token_hash && type) {
+  if (tokenHash && type) {
     const { error } = await supabase.auth.verifyOtp({
-      token_hash,
+      token_hash: tokenHash,
       type: type as "email" | "signup" | "invite" | "magiclink" | "recovery",
     });
     if (!error) {
-      return NextResponse.redirect(`${origin}${safeNext}`);
+      return response;
     }
   }
 
-  // OAuth / PKCE
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
     if (!error) {
-      return NextResponse.redirect(`${origin}${safeNext}`);
+      const { data: userData, error: userError } = await supabase.auth.getUser();
+      if (!userError && userData.user) {
+        return response;
+      }
     }
   }
 
-  return NextResponse.redirect(`${origin}/auth?error=auth_failed`);
+  return NextResponse.redirect(fallbackUrl);
 }
