@@ -1,26 +1,19 @@
 import { NextRequest, NextResponse } from "next/server";
 
-const ADMIN_BYPASS_COOKIE = "taamun_admin";
-
 export function middleware(request: NextRequest) {
   const adminKey = request.nextUrl.searchParams.get("admin");
-  if (!adminKey) {
-    return NextResponse.next();
-  }
+  if (!adminKey) return NextResponse.next();
 
-  const redirectUrl = request.nextUrl.clone();
-  redirectUrl.searchParams.delete("admin");
+  const nextPath = request.nextUrl.pathname.startsWith("/admin")
+    ? request.nextUrl.pathname
+    : "/admin";
 
-  const response = NextResponse.redirect(redirectUrl);
-  response.cookies.set(ADMIN_BYPASS_COOKIE, adminKey, {
-    httpOnly: true,
-    secure: true,
-    sameSite: "lax",
-    path: "/",
-    maxAge: 60 * 60 * 8,
-  });
+  const loginUrl = request.nextUrl.clone();
+  loginUrl.pathname = "/api/admin/login";
+  loginUrl.searchParams.set("password", adminKey);
+  loginUrl.searchParams.set("next", nextPath);
 
-  return response;
+  return NextResponse.redirect(loginUrl);
 }
 
 export const config = {
