@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useState, FormEvent } from "react";
 import Link from "next/link";
 
 interface Metrics {
@@ -15,19 +15,19 @@ export default function AdminPage() {
   const [metrics, setMetrics] = useState<Metrics | null>(null);
   const [allowed, setAllowed] = useState<boolean | null>(null); // null = loading
   const [error, setError] = useState<string | null>(null);
+  const [password, setPassword] = useState("");
+  const [loginLoading, setLoginLoading] = useState(false);
 
-  useEffect(() => {
+  function loadDashboard() {
     fetch("/api/admin/dashboard", { cache: "no-store" })
       .then(async (res) => {
         if (!res.ok) {
           setAllowed(false);
-          setError(res.status === 401 ? "سجّل دخولك أولاً" : "حسابك لا يملك صلاحية الأدمن.");
           return;
         }
         const data = await res.json();
         if (!data.ok) {
           setAllowed(false);
-          setError("حسابك لا يملك صلاحية الأدمن.");
           return;
         }
         setMetrics(data.metrics);
@@ -35,9 +35,36 @@ export default function AdminPage() {
       })
       .catch(() => {
         setAllowed(false);
-        setError("تعذر الاتصال بالخادم");
       });
+  }
+
+  useEffect(() => {
+    loadDashboard();
   }, []);
+
+  async function handleLogin(e: FormEvent) {
+    e.preventDefault();
+    setLoginLoading(true);
+    setError(null);
+    try {
+      const res = await fetch("/api/admin/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      const data = await res.json();
+      if (!data.ok) {
+        setError("كلمة المرور غير صحيحة");
+        setLoginLoading(false);
+        return;
+      }
+      setPassword("");
+      loadDashboard();
+    } catch {
+      setError("تعذر الاتصال بالخادم");
+      setLoginLoading(false);
+    }
+  }
 
   // Loading
   if (allowed === null) {
@@ -48,18 +75,35 @@ export default function AdminPage() {
     );
   }
 
-  // Not allowed
+  // Not allowed — show login form
   if (!allowed) {
     return (
-      <div dir="rtl" className="min-h-screen bg-[#15130f] p-6">
-        <nav className="mb-8">
-          <Link href="/" className="text-white/70 hover:text-white">الرئيسية</Link>
-        </nav>
-        <h1 className="mb-8 text-2xl font-bold text-white">لوحة الأدمن</h1>
-        <div className="max-w-md rounded-xl border border-amber-500/40 bg-amber-500/10 p-6">
-          <p className="font-medium text-amber-400">غير مسموح</p>
-          <p className="mt-1 text-sm text-white/80">{error}</p>
-        </div>
+      <div dir="rtl" className="flex min-h-screen items-center justify-center bg-[#15130f] p-6">
+        <form onSubmit={handleLogin} className="w-full max-w-sm space-y-4">
+          <h1 className="text-2xl font-bold text-white text-center">لوحة الأدمن</h1>
+          <p className="text-sm text-white/50 text-center">أدخل كلمة المرور للدخول</p>
+          <input
+            type="password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            placeholder="كلمة المرور"
+            className="w-full rounded-xl border border-white/20 bg-white/5 px-4 py-3 text-white placeholder-white/30 outline-none focus:border-white/40"
+            autoFocus
+          />
+          {error && (
+            <p className="text-sm text-red-400 text-center">{error}</p>
+          )}
+          <button
+            type="submit"
+            disabled={loginLoading || !password}
+            className="w-full rounded-xl bg-white/10 py-3 font-medium text-white transition-colors hover:bg-white/20 disabled:opacity-40"
+          >
+            {loginLoading ? "جارٍ التحقق..." : "دخول"}
+          </button>
+          <div className="text-center">
+            <Link href="/" className="text-sm text-white/40 hover:text-white/70">الرئيسية</Link>
+          </div>
+        </form>
       </div>
     );
   }

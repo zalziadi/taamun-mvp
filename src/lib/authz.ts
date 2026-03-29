@@ -1,6 +1,9 @@
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+
+const ADMIN_COOKIE = "taamun_admin";
 
 export async function requireUser() {
   const supabase = await createSupabaseServerClient();
@@ -18,6 +21,26 @@ export async function requireUser() {
 }
 
 export async function requireAdmin() {
+  // 1. Check admin password cookie first
+  const adminKey = process.env.ADMIN_KEY;
+  if (adminKey) {
+    const cookieStore = await cookies();
+    const adminCookie = cookieStore.get(ADMIN_COOKIE)?.value;
+    if (adminCookie === adminKey) {
+      let admin;
+      try {
+        admin = getSupabaseAdmin();
+      } catch {
+        return {
+          ok: false as const,
+          response: NextResponse.json({ ok: false, error: "server_misconfig" }, { status: 500 }),
+        };
+      }
+      return { ok: true as const, user: null, admin };
+    }
+  }
+
+  // 2. Fallback: Supabase Auth-based admin check
   const authResult = await requireUser();
   if (!authResult.ok) return authResult;
 
