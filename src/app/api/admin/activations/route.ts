@@ -68,7 +68,7 @@ export async function POST(req: NextRequest) {
 
   const { data, error } = await auth.admin
     .from("activation_codes")
-    .insert({ code, tier, created_by: auth.user.id })
+    .insert({ code, tier, created_by: auth.user!.id })
     .select()
     .single();
 
