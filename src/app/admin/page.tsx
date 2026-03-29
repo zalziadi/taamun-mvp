@@ -1,56 +1,64 @@
+"use client";
+
+import { useEffect, useState } from "react";
 import Link from "next/link";
-import { AdminRagIngestCard } from "@/components/admin/AdminRagIngestCard";
-import { requireAdmin } from "@/lib/authz";
-import { listAllProgressRows } from "@/lib/progressStore";
 
-export const dynamic = "force-dynamic";
-
-async function getDashboardMetrics() {
-  const adminAuth = await requireAdmin();
-  if (!adminAuth.ok) return null;
-
-  const supabase = adminAuth.admin;
-  const [answersRes, progressRes, awarenessRes] = await Promise.all([
-    supabase.from("user_answers").select("user_id, day"),
-    listAllProgressRows(supabase),
-    supabase.from("awareness_insights").select("user_id, insight_type"),
-  ]);
-
-  if (answersRes.error || !progressRes.ok || awarenessRes.error) return null;
-
-  const answerRows = (answersRes.data ?? []) as Array<{ user_id: string }>;
-  const progressRows = (progressRes.data ?? []) as Array<{ user_id: string; completed_days?: string[] | null }>;
-  const awarenessRows = (awarenessRes.data ?? []) as Array<{ insight_type: string }>;
-
-  const uniqueUsers = new Set<string>();
-  for (const row of answerRows) uniqueUsers.add(row.user_id);
-  for (const row of progressRows) uniqueUsers.add(row.user_id);
-
-  return {
-    users_active: uniqueUsers.size,
-    answers_total: answerRows.length,
-    users_completed_28: progressRows.filter((r) => (r.completed_days ?? []).length >= 28).length,
-    weekly_insights_total: awarenessRows.filter((r) => r.insight_type === "weekly").length,
-    final_insights_total: awarenessRows.filter((r) => r.insight_type === "final").length,
-  };
+interface Metrics {
+  users_active: number;
+  answers_total: number;
+  users_completed_28: number;
+  weekly_insights_total: number;
+  final_insights_total: number;
 }
 
-export default async function AdminPage() {
-  const metrics = await getDashboardMetrics();
-  const allowed = metrics !== null;
+export default function AdminPage() {
+  const [metrics, setMetrics] = useState<Metrics | null>(null);
+  const [allowed, setAllowed] = useState<boolean | null>(null); // null = loading
+  const [error, setError] = useState<string | null>(null);
 
+  useEffect(() => {
+    fetch("/api/admin/dashboard", { cache: "no-store" })
+      .then(async (res) => {
+        if (!res.ok) {
+          setAllowed(false);
+          setError(res.status === 401 ? "سجّل دخولك أولاً" : "حسابك لا يملك صلاحية الأدمن.");
+          return;
+        }
+        const data = await res.json();
+        if (!data.ok) {
+          setAllowed(false);
+          setError("حسابك لا يملك صلاحية الأدمن.");
+          return;
+        }
+        setMetrics(data.metrics);
+        setAllowed(true);
+      })
+      .catch(() => {
+        setAllowed(false);
+        setError("تعذر الاتصال بالخادم");
+      });
+  }, []);
+
+  // Loading
+  if (allowed === null) {
+    return (
+      <div className="flex min-h-screen items-center justify-center bg-[#15130f]">
+        <p className="text-lg text-white/50">جارٍ التحقق...</p>
+      </div>
+    );
+  }
+
+  // Not allowed
   if (!allowed) {
     return (
-      <div className="min-h-screen bg-[#15130f] p-6">
+      <div dir="rtl" className="min-h-screen bg-[#15130f] p-6">
         <nav className="mb-8">
-          <Link href="/" className="text-white/70 hover:text-white">
-            الرئيسية
-          </Link>
+          <Link href="/" className="text-white/70 hover:text-white">الرئيسية</Link>
         </nav>
         <h1 className="mb-8 text-2xl font-bold text-white">لوحة الأدمن</h1>
         <div className="max-w-md rounded-xl border border-amber-500/40 bg-amber-500/10 p-6">
           <p className="font-medium text-amber-400">غير مسموح</p>
-          <p className="mt-1 text-sm text-white/80">حسابك لا يملك صلاحية الأدمن.</p>
+          <p className="mt-1 text-sm text-white/80">{error}</p>
         </div>
       </div>
     );
@@ -65,11 +73,9 @@ export default async function AdminPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#15130f] p-6">
+    <div dir="rtl" className="min-h-screen bg-[#15130f] p-6">
       <nav className="mb-8">
-        <Link href="/" className="text-white/70 hover:text-white">
-          الرئيسية
-        </Link>
+        <Link href="/" className="text-white/70 hover:text-white">الرئيسية</Link>
       </nav>
       <h1 className="mb-8 text-2xl font-bold text-white">لوحة الأدمن</h1>
 
@@ -100,7 +106,6 @@ export default async function AdminPage() {
         >
           تصدير CSV (الإجابات)
         </a>
-        <AdminRagIngestCard />
       </div>
     </div>
   );
