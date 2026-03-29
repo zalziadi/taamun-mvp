@@ -31,7 +31,7 @@ export function NavAuth() {
         href="/account"
         className="rounded-lg border border-[#d8cdb9] bg-[#fcfaf7]/80 px-4 py-1.5 text-sm font-medium text-[#7b694a] transition-colors hover:bg-[#f4efe7]"
       >
-        حسابي
+        كهفي
       </Link>
     );
   }

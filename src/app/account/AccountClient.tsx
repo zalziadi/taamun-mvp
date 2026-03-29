@@ -154,15 +154,17 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
 
   const content = (
     <div className="w-full max-w-2xl space-y-6 py-8">
-      {/* Header */}
+      {/* Header — Cave Theme */}
       <div className="text-center space-y-2">
         <div className="mx-auto flex h-16 w-16 items-center justify-center rounded-full border border-[#c9b88a]/20 bg-[#c9b88a]/10">
           <svg className="h-8 w-8 text-[#c9b88a]" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={1.5} strokeLinecap="round" strokeLinejoin="round">
-            <path d="M16 7a4 4 0 1 1-8 0 4 4 0 0 1 8 0z" />
-            <path d="M12 14a7 7 0 0 0-7 7h14a7 7 0 0 0-7-7z" />
+            <path d="M3 12c0-4.97 4.03-9 9-9s9 4.03 9 9" />
+            <path d="M3 12h3c1 0 2 .5 2.5 1.5L10 16l2-6 2 4h2c.5-1 1.5-2 3-2h2" />
+            <path d="M3 12c0 4.97 4.03 9 9 9s9-4.03 9-9" />
           </svg>
         </div>
-        <h1 className="font-[var(--font-amiri)] text-3xl text-[#e8e1d9]">حسابي</h1>
+        <h1 className="font-[var(--font-amiri)] text-3xl text-[#e8e1d9]">كهفي</h1>
+        <p className="text-xs text-[#c9b88a]/60">مساحتك الخاصة داخل تمعّن</p>
         {userEmail && (
           <p className="text-sm text-[#c9b88a]">{userEmail}</p>
         )}

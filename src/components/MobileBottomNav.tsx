@@ -93,7 +93,7 @@ export function MobileBottomNav({ ramadanClosed: _unused }: { ramadanClosed: boo
     { href: "/journey", label: "الرحلة", icon: "journey", activeWhen: (p) => p.startsWith("/journey") },
     { href: "/reflection", label: "التأمل", icon: "reflection", activeWhen: (p) => p.startsWith("/reflection") },
     { href: "/tasbeeh", label: "المسبحة", icon: "tasbeeh" as const, activeWhen: (p: string) => p.startsWith("/tasbeeh") },
-    { href: "/account", label: "حسابي", icon: "account", activeWhen: (p) => p.startsWith("/account") },
+    { href: "/account", label: "كهفي", icon: "account", activeWhen: (p) => p.startsWith("/account") },
   ];
 
   return (

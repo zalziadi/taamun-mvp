@@ -79,7 +79,7 @@ export function AppChrome({
                 المسبحة
               </Link>
               <Link href="/account" className="tm-nav-link">
-                حسابي
+                كهفي
               </Link>
             </nav>
 

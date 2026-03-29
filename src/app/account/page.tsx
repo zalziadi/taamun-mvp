@@ -14,7 +14,7 @@ export default async function AccountPage() {
   }
 
   return (
-    <AppShell title="حسابي">
+    <AppShell title="كهفي">
       <AccountClient
         embedded
         userEmail={user.email ?? null}
