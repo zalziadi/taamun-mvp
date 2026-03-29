@@ -1,153 +1,105 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { Suspense, useState, useEffect } from "react";
 import { createBrowserClient } from "@supabase/ssr";
 import { useRouter, useSearchParams } from "next/navigation";
 
-const supabase = createBrowserClient(
-  process.env.NEXT_PUBLIC_SUPABASE_URL!,
-  process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-);
-
-export default function LoginPage() {
+function LoginContent() {
+  const supabase = createBrowserClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+  );
   const router = useRouter();
   const searchParams = useSearchParams();
   const next = searchParams.get("next") || "/program";
 
   const [email, setEmail] = useState("");
-  const [loading, setLoading] = useState(false);
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
   const [checkingSession, setCheckingSession] = useState(true);
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data }) => {
-      if (data.session) router.replace(next);
-      else setCheckingSession(false);
+      if (data.session) {
+        router.replace(next);
+      } else {
+        setCheckingSession(false);
+      }
     });
-  }, [router, next]);
+  }, []);
 
-  async function handleGoogle() {
-    setLoading(true);
+  const handleGoogle = async () => {
     setError("");
-    const { error } = await supabase.auth.signInWithOAuth({
+    const { error: err } = await supabase.auth.signInWithOAuth({
       provider: "google",
       options: {
         redirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
       },
     });
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-    }
-  }
+    if (err) setError(err.message);
+  };
 
-  async function handleEmail(e: React.FormEvent) {
-    e.preventDefault();
-    if (!email.trim()) return;
-    setLoading(true);
+  const handleEmail = async () => {
     setError("");
-    const { error } = await supabase.auth.signInWithOtp({
-      email: email.trim(),
+    if (!email) {
+      setError("أدخل بريدك الإلكتروني");
+      return;
+    }
+    const { error: err } = await supabase.auth.signInWithOtp({
+      email,
       options: {
         emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
       },
     });
-    if (error) {
-      setError(error.message);
-      setLoading(false);
-    } else {
-      setSent(true);
-      setLoading(false);
-    }
-  }
+    if (err) setError(err.message);
+    else setSent(true);
+  };
 
   if (checkingSession) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#15130f]">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#c9b88a] border-t-transparent" />
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#15130f" }}>
+        <p style={{ color: "#c9b88a", fontSize: 18 }}>جاري التحقق...</p>
       </div>
     );
   }
 
   return (
-    <div dir="rtl" className="flex min-h-screen items-center justify-center bg-[#15130f] px-4">
-      <div className="w-full max-w-[400px] space-y-8">
-        <div className="text-center">
-          <a href="/" className="inline-block font-[var(--font-amiri)] text-3xl font-bold text-[#c9b88a]">
-            تمَعُّن
-          </a>
-          <p className="mt-2 text-sm text-[#e8e1d9]/60">
-            تسجيل الدخول لحسابك
-          </p>
+    <div dir="rtl" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#15130f", padding: 16 }}>
+      <div style={{ width: "100%", maxWidth: 400, background: "#2b2824", borderRadius: 16, padding: 32, textAlign: "center" }}>
+        <h1 style={{ color: "#c9b88a", fontSize: 28, marginBottom: 8 }}>تمعّن</h1>
+        <p style={{ color: "#a09882", fontSize: 15, marginBottom: 32 }}>تسجيل دخول المشتركين</p>
+
+        <button onClick={handleGoogle} style={{ width: "100%", padding: "12px 0", borderRadius: 10, border: "none", background: "#fff", color: "#333", fontSize: 16, fontWeight: 600, cursor: "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: 10, marginBottom: 24 }}>
+          <svg width="20" height="20" viewBox="0 0 48 48"><path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59a14.5 14.5 0 010-9.18l-7.98-6.19a24.003 24.003 0 000 21.56l7.98-6.19z"/><path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg>
+          تسجيل الدخول بـ Google
+        </button>
+
+        <div style={{ position: "relative", marginBottom: 24 }}>
+          <div style={{ borderTop: "1px solid #3d3a35", position: "absolute", top: "50%", width: "100%" }} />
+          <span style={{ background: "#2b2824", position: "relative", padding: "0 12px", color: "#6b6560", fontSize: 13 }}>أو</span>
         </div>
 
-        <div className="rounded-2xl border border-white/10 bg-[#2b2824] p-6 space-y-6">
-          <button
-            onClick={handleGoogle}
-            disabled={loading}
-            className="flex w-full items-center justify-center gap-3 rounded-xl border border-white/15 bg-white px-4 py-3 text-sm font-medium text-[#333] transition-colors hover:bg-gray-50 disabled:opacity-50"
-          >
-            <svg className="h-5 w-5" viewBox="0 0 24 24">
-              <path d="M22.56 12.25c0-.78-.07-1.53-.2-2.25H12v4.26h5.92a5.06 5.06 0 01-2.2 3.32v2.77h3.57c2.08-1.92 3.28-4.74 3.28-8.1z" fill="#4285F4" />
-              <path d="M12 23c2.97 0 5.46-.98 7.28-2.66l-3.57-2.77c-.98.66-2.23 1.06-3.71 1.06-2.86 0-5.29-1.93-6.16-4.53H2.18v2.84C3.99 20.53 7.7 23 12 23z" fill="#34A853" />
-              <path d="M5.84 14.09c-.22-.66-.35-1.36-.35-2.09s.13-1.43.35-2.09V7.07H2.18C1.43 8.55 1 10.22 1 12s.43 3.45 1.18 4.93l2.85-2.22.81-.62z" fill="#FBBC05" />
-              <path d="M12 5.38c1.62 0 3.06.56 4.21 1.64l3.15-3.15C17.45 2.09 14.97 1 12 1 7.7 1 3.99 3.47 2.18 7.07l3.66 2.84c.87-2.6 3.3-4.53 6.16-4.53z" fill="#EA4335" />
-            </svg>
-            تسجيل الدخول بحساب Google
-          </button>
-
-          <div className="flex items-center gap-3">
-            <div className="h-px flex-1 bg-white/10" />
-            <span className="text-xs text-white/30">أو</span>
-            <div className="h-px flex-1 bg-white/10" />
+        {sent ? (
+          <p style={{ color: "#c9b88a", fontSize: 15 }}>تم إرسال رابط الدخول إلى بريدك</p>
+        ) : (
+          <div>
+            <input type="email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="البريد الإلكتروني" style={{ width: "100%", padding: 12, borderRadius: 10, border: "1px solid #3d3a35", background: "#1e1c18", color: "#e8e0d0", fontSize: 15, marginBottom: 12, boxSizing: "border-box", textAlign: "right" }} />
+            <button onClick={handleEmail} style={{ width: "100%", padding: "12px 0", borderRadius: 10, border: "1px solid #c9b88a", background: "transparent", color: "#c9b88a", fontSize: 15, cursor: "pointer" }}>إرسال رابط الدخول</button>
           </div>
+        )}
 
-          {sent ? (
-            <div className="rounded-xl bg-[#c9b88a]/10 p-4 text-center">
-              <p className="text-sm font-medium text-[#c9b88a]">تم إرسال رابط الدخول</p>
-              <p className="mt-1 text-xs text-[#e8e1d9]/60">
-                افحص بريدك الإلكتروني واضغط على الرابط للدخول
-              </p>
-              <button
-                onClick={() => { setSent(false); setEmail(""); }}
-                className="mt-3 text-xs text-[#c9b88a] underline underline-offset-2"
-              >
-                إرسال رابط جديد
-              </button>
-            </div>
-          ) : (
-            <form onSubmit={handleEmail} className="space-y-3">
-              <input
-                type="email"
-                dir="ltr"
-                placeholder="email@example.com"
-                value={email}
-                onChange={(e) => setEmail(e.target.value)}
-                className="w-full rounded-xl border border-white/15 bg-[#1c1a15] px-4 py-3 text-sm text-[#e8e1d9] placeholder:text-white/25 focus:border-[#c9b88a]/50 focus:outline-none"
-              />
-              <button
-                type="submit"
-                disabled={loading || !email.trim()}
-                className="w-full rounded-xl bg-[#c9b88a] px-4 py-3 text-sm font-bold text-[#15130f] transition-opacity hover:opacity-90 disabled:opacity-40"
-              >
-                {loading ? "جاري الإرسال..." : "إرسال رابط الدخول"}
-              </button>
-            </form>
-          )}
+        {error && <p style={{ color: "#e74c3c", marginTop: 16, fontSize: 14 }}>{error}</p>}
 
-          {error && (
-            <p className="text-center text-xs text-red-400">{error}</p>
-          )}
-        </div>
-
-        <p className="text-center text-xs text-[#e8e1d9]/30">
-          ليس لديك حساب؟{" "}
-          <a href="/pricing" className="text-[#c9b88a]/70 underline underline-offset-2 hover:text-[#c9b88a]">
-            اشترك الحين
-          </a>
-        </p>
+        <p style={{ color: "#6b6560", fontSize: 13, marginTop: 32 }}>ليس لديك اشتراك؟ <a href="/pricing" style={{ color: "#c9b88a", textDecoration: "underline" }}>تصفح الباقات</a></p>
       </div>
     </div>
+  );
+}
+
+export default function LoginPage() {
+  return (
+    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#15130f" }}><p style={{ color: "#c9b88a", fontSize: 18 }}>جاري التحميل...</p></div>}>
+      <LoginContent />
+    </Suspense>
   );
 }
