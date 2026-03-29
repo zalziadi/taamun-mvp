@@ -88,17 +88,17 @@ export function MobileBottomNav({ ramadanClosed: _unused }: { ramadanClosed: boo
   const pathname = usePathname();
 
   const items: NavItem[] = [
-    { href: "/", label: "Ø§ÙØ±Ø¦ÙØ³ÙØ©", icon: "home", activeWhen: (p) => p === "/" },
-    { href: "/program", label: "Ø§ÙØ¨Ø±ÙØ§ÙØ¬", icon: "program", activeWhen: (p) => p.startsWith("/program") },
-    { href: "/journey", label: "Ø§ÙØ±Ø­ÙØ©", icon: "journey", activeWhen: (p) => p.startsWith("/journey") },
-    { href: "/reflection", label: "Ø§ÙØªØ£ÙÙ", icon: "reflection", activeWhen: (p) => p.startsWith("/reflection") },
+    { href: "/", label: "الرئيسية", icon: "home", activeWhen: (p) => p === "/" },
+    { href: "/program", label: "البرنامج", icon: "program", activeWhen: (p) => p.startsWith("/program") },
+    { href: "/journey", label: "الرحلة", icon: "journey", activeWhen: (p) => p.startsWith("/journey") },
+    { href: "/reflection", label: "التأمل", icon: "reflection", activeWhen: (p) => p.startsWith("/reflection") },
     { href: "/tasbeeh", label: "المسبحة", icon: "tasbeeh" as const, activeWhen: (p: string) => p.startsWith("/tasbeeh") },
-    { href: "/account", label: "Ø­Ø³Ø§Ø¨Ù", icon: "account", activeWhen: (p) => p.startsWith("/account") },
+    { href: "/account", label: "حسابي", icon: "account", activeWhen: (p) => p.startsWith("/account") },
   ];
 
   return (
     <nav
-      aria-label="Ø§ÙØªÙÙÙ Ø§ÙØ³ÙÙÙ"
+      aria-label="التنقل السفلي"
       className="fixed inset-x-0 bottom-0 z-50 border-t border-[#ddd3c3] bg-[#f4f1ea]/95 px-2 pb-[calc(10px+env(safe-area-inset-bottom))] pt-2 shadow-[0_-8px_32px_rgba(47,38,25,0.06)] backdrop-blur-[20px] md:hidden"
     >
       <div className="mx-auto flex w-full max-w-[440px] items-center justify-between gap-1">
