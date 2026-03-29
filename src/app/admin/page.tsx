@@ -1,26 +1,43 @@
 import Link from "next/link";
-import { getAppOriginServer } from "@/lib/appOrigin";
 import { AdminRagIngestCard } from "@/components/admin/AdminRagIngestCard";
+import { requireAdmin } from "@/lib/authz";
+import { listAllProgressRows } from "@/lib/progressStore";
 
-interface DashboardResponse {
-  ok: boolean;
-  metrics?: {
-    users_active: number;
-    answers_total: number;
-    users_completed_28: number;
-    weekly_insights_total: number;
-    final_insights_total: number;
+export const dynamic = "force-dynamic";
+
+async function getDashboardMetrics() {
+  const adminAuth = await requireAdmin();
+  if (!adminAuth.ok) return null;
+
+  const supabase = adminAuth.admin;
+  const [answersRes, progressRes, awarenessRes] = await Promise.all([
+    supabase.from("user_answers").select("user_id, day"),
+    listAllProgressRows(supabase),
+    supabase.from("awareness_insights").select("user_id, insight_type"),
+  ]);
+
+  if (answersRes.error || !progressRes.ok || awarenessRes.error) return null;
+
+  const answerRows = (answersRes.data ?? []) as Array<{ user_id: string }>;
+  const progressRows = (progressRes.data ?? []) as Array<{ user_id: string; completed_days?: string[] | null }>;
+  const awarenessRows = (awarenessRes.data ?? []) as Array<{ insight_type: string }>;
+
+  const uniqueUsers = new Set<string>();
+  for (const row of answerRows) uniqueUsers.add(row.user_id);
+  for (const row of progressRows) uniqueUsers.add(row.user_id);
+
+  return {
+    users_active: uniqueUsers.size,
+    answers_total: answerRows.length,
+    users_completed_28: progressRows.filter((r) => (r.completed_days ?? []).length >= 28).length,
+    weekly_insights_total: awarenessRows.filter((r) => r.insight_type === "weekly").length,
+    final_insights_total: awarenessRows.filter((r) => r.insight_type === "final").length,
   };
 }
 
 export default async function AdminPage() {
-  const origin = await getAppOriginServer();
-  const dashboardRes = await fetch(`${origin}/api/admin/dashboard`, {
-    cache: "no-store",
-  });
-
-  const data = (await dashboardRes.json().catch(() => ({ ok: false }))) as DashboardResponse;
-  const allowed = dashboardRes.ok && data.ok;
+  const metrics = await getDashboardMetrics();
+  const allowed = metrics !== null;
 
   if (!allowed) {
     return (
@@ -39,7 +56,7 @@ export default async function AdminPage() {
     );
   }
 
-  const metrics = data.metrics ?? {
+  const m = metrics ?? {
     users_active: 0,
     answers_total: 0,
     users_completed_28: 0,
@@ -57,11 +74,11 @@ export default async function AdminPage() {
       <h1 className="mb-8 text-2xl font-bold text-white">لوحة الأدمن</h1>
 
       <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <MetricCard label="المستخدمون النشطون" value={metrics.users_active} />
-        <MetricCard label="إجمالي الإجابات" value={metrics.answers_total} />
-        <MetricCard label="أكملوا 28 يوم" value={metrics.users_completed_28} />
-        <MetricCard label="رؤى أسبوعية" value={metrics.weekly_insights_total} />
-        <MetricCard label="رؤى نهائية" value={metrics.final_insights_total} />
+        <MetricCard label="المستخدمون النشطون" value={m.users_active} />
+        <MetricCard label="إجمالي الإجابات" value={m.answers_total} />
+        <MetricCard label="أكملوا 28 يوم" value={m.users_completed_28} />
+        <MetricCard label="رؤى أسبوعية" value={m.weekly_insights_total} />
+        <MetricCard label="رؤى نهائية" value={m.final_insights_total} />
       </div>
 
       <div className="max-w-xl space-y-4">
@@ -70,6 +87,12 @@ export default async function AdminPage() {
           className="block rounded-xl border border-white/20 bg-white/5 px-6 py-4 text-white transition-colors hover:bg-white/10"
         >
           التفعيلات
+        </Link>
+        <Link
+          href="/admin/vip-gifts"
+          className="block rounded-xl border border-pink-500/20 bg-pink-500/5 px-6 py-4 text-white transition-colors hover:bg-pink-500/10"
+        >
+          🌸 هدايا VIP — سمرا + وردة
         </Link>
         <a
           href="/api/admin/export"
