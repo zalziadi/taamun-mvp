@@ -4,6 +4,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NavAuth } from "@/components/NavAuth";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
+import { JourneyGuideRail } from "@/components/JourneyGuideRail";
 import { APP_NAME } from "@/lib/appConfig";
 import {
   CITY_ROUTE,
@@ -102,6 +103,7 @@ export function AppChrome({
         </footer>
       ) : null}
 
+      {!hide ? <JourneyGuideRail /> : null}
       {!hide ? <MobileBottomNav ramadanClosed={ramadanClosed} /> : null}
     </div>
   );
