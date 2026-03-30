@@ -159,12 +159,16 @@ export async function completeWithContext(
 
   const messages: ChatMessage[] = [];
 
-  // Inject conversation history (last 10 exchanges max)
+  // Inject only recent, trimmed history to reduce token usage
   if (conversationHistory && conversationHistory.length > 0) {
-    const recent = conversationHistory.slice(-20);
-    for (const msg of recent) {
-      messages.push({ role: msg.role, content: msg.content });
-    }
+    const recent = conversationHistory
+      .filter((msg) => !msg.content.includes("المراجع من الكتاب:"))
+      .slice(-6)
+      .map((msg) => ({
+        role: msg.role,
+        content: msg.content.slice(0, 500),
+      }));
+    messages.push(...recent);
   }
 
   messages.push({
@@ -174,7 +178,7 @@ export async function completeWithContext(
       : question,
   });
 
-  const reply = await claudeRequest(systemPrompt, messages);
+  const reply = await claudeRequest(systemPrompt, messages, 400);
 
   return reply || "تعذر تكوين جواب الآن. حاول إعادة صياغة السؤال.";
 }

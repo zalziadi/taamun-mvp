@@ -98,14 +98,19 @@ export default function JournalRoutePage() {
       placeholder="ابدأ الكتابة هنا بكل صدق وهدوء..."
     >
       <div className="mt-10 space-y-6">
-        <div className="flex items-center justify-between gap-3">
+        <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
             <span className="block text-[11px] tracking-[0.2em] text-on-surface-variant">مسار التهيئة</span>
             <p className="mt-1 text-sm text-on-surface/80">تأملاتك المسجّلة عبر الرحلة.</p>
           </div>
-          <Link href="/city" className="text-sm text-primary transition-colors hover:text-primary-fixed">
-            خريطة المدينة
-          </Link>
+          <div className="flex items-center gap-2">
+            <Link href="/" className="rounded-xl border border-outline-variant px-3 py-1.5 text-xs text-on-surface-variant hover:border-primary/40 hover:text-primary">
+              الرئيسية
+            </Link>
+            <Link href="/city" className="text-sm text-primary transition-colors hover:text-primary-fixed">
+              خريطة المدينة
+            </Link>
+          </div>
         </div>
 
         {error ? (

@@ -1,6 +1,7 @@
 "use client";
 
 import { FormEvent, useCallback, useEffect, useState } from "react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 
 type Message = {
@@ -141,6 +142,14 @@ export default function GuidePage() {
         <p className="text-sm text-[#5f5648]/85 max-w-2xl mx-auto">
           اسأل أي سؤال عن القرآن أو كتاب مدينة المعنى وسأجيبك من سياق الكتاب.
         </p>
+        <div className="flex flex-wrap items-center justify-center gap-2">
+          <Link href="/" className="tm-gold-btn rounded-xl px-4 py-2 text-sm">
+            الرئيسية
+          </Link>
+          <Link href="/program" className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-2 text-sm text-[#5f5648]">
+            متابعة البرنامج
+          </Link>
+        </div>
       </section>
 
       <section className="tm-card p-6 sm:p-7">
