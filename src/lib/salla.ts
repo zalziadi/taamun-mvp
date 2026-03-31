@@ -24,7 +24,7 @@ export function sallaProductUrl(tier: CheckoutTier): string | null {
 
   const productId = idMap[tier]?.trim();
     if (slug && productId) {
-          return `https://${slug}.salla.sa/product/${productId}`;
+          return `https://salla.sa/${slug}/product/${productId}`;
     }
 
   return null;
