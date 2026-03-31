@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useCallback } from "react";
 import { useRouter } from "next/navigation";
 
 /* ── الباقات ── */
@@ -25,7 +25,7 @@ const TIERS: TierDef[] = [
     duration: "٣٠ يوم",
     note: "عرض مرن للمبتدئين",
     badge: "محدود",
-    feats: ["صفحة التأمل", "الدفتر الشخصي", "الوصول للمصادر"],
+    feats: ["صفحة التمعّن", "الدفتر الشخصي", "الوصول للمصادر"],
   },
   {
     tierId: "monthly",
@@ -34,7 +34,7 @@ const TIERS: TierDef[] = [
     period: "شهريًا",
     duration: "٣٠ يوم",
     note: "الأكثر مرونة",
-    feats: ["كل ميزات التمعّن", "المدينة التفاعلية", "المرشد الذكي", "تحليلات الرحلة"],
+    feats: ["كل ميزات التمعّن", "المدينة التفاعلية", "مرشد تمعّن", "تحليلات الرحلة"],
   },
   {
     tierId: "yearly",
@@ -56,6 +56,57 @@ const TIERS: TierDef[] = [
     feats: ["كل ميزات السنوي", "جلسات تمعّن خاصة", "دعم مباشر ومخصص", "محتوى حصري"],
   },
 ];
+
+/* ── زر الاشتراك عبر بوابة الدفع ── */
+function CheckoutButton({ tierId, highlight }: { tierId: string; highlight?: boolean }) {
+  const router = useRouter();
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  const handleCheckout = useCallback(async () => {
+    setError("");
+    setLoading(true);
+    try {
+      const res = await fetch("/api/checkout", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ tier: tierId }),
+      });
+      const data = await res.json();
+      if (res.status === 401) {
+        router.push("/auth?next=/pricing");
+        return;
+      }
+      if (res.ok && data.ok && data.url) {
+        window.location.href = data.url;
+      } else {
+        setError(data.error === "salla_not_configured" ? "بوابة الدفع غير مفعّلة حالياً" : "حدث خطأ، حاول مرة أخرى");
+      }
+    } catch {
+      setError("تعذر الاتصال بالخادم");
+    } finally {
+      setLoading(false);
+    }
+  }, [tierId, router]);
+
+  return (
+    <div className="mt-5">
+      <button
+        type="button"
+        disabled={loading}
+        onClick={handleCheckout}
+        className={`w-full rounded-xl px-4 py-3 text-sm font-bold transition-opacity hover:opacity-90 disabled:opacity-40 ${
+          highlight
+            ? "bg-[#c9b88a] text-[#15130f]"
+            : "border border-[#c9b88a]/30 bg-[#c9b88a]/10 text-[#c9b88a]"
+        }`}
+      >
+        {loading ? "جاري التوجيه..." : "اشترك الآن"}
+      </button>
+      {error && <p className="mt-2 text-center text-xs text-amber-400">{error}</p>}
+    </div>
+  );
+}
 
 /* ── مكوّن تفعيل الكود ── */
 function ActivateCode() {
@@ -198,15 +249,16 @@ export default function PricingExperience() {
                   </li>
                 ))}
               </ul>
+              <CheckoutButton tierId={tier.tierId} highlight={tier.highlight} />
             </article>
           ))}
         </section>
 
-        {/* ── طرق الدفع ── */}
+        {/* ── طرق الدفع البديلة ── */}
         <section className="rounded-3xl border border-white/10 bg-[#2b2824] p-7 sm:p-8">
-          <h3 className="font-[var(--font-amiri)] text-2xl text-[#e8e1d9]">طرق الدفع</h3>
+          <h3 className="font-[var(--font-amiri)] text-2xl text-[#e8e1d9]">طرق دفع بديلة</h3>
           <p className="mt-2 text-sm text-[#e8e1d9]/70">
-            حوّل مبلغ الباقة المختارة عبر أي من الطرق التالية، ثم تواصل معنا لاستلام كود التفعيل.
+            إذا لم تتمكن من الدفع عبر الزر أعلاه، يمكنك التحويل يدوياً عبر أي من الطرق التالية.
           </p>
 
           <div className="mt-6 grid gap-5 sm:grid-cols-2">
