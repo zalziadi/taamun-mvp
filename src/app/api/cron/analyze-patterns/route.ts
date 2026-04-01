@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { getDayIndexForToday } from "@/lib/ramadan-28";
 import { getHijriDate } from "@/lib/hijri";
+import { generateNightlyReport, detectImprovementTasks } from "@/lib/najm-bridge";
 
 export const dynamic = "force-dynamic";
 export const maxDuration = 120; // seconds — margin for slow API responses
@@ -279,6 +280,32 @@ export async function GET(req: Request) {
 
   const succeeded = results.filter((r) => r.ok).length;
   const failed = results.filter((r) => !r.ok).length;
+
+  // ── Najm Bridge: generate report + detect tasks ──────────────────────────
+  try {
+    const { data: todayInsights } = await admin
+      .from("pattern_insights")
+      .select("user_id, district, awareness_state, depth_score, shift_detected, themes")
+      .eq("hijri_year", hijri.year)
+      .eq("hijri_month", hijri.month)
+      .eq("hijri_day", hijri.day);
+
+    if (todayInsights && todayInsights.length > 0) {
+      const insightRows = todayInsights.map((r) => ({
+        user_id: r.user_id as string,
+        district: r.district as number | null,
+        awareness_state: r.awareness_state as string | null,
+        depth_score: r.depth_score as number,
+        shift_detected: r.shift_detected as boolean,
+        themes: (r.themes as string[]) ?? [],
+      }));
+
+      await generateNightlyReport(admin, insightRows, cycleDay, callAnthropic);
+      await detectImprovementTasks(admin, insightRows, cycleDay);
+    }
+  } catch (err) {
+    console.error("Najm bridge error:", err);
+  }
 
   return NextResponse.json({
     ok: true,
