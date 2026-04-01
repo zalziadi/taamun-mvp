@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { calcExpiresAt } from "@/lib/subscriptionDurations";
 import crypto from "crypto";
 
 export const dynamic = "force-dynamic";
@@ -151,6 +152,32 @@ export async function POST(req: Request) {
   if (upsertError) {
     console.error("Salla webhook: subscription upsert failed", upsertError);
     return NextResponse.json({ ok: false, error: "upsert_failed" }, { status: 500 });
+  }
+
+  // تحديث profiles — نفس النمط المستخدم في /api/activate
+  // هذا ضروري لأن صفحة الحساب تقرأ من profiles وليس customer_subscriptions
+  if (isPaid) {
+    const now = new Date();
+    const expiresAt = calcExpiresAt(tier, now);
+
+    const { error: profileError } = await admin.from("profiles").upsert(
+      {
+        id: matchedUser.id,
+        subscription_status: "active",
+        subscription_tier: tier,
+        tier,
+        activated_at: now.toISOString(),
+        expires_at: expiresAt,
+      },
+      { onConflict: "id" }
+    );
+
+    if (profileError) {
+      console.error("Salla webhook: profiles upsert failed", profileError);
+      // لا نرجع خطأ — customer_subscriptions تم تحديثه بنجاح
+    } else {
+      console.log(`Salla webhook: profiles updated for ${matchedUser.id}`);
+    }
   }
 
   console.log(`Salla webhook: activated ${tier} for ${matchedUser.id} (${email})`);
