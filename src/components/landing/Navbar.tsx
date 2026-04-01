@@ -193,6 +193,13 @@ export function LandingNavbar() {
               >
                 تقدمك
               </Link>
+              <Link
+                href="/patterns"
+                onClick={() => setOpen(false)}
+                className="rounded-2xl px-5 py-3 border border-[color:var(--glass-border)] bg-white/10 text-[color:var(--ink)] text-[14px] text-center hover:bg-white/20"
+              >
+                أنماطي
+              </Link>
             </div>
           </div>
         </div>
