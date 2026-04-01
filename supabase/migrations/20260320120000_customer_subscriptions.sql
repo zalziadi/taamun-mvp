@@ -1,26 +1,23 @@
--- Stripe subscription mirror for entitlements (updated via webhook with service role)
-
-create table if not exists public.customer_subscriptions (
-  user_id uuid primary key references auth.users (id) on delete cascade,
-  stripe_customer_id text,
-  stripe_subscription_id text unique,
-  status text not null default 'inactive',
-  price_id text,
-  tier text,
-  current_period_end timestamptz,
-  created_at timestamptz not null default now(),
-  updated_at timestamptz not null default now()
+-- customer_subscriptions: ربط المستخدم باشتراك Stripe
+CREATE TABLE IF NOT EXISTS customer_subscriptions (
+  id                       uuid        PRIMARY KEY DEFAULT gen_random_uuid(),
+  user_id                  uuid        NOT NULL REFERENCES auth.users(id) ON DELETE CASCADE,
+  stripe_customer_id       text        NOT NULL,
+  stripe_subscription_id   text        UNIQUE,
+  stripe_price_id          text,
+  status                   text        NOT NULL DEFAULT 'inactive',
+  tier                     text,
+  current_period_end       timestamptz,
+  created_at               timestamptz DEFAULT now(),
+  updated_at               timestamptz DEFAULT now()
 );
 
-create index if not exists idx_customer_subscriptions_stripe_sub
-  on public.customer_subscriptions (stripe_subscription_id);
+CREATE INDEX IF NOT EXISTS cs_user_id_idx       ON customer_subscriptions(user_id);
+CREATE INDEX IF NOT EXISTS cs_customer_id_idx   ON customer_subscriptions(stripe_customer_id);
 
-alter table public.customer_subscriptions enable row level security;
+ALTER TABLE customer_subscriptions ENABLE ROW LEVEL SECURITY;
 
-create policy "customer_subscriptions_select_own"
-  on public.customer_subscriptions
-  for select
-  to authenticated
-  using (auth.uid() = user_id);
-
-comment on table public.customer_subscriptions is 'Synced from Stripe webhooks; do not write from client.';
+-- المستخدم يقرأ اشتراكه فقط
+CREATE POLICY "users_read_own_subscription"
+  ON customer_subscriptions FOR SELECT
+  USING (auth.uid() = user_id);

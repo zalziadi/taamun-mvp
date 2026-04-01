@@ -1,137 +1,74 @@
-import { NextRequest, NextResponse } from "next/server";
-import type Stripe from "stripe";
+import { NextResponse } from "next/server";
+import Stripe from "stripe";
 import { getStripe } from "@/lib/stripe";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const dynamic = "force-dynamic";
 
-async function syncSubscriptionRow(params: {
-  userId: string;
-  customerId: string | null;
-  subscriptionId: string;
-  tierFallback: string;
-}) {
-  const stripe = getStripe();
-  const sub = await stripe.subscriptions.retrieve(params.subscriptionId);
-  const priceId = sub.items.data[0]?.price?.id ?? "";
-  const tier = sub.metadata?.tier ?? params.tierFallback;
-  const customerId =
-    typeof sub.customer === "string" ? sub.customer : sub.customer?.id ?? params.customerId;
+async function upsertSubscription(
+  admin: ReturnType<typeof getSupabaseAdmin>,
+  userId: string,
+  sub: Stripe.Subscription,
+  tier?: string
+) {
+  const periodEnd = (sub as unknown as { current_period_end: number })
+    .current_period_end;
 
-  const admin = getSupabaseAdmin();
-  const periodEnd =
-    typeof sub.current_period_end === "number"
-      ? new Date(sub.current_period_end * 1000).toISOString()
-      : null;
-
-  const { error } = await admin.from("customer_subscriptions").upsert(
+  await admin.from("customer_subscriptions").upsert(
     {
-      user_id: params.userId,
-      payment_provider: "stripe",
-      tap_charge_id: null,
-      stripe_customer_id: customerId,
+      user_id: userId,
+      stripe_customer_id: sub.customer as string,
       stripe_subscription_id: sub.id,
+      stripe_price_id: sub.items.data[0]?.price.id ?? null,
       status: sub.status,
-      price_id: priceId,
-      tier,
-      current_period_end: periodEnd,
+      tier: tier ?? sub.metadata?.tier ?? null,
+      current_period_end: periodEnd
+        ? new Date(periodEnd * 1000).toISOString()
+        : null,
       updated_at: new Date().toISOString(),
     },
-    { onConflict: "user_id" }
+    { onConflict: "stripe_subscription_id" }
   );
-
-  if (error) {
-    console.error("customer_subscriptions upsert error", error);
-    throw error;
-  }
 }
 
-async function markSubscriptionStatus(subscriptionId: string, status: string) {
-  const admin = getSupabaseAdmin();
-  const { error } = await admin
-    .from("customer_subscriptions")
-    .update({ status, updated_at: new Date().toISOString() })
-    .eq("stripe_subscription_id", subscriptionId);
-  if (error) console.error("subscription status update error", error);
-}
-
-export async function POST(request: NextRequest) {
-  const secret = process.env.STRIPE_WEBHOOK_SECRET;
-  if (!secret) {
-    return NextResponse.json({ ok: false, error: "webhook_not_configured" }, { status: 500 });
-  }
-
-  let stripe;
-  try {
-    stripe = getStripe();
-  } catch {
-    return NextResponse.json({ ok: false, error: "stripe_not_configured" }, { status: 500 });
-  }
-
-  const body = await request.text();
-  const sig = request.headers.get("stripe-signature");
-  if (!sig) {
-    return NextResponse.json({ ok: false, error: "no_signature" }, { status: 400 });
-  }
+export async function POST(req: Request) {
+  const body = await req.text();
+  const sig = req.headers.get("stripe-signature") ?? "";
+  const secret = process.env.STRIPE_WEBHOOK_SECRET ?? "";
 
   let event: Stripe.Event;
   try {
-    event = stripe.webhooks.constructEvent(body, sig, secret);
-  } catch (e) {
-    console.error("Stripe webhook signature error", e);
-    return NextResponse.json({ ok: false, error: "invalid_signature" }, { status: 400 });
+    event = getStripe().webhooks.constructEvent(body, sig, secret);
+  } catch {
+    return NextResponse.json({ error: "invalid_signature" }, { status: 400 });
   }
 
-  try {
-    switch (event.type) {
-      case "checkout.session.completed": {
-        const session = event.data.object as Stripe.Checkout.Session;
-        if (session.mode !== "subscription") break;
-        const userId = session.client_reference_id ?? session.metadata?.user_id;
-        if (!userId) {
-          console.error("checkout.session.completed missing user id");
-          break;
-        }
-        const subId =
-          typeof session.subscription === "string"
-            ? session.subscription
-            : session.subscription?.id;
-        if (!subId) break;
-        const customerId =
-          typeof session.customer === "string" ? session.customer : session.customer?.id ?? null;
-        const tier = session.metadata?.tier ?? "full";
-        await syncSubscriptionRow({
-          userId: userId,
-          customerId,
-          subscriptionId: subId,
-          tierFallback: tier,
-        });
-        break;
-      }
-      case "customer.subscription.updated": {
-        const sub = event.data.object as Stripe.Subscription;
-        const userId = sub.metadata?.user_id;
-        if (!userId) break;
-        const customerId = typeof sub.customer === "string" ? sub.customer : sub.customer?.id ?? null;
-        await syncSubscriptionRow({
-          userId,
-          customerId,
-          subscriptionId: sub.id,
-          tierFallback: sub.metadata?.tier ?? "full",
-        });
-        break;
-      }
-      case "customer.subscription.deleted": {
-        const sub = event.data.object as Stripe.Subscription;
-        await markSubscriptionStatus(sub.id, "canceled");
-        break;
-      }
-      default:
-        break;
+  const admin = getSupabaseAdmin();
+
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object as Stripe.Checkout.Session;
+    const userId = session.metadata?.supabase_uid;
+    if (userId && session.subscription) {
+      const sub = await getStripe().subscriptions.retrieve(
+        session.subscription as string
+      );
+      await upsertSubscription(admin, userId, sub, session.metadata?.tier);
     }
-  } catch (e) {
-    console.error("Stripe webhook handler error", e);
-    return NextResponse.json({ ok: false, error: "handler_failed" }, { status: 500 });
+  }
+
+  if (event.type === "customer.subscription.updated") {
+    const sub = event.data.object as Stripe.Subscription;
+    const customer = await getStripe().customers.retrieve(sub.customer as string);
+    const userId = (customer as Stripe.Customer).metadata?.supabase_uid;
+    if (userId) await upsertSubscription(admin, userId, sub);
+  }
+
+  if (event.type === "customer.subscription.deleted") {
+    const sub = event.data.object as Stripe.Subscription;
+    await admin
+      .from("customer_subscriptions")
+      .update({ status: "canceled", updated_at: new Date().toISOString() })
+      .eq("stripe_subscription_id", sub.id);
   }
 
   return NextResponse.json({ received: true });

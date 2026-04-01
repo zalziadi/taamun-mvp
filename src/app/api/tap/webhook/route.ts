@@ -1,80 +1,54 @@
 import { NextResponse } from "next/server";
-import type { TapChargeResponse } from "@/lib/tap";
-import { verifyTapChargeWebhookHash } from "@/lib/tapWebhookVerify";
-import { upsertSubscriptionFromTapCharge } from "@/lib/tapSubscriptionSync";
+import { tapFetch, TapCharge } from "@/lib/tap";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const dynamic = "force-dynamic";
 
+const FAILED_STATUSES = new Set([
+  "ABANDONED", "CANCELLED", "FAILED", "EXPIRED", "DECLINED", "VOID",
+]);
+
 export async function POST(req: Request) {
-  const secret = process.env.TAP_SECRET_KEY;
-  if (!secret) {
-    return NextResponse.json({ ok: false, error: "tap_not_configured" }, { status: 500 });
+  const body = await req.json().catch(() => null) as { id?: string } | null;
+
+  if (!body?.id) {
+    return NextResponse.json({ error: "missing_id" }, { status: 400 });
   }
 
-  const raw = await req.text();
-  const receivedHash = req.headers.get("hashstring");
-
-  let body: Record<string, unknown>;
-  try {
-    body = JSON.parse(raw) as Record<string, unknown>;
-  } catch {
-    return NextResponse.json({ ok: false, error: "invalid_json" }, { status: 400 });
+  // التحقق بإعادة جلب الشحنة من Tap مباشرة
+  const charge = await tapFetch<TapCharge>(`/charges/${body.id}`).catch(() => null);
+  if (!charge) {
+    return NextResponse.json({ error: "verify_failed" }, { status: 400 });
   }
 
-  if (!verifyTapChargeWebhookHash(body, secret, receivedHash)) {
-    console.warn("Tap webhook: invalid hashstring");
-    return NextResponse.json({ ok: false, error: "invalid_hash" }, { status: 401 });
-  }
+  const userId = charge.metadata?.udf2;
+  const tier   = charge.metadata?.udf1;
+  if (!userId) return NextResponse.json({ ok: true }); // no-op
 
-  const obj = String(body.object ?? "");
-  if (obj !== "charge") {
-    return NextResponse.json({ received: true });
-  }
+  const admin = getSupabaseAdmin();
 
-  const status = String(body.status ?? "");
-  if (status !== "CAPTURED") {
-    return NextResponse.json({ received: true });
-  }
+  if (charge.status === "CAPTURED") {
+    const months = tier === "basic" ? 3 : 12;
+    const periodEnd = new Date();
+    periodEnd.setMonth(periodEnd.getMonth() + months);
 
-  const meta = body.metadata as Record<string, string> | undefined;
-  const userId = meta?.udf1;
-  const tier = meta?.udf2 ?? "full";
-  if (!userId) {
-    console.error("Tap webhook: missing metadata udf1 (user id)");
-    return NextResponse.json({ received: true });
-  }
-
-  try {
-    await upsertSubscriptionFromTapCharge(body as TapChargeResponse, userId, tier);
-  } catch (e) {
-    console.error("Tap webhook upsert failed", e);
-    return NextResponse.json({ ok: false, error: "upsert_failed" }, { status: 500 });
-  }
-
-  // جدولة إيميل التفعيل — يُرسل بعد 5 دقائق
-  try {
-    const customer = body.customer as Record<string, unknown> | undefined;
-    const customerEmail = customer?.email as string | undefined;
-    const customerName = (customer?.first_name as string) ?? "";
-
-    if (customerEmail) {
-      const sendAfter = new Date(Date.now() + 5 * 60 * 1000).toISOString();
-      const admin = getSupabaseAdmin();
-      await admin.from("email_queue").insert({
-        user_id: userId,
-        email: customerEmail,
-        template: "activation",
-        payload: {
-          userName: customerName || customerEmail.split("@")[0],
-          tier,
-        },
-        send_after: sendAfter,
-      });
-    }
-  } catch (emailErr) {
-    // لا نوقف الـ webhook بسبب خطأ في الإيميل
-    console.error("Tap webhook: email queue insert failed", emailErr);
+    await admin.from("customer_subscriptions").upsert(
+      {
+        user_id:            userId,
+        stripe_customer_id: `tap_${userId}`,
+        tap_charge_id:      charge.id,
+        status:             "active",
+        tier,
+        current_period_end: periodEnd.toISOString(),
+        updated_at:         new Date().toISOString(),
+      },
+      { onConflict: "user_id" }
+    );
+  } else if (FAILED_STATUSES.has(charge.status)) {
+    await admin
+      .from("customer_subscriptions")
+      .update({ status: "inactive", tap_charge_id: charge.id, updated_at: new Date().toISOString() })
+      .eq("user_id", userId);
   }
 
   return NextResponse.json({ received: true });

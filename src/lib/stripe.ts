@@ -3,27 +3,18 @@ import Stripe from "stripe";
 let _stripe: Stripe | null = null;
 
 export function getStripe(): Stripe {
-  if (_stripe) return _stripe;
-  const key = process.env.STRIPE_SECRET_KEY;
-  if (!key) {
-    throw new Error("Missing STRIPE_SECRET_KEY");
+  if (!_stripe) {
+    _stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
+      apiVersion: "2026-02-25.clover" as const,
+      typescript: true,
+    });
   }
-  _stripe = new Stripe(key, {
-    apiVersion: "2025-02-24.acacia",
-    typescript: true,
-  });
   return _stripe;
 }
 
-export type CheckoutTier = "eid" | "monthly" | "yearly" | "vip" | "support";
+export const STRIPE_PRICES = {
+  basic: process.env.STRIPE_PRICE_BASIC ?? "",
+  full:  process.env.STRIPE_PRICE_FULL  ?? "",
+} as const;
 
-export function priceIdForTier(tier: CheckoutTier): string | undefined {
-  const map: Record<CheckoutTier, string | undefined> = {
-    eid: process.env.STRIPE_PRICE_EID,
-    monthly: process.env.STRIPE_PRICE_MONTHLY,
-    yearly: process.env.STRIPE_PRICE_YEARLY,
-    vip: process.env.STRIPE_PRICE_VIP,
-    support: process.env.STRIPE_PRICE_SUPPORT,
-  };
-  return map[tier];
-}
+export type StripeTier = keyof typeof STRIPE_PRICES;
