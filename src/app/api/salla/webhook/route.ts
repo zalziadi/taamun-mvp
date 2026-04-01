@@ -103,21 +103,30 @@ export async function POST(req: Request) {
   const admin = getSupabaseAdmin();
 
   // البحث عن المستخدم بالبريد
-  const { data: users, error: listError } = await admin.auth.admin.listUsers();
-  if (listError) {
-    console.error("Salla webhook: listUsers failed", listError);
-    return NextResponse.json({ ok: false, error: "user_lookup_failed" }, { status: 500 });
+  // 1) نبحث أولاً في profiles (indexed, سريع)
+  const { data: profileMatch } = await admin
+    .from("profiles")
+    .select("id")
+    .ilike("email", email)
+    .maybeSingle();
+
+  let userId = profileMatch?.id as string | undefined;
+
+  // 2) fallback: بحث في auth.users (أبطأ — يُستخدم فقط إذا profiles ما فيه email)
+  if (!userId) {
+    const { data: allUsers } = await admin.auth.admin.listUsers();
+    const found = allUsers?.users?.find(
+      (u) => u.email?.toLowerCase() === email.toLowerCase()
+    );
+    userId = found?.id;
   }
 
-  const matchedUser = users.users.find(
-    (u) => u.email?.toLowerCase() === email.toLowerCase()
-  );
-
-  if (!matchedUser) {
+  if (!userId) {
     console.warn(`Salla webhook: no user found for email ${email}`);
-    // نسجّل الطلب للمعالجة اليدوية لاحقًا
     return NextResponse.json({ received: true, note: "user_not_found" });
   }
+
+  const matchedUser = { id: userId };
 
   // تحديد الباقة من المبلغ أو البيانات الوصفية
   const amount = data.amounts?.total?.amount ?? 0;
