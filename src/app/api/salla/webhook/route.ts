@@ -131,15 +131,16 @@ export async function POST(req: Request) {
   // تحديد الباقة من المبلغ أو البيانات الوصفية
   const amount = data.amounts?.total?.amount ?? 0;
   const meta = data.meta ?? {};
-  let tier = meta.tier ?? "monthly";
+  let tier = meta.tier ?? "quarterly";
   if (!meta.tier) {
-    if (amount >= 8000) tier = "vip";
-    else if (amount >= 700) tier = "yearly";
-    else if (amount >= 60) tier = "monthly";
-    else tier = "eid";
+    if (amount >= 4000) tier = "vip";       // 4,999 ر.س
+    else if (amount >= 500) tier = "yearly"; // 699 ر.س
+    else if (amount >= 100) tier = "quarterly"; // 199 ر.س
+    else tier = "quarterly"; // fallback
   }
 
-  const periodDays = tier === "yearly" || tier === "vip" ? 365 : 30;
+  const periodDaysMap: Record<string, number> = { trial: 7, quarterly: 90, yearly: 365, vip: 365, eid: 30, monthly: 30 };
+  const periodDays = periodDaysMap[tier] ?? 90;
   const periodEnd = new Date(Date.now() + periodDays * 24 * 60 * 60 * 1000).toISOString();
 
   const { error: upsertError } = await admin.from("customer_subscriptions").upsert(

@@ -10,10 +10,13 @@ type SubStatus = {
 };
 
 const TIER_LABELS: Record<string, string> = {
-  eid: "عيدية",
-  monthly: "شهري",
+  trial: "تجربة مجانية",
+  quarterly: "ربع سنوي",
   yearly: "سنوي",
   vip: "VIP",
+  // Legacy
+  eid: "عيدية",
+  monthly: "شهري",
 };
 
 /**

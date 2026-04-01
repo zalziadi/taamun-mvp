@@ -21,4 +21,4 @@ export const STRIPE_PRICES = {
 export type StripeTier = keyof typeof STRIPE_PRICES;
 
 /** Generic checkout tier used across payment providers */
-export type CheckoutTier = "eid" | "monthly" | "yearly" | "vip";
+export type CheckoutTier = "trial" | "quarterly" | "yearly" | "vip" | "eid" | "monthly";

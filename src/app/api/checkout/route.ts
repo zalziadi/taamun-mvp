@@ -6,7 +6,7 @@ import type { CheckoutTier } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
 
-const VALID_TIERS: CheckoutTier[] = ["eid", "monthly", "yearly", "vip"];
+const VALID_TIERS: CheckoutTier[] = ["trial", "quarterly", "yearly", "vip", "eid", "monthly"];
 
 export async function POST(req: Request) {
   const auth = await requireUser();
@@ -17,6 +17,29 @@ export async function POST(req: Request) {
 
   if (!tier || !VALID_TIERS.includes(tier)) {
     return NextResponse.json({ error: "invalid_tier" }, { status: 400 });
+  }
+
+  /* ── Trial: تجربة مجانية — تفعيل مباشر بدون دفع ── */
+  if (tier === "trial") {
+    const { getSupabaseAdmin } = await import("@/lib/supabaseAdmin");
+    const { calcExpiresAt } = await import("@/lib/subscriptionDurations");
+    const admin = getSupabaseAdmin();
+    const now = new Date();
+    const expiresAt = calcExpiresAt("trial", now);
+
+    await admin.from("profiles").upsert(
+      {
+        id: auth.user.id,
+        subscription_status: "active",
+        subscription_tier: "trial",
+        tier: "trial",
+        activated_at: now.toISOString(),
+        expires_at: expiresAt,
+      },
+      { onConflict: "id" }
+    );
+
+    return NextResponse.json({ ok: true, url: "/pricing/success", provider: "free" });
   }
 
   const provider = getCheckoutProvider();
@@ -32,12 +55,13 @@ export async function POST(req: Request) {
 
   /* ── Stripe (fallback) ── */
   const { getStripe, STRIPE_PRICES } = await import("@/lib/stripe");
-  // Map checkout tiers to stripe tiers
   const stripeMap: Record<string, string | undefined> = {
-    eid: STRIPE_PRICES.basic,
-    monthly: STRIPE_PRICES.basic,
+    quarterly: STRIPE_PRICES.basic,
     yearly: STRIPE_PRICES.full,
     vip: STRIPE_PRICES.full,
+    // Legacy
+    eid: STRIPE_PRICES.basic,
+    monthly: STRIPE_PRICES.basic,
   };
 
   const priceId = stripeMap[tier];

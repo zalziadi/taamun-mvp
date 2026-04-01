@@ -5,10 +5,13 @@ import type { CheckoutTier } from "@/lib/stripe";
  */
 export function sallaProductUrl(tier: CheckoutTier): string | null {
     const directMap: Record<string, string | undefined> = {
-          eid: process.env.SALLA_PRODUCT_EID,
-          monthly: process.env.SALLA_PRODUCT_MONTHLY,
+          // New tier names
+          quarterly: process.env.SALLA_PRODUCT_QUARTERLY ?? process.env.SALLA_PRODUCT_MONTHLY,
           yearly: process.env.SALLA_PRODUCT_YEARLY,
           vip: process.env.SALLA_PRODUCT_VIP,
+          // Legacy tier names (backward compat)
+          eid: process.env.SALLA_PRODUCT_EID,
+          monthly: process.env.SALLA_PRODUCT_MONTHLY,
     };
 
   const direct = directMap[tier]?.trim();
@@ -16,10 +19,12 @@ export function sallaProductUrl(tier: CheckoutTier): string | null {
 
   const slug = process.env.SALLA_STORE_SLUG?.trim();
     const idMap: Record<string, string | undefined> = {
-          eid: process.env.SALLA_PRODUCT_ID_EID,
-          monthly: process.env.SALLA_PRODUCT_ID_MONTHLY,
+          quarterly: process.env.SALLA_PRODUCT_ID_QUARTERLY ?? process.env.SALLA_PRODUCT_ID_MONTHLY,
           yearly: process.env.SALLA_PRODUCT_ID_YEARLY,
           vip: process.env.SALLA_PRODUCT_ID_VIP,
+          // Legacy
+          eid: process.env.SALLA_PRODUCT_ID_EID,
+          monthly: process.env.SALLA_PRODUCT_ID_MONTHLY,
     };
 
   const productId = idMap[tier]?.trim();
