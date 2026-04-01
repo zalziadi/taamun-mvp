@@ -4,6 +4,8 @@ import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { getDay, PROGRESSION_MILESTONES } from "../lib/taamun-content";
 import { DailyHint } from "./DailyHint";
+import { CompanionVerse } from "./CompanionVerse";
+import { CustomQuestion } from "./CustomQuestion";
 
 interface DayExperienceProps {
   day: number;
@@ -278,6 +280,12 @@ export function DayExperience({ day }: DayExperienceProps) {
 
       {/* Verse */}
       <VerseBlock verse={content.verse} verseRef={content.verseRef} />
+
+      {/* Companion Verse */}
+      <CompanionVerse cycleDay={day} />
+
+      {/* Custom Question */}
+      <CustomQuestion cycleDay={day} />
 
       {/* Hidden Layer */}
       <HiddenLayer text={content.hiddenLayer} />
