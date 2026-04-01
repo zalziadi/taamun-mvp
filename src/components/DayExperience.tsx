@@ -3,6 +3,7 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 import { supabase } from "../lib/supabaseClient";
 import { getDay, PROGRESSION_MILESTONES } from "../lib/taamun-content";
+import { DailyHint } from "./DailyHint";
 
 interface DayExperienceProps {
   day: number;
@@ -268,6 +269,9 @@ export function DayExperience({ day }: DayExperienceProps) {
 
       {/* Title */}
       <h1 className="text-2xl font-bold text-white">{content.title}</h1>
+
+      {/* Daily Hint */}
+      <DailyHint cycleDay={day} />
 
       {/* Progression Badge */}
       <ProgressionBadge day={day} />
