@@ -5,7 +5,8 @@ let _stripe: Stripe | null = null;
 export function getStripe(): Stripe {
   if (!_stripe) {
     _stripe = new Stripe(process.env.STRIPE_SECRET_KEY ?? "", {
-      apiVersion: "2026-02-25.clover" as const,
+      // @ts-expect-error — newer API version than types support
+      apiVersion: "2026-02-25.clover",
       typescript: true,
     });
   }
@@ -18,3 +19,6 @@ export const STRIPE_PRICES = {
 } as const;
 
 export type StripeTier = keyof typeof STRIPE_PRICES;
+
+/** Generic checkout tier used across payment providers */
+export type CheckoutTier = "eid" | "monthly" | "yearly" | "vip";

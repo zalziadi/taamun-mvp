@@ -31,3 +31,16 @@ export interface TapCharge {
   transaction?: { url?: string };
   metadata?: { udf1?: string; udf2?: string };
 }
+
+/** Alias used by tapSubscriptionSync */
+export type TapChargeResponse = TapCharge;
+
+/** Retrieve a single charge from Tap by its ID */
+export async function retrieveTapCharge(chargeId: string): Promise<TapCharge> {
+  return tapFetch<TapCharge>(`/charges/${chargeId}`);
+}
+
+/** Format amount for price_id storage (e.g. "82.00") */
+export function formatTapAmount(amount: number, _currency?: string): string {
+  return amount.toFixed(2);
+}
