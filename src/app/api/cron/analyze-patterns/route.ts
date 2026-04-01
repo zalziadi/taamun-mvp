@@ -14,6 +14,11 @@ type AIPatternResult = {
   shift_description: string | null;
   daily_hint: string;
   weekly_summary: string | null;
+  district: number | null;
+  awareness_state: "shadow" | "gift" | "potential" | null;
+  custom_question: string | null;
+  companion_verse: string | null;
+  companion_verse_ref: string | null;
 };
 
 type UserAnswer = {
@@ -96,7 +101,19 @@ function normalizeResult(parsed: Record<string, unknown> | null): AIPatternResul
     ? parsed.weekly_summary.trim()
     : null;
 
-  return { themes, depth_score, shift_detected, shift_description, daily_hint, weekly_summary };
+  const rawDistrict = Number(parsed?.district);
+  const district = Number.isInteger(rawDistrict) && rawDistrict >= 1 && rawDistrict <= 9
+    ? rawDistrict : null;
+  const awareness_state = ["shadow", "gift", "potential"].includes(String(parsed?.awareness_state))
+    ? (String(parsed?.awareness_state) as "shadow" | "gift" | "potential") : null;
+  const custom_question = typeof parsed?.custom_question === "string" && parsed.custom_question.trim()
+    ? parsed.custom_question.trim() : null;
+  const companion_verse = typeof parsed?.companion_verse === "string" && parsed.companion_verse.trim()
+    ? parsed.companion_verse.trim() : null;
+  const companion_verse_ref = typeof parsed?.companion_verse_ref === "string" && parsed.companion_verse_ref.trim()
+    ? parsed.companion_verse_ref.trim() : null;
+
+  return { themes, depth_score, shift_detected, shift_description, daily_hint, weekly_summary, district, awareness_state, custom_question, companion_verse, companion_verse_ref };
 }
 
 // ── Build prompt ─────────────────────────────────────────────────────────────
@@ -135,14 +152,25 @@ function buildPatternPrompt(args: {
     `- التمعّن: ${todayAnswer.contemplate?.trim() || "(فارغ)"}`,
     `- إعادة البناء: ${todayAnswer.rebuild?.trim() || "(فارغ)"}`,
     "",
-    "أعد JSON فقط بدون أي نص إضافي:",
-    `{"themes":["موضوع1","موضوع2"],"depth_score":0,"shift_detected":false,"shift_description":null,"daily_hint":"تلميح لليوم التالي"${weeklyExtra}}`,
+    "الأحياء التسعة (حدد أي حي يظهر في إجابات اليوم):",
+    "1=الهوية (من أنا) | 2=العلاقات (الآخر) | 3=التوسّع (التجربة) | 4=البناء (الالتزام)",
+    "5=الجمال (الرؤية) | 6=العائلة (المسؤولية) | 7=الروح (الصمت) | 8=المال (الملكية) | 9=العطاء (الإفاضة)",
     "",
-    "themes: المواضيع الوجدانية المكتشفة (توكل، صبر، شكر، خوف، تسليم، حضور، بحث، إلخ) — 2-5 مواضيع.",
-    "depth_score: درجة الحضور مع الموجود (0-100). 0 = بحث خارجي كامل ('كيف'). 100 = حضور تام مع ما عنده ('عندي').",
-    "shift_detected: هل انتقل من لغة 'كيف' إلى لغة 'عندي' مقارنة بالأيام السابقة؟",
-    "shift_description: وصف الانتقال اللغوي إن وُجد، null إذا لم يوجد.",
+    "حالات الوعي: shadow=يعيش من أفكاره بدون رؤية (كيف) | gift=لحظة إدراك (انتقال) | potential=وعي يومي (عندي)",
+    "",
+    "أعد JSON فقط بدون أي نص إضافي:",
+    `{"themes":[...],"depth_score":0,"shift_detected":false,"shift_description":null,"daily_hint":"...","district":1,"awareness_state":"shadow","custom_question":"سؤال شخصي","companion_verse":"نص آية","companion_verse_ref":"السورة: الآية"${weeklyExtra}}`,
+    "",
+    "themes: المواضيع الوجدانية المكتشفة — 2-5 مواضيع.",
+    "depth_score: درجة الحضور مع الموجود (0-100).",
+    "shift_detected: هل انتقل من لغة 'كيف' إلى لغة 'عندي'؟",
+    "shift_description: وصف الانتقال إن وُجد، null إذا لم يوجد.",
     "daily_hint: تلميح يعكس ما لاحظته — لا يوجّه. جملة واحدة.",
+    "district: رقم الحي (1-9) الأكثر ظهورًا في إجابات اليوم.",
+    "awareness_state: حالة الوعي (shadow/gift/potential).",
+    "custom_question: سؤال شخصي لليوم التالي مبني على الحي وحالة الوعي — يعكس لا يوجّه.",
+    "companion_verse: آية قرآنية مناسبة لحالة المستخدم (نص الآية فقط بدون أقواس).",
+    "companion_verse_ref: مرجع الآية (اسم السورة: رقم الآية).",
   ].join("\n");
 }
 
@@ -230,6 +258,11 @@ export async function GET(req: Request) {
         daily_hint: result.daily_hint,
         weekly_summary: result.weekly_summary,
         raw_ai_response: parsed,
+        district: result.district,
+        awareness_state: result.awareness_state,
+        custom_question: result.custom_question,
+        companion_verse: result.companion_verse,
+        companion_verse_ref: result.companion_verse_ref,
       });
 
       if (insertErr) {
