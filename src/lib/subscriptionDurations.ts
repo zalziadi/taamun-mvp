@@ -1,9 +1,12 @@
 /** مدة كل باقة بالأيام */
 export const TIER_DURATION_DAYS: Record<string, number> = {
-  eid: 30,
-  monthly: 30,
+  trial: 7,
+  quarterly: 90,
   yearly: 365,
   vip: 365,
+  // Legacy tiers (backward compatibility)
+  eid: 30,
+  monthly: 30,
 };
 
 /** احسب تاريخ الانتهاء بناءً على الباقة */

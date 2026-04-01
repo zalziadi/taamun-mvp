@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 
 /* ── الباقات ── */
 type TierDef = {
-  tierId: "eid" | "monthly" | "yearly" | "vip";
+  tierId: "trial" | "quarterly" | "yearly" | "vip";
   name: string;
   price: string;
   period: string;
@@ -14,46 +14,50 @@ type TierDef = {
   feats: string[];
   highlight?: boolean;
   badge?: string;
+  isFree?: boolean;
+  saving?: string;
 };
 
 const TIERS: TierDef[] = [
   {
-    tierId: "eid",
-    name: "عيدية التمعّن",
-    price: "28",
-    period: "شهر واحد",
-    duration: "٣٠ يوم",
-    note: "عرض مرن للمبتدئين",
-    badge: "محدود",
-    feats: ["صفحة التمعّن", "الدفتر الشخصي", "الوصول للمصادر"],
+    tierId: "trial",
+    name: "تجربة مجانية",
+    price: "0",
+    period: "٧ أيام",
+    duration: "٧ أيام",
+    note: "ابدأ رحلتك بدون التزام",
+    badge: "مجاني",
+    isFree: true,
+    feats: ["بوابة الصمت والتأمل", "الدفتر الشخصي", "٧ أيام كاملة", "بدون بطاقة دفع"],
   },
   {
-    tierId: "monthly",
-    name: "شهري",
-    price: "82",
-    period: "شهريًا",
-    duration: "٣٠ يوم",
-    note: "الأكثر مرونة",
+    tierId: "quarterly",
+    name: "ربع سنوي",
+    price: "199",
+    period: "كل ٣ شهور",
+    duration: "٩٠ يوم",
+    note: "٦٦ ر.س/شهر — الخيار الآمن",
     feats: ["كل ميزات التمعّن", "المدينة التفاعلية", "مرشد تمعّن", "تحليلات الرحلة"],
   },
   {
     tierId: "yearly",
     name: "سنوي",
-    price: "820",
+    price: "699",
     period: "سنويًا",
     duration: "٣٦٥ يوم",
-    note: "الأكثر توفيرًا",
+    note: "٥٨ ر.س/شهر — توفير ٤١٪",
     highlight: true,
-    feats: ["كل ميزات الشهري", "توفير شهرين", "أولوية في الدعم"],
+    saving: "وفّر ٤١٪",
+    feats: ["كل ميزات الربع سنوي", "توفير ٤ أشهر", "أولوية في الدعم", "محتوى إضافي حصري"],
   },
   {
     tierId: "vip",
     name: "VIP",
-    price: "8,200",
+    price: "4,999",
     period: "سنويًا",
     duration: "٣٦٥ يوم",
-    note: "للجادين في رحلتهم",
-    feats: ["كل ميزات السنوي", "جلسات تمعّن خاصة", "دعم مباشر ومخصص", "محتوى حصري"],
+    note: "للجادين في رحلتهم الروحانية",
+    feats: ["كل ميزات السنوي", "جلسات تمعّن خاصة", "دعم مباشر ومخصص", "مجتمع VIP حصري"],
   },
 ];
 
@@ -101,7 +105,7 @@ function CheckoutButton({ tierId, highlight }: { tierId: string; highlight?: boo
             : "border border-[#c9b88a]/30 bg-[#c9b88a]/10 text-[#c9b88a]"
         }`}
       >
-        {loading ? "جاري التوجيه..." : "اشترك الآن"}
+        {loading ? "جاري التوجيه..." : tierId === "trial" ? "ابدأ مجاناً" : "اشترك الآن"}
       </button>
       {error && <p className="mt-2 text-center text-xs text-amber-400">{error}</p>}
     </div>
@@ -231,7 +235,12 @@ export default function PricingExperience() {
               )}
               {tier.highlight && (
                 <span className="absolute left-4 top-4 rounded-full bg-[#c9b88a] px-2.5 py-0.5 text-[10px] font-bold text-[#15130f]">
-                  موصى به
+                  أفضل قيمة
+                </span>
+              )}
+              {tier.saving && (
+                <span className="absolute right-4 top-4 rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-[10px] font-bold text-emerald-400">
+                  {tier.saving}
                 </span>
               )}
               <h3 className="font-[var(--font-amiri)] text-2xl text-[#e8e1d9]">{tier.name}</h3>
