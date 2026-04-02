@@ -3,7 +3,7 @@
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { createBrowserClient } from "@supabase/ssr";
-import { EidiyaLanding } from "./EidiyaLanding";
+import { JourneyLanding } from "./JourneyLanding";
 
 type UserLite = {
   id: string;
@@ -107,7 +107,7 @@ export default function Home() {
   if (!ready) return null;
 
   if (!user) {
-    return <EidiyaLanding />;
+    return <JourneyLanding />;
   }
 
   return (
