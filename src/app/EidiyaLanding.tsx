@@ -142,7 +142,7 @@ export function EidiyaLanding() {
             <a className="text-[#E0E2EA]/70 hover:text-[#E9C176] transition-colors" href="#pricing">الباقات</a>
             <a className="text-[#E0E2EA]/70 hover:text-[#E9C176] transition-colors" href="#faq">الأسئلة الشائعة</a>
           </nav>
-          <a href={WA_FREE} target="_blank" rel="noopener noreferrer" className="btn-gold px-6 py-2 font-bold text-sm">ابدأ تجربتك المجانية</a>
+          <a href="/auth?next=/day" className="btn-gold px-6 py-2 font-bold text-sm">ابدأ تجربتك المجانية</a>
         </header>
 
         {/* ── Countdown ── */}
@@ -178,7 +178,7 @@ export function EidiyaLanding() {
                 برنامج ٢٨ يوم للانتقال من القراءة السطحية إلى التدبّر العميق. رحلة تعيد صياغة علاقتك بالوحي وبالحياة.
               </p>
               <div className="flex gap-4 justify-start">
-                <a href={WA_FREE} target="_blank" rel="noopener noreferrer" className="btn-gold px-10 py-5 text-lg font-bold">ابدأ تجربتك المجانية</a>
+                <a href="/auth?next=/day" className="btn-gold px-10 py-5 text-lg font-bold">ابدأ تجربتك المجانية</a>
                 <a href="#zones" className="border border-[#c5a059]/20 px-10 py-5 text-lg text-[#c5a059] hover:bg-[#c5a059]/5 transition-all rounded-full">اكتشف المجالات</a>
               </div>
             </Reveal>

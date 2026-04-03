@@ -54,6 +54,44 @@ export async function GET(request: NextRequest) {
     if (!error) {
       const { data: userData, error: userError } = await supabase.auth.getUser();
       if (!userError && userData.user) {
+        // Check if this is a new user (no subscription)
+        const { data: profile } = await supabase
+          .from("profiles")
+          .select("subscription_tier, created_at")
+          .eq("id", userData.user.id)
+          .single();
+        
+        // If new user or no subscription, activate trial
+        if (profile && !profile.subscription_tier) {
+          // Create trial subscription
+          const startDate = new Date();
+          const endDate = new Date();
+          endDate.setDate(endDate.getDate() + 7); // 7-day trial
+          
+          await supabase
+            .from("profiles")
+            .update({
+              subscription_tier: "trial",
+              subscription_start_date: startDate.toISOString(),
+              subscription_end_date: endDate.toISOString(),
+              subscription_status: "active"
+            })
+            .eq("id", userData.user.id);
+            
+          // Log the trial activation
+          await supabase
+            .from("subscriptions")
+            .insert({
+              user_id: userData.user.id,
+              tier: "trial",
+              status: "active",
+              start_date: startDate.toISOString(),
+              end_date: endDate.toISOString(),
+              amount: 0,
+              currency: "SAR"
+            });
+        }
+        
         return response;
       }
     }

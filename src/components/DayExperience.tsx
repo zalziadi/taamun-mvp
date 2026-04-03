@@ -6,6 +6,8 @@ import { getDay, PROGRESSION_MILESTONES } from "../lib/taamun-content";
 import { DailyHint } from "./DailyHint";
 import { CompanionVerse } from "./CompanionVerse";
 import { CustomQuestion } from "./CustomQuestion";
+import { checkAccess, isTrialExpired } from "@/lib/subscriptionAccess";
+import { Paywall } from "./Paywall";
 
 interface DayExperienceProps {
   day: number;
@@ -247,7 +249,24 @@ function ProgressionBadge({ day }: { day: number }) {
 // ── DayExperience ─────────────────────────────────────────────────────────────
 export function DayExperience({ day }: DayExperienceProps) {
   const [started, setStarted] = useState(false);
+  const [profile, setProfile] = useState<any>(null);
   const content = getDay(day);
+  
+  // Load profile on mount
+  useEffect(() => {
+    async function loadProfile() {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .single();
+        setProfile(data);
+      }
+    }
+    loadProfile();
+  }, []);
 
   if (!content) {
     return (
@@ -257,9 +276,32 @@ export function DayExperience({ day }: DayExperienceProps) {
     );
   }
 
+  // Check if trial has expired - if so, only show verse
+  if (profile && isTrialExpired(profile)) {
+    return (
+      <div className="mx-auto max-w-2xl space-y-6 px-4 py-8">
+        <div className="flex items-center justify-between">
+          <p className="text-xs uppercase tracking-widest text-white/30">اليوم {day}</p>
+          <p className="text-xs text-white/30">{content.chapter}</p>
+        </div>
+        
+        <h1 className="text-2xl font-bold text-white">{content.title}</h1>
+        
+        {/* Only show the verse */}
+        <VerseBlock verse={content.verse} verseRef={content.verseRef} />
+        
+        {/* Trial ended paywall */}
+        <Paywall type="trial_ended" profile={profile} />
+      </div>
+    );
+  }
+
   if (!started) {
     return <SilenceGate prompt={content.silencePrompt} onStart={() => setStarted(true)} />;
   }
+
+  // Check access for steps 4-5
+  const step4_5_access = checkAccess('day_steps_4_5', profile);
 
   return (
     <div className="mx-auto max-w-2xl space-y-6 px-4 py-8">
@@ -287,23 +329,47 @@ export function DayExperience({ day }: DayExperienceProps) {
       {/* Custom Question */}
       <CustomQuestion cycleDay={day} />
 
-      {/* Hidden Layer */}
-      <HiddenLayer text={content.hiddenLayer} />
+      {/* Hidden Layer - Locked for trial users */}
+      {step4_5_access.allowed ? (
+        <HiddenLayer text={content.hiddenLayer} />
+      ) : (
+        <Paywall 
+          type="trial_active_locked" 
+          reason="trial_active_locked"
+          message="الطبقة الأعمق للمشتركين فقط"
+        />
+      )}
 
       {/* Book Quote */}
       <BookQuote quote={content.bookQuote} chapter={content.bookChapter} />
 
-      {/* Exercise */}
-      <div className="rounded-xl border border-white/10 bg-white/5 p-5">
-        <p className="mb-1 text-xs uppercase tracking-widest text-white/40">تمرين اليوم</p>
-        <p className="text-sm leading-loose text-white/80">{content.exercise}</p>
-      </div>
+      {/* Exercise - Locked for trial users */}
+      {step4_5_access.allowed ? (
+        <div className="rounded-xl border border-white/10 bg-white/5 p-5">
+          <p className="mb-1 text-xs uppercase tracking-widest text-white/40">تمرين اليوم</p>
+          <p className="text-sm leading-loose text-white/80">{content.exercise}</p>
+        </div>
+      ) : (
+        <Paywall 
+          type="trial_active_locked" 
+          reason="trial_active_locked"
+          message="سجّل تأملاتك في دفترك الخاص — مع الاشتراك"
+        />
+      )}
 
-      {/* Reflection Journal */}
-      <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
-        <p className="mb-4 text-xs uppercase tracking-widest text-white/40">تأمّل يومي</p>
-        <ReflectionJournal day={day} question={content.question} />
-      </div>
+      {/* Reflection Journal - Locked for trial users */}
+      {step4_5_access.allowed ? (
+        <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
+          <p className="mb-4 text-xs uppercase tracking-widest text-white/40">تأمّل يومي</p>
+          <ReflectionJournal day={day} question={content.question} />
+        </div>
+      ) : (
+        <Paywall 
+          type="trial_active_locked" 
+          reason="journal"
+          message="دفترك الشخصي ينتظر أول تأمل"
+        />
+      )}
 
       {/* Awareness Meter */}
       <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">

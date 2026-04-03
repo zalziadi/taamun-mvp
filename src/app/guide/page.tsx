@@ -3,6 +3,9 @@
 import { FormEvent, useCallback, useEffect, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { checkGuideLimit, incrementGuideUsage } from "@/lib/subscriptionAccess";
+import { Paywall } from "@/components/Paywall";
+import { supabase } from "@/lib/supabaseClient";
 
 type Message = {
   role: "user" | "assistant";
@@ -35,11 +38,13 @@ function nowLabel() {
 
 export default function GuidePage() {
   const router = useRouter();
+  const [profile, setProfile] = useState<any>(null);
   const [input, setInput] = useState("");
   const [loading, setLoading] = useState(false);
   const [mode, setMode] = useState<"rag" | "fallback">("fallback");
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [quickPrompts, setQuickPrompts] = useState<string[]>(DEFAULT_PROMPTS);
+  const [showLimitPaywall, setShowLimitPaywall] = useState(false);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
@@ -48,9 +53,21 @@ export default function GuidePage() {
     },
   ]);
 
-  // Load personalized quick prompts on mount
+  // Load profile and personalized quick prompts on mount
   useEffect(() => {
-    async function loadPrompts() {
+    async function loadData() {
+      // Load profile
+      const { data: { user } } = await supabase.auth.getUser();
+      if (user) {
+        const { data } = await supabase
+          .from("profiles")
+          .select("*")
+          .eq("id", user.id)
+          .single();
+        setProfile(data);
+      }
+      
+      // Load prompts
       try {
         const res = await fetch("/api/guide/prompts");
         if (!res.ok) return;
@@ -62,7 +79,7 @@ export default function GuidePage() {
         // Keep defaults
       }
     }
-    void loadPrompts();
+    void loadData();
   }, []);
 
   function pushUserMessage(text: string) {
@@ -77,9 +94,23 @@ export default function GuidePage() {
     async (text: string) => {
       if (!text || loading) return;
 
+      // Check daily limit for trial users
+      if (profile && profile.subscription_tier === 'trial') {
+        const { withinLimit } = checkGuideLimit(profile);
+        if (!withinLimit) {
+          setShowLimitPaywall(true);
+          return;
+        }
+      }
+
       pushUserMessage(text);
       setInput("");
       setLoading(true);
+
+      // Increment usage for trial users
+      if (profile && profile.subscription_tier === 'trial') {
+        incrementGuideUsage();
+      }
 
       try {
         const res = await fetch("/api/guide/chat", {
@@ -193,19 +224,29 @@ export default function GuidePage() {
                 يكتب الآن...
               </div>
             ) : null}
+            
+            {/* Guide limit paywall */}
+            {showLimitPaywall && (
+              <div className="mx-auto max-w-md">
+                <Paywall type="guide_limit_reached" />
+              </div>
+            )}
           </div>
 
-          <form onSubmit={onSubmit} className="mt-4 flex gap-2">
-            <input
-              value={input}
-              onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
-              placeholder="اسأل سؤالاً عن القرآن أو مدينة المعنى..."
-              className="flex-1 rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-3 text-sm text-[#2f2619] placeholder:text-[#7d7362] focus:outline-none focus:ring-2 focus:ring-[#8c7851]/25"
-            />
-            <button type="submit" disabled={loading} className="tm-gold-btn px-6 py-3">
-              {loading ? "..." : "أرسل"}
-            </button>
-          </form>
+          {/* Hide input form when limit reached */}
+          {!showLimitPaywall && (
+            <form onSubmit={onSubmit} className="mt-4 flex gap-2">
+              <input
+                value={input}
+                onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
+                placeholder="اسأل سؤالاً عن القرآن أو مدينة المعنى..."
+                className="flex-1 rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-3 text-sm text-[#2f2619] placeholder:text-[#7d7362] focus:outline-none focus:ring-2 focus:ring-[#8c7851]/25"
+              />
+              <button type="submit" disabled={loading} className="tm-gold-btn px-6 py-3">
+                {loading ? "..." : "أرسل"}
+              </button>
+            </form>
+          )}
         </div>
 
         <aside className="space-y-4">
