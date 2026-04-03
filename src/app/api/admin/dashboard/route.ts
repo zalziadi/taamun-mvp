@@ -73,8 +73,14 @@ export async function GET() {
         .limit(100),
     ]);
 
-  if (answersRes.error || !progressRes.ok || awarenessRes.error) {
-    return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 });
+  const errors: string[] = [];
+  if (answersRes.error) errors.push(`answers: ${answersRes.error.message}`);
+  if (!progressRes.ok) errors.push(`progress: ${JSON.stringify((progressRes as any).error)}`);
+  if (awarenessRes.error) errors.push(`awareness: ${awarenessRes.error.message}`);
+
+  if (errors.length > 0) {
+    console.error("[admin/dashboard] query errors:", errors);
+    return NextResponse.json({ ok: false, error: "server_error", details: errors }, { status: 500 });
   }
 
   const answerRows = (answersRes.data ?? []) as AnswerRow[];
