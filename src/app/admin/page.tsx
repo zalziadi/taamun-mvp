@@ -229,11 +229,11 @@ export default function AdminPage() {
 
         {/* Overview Metrics */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
-          <MetricCard label="إجمالي المسجلين" value={r?.total_profiles ?? m.users_active} accent />
-          <MetricCard label="مشتركون فعّالون" value={r?.active_subscribers ?? 0} />
-          <MetricCard label="اشتراكات منتهية" value={r?.expired_subscribers ?? 0} warn />
-          <MetricCard label="أكملوا 28 يوم" value={m.users_completed_28} />
-          <MetricCard label="إجمالي التأملات" value={r?.total_reflections ?? 0} />
+          <MetricCard label="مشتركون" value={r?.total_profiles ?? 0} accent />
+          <MetricCard label="فعّالون" value={r?.active_subscribers ?? 0} />
+          <MetricCard label="منتهيون" value={r?.expired_subscribers ?? 0} warn />
+          <MetricCard label="مستخدمون نشطون" value={m.users_active} />
+          <MetricCard label="تأملات" value={r?.total_reflections ?? 0} />
         </div>
 
         {/* Tier Breakdown */}
@@ -363,50 +363,29 @@ export default function AdminPage() {
           </section>
         )}
 
-        {/* Additional Stats */}
-        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
-          <div className="rounded-2xl border border-white/10 bg-[#2b2824] p-6">
-            <h3 className="text-sm font-medium text-white/50">إحصائيات إضافية</h3>
-            <div className="mt-4 space-y-3">
-              <div className="flex justify-between">
-                <span className="text-white/60">إجمالي الإجابات</span>
-                <span className="font-medium text-white">{m.answers_total}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-white/60">رؤى أسبوعية</span>
-                <span className="font-medium text-white">{m.weekly_insights_total}</span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-white/60">رؤى نهائية</span>
-                <span className="font-medium text-white">{m.final_insights_total}</span>
-              </div>
-            </div>
-          </div>
-
-          {/* Quick Actions */}
-          <div className="space-y-3">
-            <Link
-              href="/admin/activations"
-              className="block rounded-2xl border border-[#c9b88a]/20 bg-[#2b2824] px-6 py-4 text-white transition-colors hover:bg-[#c9b88a]/10"
-            >
-              <span className="text-sm font-medium">إدارة أكواد التفعيل</span>
-              <p className="mt-1 text-xs text-white/40">إنشاء ونسخ أكواد جديدة</p>
-            </Link>
-            <Link
-              href="/admin/vip-gifts"
-              className="block rounded-2xl border border-pink-500/20 bg-[#2b2824] px-6 py-4 text-white transition-colors hover:bg-pink-500/10"
-            >
-              <span className="text-sm font-medium">هدايا VIP</span>
-              <p className="mt-1 text-xs text-white/40">سمرا + وردة</p>
-            </Link>
-            <a
-              href="/api/admin/export"
-              className="block rounded-2xl border border-white/10 bg-[#2b2824] px-6 py-4 text-white transition-colors hover:bg-white/10"
-            >
-              <span className="text-sm font-medium">تصدير CSV</span>
-              <p className="mt-1 text-xs text-white/40">تنزيل بيانات الإجابات</p>
-            </a>
-          </div>
+        {/* Quick Actions + Stats */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
+          <Link
+            href="/admin/activations"
+            className="rounded-2xl border border-[#c9b88a]/20 bg-[#2b2824] px-6 py-4 text-white transition-colors hover:bg-[#c9b88a]/10"
+          >
+            <span className="text-sm font-medium">إدارة أكواد التفعيل</span>
+            <p className="mt-1 text-xs text-white/40">إنشاء ونسخ أكواد جديدة</p>
+          </Link>
+          <Link
+            href="/admin/vip-gifts"
+            className="rounded-2xl border border-pink-500/20 bg-[#2b2824] px-6 py-4 text-white transition-colors hover:bg-pink-500/10"
+          >
+            <span className="text-sm font-medium">هدايا VIP</span>
+            <p className="mt-1 text-xs text-white/40">سمرا + وردة</p>
+          </Link>
+          <a
+            href="/api/admin/export"
+            className="rounded-2xl border border-white/10 bg-[#2b2824] px-6 py-4 text-white transition-colors hover:bg-white/10"
+          >
+            <span className="text-sm font-medium">تصدير CSV</span>
+            <p className="mt-1 text-xs text-white/40">تنزيل بيانات الإجابات</p>
+          </a>
         </div>
       </div>
     </div>
