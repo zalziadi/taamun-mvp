@@ -73,18 +73,13 @@ export async function GET() {
         .limit(100),
     ]);
 
-  const errors: string[] = [];
-  if (answersRes.error) errors.push(`answers: ${answersRes.error.message}`);
-  if (!progressRes.ok) errors.push(`progress: ${JSON.stringify((progressRes as any).error)}`);
-  if (awarenessRes.error) errors.push(`awareness: ${awarenessRes.error.message}`);
-
-  if (errors.length > 0) {
-    console.error("[admin/dashboard] query errors:", errors);
-    return NextResponse.json({ ok: false, error: "server_error", details: errors }, { status: 500 });
-  }
+  // Tolerate missing tables — log but don't fail
+  if (answersRes.error) console.warn("[admin/dashboard] answers:", answersRes.error.message);
+  if (!progressRes.ok) console.warn("[admin/dashboard] progress:", (progressRes as any).error);
+  if (awarenessRes.error) console.warn("[admin/dashboard] awareness:", awarenessRes.error.message);
 
   const answerRows = (answersRes.data ?? []) as AnswerRow[];
-  const progressRows = (progressRes.data ?? []) as ProgressRow[];
+  const progressRows = (progressRes.ok ? progressRes.data : []) as ProgressRow[];
   const awarenessRows = (awarenessRes.data ?? []) as AwarenessRow[];
   const profiles = (profilesRes.data ?? []) as ProfileRow[];
   const activations = (activationsRes.data ?? []) as ActivationRow[];
