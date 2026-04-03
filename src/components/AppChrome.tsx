@@ -21,6 +21,7 @@ function shouldHideGlobalChrome(pathname: string | null) {
   if (!pathname) return false;
   if (pathname === "/" || pathname === "/breathing" || pathname === "/journal" || pathname === "/tasbeeh") return true;
   if (pathname.startsWith("/ramadan")) return true;
+  if (pathname.startsWith("/admin")) return true;
   return false;
 }
 

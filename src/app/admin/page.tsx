@@ -11,9 +11,57 @@ interface Metrics {
   final_insights_total: number;
 }
 
+interface Subscriber {
+  id: string;
+  email: string;
+  tier: string;
+  activated_at: string | null;
+  expires_at: string | null;
+  expired: boolean;
+  current_day: number;
+  completed_days: number;
+  reflections: number;
+}
+
+interface RecentActivation {
+  code: string;
+  tier: string;
+  used_email: string | null;
+  used_at: string | null;
+}
+
+interface Report {
+  total_profiles: number;
+  active_subscribers: number;
+  expired_subscribers: number;
+  tier_breakdown: Record<string, number>;
+  total_reflections: number;
+  recent_activations: RecentActivation[];
+  subscribers: Subscriber[];
+}
+
+const TIER_LABELS: Record<string, string> = {
+  trial: "تجربة مجانية",
+  eid: "عيدية (28 ر.س)",
+  monthly: "شهري (82 ر.س)",
+  quarterly: "ربع سنوي (220 ر.س)",
+  yearly: "سنوي (820 ر.س)",
+  vip: "VIP (8,200 ر.س)",
+};
+
+const TIER_COLORS: Record<string, string> = {
+  trial: "text-blue-400",
+  eid: "text-amber-400",
+  monthly: "text-emerald-400",
+  quarterly: "text-cyan-400",
+  yearly: "text-purple-400",
+  vip: "text-pink-400",
+};
+
 export default function AdminPage() {
   const [metrics, setMetrics] = useState<Metrics | null>(null);
-  const [allowed, setAllowed] = useState<boolean | null>(null); // null = loading
+  const [report, setReport] = useState<Report | null>(null);
+  const [allowed, setAllowed] = useState<boolean | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -32,6 +80,7 @@ export default function AdminPage() {
         return false;
       }
       setMetrics(data.metrics);
+      setReport(data.report ?? null);
       setAllowed(true);
       return true;
     } catch {
@@ -74,6 +123,7 @@ export default function AdminPage() {
 
       await loadDashboard();
     })();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleLogin(e: FormEvent) {
@@ -155,52 +205,240 @@ export default function AdminPage() {
     final_insights_total: 0,
   };
 
+  const r = report;
+
   return (
-    <div dir="rtl" className="min-h-screen bg-[#15130f] p-6">
-      <nav className="mb-8">
-        <Link href="/" className="text-white/70 hover:text-white">
-          الرئيسية
-        </Link>
-      </nav>
-      <h1 className="mb-8 text-2xl font-bold text-white">لوحة الأدمن</h1>
+    <div dir="rtl" className="min-h-screen bg-[#15130f] px-4 pb-16 pt-6 text-[#e8e1d9]">
+      <div className="mx-auto w-full max-w-5xl space-y-8">
+        {/* Header */}
+        <div className="flex items-center justify-between">
+          <div>
+            <Link href="/" className="text-xs text-[#c9b88a] hover:underline">
+              ← الرئيسية
+            </Link>
+            <h1 className="mt-2 text-3xl font-bold text-[#e6d4a4]">لوحة تمعّن</h1>
+            <p className="mt-1 text-sm text-white/40">تقرير شامل عن الموقع والعملاء</p>
+          </div>
+          <button
+            onClick={() => void loadDashboard()}
+            className="rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-sm text-white/60 transition-colors hover:bg-white/10"
+          >
+            تحديث
+          </button>
+        </div>
 
-      <div className="mb-8 grid grid-cols-1 gap-3 sm:grid-cols-2 lg:grid-cols-3">
-        <MetricCard label="المستخدمون النشطون" value={m.users_active} />
-        <MetricCard label="إجمالي الإجابات" value={m.answers_total} />
-        <MetricCard label="أكملوا 28 يوم" value={m.users_completed_28} />
-        <MetricCard label="رؤى أسبوعية" value={m.weekly_insights_total} />
-        <MetricCard label="رؤى نهائية" value={m.final_insights_total} />
-      </div>
+        {/* Overview Metrics */}
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
+          <MetricCard label="إجمالي المسجلين" value={r?.total_profiles ?? m.users_active} accent />
+          <MetricCard label="مشتركون فعّالون" value={r?.active_subscribers ?? 0} />
+          <MetricCard label="اشتراكات منتهية" value={r?.expired_subscribers ?? 0} warn />
+          <MetricCard label="أكملوا 28 يوم" value={m.users_completed_28} />
+          <MetricCard label="إجمالي التأملات" value={r?.total_reflections ?? 0} />
+        </div>
 
-      <div className="max-w-xl space-y-4">
-        <Link
-          href="/admin/activations"
-          className="block rounded-xl border border-white/20 bg-white/5 px-6 py-4 text-white transition-colors hover:bg-white/10"
-        >
-          التفعيلات
-        </Link>
-        <Link
-          href="/admin/vip-gifts"
-          className="block rounded-xl border border-pink-500/20 bg-pink-500/5 px-6 py-4 text-white transition-colors hover:bg-pink-500/10"
-        >
-          🌸 هدايا VIP — سمرا + وردة
-        </Link>
-        <a
-          href="/api/admin/export"
-          className="block rounded-xl border border-white/20 bg-white/5 px-6 py-4 text-white transition-colors hover:bg-white/10"
-        >
-          تصدير CSV (الإجابات)
-        </a>
+        {/* Tier Breakdown */}
+        {r && Object.keys(r.tier_breakdown).length > 0 && (
+          <section className="rounded-2xl border border-[#c9b88a]/20 bg-[#2b2824] p-6">
+            <h2 className="mb-4 text-lg font-bold text-[#e6d4a4]">توزيع الباقات</h2>
+            <div className="grid grid-cols-2 gap-3 sm:grid-cols-3">
+              {Object.entries(r.tier_breakdown).map(([tier, count]) => (
+                <div key={tier} className="rounded-xl border border-white/10 bg-[#1c1a15] p-4">
+                  <div className={`text-sm ${TIER_COLORS[tier] || "text-white/60"}`}>
+                    {TIER_LABELS[tier] || tier}
+                  </div>
+                  <div className="mt-1 text-2xl font-bold text-white">{count}</div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Subscribers Table */}
+        {r && r.subscribers.length > 0 && (
+          <section className="rounded-2xl border border-white/10 bg-[#2b2824] p-6">
+            <h2 className="mb-4 text-lg font-bold text-[#e6d4a4]">
+              العملاء المشتركون ({r.subscribers.length})
+            </h2>
+            <div className="overflow-x-auto">
+              <table className="w-full text-sm">
+                <thead>
+                  <tr className="border-b border-white/10 text-white/50">
+                    <th className="pb-3 pe-4 text-start font-medium">البريد</th>
+                    <th className="pb-3 pe-4 text-start font-medium">الباقة</th>
+                    <th className="pb-3 pe-4 text-start font-medium">اليوم الحالي</th>
+                    <th className="pb-3 pe-4 text-start font-medium">أيام مكتملة</th>
+                    <th className="pb-3 pe-4 text-start font-medium">تأملات</th>
+                    <th className="pb-3 pe-4 text-start font-medium">الحالة</th>
+                    <th className="pb-3 text-start font-medium">ينتهي</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {r.subscribers.map((s) => (
+                    <tr key={s.id} className="border-b border-white/5 hover:bg-white/5">
+                      <td className="py-3 pe-4">
+                        <span className="text-white/80">{s.email}</span>
+                      </td>
+                      <td className="py-3 pe-4">
+                        <span className={`text-xs font-medium ${TIER_COLORS[s.tier] || "text-white/60"}`}>
+                          {TIER_LABELS[s.tier] || s.tier}
+                        </span>
+                      </td>
+                      <td className="py-3 pe-4 text-white/60">
+                        {s.current_day > 0 ? `يوم ${s.current_day}` : "—"}
+                      </td>
+                      <td className="py-3 pe-4">
+                        <div className="flex items-center gap-2">
+                          <div className="h-1.5 w-16 overflow-hidden rounded-full bg-white/10">
+                            <div
+                              className="h-full rounded-full bg-[#c9b88a]"
+                              style={{ width: `${Math.min((s.completed_days / 28) * 100, 100)}%` }}
+                            />
+                          </div>
+                          <span className="text-xs text-white/50">{s.completed_days}/28</span>
+                        </div>
+                      </td>
+                      <td className="py-3 pe-4 text-white/60">{s.reflections}</td>
+                      <td className="py-3 pe-4">
+                        {s.expired ? (
+                          <span className="rounded-full bg-red-500/10 px-2 py-0.5 text-xs text-red-400">
+                            منتهي
+                          </span>
+                        ) : (
+                          <span className="rounded-full bg-emerald-500/10 px-2 py-0.5 text-xs text-emerald-400">
+                            فعّال
+                          </span>
+                        )}
+                      </td>
+                      <td className="py-3 text-xs text-white/40">
+                        {s.expires_at
+                          ? new Date(s.expires_at).toLocaleDateString("ar-SA", {
+                              year: "numeric",
+                              month: "short",
+                              day: "numeric",
+                            })
+                          : "—"}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          </section>
+        )}
+
+        {/* Recent Activations */}
+        {r && r.recent_activations.length > 0 && (
+          <section className="rounded-2xl border border-white/10 bg-[#2b2824] p-6">
+            <h2 className="mb-4 text-lg font-bold text-[#e6d4a4]">آخر التفعيلات</h2>
+            <div className="space-y-2">
+              {r.recent_activations.map((a, i) => (
+                <div
+                  key={i}
+                  className="flex flex-wrap items-center justify-between gap-2 rounded-xl border border-white/5 bg-[#1c1a15] px-4 py-3"
+                >
+                  <div className="flex items-center gap-3">
+                    <span dir="ltr" className="font-mono text-xs text-[#c9b88a]">
+                      {a.code}
+                    </span>
+                    <span className={`text-xs ${TIER_COLORS[a.tier] || "text-white/50"}`}>
+                      {TIER_LABELS[a.tier] || a.tier}
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-3 text-xs text-white/40">
+                    <span>{a.used_email || "—"}</span>
+                    <span>
+                      {a.used_at
+                        ? new Date(a.used_at).toLocaleDateString("ar-SA", {
+                            month: "short",
+                            day: "numeric",
+                            hour: "2-digit",
+                            minute: "2-digit",
+                          })
+                        : ""}
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </section>
+        )}
+
+        {/* Additional Stats */}
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-2">
+          <div className="rounded-2xl border border-white/10 bg-[#2b2824] p-6">
+            <h3 className="text-sm font-medium text-white/50">إحصائيات إضافية</h3>
+            <div className="mt-4 space-y-3">
+              <div className="flex justify-between">
+                <span className="text-white/60">إجمالي الإجابات</span>
+                <span className="font-medium text-white">{m.answers_total}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-white/60">رؤى أسبوعية</span>
+                <span className="font-medium text-white">{m.weekly_insights_total}</span>
+              </div>
+              <div className="flex justify-between">
+                <span className="text-white/60">رؤى نهائية</span>
+                <span className="font-medium text-white">{m.final_insights_total}</span>
+              </div>
+            </div>
+          </div>
+
+          {/* Quick Actions */}
+          <div className="space-y-3">
+            <Link
+              href="/admin/activations"
+              className="block rounded-2xl border border-[#c9b88a]/20 bg-[#2b2824] px-6 py-4 text-white transition-colors hover:bg-[#c9b88a]/10"
+            >
+              <span className="text-sm font-medium">إدارة أكواد التفعيل</span>
+              <p className="mt-1 text-xs text-white/40">إنشاء ونسخ أكواد جديدة</p>
+            </Link>
+            <Link
+              href="/admin/vip-gifts"
+              className="block rounded-2xl border border-pink-500/20 bg-[#2b2824] px-6 py-4 text-white transition-colors hover:bg-pink-500/10"
+            >
+              <span className="text-sm font-medium">هدايا VIP</span>
+              <p className="mt-1 text-xs text-white/40">سمرا + وردة</p>
+            </Link>
+            <a
+              href="/api/admin/export"
+              className="block rounded-2xl border border-white/10 bg-[#2b2824] px-6 py-4 text-white transition-colors hover:bg-white/10"
+            >
+              <span className="text-sm font-medium">تصدير CSV</span>
+              <p className="mt-1 text-xs text-white/40">تنزيل بيانات الإجابات</p>
+            </a>
+          </div>
+        </div>
       </div>
     </div>
   );
 }
 
-function MetricCard({ label, value }: { label: string; value: number }) {
+function MetricCard({
+  label,
+  value,
+  accent,
+  warn,
+}: {
+  label: string;
+  value: number;
+  accent?: boolean;
+  warn?: boolean;
+}) {
+  const borderClass = accent
+    ? "border-[#c9b88a]/30"
+    : warn
+      ? "border-red-500/20"
+      : "border-white/10";
+  const valueClass = accent
+    ? "text-[#c9b88a]"
+    : warn && value > 0
+      ? "text-red-400"
+      : "text-white";
+
   return (
-    <div className="rounded-xl border border-white/20 bg-white/5 p-4">
-      <div className="text-sm text-white/60">{label}</div>
-      <div className="mt-1 text-2xl font-semibold text-white">{value}</div>
+    <div className={`rounded-2xl border ${borderClass} bg-[#2b2824] p-4`}>
+      <div className="text-xs text-white/50">{label}</div>
+      <div className={`mt-1 text-2xl font-bold ${valueClass}`}>{value}</div>
     </div>
   );
 }
