@@ -3,6 +3,7 @@ import type { UserIdentity } from "./identityTracker";
 import type { CognitiveContext } from "./cognitiveContext";
 import type { Narrative } from "./narrativeEngine";
 import type { ProgressState } from "./progressEngine";
+import type { PersonalityProfile } from "./personalityEngine";
 
 export type GuidanceTone = "supportive" | "challenging" | "reflective";
 export type GuidanceFocus = "continue" | "recover" | "deepen" | "decide";
@@ -16,6 +17,7 @@ export interface Guidance {
     reason: string;
   };
   confidence: number;
+  personality: PersonalityProfile | null;
 }
 
 export interface GuidanceInputs {
@@ -24,12 +26,22 @@ export interface GuidanceInputs {
   identity: UserIdentity | null;
   context: CognitiveContext | null;
   narrative: Narrative | null;
+  personality?: PersonalityProfile | null;
 }
 
 // ── Tone ──
 
 function deriveTone(inputs: GuidanceInputs): GuidanceTone {
-  const { progress, journey } = inputs;
+  const { progress, journey, personality } = inputs;
+
+  // Personality overrides when adaptation is high
+  if (personality && personality.adaptationScore >= 0.6) {
+    if (personality.style === "challenger" && personality.communication === "direct") return "challenging";
+    if (personality.style === "supportive" && personality.sensitivityLevel === "high") return "supportive";
+    if (personality.style === "spiritual" || personality.communication === "reflective") return "reflective";
+  }
+
+  // Fallback to momentum-based tone
   if (progress.momentum <= -3 || journey.emotionalState === "lost") return "supportive";
   if (progress.momentum >= 5 && journey.emotionalState === "engaged") return "challenging";
   return "reflective";
@@ -173,10 +185,23 @@ export function generateGuidance(inputs: GuidanceInputs): Guidance {
   const tone = deriveTone(inputs);
   const focus = deriveFocus(inputs);
   const suggestedPath = derivePath(focus, inputs);
-  const confidence = deriveConfidence(inputs);
-  const message = buildMessage(tone, focus, inputs);
+  let confidence = deriveConfidence(inputs);
+  let message = buildMessage(tone, focus, inputs);
 
-  return { message, tone, focus, suggestedPath, confidence };
+  const personality = inputs.personality ?? null;
+
+  // Personality adaptation: adjust message style + confidence
+  if (personality && personality.adaptationScore >= 0.5) {
+    try {
+      const { adaptMessage } = require("./personalityEngine");
+      message = adaptMessage(message, personality);
+    } catch {}
+    // Boost confidence when personality is well-calibrated
+    confidence = Math.min(0.99, confidence + personality.adaptationScore * 0.1);
+    confidence = Math.round(confidence * 100) / 100;
+  }
+
+  return { message, tone, focus, suggestedPath, confidence, personality };
 }
 
 // Export for testing

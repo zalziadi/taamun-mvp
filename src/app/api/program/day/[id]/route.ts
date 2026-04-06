@@ -7,6 +7,9 @@ import { buildCognitiveContext } from "@/lib/cognitiveContext";
 import { buildProgressState } from "@/lib/progressEngine";
 import { buildJourneyState, classifyDepth } from "@/lib/journeyState";
 import { generateGuidance } from "@/lib/guidanceEngine";
+import { buildPersonalityProfile, generateMicroReward } from "@/lib/personalityEngine";
+import { extractPatterns } from "@/lib/reflectionLinker";
+import { loadAndBuildIdentity } from "@/lib/identityTracker";
 
 export const dynamic = "force-dynamic";
 
@@ -69,8 +72,9 @@ export async function GET(_: Request, { params }: Params) {
     { completedCount: progress.completedDays.length, drift }
   );
 
-  // Build guidance (the "living guide" voice)
+  // Build guidance + personality + micro-rewards
   let guidance = null;
+  let microReward = null;
   try {
     const { data: profile } = await auth.supabase
       .from("profiles")
@@ -84,15 +88,35 @@ export async function GET(_: Request, { params }: Params) {
       profile?.subscription_start_date
     );
 
-    // Get last reflection for depth
-    const { data: recentRefs } = await auth.supabase
+    // Get reflections for personality + guidance
+    const { data: allRefs } = await auth.supabase
       .from("reflections")
-      .select("day, note")
+      .select("day, note, emotion, awareness_state")
       .eq("user_id", auth.user.id)
       .order("day", { ascending: false })
-      .limit(1);
-    const lastNote = recentRefs?.[0]?.note ?? "";
-    const lastDay = recentRefs?.[0]?.day ?? 0;
+      .limit(10);
+
+    const recentRefs = allRefs ?? [];
+    const lastNote = recentRefs[0]?.note ?? "";
+    const lastDay = recentRefs[0]?.day ?? 0;
+
+    // Build identity for personality
+    const identity = await loadAndBuildIdentity(
+      auth.supabase, auth.user.id, progress.completedDays, progress.currentDay
+    );
+
+    // Extract patterns for personality
+    const patterns = extractPatterns(recentRefs.map((r: any) => ({
+      day: r.day, note: r.note, emotion: r.emotion, awareness_state: r.awareness_state,
+    })));
+
+    // Build personality profile
+    const personality = buildPersonalityProfile({
+      identity,
+      progress: progressState,
+      patterns,
+      recentFeedbackImpacts: [],
+    });
 
     const journeyState = buildJourneyState({
       progress: progressState,
@@ -100,15 +124,20 @@ export async function GET(_: Request, { params }: Params) {
       lastReflectionDepth: classifyDepth(lastNote.length),
       actionsCompletedRecently: 0,
       daysSinceLastReflection: lastDay > 0 ? progress.currentDay - lastDay : progress.currentDay,
+      trajectory: identity.trajectory,
     });
 
     guidance = generateGuidance({
       progress: progressState,
       journey: journeyState,
-      identity: null,
+      identity,
       context: cognitive,
       narrative: cognitive.narrative,
+      personality,
     });
+
+    // Micro-reward check
+    microReward = generateMicroReward(progressState, identity);
   } catch {
     // Guidance generation is optional
   }
@@ -133,7 +162,6 @@ export async function GET(_: Request, { params }: Params) {
           },
         }
       : null,
-    // Cognitive context
     cognitive: {
       context_summary: cognitive.contextSummary,
       context_interpretation: cognitive.contextInterpretation,
@@ -145,7 +173,7 @@ export async function GET(_: Request, { params }: Params) {
       weighted_themes: cognitive.weightedThemes,
       narrative: cognitive.narrative,
     },
-    // Guidance — the living guide voice
     guidance,
+    micro_reward: microReward,
   });
 }
