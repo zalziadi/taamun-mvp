@@ -12,6 +12,8 @@ const makeProgress = (overrides: Partial<ProgressState> = {}): ProgressState => 
   missedDays: [],
   streak: 6,
   completionRate: 1,
+  momentum: 5,
+  emotionalDrift: "low",
   ...overrides,
 });
 

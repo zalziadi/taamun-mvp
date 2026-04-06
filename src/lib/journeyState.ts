@@ -6,6 +6,8 @@ export interface JourneyState {
   cognitiveLoad: "low" | "medium" | "high";
   lastShift: string | null;
   riskLevel: "low" | "medium" | "high";
+  trajectory: "improving" | "declining" | "unstable" | null;
+  momentum: number;
 }
 
 interface JourneyInputs {
@@ -14,6 +16,7 @@ interface JourneyInputs {
   lastReflectionDepth: "none" | "short" | "medium" | "deep";
   actionsCompletedRecently: number;
   daysSinceLastReflection: number;
+  trajectory?: "improving" | "declining" | "unstable" | null;
 }
 
 function classifyDepth(noteLength: number): "none" | "short" | "medium" | "deep" {
@@ -62,6 +65,8 @@ export function buildJourneyState(inputs: JourneyInputs): JourneyState {
     cognitiveLoad: deriveCognitiveLoad(inputs),
     lastShift: null,
     riskLevel: deriveRisk(inputs),
+    trajectory: inputs.trajectory ?? null,
+    momentum: inputs.progress.momentum,
   };
 }
 

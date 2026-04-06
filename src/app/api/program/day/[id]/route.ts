@@ -55,9 +55,16 @@ export async function GET(_: Request, { params }: Params) {
     return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 });
   }
 
-  // Build cognitive context for this day
+  // Build cognitive context for this day (with narrative data)
   const missedCount = Math.max(0, progress.currentDay - progress.completedDays.length - 1);
-  const cognitive = await buildCognitiveContext(auth.supabase, auth.user.id, day, missedCount);
+  const drift = Math.max(0, day - (progress.completedDays.length > 0 ? Math.max(...progress.completedDays) : 0));
+  const cognitive = await buildCognitiveContext(
+    auth.supabase,
+    auth.user.id,
+    day,
+    missedCount,
+    { completedCount: progress.completedDays.length, drift }
+  );
 
   return NextResponse.json({
     ok: true,
@@ -82,11 +89,14 @@ export async function GET(_: Request, { params }: Params) {
     // Cognitive context
     cognitive: {
       context_summary: cognitive.contextSummary,
+      context_interpretation: cognitive.contextInterpretation,
       suggested_question: cognitive.suggestedQuestion,
       connected_days: cognitive.recentReflections.map((r) => r.day),
       awareness_level: cognitive.awarenessLevel,
       context_level: cognitive.contextLevel,
       recurring_themes: cognitive.recurringThemes,
+      weighted_themes: cognitive.weightedThemes,
+      narrative: cognitive.narrative,
     },
   });
 }

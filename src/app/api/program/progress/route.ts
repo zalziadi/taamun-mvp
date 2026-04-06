@@ -118,12 +118,14 @@ export async function GET() {
     completed_days: state.completedDays,
     completed_count: state.completedDays.length,
     percent,
-    // New cognitive fields
+    // Cognitive fields
     drift: state.drift,
     mode: state.mode,
     missed_days: state.missedDays,
     streak: state.streak,
     completion_rate: state.completionRate,
+    momentum: state.momentum,
+    emotional_drift: state.emotionalDrift,
     catch_up: catchUp,
     journey_state: journeyState,
   });

@@ -5,6 +5,8 @@ import { generateAction } from "@/lib/actionGenerator";
 import { buildProgressState } from "@/lib/progressEngine";
 import { readUserProgress } from "@/lib/progressStore";
 import { computeCalendarDay } from "@/lib/calendarDay";
+import { attachDecision } from "@/lib/decisionLayer";
+import { generateNarrative } from "@/lib/narrativeEngine";
 
 export const dynamic = "force-dynamic";
 
@@ -154,6 +156,31 @@ export async function POST(req: Request) {
     // Cognitive layer failure should not break reflection save
   }
 
+  // Generate narrative + decision layer (non-blocking)
+  let narrative = null;
+  let actionWithDecision = null;
+  try {
+    if (linked && linked.patterns.length > 0) {
+      const progress2 = await readUserProgress(supabase, user.id);
+      if (progress2.ok) {
+        const drift = Math.max(0, day - (progress2.completedDays.length > 0 ? Math.max(...progress2.completedDays) : 0));
+        narrative = generateNarrative(linked.patterns, linked.emotionalArc, day, progress2.completedDays.length, drift);
+      }
+    }
+    if (action) {
+      const progress3 = await readUserProgress(supabase, user.id);
+      if (progress3.ok) {
+        const { data: profile2 } = await supabase
+          .from("profiles")
+          .select("subscription_start_date")
+          .eq("id", user.id)
+          .maybeSingle();
+        const state2 = buildProgressState(progress3.currentDay, progress3.completedDays, profile2?.subscription_start_date);
+        actionWithDecision = attachDecision(action, state2);
+      }
+    }
+  } catch {}
+
   return NextResponse.json({
     ok: true,
     day,
@@ -162,9 +189,10 @@ export async function POST(req: Request) {
         insight: linked.insight,
         connected_days: linked.connectedDays,
         emotional_arc: linked.emotionalArc,
-        patterns: linked.patterns.map((p) => p.keyword),
+        patterns: linked.patterns.map((p: { keyword: string }) => p.keyword),
       },
     }),
-    ...(action && { action }),
+    ...(narrative && { narrative }),
+    ...(actionWithDecision ? { action: actionWithDecision } : action ? { action } : {}),
   });
 }

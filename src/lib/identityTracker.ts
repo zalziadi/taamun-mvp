@@ -1,3 +1,10 @@
+export interface IdentitySnapshot {
+  date: string;
+  engagementScore: number;
+  transformationSignal: string;
+  trajectory: string;
+}
+
 export interface UserIdentity {
   completionPattern: "consistent" | "bursty" | "declining" | "absent";
   avgDriftFrequency: number;
@@ -13,6 +20,7 @@ export interface UserIdentity {
   engagementScore: number;
   transformationSignal: "early" | "emerging" | "deepening" | "integrated";
   trajectory: "improving" | "declining" | "unstable";
+  identityTimeline: IdentitySnapshot[];
 }
 
 interface IdentityInputs {
@@ -23,6 +31,7 @@ interface IdentityInputs {
   reflections: { day: number; note: string | null; emotion: string | null; awareness_state: string | null }[];
   guideSessionCount: number;
   themes: string[];
+  previousTimeline?: IdentitySnapshot[];
 }
 
 function classifyCompletionPattern(completedDays: number[], currentDay: number): UserIdentity["completionPattern"] {
@@ -110,6 +119,17 @@ export function buildIdentity(inputs: IdentityInputs): UserIdentity {
     ? Math.round(inputs.reflections.reduce((sum, r) => sum + (r.note?.length ?? 0), 0) / inputs.reflections.length)
     : 0;
 
+  const trajectory = classifyTrajectory(inputs.driftHistory);
+  const transformationSignal = classifyTransformation(engagementScore, reflectionDepth, awarenessProgression);
+
+  // Build timeline: keep previous snapshots + add new one
+  const previousTimeline = inputs.previousTimeline ?? [];
+  const today = new Date().toISOString().split("T")[0];
+  // Avoid duplicate snapshots for same day
+  const filtered = previousTimeline.filter((s) => s.date !== today);
+  const newSnapshot: IdentitySnapshot = { date: today, engagementScore, transformationSignal, trajectory };
+  const identityTimeline = [...filtered, newSnapshot].slice(-28); // keep last 28 snapshots
+
   return {
     completionPattern,
     avgDriftFrequency: Math.round(avgDriftFrequency * 100) / 100,
@@ -123,17 +143,20 @@ export function buildIdentity(inputs: IdentityInputs): UserIdentity {
     daysWithReflection: new Set(inputs.reflections.map((r) => r.day)).size,
     guideSessions: inputs.guideSessionCount,
     engagementScore,
-    transformationSignal: classifyTransformation(engagementScore, reflectionDepth, awarenessProgression),
-    trajectory: classifyTrajectory(inputs.driftHistory),
+    transformationSignal,
+    trajectory,
+    identityTimeline,
   };
 }
 
 export async function loadAndBuildIdentity(supabase: any, userId: string, completedDays: number[], currentDay: number): Promise<UserIdentity> {
   const [reflectionsRes, memoryRes, sessionsRes] = await Promise.all([
     supabase.from("reflections").select("day, note, emotion, awareness_state").eq("user_id", userId).order("day"),
-    supabase.from("user_memory").select("patterns, drift_history").eq("user_id", userId).maybeSingle(),
+    supabase.from("user_memory").select("patterns, drift_history, identity").eq("user_id", userId).maybeSingle(),
     supabase.from("guide_sessions").select("id").eq("user_id", userId),
   ]);
+
+  const previousIdentity = memoryRes.data?.identity as UserIdentity | null;
 
   return buildIdentity({
     completedDays,
@@ -143,5 +166,6 @@ export async function loadAndBuildIdentity(supabase: any, userId: string, comple
     reflections: reflectionsRes.data ?? [],
     guideSessionCount: sessionsRes.data?.length ?? 0,
     themes: memoryRes.data?.patterns ?? [],
+    previousTimeline: previousIdentity?.identityTimeline ?? [],
   });
 }

@@ -14,6 +14,8 @@ export interface ProgressState {
   missedDays: number[];
   streak: number;
   completionRate: number;
+  momentum: number;             // -10 to +10
+  emotionalDrift: "low" | "medium" | "high";
 }
 
 export interface CatchUpOption {
@@ -48,6 +50,20 @@ function computeMissedDays(completedDays: number[], currentDay: number): number[
   return missed;
 }
 
+function computeMomentum(streak: number, drift: number, completionRate: number): number {
+  let m = 0;
+  m += Math.min(5, streak);           // streak adds positive momentum
+  m -= Math.min(5, drift);            // drift subtracts
+  m += Math.round((completionRate - 0.5) * 4); // above 50% = positive
+  return Math.max(-10, Math.min(10, m));
+}
+
+function classifyEmotionalDrift(drift: number, missedCount: number): "low" | "medium" | "high" {
+  if (drift > 5 || missedCount > 7) return "high";
+  if (drift > 2 || missedCount > 3) return "medium";
+  return "low";
+}
+
 function deriveMode(drift: number, hasRecentRecovery: boolean): ProgressMode {
   if (hasRecentRecovery && drift > 0) return "recovery_boost";
   if (drift <= 2) return "normal";
@@ -69,6 +85,10 @@ export function buildProgressState(
   const streak = computeStreak(completedDays, currentDay);
   const completionRate = currentDay > 0 ? completedDays.length / currentDay : 0;
 
+  const rate = Math.round(completionRate * 100) / 100;
+  const momentum = computeMomentum(streak, drift, rate);
+  const emotionalDrift = classifyEmotionalDrift(drift, missedDays.length);
+
   return {
     currentDay,
     storedDay,
@@ -78,7 +98,9 @@ export function buildProgressState(
     completedDays,
     missedDays,
     streak,
-    completionRate: Math.round(completionRate * 100) / 100,
+    completionRate: rate,
+    momentum,
+    emotionalDrift,
   };
 }
 
