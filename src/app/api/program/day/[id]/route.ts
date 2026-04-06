@@ -10,6 +10,7 @@ import { generateGuidance } from "@/lib/guidanceEngine";
 import { buildPersonalityProfile, generateMicroReward } from "@/lib/personalityEngine";
 import { extractPatterns } from "@/lib/reflectionLinker";
 import { loadAndBuildIdentity } from "@/lib/identityTracker";
+import { buildCityMap } from "@/lib/cityEngine";
 
 export const dynamic = "force-dynamic";
 
@@ -72,9 +73,10 @@ export async function GET(_: Request, { params }: Params) {
     { completedCount: progress.completedDays.length, drift }
   );
 
-  // Build guidance + personality + micro-rewards
+  // Build guidance + personality + micro-rewards + city
   let guidance = null;
   let microReward = null;
+  let city = null;
   try {
     const { data: profile } = await auth.supabase
       .from("profiles")
@@ -138,6 +140,17 @@ export async function GET(_: Request, { params }: Params) {
 
     // Micro-reward check
     microReward = generateMicroReward(progressState, identity);
+
+    // Build city map
+    city = buildCityMap({
+      identity,
+      progress: progressState,
+      context: cognitive,
+      journey: journeyState,
+      patterns,
+      actionsCompleted: identity.daysWithReflection,
+      actionEffectiveness: 5,
+    });
   } catch {
     // Guidance generation is optional
   }
@@ -175,5 +188,6 @@ export async function GET(_: Request, { params }: Params) {
     },
     guidance,
     micro_reward: microReward,
+    city,
   });
 }
