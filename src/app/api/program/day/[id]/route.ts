@@ -11,6 +11,8 @@ import { buildPersonalityProfile, generateMicroReward } from "@/lib/personalityE
 import { extractPatterns } from "@/lib/reflectionLinker";
 import { loadAndBuildIdentity } from "@/lib/identityTracker";
 import { buildCityMap } from "@/lib/cityEngine";
+import { buildDailyRitual } from "@/lib/ritualEngine";
+import { generateAction } from "@/lib/actionGenerator";
 
 export const dynamic = "force-dynamic";
 
@@ -73,10 +75,11 @@ export async function GET(_: Request, { params }: Params) {
     { completedCount: progress.completedDays.length, drift }
   );
 
-  // Build guidance + personality + micro-rewards + city
+  // Build guidance + personality + micro-rewards + city + ritual
   let guidance = null;
   let microReward = null;
   let city = null;
+  let ritual = null;
   try {
     const { data: profile } = await auth.supabase
       .from("profiles")
@@ -141,6 +144,18 @@ export async function GET(_: Request, { params }: Params) {
     // Micro-reward check
     microReward = generateMicroReward(progressState, identity);
 
+    // Build daily ritual
+    const cogAction = generateAction(progressState, null);
+    ritual = buildDailyRitual({
+      guidance: guidance!,
+      personality,
+      narrative: cognitive.narrative,
+      cognitiveAction: cogAction,
+      emotionalState: journeyState.emotionalState,
+      day,
+      streakDays: progressState.streak,
+    });
+
     // Build city map
     city = buildCityMap({
       identity,
@@ -187,6 +202,7 @@ export async function GET(_: Request, { params }: Params) {
       narrative: cognitive.narrative,
     },
     guidance,
+    ritual,
     micro_reward: microReward,
     city,
   });
