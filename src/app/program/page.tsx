@@ -6,6 +6,10 @@ import { programDayRoute } from "@/lib/routes";
 
 const TOTAL_DAYS = 28;
 
+type CatchUpOption = { type: string; label: string; days?: number[] };
+type CatchUpData = { message: string; missedDays: number[]; options: CatchUpOption[] };
+type JourneyStatePayload = { currentMode: string; emotionalState: string; riskLevel: string; momentum: number };
+
 type ProgressPayload = {
   ok?: boolean;
   error?: string;
@@ -14,6 +18,15 @@ type ProgressPayload = {
   completed_days?: number[];
   completed_count?: number;
   percent?: number;
+  // Cognitive OS fields
+  drift?: number;
+  mode?: string;
+  momentum?: number;
+  emotional_drift?: string;
+  missed_days?: number[];
+  streak?: number;
+  catch_up?: CatchUpData | null;
+  journey_state?: JourneyStatePayload | null;
 };
 
 function calculateStreak(completedDays: number[]): number {
@@ -49,6 +62,9 @@ export default function ProgramPage() {
   const [currentDay, setCurrentDay] = useState(1);
   const [completedDays, setCompletedDays] = useState<number[]>([]);
   const [percent, setPercent] = useState(0);
+  const [catchUp, setCatchUp] = useState<CatchUpData | null>(null);
+  const [mode, setMode] = useState<string>("normal");
+  const [momentum, setMomentum] = useState(0);
 
   useEffect(() => {
     const load = async () => {
@@ -77,6 +93,9 @@ export default function ProgramPage() {
         setCurrentDay(Math.max(1, Math.min(total, data.current_day ?? 1)));
         setCompletedDays(completed);
         setPercent(Math.max(0, Math.min(100, data.percent ?? Math.round((count / total) * 100))));
+        setCatchUp(data.catch_up ?? null);
+        setMode(data.mode ?? "normal");
+        setMomentum(data.momentum ?? 0);
       } catch {
         setError("تعذر الاتصال بالخادم. حاول مرة أخرى.");
       } finally {
@@ -142,8 +161,45 @@ export default function ProgramPage() {
           </div>
         </div>
 
+        {/* Momentum indicator */}
+        {momentum !== 0 && (
+          <div className="mt-3 flex items-center gap-2 text-xs">
+            <span className="text-[#7d7362]">الزخم:</span>
+            <span className={momentum > 0 ? "text-[#6b8c51]" : "text-[#9b5548]"}>
+              {momentum > 0 ? `+${momentum}` : momentum} {momentum > 3 ? "قوي" : momentum > 0 ? "إيجابي" : momentum > -3 ? "ضعيف" : "منخفض"}
+            </span>
+          </div>
+        )}
+
         {error ? <p className="mt-4 text-sm text-[#9b5548]">{error}</p> : null}
       </section>
+
+      {/* Catch-up card */}
+      {catchUp && (
+        <section className="tm-card border-[#c4a265]/30 bg-[#faf6ee] p-5 sm:p-6 space-y-3">
+          <p className="text-sm font-semibold text-[#5a4531]">{catchUp.message}</p>
+          <div className="flex flex-wrap gap-2">
+            {catchUp.options.map((opt, i) => (
+              <button
+                key={i}
+                type="button"
+                onClick={() => {
+                  if (opt.type === "continue") router.push(programDayRoute(currentDay));
+                  else if (opt.type === "review" && opt.days?.length) router.push(programDayRoute(opt.days[0]));
+                }}
+                className={[
+                  "rounded-lg px-4 py-2 text-sm transition-colors",
+                  i === 0
+                    ? "bg-[#8c7851] text-white"
+                    : "border border-[#d8cdb9] bg-white text-[#5f5648] hover:bg-[#f9f3e7]",
+                ].join(" ")}
+              >
+                {opt.label}
+              </button>
+            ))}
+          </div>
+        </section>
+      )}
 
       <section className="tm-card p-6 sm:p-7 space-y-5">
         <div className="flex items-center justify-between">

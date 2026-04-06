@@ -31,6 +31,15 @@ export default function ReflectionPage() {
     suggested_question: string;
     suggested_contemplation_practice: string;
   } | null>(null);
+  const [linkedInsight, setLinkedInsight] = useState<{
+    insight: string;
+    patterns: string[];
+    emotional_arc: string;
+  } | null>(null);
+  const [suggestedAction, setSuggestedAction] = useState<{
+    label: string;
+    description: string;
+  } | null>(null);
 
   useEffect(() => {
     const today = Math.max(1, Math.min(28, new Date().getDate()));
@@ -76,8 +85,16 @@ export default function ReflectionPage() {
           awareness_state: awarenessState,
         }),
       });
-      const reflectionData = (await reflectionRes.json()) as { ok?: boolean };
+      const reflectionData = (await reflectionRes.json()) as {
+        ok?: boolean;
+        linked?: { insight: string; patterns: string[]; emotional_arc: string };
+        action?: { label: string; description: string };
+      };
       const reflectionSaved = reflectionRes.ok && reflectionData.ok !== false;
+
+      // Capture linked insight + action from cognitive system
+      if (reflectionData.linked) setLinkedInsight(reflectionData.linked);
+      if (reflectionData.action) setSuggestedAction(reflectionData.action);
 
       // Keep legacy answers in sync as best-effort only.
       let answerSaved = false;
@@ -300,6 +317,37 @@ export default function ReflectionPage() {
           </div>
         </div>
       </form>
+
+      {/* Linked insight from Cognitive OS */}
+      {linkedInsight ? (
+        <section className="rounded-3xl border border-[#c4a265]/30 bg-gradient-to-b from-[#f4ead7]/40 to-transparent p-6 space-y-3">
+          <h2 className="tm-heading text-xl text-[#5a4531]">ربط التأملات</h2>
+          <div className="rounded-xl border border-[#c9bda8] bg-[#fcfaf7] px-4 py-3">
+            <p className="text-xs text-[#7d7362]">البصيرة</p>
+            <p className="mt-1 text-sm leading-relaxed text-[#2f2619]">{linkedInsight.insight}</p>
+          </div>
+          {linkedInsight.patterns.length > 0 && (
+            <div className="flex flex-wrap gap-2">
+              {linkedInsight.patterns.map((p, i) => (
+                <span key={i} className="rounded-full border border-[#c4a265]/30 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#7b694a]">
+                  {p}
+                </span>
+              ))}
+            </div>
+          )}
+          <p className="text-xs text-[#8c7851]">
+            القوس العاطفي: {linkedInsight.emotional_arc === "deepening" ? "يتعمّق" : linkedInsight.emotional_arc === "shifting" ? "يتحوّل" : linkedInsight.emotional_arc === "repeating" ? "يتكرر" : "يبدأ بالظهور"}
+          </p>
+        </section>
+      ) : null}
+
+      {/* Suggested action from Cognitive OS */}
+      {suggestedAction ? (
+        <section className="rounded-3xl border border-[#8c7851]/25 bg-[#f9f3e7] p-5 text-center space-y-2">
+          <p className="text-sm font-semibold text-[#5a4531]">{suggestedAction.label}</p>
+          <p className="text-xs text-[#7d7362]">{suggestedAction.description}</p>
+        </section>
+      ) : null}
 
       {engineOutput ? (
         <section className="rounded-3xl border border-[#b39b71]/35 bg-gradient-to-b from-[#cdb98f]/20 to-transparent p-6">

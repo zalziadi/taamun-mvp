@@ -8,6 +8,19 @@ import { PROGRAM_ROUTE } from "@/lib/routes";
 
 const TOTAL_DAYS = 28;
 
+type RitualPayload = {
+  entry?: { message: string; breathCue?: boolean };
+  intention?: { focusArea: string; intentionText: string };
+  action?: { type: string; instruction: string };
+  closing?: { message: string; integration: string };
+} | null;
+
+type GuidancePayload = {
+  message?: string;
+  tone?: string;
+  focus?: string;
+} | null;
+
 type ProgramDayPayload = {
   ok?: boolean;
   error?: string;
@@ -19,6 +32,9 @@ type ProgramDayPayload = {
     surah_number: number;
     ayah_number: number;
   } | null;
+  ritual?: RitualPayload;
+  guidance?: GuidancePayload;
+  micro_reward?: { type: string; message: string; intensity: string } | null;
 };
 
 type ProgressPayload = {
@@ -54,6 +70,9 @@ export default function ProgramDayPage() {
   const [content, setContent] = useState<JourneyContent | null>(null);
   const [streak, setStreak] = useState(0);
   const [isFirstTime, setIsFirstTime] = useState(false);
+  const [ritual, setRitual] = useState<RitualPayload>(null);
+  const [guidanceMsg, setGuidanceMsg] = useState<string | null>(null);
+  const [microReward, setMicroReward] = useState<{ message: string; intensity: string } | null>(null);
 
   useEffect(() => {
     if (!Number.isInteger(day) || day < 1 || day > TOTAL_DAYS) {
@@ -100,14 +119,23 @@ export default function ProgramDayPage() {
           ? `سورة ${surahNum}: ${ayahNum}`
           : "";
 
+        // Use ritual action instruction as exercise if available
+        const ritualAction = dayData.ritual?.action?.instruction;
+        const exercise = ritualAction ?? jsonEntry?.exercise ?? "";
+
         setContent({
           day,
           verseText,
           verseRef,
           question: jsonEntry?.question ?? dayData.verse?.title ?? "",
-          exercise: jsonEntry?.exercise ?? "",
+          exercise,
           whisper: jsonEntry?.whisper ?? null,
         });
+
+        // Set cognitive data
+        setRitual(dayData.ritual ?? null);
+        setGuidanceMsg(dayData.guidance?.message ?? null);
+        setMicroReward(dayData.micro_reward ?? null);
       } catch {
         // On error, redirect to program overview
         router.replace(PROGRAM_ROUTE);
@@ -128,11 +156,28 @@ export default function ProgramDayPage() {
   }
 
   return (
-    <DailyJourney
-      content={content}
-      streak={streak}
-      isFirstTime={isFirstTime}
-      onComplete={() => router.push(PROGRAM_ROUTE)}
-    />
+    <>
+      {/* Micro-reward toast */}
+      {microReward && (
+        <div className="fixed top-4 left-4 right-4 z-50 mx-auto max-w-md rounded-xl border border-[#c4a265]/30 bg-[#2a2118]/95 backdrop-blur-sm p-3 text-center animate-fade-in">
+          <p className="text-xs font-semibold text-[#e7c468]">{microReward.message}</p>
+        </div>
+      )}
+
+      <DailyJourney
+        content={content}
+        streak={streak}
+        isFirstTime={isFirstTime}
+        onComplete={() => router.push(PROGRAM_ROUTE)}
+      />
+
+      {/* Ritual closing (after journey is done, shown subtly) */}
+      {ritual?.closing && (
+        <div className="fixed bottom-20 left-4 right-4 z-40 mx-auto max-w-md rounded-xl border border-[#d8cdb9] bg-[#fcfaf7]/95 backdrop-blur-sm p-4 text-center">
+          <p className="text-sm text-[#5a4531]">{ritual.closing.message}</p>
+          <p className="mt-1 text-xs text-[#8c7851]">{ritual.closing.integration}</p>
+        </div>
+      )}
+    </>
   );
 }
