@@ -3,20 +3,51 @@ import { requireUser } from "@/lib/authz";
 import { ensureUserProgress, upsertUserProgress } from "@/lib/progressStore";
 import { isRamadanProgramClosed } from "@/lib/season";
 import { computeCalendarDay } from "@/lib/calendarDay";
+import { buildProgressState, buildCatchUpData } from "@/lib/progressEngine";
+import { buildJourneyState, classifyDepth, type JourneyInputs } from "@/lib/journeyState";
 
 export const dynamic = "force-dynamic";
 
 const TOTAL_DAYS = 28;
 
-/** Fetch subscription_start_date from profiles and compute the calendar day. */
-async function getCalendarDay(supabase: any, userId: string): Promise<number> {
+async function getSubscriptionStartDate(supabase: any, userId: string): Promise<string | null> {
   const { data: profile } = await supabase
     .from("profiles")
     .select("subscription_start_date")
     .eq("id", userId)
     .maybeSingle();
+  return profile?.subscription_start_date ?? null;
+}
 
-  return computeCalendarDay(profile?.subscription_start_date);
+async function getRecentRecovery(supabase: any, userId: string): Promise<boolean> {
+  const { data } = await supabase
+    .from("cognitive_actions")
+    .select("id")
+    .eq("user_id", userId)
+    .eq("status", "completed")
+    .order("completed_at", { ascending: false })
+    .limit(1);
+  return (data?.length ?? 0) > 0;
+}
+
+async function getJourneyInputs(supabase: any, userId: string, progress: any): Promise<JourneyInputs> {
+  const [reflectionsRes, actionsRes] = await Promise.all([
+    supabase.from("reflections").select("day, note").eq("user_id", userId).order("day", { ascending: false }).limit(5),
+    supabase.from("cognitive_actions").select("id").eq("user_id", userId).eq("status", "completed").gte("created_at", new Date(Date.now() - 7 * 86400000).toISOString()),
+  ]);
+
+  const reflections = reflectionsRes.data ?? [];
+  const lastNote = reflections[0]?.note ?? "";
+  const lastDay = reflections[0]?.day ?? 0;
+  const daysSinceLastReflection = lastDay > 0 ? progress.currentDay - lastDay : progress.currentDay;
+
+  return {
+    progress,
+    reflectionCount: reflections.length,
+    lastReflectionDepth: classifyDepth(lastNote.length),
+    actionsCompletedRecently: actionsRes.data?.length ?? 0,
+    daysSinceLastReflection,
+  };
 }
 
 function normalizeCompletedDays(values: unknown): number[] {
@@ -43,27 +74,58 @@ export async function GET() {
     return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 });
   }
 
-  // Use the higher of stored progress vs calendar-based day
-  const calendarDay = await getCalendarDay(auth.supabase, auth.user.id);
-  const currentDay = Math.max(progress.currentDay, calendarDay);
+  const startDate = await getSubscriptionStartDate(auth.supabase, auth.user.id);
+  const hasRecovery = await getRecentRecovery(auth.supabase, auth.user.id);
 
-  // Sync DB if calendar day moved ahead
-  if (currentDay > progress.currentDay) {
+  const state = buildProgressState(
+    progress.currentDay,
+    progress.completedDays,
+    startDate,
+    hasRecovery
+  );
+
+  // Sync DB if effective day moved ahead
+  if (state.currentDay > progress.currentDay) {
     await upsertUserProgress(auth.supabase, auth.user.id, {
-      currentDay,
+      currentDay: state.currentDay,
       completedDays: progress.completedDays,
     });
   }
 
+  // Track drift history
+  if (state.drift > 0) {
+    try {
+      await auth.supabase.rpc("append_drift_history", {
+        p_user_id: auth.user.id,
+        p_drift: state.drift,
+      });
+    } catch {
+      // RPC may not exist yet — safe to ignore
+    }
+  }
+
+  // Build journey state
+  const journeyInputs = await getJourneyInputs(auth.supabase, auth.user.id, state);
+  const journeyState = buildJourneyState(journeyInputs);
+
+  const catchUp = buildCatchUpData(state);
   const percent = Math.round((progress.completedDays.length / TOTAL_DAYS) * 100);
 
   return NextResponse.json({
     ok: true,
     total_days: TOTAL_DAYS,
-    current_day: currentDay,
-    completed_days: progress.completedDays,
-    completed_count: progress.completedDays.length,
+    current_day: state.currentDay,
+    completed_days: state.completedDays,
+    completed_count: state.completedDays.length,
     percent,
+    // New cognitive fields
+    drift: state.drift,
+    mode: state.mode,
+    missed_days: state.missedDays,
+    streak: state.streak,
+    completion_rate: state.completionRate,
+    catch_up: catchUp,
+    journey_state: journeyState,
   });
 }
 
@@ -94,13 +156,11 @@ export async function POST(request: Request) {
 
   const completedDays = Array.from(new Set([...progress.completedDays, day])).sort((a, b) => a - b);
 
-  // Calendar day is the minimum unlocked day based on time elapsed
-  const calendarDay = await getCalendarDay(auth.supabase, auth.user.id);
-  // Completion-based advancement: if user completed current day, bump by 1
+  const startDate = await getSubscriptionStartDate(auth.supabase, auth.user.id);
+  const calendarDay = computeCalendarDay(startDate);
   const completionDay = completedDays.includes(progress.currentDay)
     ? Math.min(TOTAL_DAYS, progress.currentDay + 1)
     : progress.currentDay;
-  // Use the highest of: stored, calendar-based, or completion-based
   const currentDay = Math.max(completionDay, calendarDay);
 
   const saved = await upsertUserProgress(auth.supabase, auth.user.id, {

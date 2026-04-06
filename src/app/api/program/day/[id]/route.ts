@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/authz";
 import { APP_NAME } from "@/lib/appConfig";
 import { readUserProgress } from "@/lib/progressStore";
 import { isRamadanProgramClosed } from "@/lib/season";
+import { buildCognitiveContext } from "@/lib/cognitiveContext";
 
 export const dynamic = "force-dynamic";
 
@@ -54,6 +55,10 @@ export async function GET(_: Request, { params }: Params) {
     return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 });
   }
 
+  // Build cognitive context for this day
+  const missedCount = Math.max(0, progress.currentDay - progress.completedDays.length - 1);
+  const cognitive = await buildCognitiveContext(auth.supabase, auth.user.id, day, missedCount);
+
   return NextResponse.json({
     ok: true,
     day,
@@ -74,5 +79,14 @@ export async function GET(_: Request, { params }: Params) {
           },
         }
       : null,
+    // Cognitive context
+    cognitive: {
+      context_summary: cognitive.contextSummary,
+      suggested_question: cognitive.suggestedQuestion,
+      connected_days: cognitive.recentReflections.map((r) => r.day),
+      awareness_level: cognitive.awarenessLevel,
+      context_level: cognitive.contextLevel,
+      recurring_themes: cognitive.recurringThemes,
+    },
   });
 }

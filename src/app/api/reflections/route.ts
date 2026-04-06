@@ -1,5 +1,10 @@
 import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/authz";
+import { linkReflection } from "@/lib/reflectionLinker";
+import { generateAction } from "@/lib/actionGenerator";
+import { buildProgressState } from "@/lib/progressEngine";
+import { readUserProgress } from "@/lib/progressStore";
+import { computeCalendarDay } from "@/lib/calendarDay";
 
 export const dynamic = "force-dynamic";
 
@@ -82,5 +87,84 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "save_failed" }, { status: 500 });
   }
 
-  return NextResponse.json({ ok: true, day });
+  // Link reflection to patterns + generate action (non-blocking on failure)
+  let linked = null;
+  let action = null;
+  try {
+    linked = await linkReflection(supabase, user.id, day);
+
+    const progress = await readUserProgress(supabase, user.id);
+    if (progress.ok) {
+      const { data: profile } = await supabase
+        .from("profiles")
+        .select("subscription_start_date")
+        .eq("id", user.id)
+        .maybeSingle();
+
+      const state = buildProgressState(
+        progress.currentDay,
+        progress.completedDays,
+        profile?.subscription_start_date
+      );
+      action = generateAction(state, linked);
+
+      // Persist action (ignore errors — table may not exist yet)
+      try {
+        await supabase.from("cognitive_actions").insert({
+          user_id: user.id,
+          day,
+          type: action.type,
+          label: action.label,
+          description: action.description,
+          suggested_next_step: action.suggestedNextStep,
+          priority: action.priority,
+        });
+      } catch {}
+
+      // Persist reflection links
+      if (linked.connectedDays.length > 0) {
+        try {
+          const links = linked.connectedDays.map((targetDay: number) => ({
+            user_id: user.id,
+            source_day: day,
+            target_day: targetDay,
+            insight: linked!.insight,
+            emotional_arc: linked!.emotionalArc,
+            patterns: linked!.patterns.map((p: { keyword: string }) => p.keyword),
+          }));
+          await supabase.from("reflection_links").insert(links);
+        } catch {}
+      }
+
+      // Update user_memory patterns
+      if (linked.patterns.length > 0) {
+        try {
+          const themes = linked.patterns.slice(0, 5).map((p: { keyword: string }) => p.keyword);
+          await supabase
+            .from("user_memory")
+            .upsert({
+              user_id: user.id,
+              patterns: themes,
+              last_cognitive_update: new Date().toISOString(),
+            }, { onConflict: "user_id" });
+        } catch {}
+      }
+    }
+  } catch {
+    // Cognitive layer failure should not break reflection save
+  }
+
+  return NextResponse.json({
+    ok: true,
+    day,
+    ...(linked && {
+      linked: {
+        insight: linked.insight,
+        connected_days: linked.connectedDays,
+        emotional_arc: linked.emotionalArc,
+        patterns: linked.patterns.map((p) => p.keyword),
+      },
+    }),
+    ...(action && { action }),
+  });
 }
