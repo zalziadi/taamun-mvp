@@ -4,6 +4,8 @@ import {
   buildActivationEmail,
   type ActivationEmailPayload,
 } from "@/lib/emails/activation-template";
+import { buildExpiryWarningEmail } from "@/lib/emails/expiry-warning-template";
+import { buildExpiredEmail } from "@/lib/emails/expired-template";
 
 export const dynamic = "force-dynamic";
 
@@ -53,21 +55,40 @@ export async function GET(req: Request) {
 
   for (const row of pending) {
     try {
-      const payload = row.payload as Partial<ActivationEmailPayload>;
+      const payload = row.payload as Record<string, any>;
+      const template = row.template as string | null;
 
-      // جلب كود التفعيل من الاشتراك
-      const { data: sub } = await admin
-        .from("customer_subscriptions")
-        .select("tier")
-        .eq("user_id", row.user_id)
-        .single();
+      let emailData: { subject: string; html: string; text: string };
 
-      const emailData = buildActivationEmail({
-        userName: payload.userName ?? row.email.split("@")[0],
-        activationCode: await getActivationCode(admin, row.user_id),
-        tier: payload.tier ?? sub?.tier ?? "full",
-        appUrl,
-      });
+      if (template === "expiry_warning") {
+        emailData = buildExpiryWarningEmail({
+          userName: payload.userName ?? row.email.split("@")[0],
+          daysLeft: payload.daysLeft ?? 7,
+          tier: payload.tier ?? "monthly",
+          appUrl,
+        });
+      } else if (template === "expired") {
+        emailData = buildExpiredEmail({
+          userName: payload.userName ?? row.email.split("@")[0],
+          tier: payload.tier ?? "monthly",
+          appUrl,
+        });
+      } else {
+        // Default: activation email
+        const activationPayload = payload as Partial<ActivationEmailPayload>;
+        const { data: sub } = await admin
+          .from("customer_subscriptions")
+          .select("tier")
+          .eq("user_id", row.user_id)
+          .single();
+
+        emailData = buildActivationEmail({
+          userName: activationPayload.userName ?? row.email.split("@")[0],
+          activationCode: await getActivationCode(admin, row.user_id),
+          tier: activationPayload.tier ?? sub?.tier ?? "full",
+          appUrl,
+        });
+      }
 
       // إرسال عبر Resend
       const res = await fetch("https://api.resend.com/emails", {
