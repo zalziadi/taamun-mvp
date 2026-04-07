@@ -32,6 +32,9 @@ import { buildNarrativeMemory, type NarrativeMemoryDay } from "./narrative/memor
 import { buildAnticipation, type Anticipation } from "./engagement/anticipation";
 import { detectPressure, classifyPressure, buildPressureCTA, type PressureLevel } from "./tone/pressure";
 
+// V4 imports — Adaptive Intelligence Layer
+import { type UserModel, normalizeUserModel, DEFAULT_USER_MODEL } from "./adaptive/model";
+
 // ── Types ──
 
 export type StepType = "ritual" | "today" | "progress" | "city" | "decision";
@@ -72,6 +75,14 @@ export interface OrchestratorState {
   pressureLevel?: number;
   pressureClass?: PressureLevel;
   pressureCTA?: string;
+
+  // V4: Adaptive intelligence layer
+  adaptive?: {
+    model: UserModel;
+    appliedThreshold: number;     // the actual threshold used for prediction
+    appliedPressure: number;      // pressure after sensitivity adjustment
+    depthMode: "short" | "deep";  // chosen reflection mode
+  };
 }
 
 export interface OrchestratorInputs {
@@ -100,6 +111,9 @@ export interface OrchestratorInputs {
   narrativeTimeline?: NarrativeMemoryDay[];
   // V3: Resistance signal (0-1) from journey state
   resistanceLevel?: number;
+
+  // V4: Adaptive user model (per-user learned preferences)
+  userModel?: UserModel | null;
 }
 
 // ── Trigger Detection ──
@@ -116,6 +130,10 @@ interface TriggerResult {
 }
 
 function shouldTriggerDecision(inputs: OrchestratorInputs): TriggerResult {
+  // V4: Use adaptive threshold from user model (default 0.7)
+  const userModel = normalizeUserModel(inputs.userModel);
+  const adaptiveThreshold = userModel.decisionThreshold;
+
   // 1. User explicitly requested help (REACTIVE)
   if (inputs.userRequestedHelp) {
     return { trigger: true, reason: "طلبت المساعدة في القرار", triggerType: "reactive" };
@@ -140,7 +158,8 @@ function shouldTriggerDecision(inputs: OrchestratorInputs): TriggerResult {
     commitmentScore: commitment,
   });
 
-  if (prediction.probability > PREDICTIVE_THRESHOLD) {
+  // V4: Compare against adaptive threshold (per user)
+  if (prediction.probability > adaptiveThreshold) {
     return {
       trigger: true,
       reason: `النظام يتوقع قرار قريب (${Math.round(prediction.probability * 100)}%): ${prediction.signals.join(" • ")}`,
@@ -399,29 +418,56 @@ export function buildOrchestrator(inputs: OrchestratorInputs): OrchestratorState
     momentum: inputs.progress.momentum,
   });
 
-  // V3: Adaptive Pressure
+  // V4: Get adaptive user model (defaults if missing)
+  const userModel = normalizeUserModel(inputs.userModel);
+
+  // V3: Adaptive Pressure (V4-modulated by user sensitivity)
   const resistance = inputs.resistanceLevel ?? (
-    inputs.journey.emotionalState === "resistant" ? 0.8 :
-    inputs.journey.emotionalState === "lost" ? 0.6 :
-    inputs.progress.drift > 5 ? 0.5 : 0.2
+    Math.max(
+      // V4: User-specific resistance level wins if higher
+      userModel.resistanceLevel,
+      inputs.journey.emotionalState === "resistant" ? 0.8 :
+      inputs.journey.emotionalState === "lost" ? 0.6 :
+      inputs.progress.drift > 5 ? 0.5 : 0.2
+    )
   );
-  const pressureLevel = detectPressure({
+  const basePressure = detectPressure({
     resistance,
     momentum: inputs.progress.momentum,
     commitment: inputs.context?.commitmentScore ?? 100,
   });
+  // V4: Apply user pressure sensitivity
+  // High sensitivity → reduce pressure (gentle for sensitive user)
+  const adjustedPressure = Math.max(
+    0,
+    Math.min(1, basePressure * (1 - userModel.pressureSensitivity * 0.5))
+  );
+  const pressureLevel = Math.round(adjustedPressure * 100) / 100;
   const pressureClass = classifyPressure(pressureLevel);
   const pressureCTA = buildPressureCTA(pressureLevel);
+
+  // V4: Adaptive anticipation — boost milestone for consistent users
+  let adaptedAnticipation = anticipation;
+  if (userModel.consistencyScore > 0.7) {
+    adaptedAnticipation = {
+      ...anticipation,
+      nextMilestone: Math.min(28, anticipation.nextMilestone + 2),
+    };
+  }
+
+  // V4: Adaptive reflection depth
+  const depthMode: "short" | "deep" = userModel.reflectionDepthPreference > 0.7 ? "deep" : "short";
 
   // V3: Inject reflection + anticipation + pressure into decision step data
   if (currentStep.type === "decision") {
     currentStep.data = {
       ...currentStep.data,
       reflection: identityReflection,
-      anticipation,
+      anticipation: adaptedAnticipation,
       pressureLevel,
       pressureClass,
       pressureCTA,
+      depthMode,
     };
   }
 
@@ -434,10 +480,17 @@ export function buildOrchestrator(inputs: OrchestratorInputs): OrchestratorState
     identityUpdate,
     identityReflection,
     narrativeMemory,
-    anticipation,
+    anticipation: adaptedAnticipation,
     pressureLevel,
     pressureClass,
     pressureCTA,
+    // V4: Adaptive layer
+    adaptive: {
+      model: userModel,
+      appliedThreshold: userModel.decisionThreshold,
+      appliedPressure: pressureLevel,
+      depthMode,
+    },
   };
 }
 

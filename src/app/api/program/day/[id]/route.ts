@@ -14,6 +14,8 @@ import { buildCityMap } from "@/lib/cityEngine";
 import { buildDailyRitual } from "@/lib/ritualEngine";
 import { generateAction } from "@/lib/actionGenerator";
 import { buildOrchestrator, boostZonesAfterDecision, DECISION_MICRO_REWARD } from "@/lib/orchestrator";
+import { normalizeUserModel, type UserModel } from "@/lib/adaptive/model";
+import { updateUserModelDetailed } from "@/lib/adaptive/learn";
 
 export const dynamic = "force-dynamic";
 
@@ -193,7 +195,21 @@ export async function GET(_: Request, { params }: Params) {
       keyEvent: r.note ? String(r.note).slice(0, 60) : undefined,
     }));
 
-    // Build orchestrator — V3 unified journey decision
+    // V4: Load adaptive user model from user_memory.identity.adaptive_model
+    let userModel: UserModel | null = null;
+    try {
+      const { data: memRow } = await auth.supabase
+        .from("user_memory")
+        .select("identity")
+        .eq("user_id", auth.user.id)
+        .maybeSingle();
+      const stored = (memRow?.identity as any)?.adaptive_model;
+      userModel = normalizeUserModel(stored);
+    } catch {
+      userModel = normalizeUserModel(null);
+    }
+
+    // Build orchestrator — V4 unified journey decision (with adaptive model)
     orchestrator = buildOrchestrator({
       progress: progressState,
       journey: journeyState,
@@ -207,7 +223,46 @@ export async function GET(_: Request, { params }: Params) {
       ritualSeenToday: false,
       recentDecisions,
       narrativeTimeline,
+      userModel,
     });
+
+    // V4: Persist updated user model after each request (best-effort)
+    // Learning signals derived from current state
+    try {
+      const learningResult = updateUserModelDetailed({
+        model: userModel,
+        actionTaken: progressState.completedDays.includes(day),
+        hesitation: patterns.some((p) =>
+          ["تردد", "حيرة", "تأجيل", "مقاومة"].some((kw) => p.keyword.includes(kw))
+        ),
+        completionTime: 60, // we don't track exact time yet — use neutral baseline
+        skipped: progressState.missedDays.length > 0,
+      });
+
+      const updatedIdentity = {
+        ...(identity as any),
+        adaptive_model: learningResult.model,
+        adaptive_changes: learningResult.changes,
+      };
+
+      await auth.supabase
+        .from("user_memory")
+        .upsert(
+          {
+            user_id: auth.user.id,
+            identity: updatedIdentity,
+            last_cognitive_update: new Date().toISOString(),
+          },
+          { onConflict: "user_id" }
+        );
+
+      // Attach changes to orchestrator response
+      if (orchestrator?.adaptive) {
+        (orchestrator.adaptive as any).changes = learningResult.changes;
+      }
+    } catch {
+      // Persistence is optional
+    }
   } catch {
     // Guidance generation is optional
   }

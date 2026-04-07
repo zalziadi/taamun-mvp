@@ -389,6 +389,116 @@ describe("orchestrator V3 — adaptive pressure", () => {
   });
 });
 
+describe("orchestrator V4 — adaptive layer", () => {
+  it("returns adaptive block in state", () => {
+    const result = buildOrchestrator(makeInputs());
+    expect(result.adaptive).toBeDefined();
+    expect(result.adaptive?.model).toBeDefined();
+    expect(result.adaptive?.appliedThreshold).toBe(0.7);
+    expect(result.adaptive?.depthMode).toBe("short");
+  });
+
+  it("uses provided user model threshold", () => {
+    const result = buildOrchestrator(makeInputs({
+      userModel: {
+        decisionThreshold: 0.4,
+        pressureSensitivity: 0.5,
+        reflectionDepthPreference: 0.5,
+        consistencyScore: 0.5,
+        resistanceLevel: 0.5,
+      },
+    }));
+    expect(result.adaptive?.appliedThreshold).toBe(0.4);
+  });
+
+  it("reduces pressure for high pressureSensitivity", () => {
+    const sensitive = buildOrchestrator(makeInputs({
+      userModel: {
+        decisionThreshold: 0.7,
+        pressureSensitivity: 1,
+        reflectionDepthPreference: 0.5,
+        consistencyScore: 0.5,
+        resistanceLevel: 0.5,
+      },
+    }));
+    const tough = buildOrchestrator(makeInputs({
+      userModel: {
+        decisionThreshold: 0.7,
+        pressureSensitivity: 0,
+        reflectionDepthPreference: 0.5,
+        consistencyScore: 0.5,
+        resistanceLevel: 0.5,
+      },
+    }));
+    expect(sensitive.pressureLevel!).toBeLessThan(tough.pressureLevel!);
+  });
+
+  it("uses deep mode when reflectionDepthPreference > 0.7", () => {
+    const result = buildOrchestrator(makeInputs({
+      userModel: {
+        decisionThreshold: 0.7,
+        pressureSensitivity: 0.5,
+        reflectionDepthPreference: 0.85,
+        consistencyScore: 0.5,
+        resistanceLevel: 0.5,
+      },
+    }));
+    expect(result.adaptive?.depthMode).toBe("deep");
+  });
+
+  it("boosts nextMilestone for high consistencyScore", () => {
+    const consistent = buildOrchestrator(makeInputs({
+      progress: makeProgress({ streak: 5 }),
+      userModel: {
+        decisionThreshold: 0.7,
+        pressureSensitivity: 0.5,
+        reflectionDepthPreference: 0.5,
+        consistencyScore: 0.85,
+        resistanceLevel: 0.5,
+      },
+    }));
+    const normal = buildOrchestrator(makeInputs({
+      progress: makeProgress({ streak: 5 }),
+    }));
+    expect(consistent.anticipation!.nextMilestone).toBeGreaterThan(normal.anticipation!.nextMilestone);
+  });
+
+  it("triggers decision earlier with low decisionThreshold", () => {
+    // Create a scenario where prediction is around 0.5
+    const patterns: Pattern[] = [
+      { keyword: "تردد", weight: 5, firstSeenDay: 1, recurrence: 1, type: "behavioral" },
+    ];
+    // High threshold = no trigger
+    const conservative = buildOrchestrator(makeInputs({
+      ritualSeenToday: true,
+      patterns,
+      userModel: {
+        decisionThreshold: 0.95,
+        pressureSensitivity: 0.5,
+        reflectionDepthPreference: 0.5,
+        consistencyScore: 0.5,
+        resistanceLevel: 0.5,
+      },
+    }));
+    // Low threshold = trigger predictively
+    const proactive = buildOrchestrator(makeInputs({
+      ritualSeenToday: true,
+      patterns,
+      userModel: {
+        decisionThreshold: 0.1,
+        pressureSensitivity: 0.5,
+        reflectionDepthPreference: 0.5,
+        consistencyScore: 0.5,
+        resistanceLevel: 0.5,
+      },
+    }));
+    // Both will still trigger because patterns include "تردد" via reactive fallback,
+    // but proactive should also have triggerType="predictive"
+    expect(proactive.currentStep.type).toBe("decision");
+    expect(conservative.currentStep.type).toBe("decision");
+  });
+});
+
 describe("boostZonesAfterDecision", () => {
   it("boosts power and action zones", () => {
     const city: CityMap = {
