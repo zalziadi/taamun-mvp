@@ -8,6 +8,7 @@ import DecisionCTA from "@/components/DecisionCTA";
 import IdentityReflectionCard from "@/components/IdentityReflectionCard";
 import NextStepPanel from "@/components/NextStepPanel";
 import { getNextStepOptions } from "@/lib/nextStep";
+import { useUserBehavior } from "@/hooks/useUserBehavior";
 
 type TimelineDay = {
   day: number;
@@ -62,6 +63,7 @@ const TOTAL_DAYS = 28;
 
 export default function JourneyPage() {
   const router = useRouter();
+  const { behavior, pattern, track } = useUserBehavior("journey");
   const [loading, setLoading] = useState(true);
   const [timeline, setTimeline] = useState<TimelineDay[]>([]);
   const [metrics, setMetrics] = useState({
@@ -163,8 +165,14 @@ export default function JourneyPage() {
 
   return (
     <div className="mx-auto max-w-[1220px] space-y-6 px-4 py-8">
-      {/* V6: Decision CTA — banner when flow is locked */}
-      <DecisionCTA visible={flowLockEnabled} reason={decisionReason} variant="banner" />
+      {/* V6/V7: Decision CTA — banner when flow is locked (pattern-aware) */}
+      <DecisionCTA
+        visible={flowLockEnabled}
+        reason={decisionReason}
+        variant="banner"
+        patternType={pattern.type}
+        onClick={() => track.decisionClick()}
+      />
 
       {/* V6: Identity Reflection milestone */}
       {identityReflection && (
@@ -393,7 +401,7 @@ export default function JourneyPage() {
         </section>
       ) : null}
 
-      {/* V6: NextStepPanel — bridge journey → city/day (no dead ends) */}
+      {/* V6/V7: NextStepPanel — bridge journey → city/day (pattern-aware) */}
       {hasJourneyData && !flowLockEnabled && (
         <NextStepPanel
           actions={getNextStepOptions({
@@ -401,8 +409,11 @@ export default function JourneyPage() {
             totalDays: TOTAL_DAYS,
             hasReflections: true,
             fromPage: "journey",
+            behavior,
+            pattern,
           })}
-          title="وش بعد؟"
+          patternType={pattern.type}
+          onActionClick={() => track.nextStepClicked()}
         />
       )}
     </div>

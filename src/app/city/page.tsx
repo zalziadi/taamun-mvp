@@ -9,6 +9,7 @@ import type { MicroReward } from "@/lib/personalityEngine";
 import DecisionCTA from "@/components/DecisionCTA";
 import NextStepPanel from "@/components/NextStepPanel";
 import { getNextStepOptions } from "@/lib/nextStep";
+import { useUserBehavior } from "@/hooks/useUserBehavior";
 
 type DayPayload = {
   ok?: boolean;
@@ -29,6 +30,7 @@ type ProgressPayload = {
 
 export default function CityPage() {
   const router = useRouter();
+  const { behavior, pattern, track } = useUserBehavior("city");
   const [loading, setLoading] = useState(true);
   const [city, setCity] = useState<CityMap | null>(null);
   const [microReward, setMicroReward] = useState<MicroReward | null>(null);
@@ -105,8 +107,14 @@ export default function CityPage() {
 
   return (
     <div className="tm-shell space-y-6 pb-10">
-      {/* V6: Decision CTA — banner when flow is locked */}
-      <DecisionCTA visible={flowLockEnabled} reason={decisionReason} variant="banner" />
+      {/* V6/V7: Decision CTA — banner when flow is locked (pattern-aware) */}
+      <DecisionCTA
+        visible={flowLockEnabled}
+        reason={decisionReason}
+        variant="banner"
+        patternType={pattern.type}
+        onClick={() => track.decisionClick()}
+      />
 
       <section className="tm-card p-6 sm:p-7 text-center">
         <div className="inline-flex items-center rounded-full border border-[#b39b71]/35 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#7b694a]">
@@ -172,7 +180,7 @@ export default function CityPage() {
         </section>
       )}
 
-      {/* V6: NextStepPanel — bridge city → journey/day (no dead ends) */}
+      {/* V6/V7: NextStepPanel — bridge city → journey/day (pattern-aware) */}
       {!flowLockEnabled && (
         <NextStepPanel
           actions={getNextStepOptions({
@@ -180,8 +188,11 @@ export default function CityPage() {
             totalDays: 28,
             hasReflections: true,
             fromPage: "city",
+            behavior,
+            pattern,
           })}
-          title="وش بعد؟"
+          patternType={pattern.type}
+          onActionClick={() => track.nextStepClicked()}
         />
       )}
 

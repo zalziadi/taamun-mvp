@@ -7,6 +7,7 @@ import NextStepPanel from "@/components/NextStepPanel";
 import DecisionCTA from "@/components/DecisionCTA";
 import IdentityReflectionCard from "@/components/IdentityReflectionCard";
 import { getNextStepOptions } from "@/lib/nextStep";
+import { useUserBehavior } from "@/hooks/useUserBehavior";
 
 type AnswerPayload = {
   ok?: boolean;
@@ -19,6 +20,7 @@ type AnswerPayload = {
 
 export default function ReflectionPage() {
   const router = useRouter();
+  const { behavior, pattern, track } = useUserBehavior("reflection");
   const [day, setDay] = useState(1);
   const [observe, setObserve] = useState("");
   const [insight, setInsight] = useState("");
@@ -109,6 +111,11 @@ export default function ReflectionPage() {
       // Capture linked insight + action from cognitive system
       if (reflectionData.linked) setLinkedInsight(reflectionData.linked);
       if (reflectionData.action) setSuggestedAction(reflectionData.action);
+
+      // V7: Track reflection save behavior
+      if (reflectionSaved) {
+        track.reflectionSaved();
+      }
 
       // Mark as saved + fetch orchestrator state for decision lock + identity reflection
       if (reflectionSaved) {
@@ -356,7 +363,13 @@ export default function ReflectionPage() {
       </form>
 
       {/* V6: Decision CTA — appears when flowLock is active (highest priority) */}
-      <DecisionCTA visible={flowLockEnabled} reason={decisionReason} variant="card" />
+      <DecisionCTA
+        visible={flowLockEnabled}
+        reason={decisionReason}
+        variant="card"
+        patternType={pattern.type}
+        onClick={() => track.decisionClick()}
+      />
 
       {/* V6: Identity Reflection — surfaces "you are now X instead of Y" */}
       {identityReflection && savedSuccessfully && (
@@ -419,7 +432,7 @@ export default function ReflectionPage() {
         </section>
       ) : null}
 
-      {/* V6: NextStepPanel — kills the dead end after save */}
+      {/* V6/V7: NextStepPanel — kills the dead end after save (pattern-aware) */}
       {savedSuccessfully && !flowLockEnabled && (
         <NextStepPanel
           actions={getNextStepOptions({
@@ -427,8 +440,11 @@ export default function ReflectionPage() {
             totalDays: 28,
             hasReflections: true,
             fromPage: "reflection",
+            behavior,
+            pattern,
           })}
-          title="وش بعد؟"
+          patternType={pattern.type}
+          onActionClick={() => track.nextStepClicked()}
         />
       )}
     </div>

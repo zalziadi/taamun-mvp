@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import { programDayRoute } from "@/lib/routes";
 import DecisionCTA from "@/components/DecisionCTA";
 import IdentityReflectionCard from "@/components/IdentityReflectionCard";
+import { useUserBehavior } from "@/hooks/useUserBehavior";
 
 const TOTAL_DAYS = 28;
 
@@ -57,6 +58,7 @@ function chunkDays(days: number[], size = 7): number[][] {
 
 export default function ProgramPage() {
   const router = useRouter();
+  const { pattern, track } = useUserBehavior("program");
   const [loading, setLoading] = useState(true);
   const [redirecting, setRedirecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -152,8 +154,14 @@ export default function ProgramPage() {
 
   return (
     <div className="tm-shell space-y-6">
-      {/* V6: Decision CTA — banner at top when flow is locked */}
-      <DecisionCTA visible={flowLockEnabled} reason={decisionReason} variant="banner" />
+      {/* V6/V7: Decision CTA — banner at top when flow is locked (pattern-aware) */}
+      <DecisionCTA
+        visible={flowLockEnabled}
+        reason={decisionReason}
+        variant="banner"
+        patternType={pattern.type}
+        onClick={() => track.decisionClick()}
+      />
 
       {/* V6: Identity Reflection milestone */}
       {identityReflection && (

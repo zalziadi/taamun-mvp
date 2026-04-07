@@ -93,6 +93,77 @@ describe("getNextBestAction — fallback", () => {
   });
 });
 
+describe("getNextBestAction — V7 pattern awareness", () => {
+  const decisivePattern = {
+    type: "decisive" as const,
+    decisionResistance: 0.2,
+    reflectionAffinity: 0.5,
+    actionSpeed: 0.9,
+    confidence: 0.7,
+    reasons: [],
+  };
+  const avoidantPattern = {
+    type: "avoidant" as const,
+    decisionResistance: 0.85,
+    reflectionAffinity: 0.3,
+    actionSpeed: 0.3,
+    confidence: 0.7,
+    reasons: [],
+  };
+
+  it("decision priority still wins regardless of pattern", () => {
+    const action = getNextBestAction(baseCtx({
+      flowLockEnabled: true,
+      pattern: decisivePattern,
+    }));
+    expect(action.type).toBe("decision");
+  });
+});
+
+describe("getNextStepOptions — V7 pattern awareness", () => {
+  const avoidantPattern = {
+    type: "avoidant" as const,
+    decisionResistance: 0.85,
+    reflectionAffinity: 0.3,
+    actionSpeed: 0.3,
+    confidence: 0.7,
+    reasons: [],
+  };
+
+  const decisivePattern = {
+    type: "decisive" as const,
+    decisionResistance: 0.2,
+    reflectionAffinity: 0.5,
+    actionSpeed: 0.9,
+    confidence: 0.7,
+    reasons: [],
+  };
+
+  it("avoidant users get ONLY 1 option (reduce friction)", () => {
+    const options = getNextStepOptions(baseCtx({
+      fromPage: "reflection",
+      pattern: avoidantPattern,
+    }));
+    expect(options).toHaveLength(1);
+  });
+
+  it("decisive users get up to 4 options (3 alternatives + primary)", () => {
+    const options = getNextStepOptions(baseCtx({
+      fromPage: "reflection",
+      pattern: decisivePattern,
+    }));
+    expect(options.length).toBeGreaterThanOrEqual(2);
+  });
+
+  it("balanced users get default count", () => {
+    const options = getNextStepOptions(baseCtx({
+      fromPage: "reflection",
+      pattern: undefined,
+    }));
+    expect(options.length).toBeGreaterThanOrEqual(2);
+  });
+});
+
 describe("getNextStepOptions", () => {
   it("returns ONLY decision when flowLock active", () => {
     const options = getNextStepOptions(baseCtx({ flowLockEnabled: true }));

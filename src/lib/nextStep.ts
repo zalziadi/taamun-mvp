@@ -4,13 +4,15 @@
  * Pure function. Takes user context and returns the single best
  * "what's next" action. Used everywhere there's a risk of dead-end.
  *
- * Rules:
- * 1. If decision triggered (flowLock) → decision wins ALWAYS
- * 2. If user just completed reflection → next day
- * 3. If user has unfinished day → continue day
- * 4. If user is exploring → reflection or city
- * 5. Default → home
+ * V7: Behavior-aware scoring
+ * - basePriority is multiplied by behaviorMultiplier from user pattern
+ * - Avoidant users get amplified decision priority
+ * - Decisive users get softened decision priority + boosted reflection
  */
+
+import type { UserBehavior } from "./behavior/userBehavior";
+import type { UserPattern } from "./patterns/userPattern";
+import { getPatternMultiplier } from "./patterns/userPattern";
 
 export type NextActionType =
   | "decision"
@@ -46,6 +48,10 @@ export interface NextStepContext {
 
   // Source page (so we don't suggest the page user is on)
   fromPage?: "reflection" | "program" | "day" | "journey" | "city" | "home";
+
+  // V7: Behavior-aware scoring
+  behavior?: UserBehavior | null;
+  pattern?: UserPattern | null;
 }
 
 const TOTAL_DAYS = 28;
@@ -100,7 +106,7 @@ export function getNextBestAction(ctx: NextStepContext): NextAction {
       route: `/program/day/${ctx.currentDay}`,
       priority: 70,
       reason: "احفظ الزخم",
-      emphasis: "medium",
+      emphasis: "high",
     };
   }
 
@@ -152,15 +158,37 @@ export function getNextBestAction(ctx: NextStepContext): NextAction {
 }
 
 /**
+ * V7: Apply behavior-aware multiplier to action priority.
+ * Used internally when ranking + filtering alternatives.
+ */
+function applyBehaviorMultiplier(action: NextAction, pattern: UserPattern | null | undefined): NextAction {
+  if (!pattern) return action;
+  const multiplier = getPatternMultiplier(pattern, action.type);
+  return {
+    ...action,
+    priority: Math.round(action.priority * multiplier),
+  };
+}
+
+/**
  * Returns up to 3 alternative actions for a multi-option panel.
  * Always at least 1 action (the primary one).
+ *
+ * V7: Behavior-aware
+ * - Avoidant users see fewer options (max 1) to reduce decision fatigue
+ * - Decisive users see all 3 alternatives for breadth
+ * - Pattern multiplier reorders alternatives
  */
 export function getNextStepOptions(ctx: NextStepContext): NextAction[] {
   const primary = getNextBestAction(ctx);
-  const alternatives: NextAction[] = [];
 
   // If decision is locked, ONLY show decision (flow lock is sacred)
   if (primary.type === "decision") return [primary];
+
+  // V7: Avoidant users → only show ONE clear option (reduce friction)
+  if (ctx.pattern?.type === "avoidant") {
+    return [primary];
+  }
 
   // Build alternatives from non-current pages
   const nextDay = Math.min(ctx.totalDays || TOTAL_DAYS, ctx.currentDay + 1);
@@ -193,11 +221,21 @@ export function getNextStepOptions(ctx: NextStepContext): NextAction[] {
   ];
 
   // Filter out the page user is currently on
-  const filtered = candidates.filter((a) => {
+  let filtered = candidates.filter((a) => {
     if (ctx.fromPage === "city" && a.type === "city") return false;
     if (ctx.fromPage === "journey" && a.type === "journey") return false;
+    if (a.type === primary.type) return false; // don't duplicate primary
     return true;
   });
 
-  return filtered.slice(0, 3);
+  // V7: Apply pattern multiplier and re-sort
+  if (ctx.pattern) {
+    filtered = filtered
+      .map((a) => applyBehaviorMultiplier(a, ctx.pattern))
+      .sort((a, b) => b.priority - a.priority);
+  }
+
+  // V7: Decisive users get 3 alternatives, others get 2
+  const altCount = ctx.pattern?.type === "decisive" ? 3 : 2;
+  return [primary, ...filtered.slice(0, altCount)];
 }
