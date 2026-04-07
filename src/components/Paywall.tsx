@@ -90,7 +90,7 @@ export function Paywall({ reason = "locked", title, message, type, profile }: Pa
     const daysUsed = getTrialDaysUsed(profile);
     const customMessage = `رحلتك بدأت… لكنها لم تكتمل
 
-عشت ${daysUsed} أيام مع المرشد والتأمل.
+عشت ${daysUsed} أيام مع المرشد والتمعّن.
 الرحلة الكاملة فيها ${28 - daysUsed} يوماً باقية —
 ٩ مجالات قرآنية، دفتر تأمل شخصي،
 والكتاب الذي بُني عليه كل شيء.

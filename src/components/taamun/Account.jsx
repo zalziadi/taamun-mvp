@@ -119,7 +119,7 @@ export default function Account() {
               <span style={{ color: "#2a2118", fontWeight: 500 }}>١٢ يوم</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", padding: "9px 0", borderBottom: "1px solid rgba(160,148,128,0.05)", fontSize: 12.5, color: "#a09480" }}>
-              <span>إجمالي التأملات</span>
+              <span>إجمالي التمعّنات</span>
               <span style={{ color: "#2a2118", fontWeight: 500 }}>٤٨</span>
             </div>
             <div style={{ display: "flex", justifyContent: "space-between", padding: "9px 0", fontSize: 12.5, color: "#a09480" }}>

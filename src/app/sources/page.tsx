@@ -57,7 +57,7 @@ export default async function SourcesPage() {
           </div>
           <h2 className="tm-heading text-3xl text-[#5a4531]">القرآن الكريم</h2>
           <p className="mt-2 text-sm leading-relaxed text-[#6f6455]">
-            اقرأ الآيات مباشرة من مصدر موثوق للرجوع السريع أثناء التأمل.
+            اقرأ الآيات مباشرة من مصدر موثوق للرجوع السريع أثناء التمعّن.
           </p>
           <a
             href="https://quran.com/ar"

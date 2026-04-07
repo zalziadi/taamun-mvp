@@ -92,7 +92,7 @@ export function MobileBottomNav({ ramadanClosed: _unused }: { ramadanClosed: boo
     { href: "/program", label: "البرنامج", icon: "program", activeWhen: (p) => p.startsWith("/program") },
     { href: "/city", label: "المدينة", icon: "city", activeWhen: (p) => p.startsWith("/city") },
     { href: "/journey", label: "الرحلة", icon: "journey", activeWhen: (p) => p.startsWith("/journey") },
-    { href: "/reflection", label: "التأمل", icon: "reflection", activeWhen: (p) => p.startsWith("/reflection") },
+    { href: "/reflection", label: "التمعّن", icon: "reflection", activeWhen: (p) => p.startsWith("/reflection") },
     { href: "/account", label: "كهفي", icon: "account", activeWhen: (p) => p.startsWith("/account") },
   ];
 

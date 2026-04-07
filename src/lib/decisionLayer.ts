@@ -67,7 +67,7 @@ function generateReasoning(
     return `مرّت ${progress.drift} أيام بدون تفاعل — هذا الاقتراح يساعدك على العودة`;
   }
   if (journey?.currentMode === "breakthrough") {
-    return "أنماط التأمل العميق + الإكمال المتسق تشير لمرحلة اختراق";
+    return "أنماط التمعّن العميق + الإكمال المتسق تشير لمرحلة اختراق";
   }
   if (progress.streak > 3) {
     return `${progress.streak} أيام متتالية — النظام واثق من هذا الاقتراح`;

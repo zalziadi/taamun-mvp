@@ -19,7 +19,7 @@ export interface UserMemory {
 export function buildGuideSystemPrompt(memory: UserMemory): string {
   const stage = detectConversionStage(memory);
   const dayContext = memory.current_day <= 7
-    ? "المرحلة الأولى — بناء عادة التأمل"
+    ? "المرحلة الأولى — بناء عادة التمعّن"
     : memory.current_day <= 14
       ? "المرحلة الثانية — تعميق الملاحظة"
       : memory.current_day <= 21
@@ -64,7 +64,7 @@ export function buildGuideSystemPrompt(memory: UserMemory): string {
 ${memory.last_topic ? `- آخر موضوع: ${memory.last_topic}` : ""}
 ${memory.last_action_taken ? "- أكمل التمرين الأخير ✓" : ""}
 
-## للأسئلة الروحانية والتأمل:
+## للأسئلة الروحانية والتمعّن:
 احتفظ بالعمق والهدوء — لكن لا تدع المستخدم يهرب من القرار في غموض روحاني.
 السؤال الجيد ينتهي إلى وضوح، ليس إلى مزيد من الأسئلة.
 

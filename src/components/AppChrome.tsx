@@ -60,7 +60,7 @@ export function AppChrome({
                 الرحلة
               </Link>
               <Link href={REFLECTION_ROUTE} className="tm-nav-link">
-                التأمل
+                التمعّن
               </Link>
               <Link href={JOURNAL_ROUTE} className="tm-nav-link">
                 الدفتر

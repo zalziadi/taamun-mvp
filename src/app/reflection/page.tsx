@@ -111,9 +111,9 @@ export default function ReflectionPage() {
       }
 
       if (reflectionSaved) {
-        setStatus(answerSaved ? "تم الحفظ بنجاح" : "تم حفظ التأمل (مع تخطي مزامنة ثانوية).");
+        setStatus(answerSaved ? "تم الحفظ بنجاح" : "تم حفظ التمعّن (مع تخطي مزامنة ثانوية).");
       } else {
-        setStatus("تعذر حفظ التأمل");
+        setStatus("تعذر حفظ التمعّن");
       }
     } catch {
       setStatus("تعذر الاتصال بالخادم");
@@ -161,7 +161,7 @@ export default function ReflectionPage() {
   if (loading) {
     return (
       <div className="flex min-h-[60vh] items-center justify-center">
-        <p className="text-sm text-muted">جارٍ تجهيز صفحة التأمل...</p>
+        <p className="text-sm text-muted">جارٍ تجهيز صفحة التمعّن...</p>
       </div>
     );
   }
@@ -172,7 +172,7 @@ export default function ReflectionPage() {
         <div className="inline-flex items-center rounded-full border border-[#b39b71]/35 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#7b694a]">
           نقاء اليقين
         </div>
-        <h1 className="tm-heading mt-3 text-5xl leading-tight">صفحة التأمل</h1>
+        <h1 className="tm-heading mt-3 text-5xl leading-tight">صفحة التمعّن</h1>
         <p className="mx-auto mt-2 max-w-[820px] text-sm leading-relaxed text-[#5f5648]/85">
           لكل آية: ملاحظة، إدراك، تمعّن. اكتب بصدق ثم حوّل الفهم إلى فعل واضح متسق مع أفضل احتمال فيك.
         </p>
@@ -312,7 +312,7 @@ export default function ReflectionPage() {
               disabled={saving}
               className="tm-gold-btn"
             >
-              {saving ? "جارٍ الحفظ..." : "حفظ التأمل"}
+              {saving ? "جارٍ الحفظ..." : "حفظ التمعّن"}
             </button>
           </div>
         </div>
@@ -321,7 +321,7 @@ export default function ReflectionPage() {
       {/* Linked insight from Cognitive OS */}
       {linkedInsight ? (
         <section className="rounded-3xl border border-[#c4a265]/30 bg-gradient-to-b from-[#f4ead7]/40 to-transparent p-6 space-y-3">
-          <h2 className="tm-heading text-xl text-[#5a4531]">ربط التأملات</h2>
+          <h2 className="tm-heading text-xl text-[#5a4531]">ربط التمعّنات</h2>
           <div className="rounded-xl border border-[#c9bda8] bg-[#fcfaf7] px-4 py-3">
             <p className="text-xs text-[#7d7362]">البصيرة</p>
             <p className="mt-1 text-sm leading-relaxed text-[#2f2619]">{linkedInsight.insight}</p>

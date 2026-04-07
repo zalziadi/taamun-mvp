@@ -212,12 +212,12 @@ export default function Home() {
         <h2 className="tm-heading text-3xl text-[#2f2619]">تمرين التمعّن</h2>
         <p className="text-sm leading-relaxed text-[#5f5648]/85">
           خذ 3 دقائق صمت، ثم اكتب سطرًا واحدًا: &quot;ما الذي يحتاج مني حضورًا أصدق اليوم؟&quot;.
-          بعد ذلك افتح صفحة التأمل وسجّل إجابتك.
+          بعد ذلك افتح صفحة التمعّن وسجّل إجابتك.
         </p>
 
         <div className="flex flex-wrap gap-2">
           <Link href="/reflection" className="tm-gold-btn rounded-xl px-5 py-2.5 text-sm">
-            افتح التأمل الآن
+            افتح التمعّن الآن
           </Link>
           <Link href="/program" className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-5 py-2.5 text-sm text-[#5f5648]">
             متابعة البرنامج

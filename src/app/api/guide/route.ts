@@ -165,7 +165,7 @@ export async function POST(req: NextRequest) {
   } catch (e) {
     // Fallback: if LLM fails or returns non-JSON
     guideResponse = {
-      reply: "ماذا لو توقفت لحظة وسألت نفسك: ما الذي يمنعني من التأمل الحقيقي؟",
+      reply: "ماذا لو توقفت لحظة وسألت نفسك: ما الذي يمنعني من التمعّن الحقيقي؟",
       stage: "question",
       memory_update: {},
       done: false,

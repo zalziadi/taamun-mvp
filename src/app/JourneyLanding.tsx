@@ -500,7 +500,7 @@ export function JourneyLanding() {
               </div>
               <p className="jl-price-unit">بدون بطاقة دفع</p>
               <ul className="jl-price-features">
-                <li>بوابة الصمت والتأمل</li>
+                <li>بوابة الصمت والتمعّن</li>
                 <li>الدفتر الشخصي</li>
                 <li>7 أيام كاملة بدون التزام</li>
               </ul>

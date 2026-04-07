@@ -59,7 +59,7 @@ export default function ProgressPage() {
           const localRows = normalizeLocalReflections();
           setReflections(localRows);
           if (localRows.length === 0) {
-            setError("تعذر تحميل سجل التأملات من الخادم، وتم استخدام النسخة المحلية.");
+            setError("تعذر تحميل سجل التمعّنات من الخادم، وتم استخدام النسخة المحلية.");
           }
           return;
         }
@@ -91,7 +91,7 @@ export default function ProgressPage() {
     <div className="min-h-screen bg-[#15130f] p-6">
       <div className="mx-auto max-w-[720px] space-y-6">
         <div className="flex items-center justify-between gap-3">
-          <h1 className="text-2xl font-bold text-[#e8e1d9]">سجل التأملات</h1>
+          <h1 className="text-2xl font-bold text-[#e8e1d9]">سجل التمعّنات</h1>
           <Link
             href={PROGRAM_ROUTE}
             className="text-sm text-[#c9b88a] hover:text-[#e8e1d9] transition-colors"

@@ -78,7 +78,7 @@ async function buildAiResponse(input: {
     input.quranText ? `نص الآية: ${input.quranText}` : "",
     `الملاحظة: ${input.observeText}`,
     `الإدراك: ${input.insightText}`,
-    `التأمل: ${input.contemplateText}`,
+    `التمعّن: ${input.contemplateText}`,
     input.rebuildText ? `إعادة البناء: ${input.rebuildText}` : "",
   ]
     .filter(Boolean)

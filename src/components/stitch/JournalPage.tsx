@@ -180,7 +180,7 @@ export const JournalPage: React.FC<JournalPageProps> = ({
         >
           <div className="absolute inset-0 bg-gradient-to-br from-white/10 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
           <span className="font-body text-sm uppercase tracking-widest relative z-10">
-            {isSaving ? 'جاري الحفظ...' : 'احفظ التأمل'}
+            {isSaving ? 'جاري الحفظ...' : 'احفظ التمعّن'}
           </span>
           <svg
             className="w-5 h-5 relative z-10"

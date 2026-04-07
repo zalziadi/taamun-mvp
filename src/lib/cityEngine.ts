@@ -41,7 +41,7 @@ const ZONE_META: { id: string; name: string }[] = [
   { id: "discipline", name: "البناء والنظام" },
   { id: "beauty", name: "الجمال والمغامرة" },
   { id: "family", name: "العائلة والعطاء" },
-  { id: "reflection", name: "التأمل والتدبر" },
+  { id: "reflection", name: "التمعّن والتدبر" },
   { id: "power", name: "المال والقوة" },
   { id: "action", name: "الفعل والخير" },
 ];
@@ -217,10 +217,10 @@ const ZONE_SIGNALS: Record<string, Record<ZoneState, string>> = {
     thriving: "قلبك مفتوح — عطاؤك يصل ويؤثر",
   },
   reflection: {
-    weak: "التأمل يحتاج مساحة — خصص دقائق يومية للصمت",
+    weak: "التمعّن يحتاج مساحة — خصص دقائق يومية للصمت",
     growing: "تأملاتك بدأت تتعمق — استمر",
     stable: "عندك عادة تأمل قوية",
-    thriving: "أنت في حالة وعي عميق — التأمل صار جزء من تفكيرك",
+    thriving: "أنت في حالة وعي عميق — التمعّن صار جزء من تفكيرك",
   },
   power: {
     weak: "القوة تبدأ من القرار — اتخذ قرار صغير اليوم",

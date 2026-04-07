@@ -256,7 +256,7 @@ export default function ProgramPage() {
           onClick={() => router.push("/progress")}
           className="text-sm text-[#7d7362] transition-colors hover:text-[#2f2619]"
         >
-          عرض سجل التأملات →
+          عرض سجل التمعّنات →
         </button>
       </div>
     </div>

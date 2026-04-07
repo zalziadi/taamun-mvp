@@ -158,7 +158,7 @@ export function generateMicroReward(
 
   // Breakthrough: deep reflections + high engagement
   if (identity?.transformationSignal === "deepening" && identity.reflectionDepth === "deep") {
-    return { type: "breakthrough", message: "شيء يتغيّر فيك — التأملات تتعمّق بشكل واضح", intensity: "medium" };
+    return { type: "breakthrough", message: "شيء يتغيّر فيك — التمعّنات تتعمّق بشكل واضح", intensity: "medium" };
   }
   if (identity?.transformationSignal === "integrated") {
     return { type: "breakthrough", message: "وصلت مرحلة التكامل — المعنى صار جزء من يومك", intensity: "high" };

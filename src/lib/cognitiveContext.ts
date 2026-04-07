@@ -80,7 +80,7 @@ function buildInterpretation(
   if (reflectionCount === 0) return "بداية رحلة جديدة — لا توجد بيانات سابقة بعد";
   if (missedCount > 5) return `${missedCount} أيام فائتة — النظام يلاحظ نمط توقف. ممكن الرحلة تحتاج إعادة ضبط`;
   if (themes.length >= 3) return `ثلاثة أنماط واضحة: ${themes.slice(0, 3).join("، ")}. الرحلة تبني صورة متكاملة`;
-  if (awarenessLevel === "deep") return "مستوى الوعي عميق — التأملات تعكس نضج داخلي";
+  if (awarenessLevel === "deep") return "مستوى الوعي عميق — التمعّنات تعكس نضج داخلي";
   if (awarenessLevel === "growing") return "الوعي ينمو — الأنماط بدأت تتضح";
   return "مرحلة مبكرة — كل تأمل يضيف بيانات للنظام";
 }

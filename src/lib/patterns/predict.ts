@@ -85,7 +85,7 @@ export function predictDecisionNeedDetailed(input: PredictInput): PredictionResu
   const entryCheck = entriesRepeatHesitation(input.recentEntries);
   if (entryCheck.repeated) {
     probability += 0.3;
-    signals.push(`تكرار في ${entryCheck.count} من آخر التأملات`);
+    signals.push(`تكرار في ${entryCheck.count} من آخر التمعّنات`);
   }
 
   const commitment = input.commitmentScore ?? 100;

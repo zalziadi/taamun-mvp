@@ -35,7 +35,7 @@ export default function Daily() {
         <p style={sMarker}>الطقس اليومي</p>
       </Reveal>
       <Reveal delay={0.1}>
-        <h2 style={sTitle}>كيف يبدو يومك التأملي؟</h2>
+        <h2 style={sTitle}>كيف يبدو يومك التمعّني؟</h2>
       </Reveal>
       <Reveal delay={0.15}>
         <p style={sLead}>كل يوم مصمّم كمسار انتقال: ملاحظة، إدراك، تمعُّن.</p>

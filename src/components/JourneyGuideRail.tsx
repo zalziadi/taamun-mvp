@@ -19,9 +19,9 @@ function getGuideState(pathname: string): GuideState {
   if (pathname.startsWith("/program/day/")) {
     return {
       title: "أكمل الخطوة",
-      hint: "بعد صفحة اليوم، افتح التأمل ثم راجع المرشد.",
+      hint: "بعد صفحة اليوم، افتح التمعّن ثم راجع المرشد.",
       primaryHref: "/reflection",
-      primaryLabel: "إلى التأمل",
+      primaryLabel: "إلى التمعّن",
       secondaryHref: "/guide",
       secondaryLabel: "اسأل المرشد",
     };
@@ -29,7 +29,7 @@ function getGuideState(pathname: string): GuideState {
 
   if (pathname.startsWith("/reflection")) {
     return {
-      title: "بعد التأمل",
+      title: "بعد التمعّن",
       hint: "حفظت الفكرة؟ انتقل للدفتر أو تابع يومك التالي.",
       primaryHref: "/journal",
       primaryLabel: "افتح الدفتر",
@@ -56,7 +56,7 @@ function getGuideState(pathname: string): GuideState {
       primaryHref: "/program",
       primaryLabel: "افتح البرنامج",
       secondaryHref: "/reflection",
-      secondaryLabel: "صفحة التأمل",
+      secondaryLabel: "صفحة التمعّن",
     };
   }
 

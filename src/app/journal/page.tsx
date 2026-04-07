@@ -155,7 +155,7 @@ export default function JournalRoutePage() {
                   href="/reflection"
                   className="rounded-full border border-outline-variant px-3 py-1 text-xs text-on-surface-variant hover:border-primary/40 hover:text-primary"
                 >
-                  فتح التأمل
+                  فتح التمعّن
                 </Link>
               </div>
 

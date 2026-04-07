@@ -112,7 +112,7 @@ export default function Pricing() {
             <div style={{ fontFamily: "'Amiri', serif", fontSize: 40, color: "#2a2118", fontWeight: 700, lineHeight: 1, marginBottom: 14 }}>
               ٠ <span style={{ fontSize: 15, color: "#a09480", fontWeight: 400 }}>ر.س</span>
             </div>
-            {["آية اليوم وسؤال التأمل", "تمرين المراقبة اليومي", "متابعة التقدم", "دعاء المساء"].map((f, i) => (
+            {["آية اليوم وسؤال التمعّن", "تمرين المراقبة اليومي", "متابعة التقدم", "دعاء المساء"].map((f, i) => (
               <div key={i} style={priceFeature}>
                 {f}
               </div>
@@ -144,7 +144,7 @@ export default function Pricing() {
             <div style={{ fontFamily: "'Amiri', serif", fontSize: 40, color: "#2a2118", fontWeight: 700, lineHeight: 1, marginBottom: 14 }}>
               ٤٩ <span style={{ fontSize: 15, color: "#a09480", fontWeight: 400 }}>ر.س</span>
             </div>
-            {["كل مزايا المسار الأساسي", "تمارين الإدراك المتقدمة", "مقاطع صوتية تأملية", "دفتر التأمل الرقمي", "فصول من مدينة المعنى"].map((f, i) => (
+            {["كل مزايا المسار الأساسي", "تمارين الإدراك المتقدمة", "مقاطع صوتية تأملية", "دفتر التمعّن الرقمي", "فصول من مدينة المعنى"].map((f, i) => (
               <div key={i} style={priceFeature}>
                 {f}
               </div>

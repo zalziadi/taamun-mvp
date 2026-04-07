@@ -88,7 +88,7 @@ export default function TaamunDayPage({ day }: { day: number }) {
       });
       const json = await res.json();
       if (!res.ok || !json.ok) {
-        setAiResponse("تعذّر إنشاء التأمل الآن، لكن تم حفظ إجاباتك.");
+        setAiResponse("تعذّر إنشاء التمعّن الآن، لكن تم حفظ إجاباتك.");
         return;
       }
       setAiResponse(json.ai_response || "تم حفظ اليوم بنجاح.");

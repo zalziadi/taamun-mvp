@@ -77,7 +77,7 @@ function derivePath(
   }
 
   if (focus === "deepen") {
-    return { type: "reflection", reason: "أنت في مرحلة عمق — التأمل يكشف المزيد" };
+    return { type: "reflection", reason: "أنت في مرحلة عمق — التمعّن يكشف المزيد" };
   }
 
   // continue
@@ -169,7 +169,7 @@ function getFallbackMessage(
   if (focus === "deepen") {
     const theme = identity?.recurringThemes?.[0];
     if (theme) return `نمط "${theme}" يتكرر — اليوم ممكن تفهمه بشكل أعمق`;
-    return "أنت في مرحلة عمق — التأمل اليوم يحمل شيء مختلف";
+    return "أنت في مرحلة عمق — التمعّن اليوم يحمل شيء مختلف";
   }
 
   // continue

@@ -306,7 +306,7 @@ export default function JourneyPage() {
                 ? "رحلتك تتجه بثبات نحو أفضل احتمال. استمر على نفس نسق الحضور اليومي."
                 : metrics.awareness_avg >= 1.6
                 ? "هناك انتقال متوازن بين الظل والهدية. ركّز على تحويل الإدراك إلى فعل واضح."
-                : "الرحلة في بدايتها. ثبّت عادة التأمل اليومي، حتى لو بسطر واحد."}
+                : "الرحلة في بدايتها. ثبّت عادة التمعّن اليومي، حتى لو بسطر واحد."}
             </p>
           </section>
         </aside>
@@ -354,7 +354,7 @@ export default function JourneyPage() {
               ابدأ أول يوم
             </Link>
             <Link href="/reflection" className="rounded-xl border border-[#3b4252] px-4 py-2 text-sm text-[#fdf3df]">
-              افتح التأمل اليومي
+              افتح التمعّن اليومي
             </Link>
           </div>
         </section>

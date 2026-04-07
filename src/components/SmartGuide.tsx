@@ -142,7 +142,7 @@ export function SmartGuide({ verse, verseRef, day, onComplete }: SmartGuideProps
     } catch {
       setMessages(prev => [...prev, {
         role: "guide",
-        text: "ماذا لو توقفت لحظة وسألت نفسك: ما الذي يمنعني من التأمل الحقيقي؟",
+        text: "ماذا لو توقفت لحظة وسألت نفسك: ما الذي يمنعني من التمعّن الحقيقي؟",
         stage: "question",
       }]);
     } finally {
