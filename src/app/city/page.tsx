@@ -6,12 +6,19 @@ import Link from "next/link";
 import { LivingCityMap } from "@/components/city/motion";
 import type { CityMap } from "@/lib/cityEngine";
 import type { MicroReward } from "@/lib/personalityEngine";
+import DecisionCTA from "@/components/DecisionCTA";
+import NextStepPanel from "@/components/NextStepPanel";
+import { getNextStepOptions } from "@/lib/nextStep";
 
 type DayPayload = {
   ok?: boolean;
   city?: CityMap | null;
   micro_reward?: MicroReward | null;
   guidance?: { focus?: string; message?: string } | null;
+  orchestrator?: {
+    flowLock?: { enabled?: boolean; reason?: string };
+    currentStep?: { reason?: string };
+  } | null;
 };
 
 type ProgressPayload = {
@@ -28,6 +35,9 @@ export default function CityPage() {
   const [emotionalState, setEmotionalState] = useState<"engaged" | "resistant" | "lost" | "curious">("curious");
   const [guidanceFocus, setGuidanceFocus] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [flowLockEnabled, setFlowLockEnabled] = useState(false);
+  const [decisionReason, setDecisionReason] = useState("");
+  const [currentDay, setCurrentDay] = useState(1);
 
   useEffect(() => {
     const load = async () => {
@@ -46,6 +56,7 @@ export default function CityPage() {
         }
 
         const cd = progressData.current_day ?? 1;
+        setCurrentDay(cd);
         const journeyEmotion = progressData.journey_state?.emotionalState;
         if (
           journeyEmotion === "engaged" ||
@@ -62,6 +73,10 @@ export default function CityPage() {
         if (dayData.city) setCity(dayData.city);
         if (dayData.micro_reward) setMicroReward(dayData.micro_reward);
         if (dayData.guidance?.focus) setGuidanceFocus(dayData.guidance.focus);
+        if (dayData.orchestrator?.flowLock?.enabled) {
+          setFlowLockEnabled(true);
+          setDecisionReason(dayData.orchestrator.currentStep?.reason ?? "");
+        }
       } catch {
         setError("تعذر الاتصال بالخادم");
       } finally {
@@ -90,6 +105,9 @@ export default function CityPage() {
 
   return (
     <div className="tm-shell space-y-6 pb-10">
+      {/* V6: Decision CTA — banner when flow is locked */}
+      <DecisionCTA visible={flowLockEnabled} reason={decisionReason} variant="banner" />
+
       <section className="tm-card p-6 sm:p-7 text-center">
         <div className="inline-flex items-center rounded-full border border-[#b39b71]/35 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#7b694a]">
           مدينة الوعي الحيّة
@@ -152,6 +170,19 @@ export default function CityPage() {
             ))}
           </div>
         </section>
+      )}
+
+      {/* V6: NextStepPanel — bridge city → journey/day (no dead ends) */}
+      {!flowLockEnabled && (
+        <NextStepPanel
+          actions={getNextStepOptions({
+            currentDay,
+            totalDays: 28,
+            hasReflections: true,
+            fromPage: "city",
+          })}
+          title="وش بعد؟"
+        />
       )}
 
       <div className="text-center">

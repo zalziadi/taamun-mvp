@@ -3,6 +3,8 @@
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import { programDayRoute } from "@/lib/routes";
+import DecisionCTA from "@/components/DecisionCTA";
+import IdentityReflectionCard from "@/components/IdentityReflectionCard";
 
 const TOTAL_DAYS = 28;
 
@@ -65,6 +67,14 @@ export default function ProgramPage() {
   const [catchUp, setCatchUp] = useState<CatchUpData | null>(null);
   const [mode, setMode] = useState<string>("normal");
   const [momentum, setMomentum] = useState(0);
+  // V6: Decision lock + Identity reflection from orchestrator
+  const [flowLockEnabled, setFlowLockEnabled] = useState(false);
+  const [decisionReason, setDecisionReason] = useState<string>("");
+  const [identityReflection, setIdentityReflection] = useState<{
+    message: string;
+    before_state?: string;
+    after_state?: string;
+  } | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -96,6 +106,22 @@ export default function ProgramPage() {
         setCatchUp(data.catch_up ?? null);
         setMode(data.mode ?? "normal");
         setMomentum(data.momentum ?? 0);
+
+        // V6: Fetch orchestrator state for decision lock + identity reflection
+        try {
+          const cd = data.current_day ?? 1;
+          const dayRes = await fetch(`/api/program/day/${cd}`, { cache: "no-store" });
+          const dayData = await dayRes.json();
+          if (dayData.orchestrator?.flowLock?.enabled) {
+            setFlowLockEnabled(true);
+            setDecisionReason(dayData.orchestrator.currentStep?.reason ?? "");
+          }
+          if (dayData.orchestrator?.identityReflection?.message) {
+            setIdentityReflection(dayData.orchestrator.identityReflection);
+          }
+        } catch {
+          // Best-effort enrichment
+        }
       } catch {
         setError("تعذر الاتصال بالخادم. حاول مرة أخرى.");
       } finally {
@@ -126,6 +152,19 @@ export default function ProgramPage() {
 
   return (
     <div className="tm-shell space-y-6">
+      {/* V6: Decision CTA — banner at top when flow is locked */}
+      <DecisionCTA visible={flowLockEnabled} reason={decisionReason} variant="banner" />
+
+      {/* V6: Identity Reflection milestone */}
+      {identityReflection && (
+        <IdentityReflectionCard
+          message={identityReflection.message}
+          beforeState={identityReflection.before_state}
+          afterState={identityReflection.after_state}
+          variant="milestone"
+        />
+      )}
+
       <section className="tm-card p-6 sm:p-7">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-2">

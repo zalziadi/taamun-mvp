@@ -3,6 +3,10 @@
 import { FormEvent, useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { AWARENESS_STATES, PRACTICES, type AwarenessState } from "@/lib/city-of-meaning";
+import NextStepPanel from "@/components/NextStepPanel";
+import DecisionCTA from "@/components/DecisionCTA";
+import IdentityReflectionCard from "@/components/IdentityReflectionCard";
+import { getNextStepOptions } from "@/lib/nextStep";
 
 type AnswerPayload = {
   ok?: boolean;
@@ -40,6 +44,16 @@ export default function ReflectionPage() {
     label: string;
     description: string;
   } | null>(null);
+  // Flow continuity — never let the user dead-end
+  const [savedSuccessfully, setSavedSuccessfully] = useState(false);
+  const [flowLockEnabled, setFlowLockEnabled] = useState(false);
+  const [decisionReason, setDecisionReason] = useState<string>("");
+  const [identityReflection, setIdentityReflection] = useState<{
+    message: string;
+    before_state?: string;
+    after_state?: string;
+  } | null>(null);
+  const [currentDay, setCurrentDay] = useState(1);
 
   useEffect(() => {
     const today = Math.max(1, Math.min(28, new Date().getDate()));
@@ -95,6 +109,29 @@ export default function ReflectionPage() {
       // Capture linked insight + action from cognitive system
       if (reflectionData.linked) setLinkedInsight(reflectionData.linked);
       if (reflectionData.action) setSuggestedAction(reflectionData.action);
+
+      // Mark as saved + fetch orchestrator state for decision lock + identity reflection
+      if (reflectionSaved) {
+        setSavedSuccessfully(true);
+        try {
+          const progressRes = await fetch("/api/program/progress", { cache: "no-store" });
+          const progressData = await progressRes.json();
+          const cd = progressData.current_day ?? day;
+          setCurrentDay(cd);
+
+          const dayRes = await fetch(`/api/program/day/${cd}`, { cache: "no-store" });
+          const dayData = await dayRes.json();
+          if (dayData.orchestrator?.flowLock?.enabled) {
+            setFlowLockEnabled(true);
+            setDecisionReason(dayData.orchestrator.currentStep?.reason ?? "");
+          }
+          if (dayData.orchestrator?.identityReflection) {
+            setIdentityReflection(dayData.orchestrator.identityReflection);
+          }
+        } catch {
+          // Best-effort enrichment
+        }
+      }
 
       // Keep legacy answers in sync as best-effort only.
       let answerSaved = false;
@@ -318,6 +355,19 @@ export default function ReflectionPage() {
         </div>
       </form>
 
+      {/* V6: Decision CTA — appears when flowLock is active (highest priority) */}
+      <DecisionCTA visible={flowLockEnabled} reason={decisionReason} variant="card" />
+
+      {/* V6: Identity Reflection — surfaces "you are now X instead of Y" */}
+      {identityReflection && savedSuccessfully && (
+        <IdentityReflectionCard
+          message={identityReflection.message}
+          beforeState={identityReflection.before_state}
+          afterState={identityReflection.after_state}
+          variant="milestone"
+        />
+      )}
+
       {/* Linked insight from Cognitive OS */}
       {linkedInsight ? (
         <section className="rounded-3xl border border-[#c4a265]/30 bg-gradient-to-b from-[#f4ead7]/40 to-transparent p-6 space-y-3">
@@ -368,6 +418,19 @@ export default function ReflectionPage() {
           </div>
         </section>
       ) : null}
+
+      {/* V6: NextStepPanel — kills the dead end after save */}
+      {savedSuccessfully && !flowLockEnabled && (
+        <NextStepPanel
+          actions={getNextStepOptions({
+            currentDay,
+            totalDays: 28,
+            hasReflections: true,
+            fromPage: "reflection",
+          })}
+          title="وش بعد؟"
+        />
+      )}
     </div>
   );
 }

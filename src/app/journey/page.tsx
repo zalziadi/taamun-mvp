@@ -4,6 +4,10 @@ import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { AWARENESS_STATES, type AwarenessState } from "@/lib/city-of-meaning";
+import DecisionCTA from "@/components/DecisionCTA";
+import IdentityReflectionCard from "@/components/IdentityReflectionCard";
+import NextStepPanel from "@/components/NextStepPanel";
+import { getNextStepOptions } from "@/lib/nextStep";
 
 type TimelineDay = {
   day: number;
@@ -69,6 +73,14 @@ export default function JourneyPage() {
   });
   const [cognitive, setCognitive] = useState<CognitivePayload>(null);
   const [prism, setPrism] = useState<PrismPayload>(null);
+  const [flowLockEnabled, setFlowLockEnabled] = useState(false);
+  const [decisionReason, setDecisionReason] = useState("");
+  const [identityReflection, setIdentityReflection] = useState<{
+    message: string;
+    before_state?: string;
+    after_state?: string;
+  } | null>(null);
+  const [currentDay, setCurrentDay] = useState(1);
 
   useEffect(() => {
     const load = async () => {
@@ -88,15 +100,23 @@ export default function JourneyPage() {
           if (data.cognitive) setCognitive(data.cognitive);
         }
 
-        // V5: Fetch Prism from current day API
+        // V5: Fetch Prism + V6: orchestrator state from current day API
         try {
           const progressRes = await fetch("/api/program/progress", { cache: "no-store" });
           const progressData = await progressRes.json();
-          const currentDay = progressData.current_day ?? 1;
-          const dayRes = await fetch(`/api/program/day/${currentDay}`, { cache: "no-store" });
+          const cd = progressData.current_day ?? 1;
+          setCurrentDay(cd);
+          const dayRes = await fetch(`/api/program/day/${cd}`, { cache: "no-store" });
           const dayData = await dayRes.json();
           if (dayData.orchestrator?.prism) {
             setPrism(dayData.orchestrator.prism);
+          }
+          if (dayData.orchestrator?.flowLock?.enabled) {
+            setFlowLockEnabled(true);
+            setDecisionReason(dayData.orchestrator.currentStep?.reason ?? "");
+          }
+          if (dayData.orchestrator?.identityReflection?.message) {
+            setIdentityReflection(dayData.orchestrator.identityReflection);
           }
         } catch {
           // Prism is optional
@@ -143,6 +163,19 @@ export default function JourneyPage() {
 
   return (
     <div className="mx-auto max-w-[1220px] space-y-6 px-4 py-8">
+      {/* V6: Decision CTA — banner when flow is locked */}
+      <DecisionCTA visible={flowLockEnabled} reason={decisionReason} variant="banner" />
+
+      {/* V6: Identity Reflection milestone */}
+      {identityReflection && (
+        <IdentityReflectionCard
+          message={identityReflection.message}
+          beforeState={identityReflection.before_state}
+          afterState={identityReflection.after_state}
+          variant="milestone"
+        />
+      )}
+
       <section className="relative overflow-hidden rounded-3xl border border-[#2c313c] bg-[#0b0f17] p-7 text-[#fdf3df] shadow-[0_16px_40px_rgba(8,8,12,0.55)]">
         <div className="pointer-events-none absolute -right-24 -top-20 h-64 w-64 rounded-full bg-[#d4a853]/10 blur-[90px]" />
         <p className="text-xs tracking-[0.3em] text-[#d4a853]">المرحلة الأولى</p>
@@ -359,6 +392,19 @@ export default function JourneyPage() {
           </div>
         </section>
       ) : null}
+
+      {/* V6: NextStepPanel — bridge journey → city/day (no dead ends) */}
+      {hasJourneyData && !flowLockEnabled && (
+        <NextStepPanel
+          actions={getNextStepOptions({
+            currentDay,
+            totalDays: TOTAL_DAYS,
+            hasReflections: true,
+            fromPage: "journey",
+          })}
+          title="وش بعد؟"
+        />
+      )}
     </div>
   );
 }
