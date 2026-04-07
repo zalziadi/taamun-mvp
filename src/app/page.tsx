@@ -225,6 +225,9 @@ export default function Home() {
           <Link href="/guide" className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-5 py-2.5 text-sm text-[#5f5648]">
             المرشد الذكي
           </Link>
+          <Link href="/decision" className="rounded-xl border border-[#c4a265] bg-[#f4ead7] px-5 py-2.5 text-sm font-semibold text-[#5a4531]">
+            وضع القرار
+          </Link>
         </div>
       </section>
 
