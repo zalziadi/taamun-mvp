@@ -22,6 +22,10 @@ type CognitivePayload = {
   engagement_score?: number;
   adjusted_awareness_avg?: number;
   identity_shift_history?: { date: string; engagementScore: number; trajectory: string }[];
+  // V3
+  identity_reflections?: { date: string; engagementScore: number; trajectory: string }[];
+  narrative_memory?: string[];
+  engagement_curve?: number;
 } | null;
 
 type AnalyticsPayload = {
@@ -156,6 +160,21 @@ export default function JourneyPage() {
                     : "البداية"
                 }
               />
+            </div>
+          )}
+
+          {/* V3: Narrative Memory */}
+          {cognitive?.narrative_memory && cognitive.narrative_memory.length > 0 && (
+            <div className="rounded-2xl border border-[#d4a853]/30 bg-[#0f1623] p-4">
+              <h3 className="text-xs tracking-[0.2em] text-[#d4a853] mb-3">قصة رحلتك</h3>
+              <div className="space-y-2">
+                {cognitive.narrative_memory.map((sentence, i) => (
+                  <p key={i} className="text-sm leading-relaxed text-[#fdf3df] flex items-start gap-2">
+                    <span className="text-[#d4a853] mt-0.5">◆</span>
+                    <span>{sentence}</span>
+                  </p>
+                ))}
+              </div>
             </div>
           )}
 

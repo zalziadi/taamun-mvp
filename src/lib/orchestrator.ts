@@ -26,6 +26,12 @@ import { predictDecisionNeedDetailed, type PredictionResult } from "./patterns/p
 import { detectTone, applyTone, type ToneType } from "./tone";
 import { updateIdentityState, type IdentityUpdateResult } from "./identity/update";
 
+// V3 imports — Identity Reflection + Narrative Memory + Adaptive Pressure
+import { buildIdentityReflection, type IdentityReflection } from "./identity/reflection";
+import { buildNarrativeMemory, type NarrativeMemoryDay } from "./narrative/memory";
+import { buildAnticipation, type Anticipation } from "./engagement/anticipation";
+import { detectPressure, classifyPressure, buildPressureCTA, type PressureLevel } from "./tone/pressure";
+
 // ── Types ──
 
 export type StepType = "ritual" | "today" | "progress" | "city" | "decision";
@@ -56,6 +62,16 @@ export interface OrchestratorState {
   tone?: ToneType;
   // V2: Identity update from current action
   identityUpdate?: IdentityUpdateResult;
+  // V3: Identity reflection — "you are now X instead of Y"
+  identityReflection?: IdentityReflection;
+  // V3: Narrative memory — continuous story across days
+  narrativeMemory?: string[];
+  // V3: Anticipation — what's coming next
+  anticipation?: Anticipation;
+  // V3: Adaptive pressure level (0-1) + classification + CTA
+  pressureLevel?: number;
+  pressureClass?: PressureLevel;
+  pressureCTA?: string;
 }
 
 export interface OrchestratorInputs {
@@ -79,6 +95,11 @@ export interface OrchestratorInputs {
   // User-driven
   userRequestedHelp?: boolean;
   inlineDecisionInput?: DecisionInput | null;
+
+  // V3: Narrative timeline (last N days)
+  narrativeTimeline?: NarrativeMemoryDay[];
+  // V3: Resistance signal (0-1) from journey state
+  resistanceLevel?: number;
 }
 
 // ── Trigger Detection ──
@@ -358,10 +379,51 @@ export function buildOrchestrator(inputs: OrchestratorInputs): OrchestratorState
     city: "reflection",
   };
   const intensity = currentStep.priority >= 100 ? 0.9 : currentStep.priority >= 50 ? 0.6 : 0.3;
-  const identityUpdate = updateIdentityState({
-    action: actionMap[currentStep.type],
-    intensity,
+  const action = actionMap[currentStep.type];
+  const identityUpdate = updateIdentityState({ action, intensity });
+
+  // V3: Identity Reflection — "you are now X instead of Y"
+  const identityReflection = buildIdentityReflection({
+    action,
+    identityShift: identityUpdate.identity_shift,
   });
+
+  // V3: Narrative Memory — continuous story
+  const narrativeMemory = inputs.narrativeTimeline && inputs.narrativeTimeline.length > 0
+    ? buildNarrativeMemory({ lastDays: inputs.narrativeTimeline })
+    : [];
+
+  // V3: Anticipation Loop — what's coming next
+  const anticipation = buildAnticipation({
+    streak: inputs.progress.streak,
+    momentum: inputs.progress.momentum,
+  });
+
+  // V3: Adaptive Pressure
+  const resistance = inputs.resistanceLevel ?? (
+    inputs.journey.emotionalState === "resistant" ? 0.8 :
+    inputs.journey.emotionalState === "lost" ? 0.6 :
+    inputs.progress.drift > 5 ? 0.5 : 0.2
+  );
+  const pressureLevel = detectPressure({
+    resistance,
+    momentum: inputs.progress.momentum,
+    commitment: inputs.context?.commitmentScore ?? 100,
+  });
+  const pressureClass = classifyPressure(pressureLevel);
+  const pressureCTA = buildPressureCTA(pressureLevel);
+
+  // V3: Inject reflection + anticipation + pressure into decision step data
+  if (currentStep.type === "decision") {
+    currentStep.data = {
+      ...currentStep.data,
+      reflection: identityReflection,
+      anticipation,
+      pressureLevel,
+      pressureClass,
+      pressureCTA,
+    };
+  }
 
   return {
     currentStep,
@@ -370,6 +432,12 @@ export function buildOrchestrator(inputs: OrchestratorInputs): OrchestratorState
     flowLock,
     tone,
     identityUpdate,
+    identityReflection,
+    narrativeMemory,
+    anticipation,
+    pressureLevel,
+    pressureClass,
+    pressureCTA,
   };
 }
 

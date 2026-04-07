@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/authz";
 import { readUserProgress } from "@/lib/progressStore";
 import { buildProgressState } from "@/lib/progressEngine";
 import { loadAndBuildIdentity } from "@/lib/identityTracker";
+import { buildNarrativeMemory } from "@/lib/narrative/memory";
 
 export const dynamic = "force-dynamic";
 
@@ -114,6 +115,28 @@ export async function GET() {
       const trajectoryBoost = recentShifts.filter((s) => s.trajectory === "improving").length / Math.max(1, recentShifts.length);
       const adjustedAvg = metrics.awareness_avg * (1 + trajectoryBoost * 0.2);
 
+      // V3: Build narrative memory from timeline
+      const narrativeDays = timeline
+        .filter((t) => t.completed && t.awareness_state)
+        .map((t) => ({
+          day: t.day,
+          state: t.awareness_state ?? "shadow",
+        }));
+      const narrativeMemory = narrativeDays.length > 0
+        ? buildNarrativeMemory({ lastDays: narrativeDays })
+        : [];
+
+      // V3: Engagement curve — smoothed engagement score over time
+      const engagementCurve = identityShiftHistory.length > 0
+        ? Number((
+            identityShiftHistory.reduce((sum, s) => sum + s.engagementScore, 0) /
+            identityShiftHistory.length
+          ).toFixed(2))
+        : identity.engagementScore;
+
+      // V3: Identity reflections — last 5 snapshots
+      const identityReflections = identityShiftHistory.slice(-5);
+
       cognitive = {
         momentum: state.momentum,
         emotional_drift: state.emotionalDrift,
@@ -124,6 +147,10 @@ export async function GET() {
         engagement_score: identity.engagementScore,
         identity_shift_history: identityShiftHistory,
         adjusted_awareness_avg: Number(adjustedAvg.toFixed(2)),
+        // V3 additions
+        identity_reflections: identityReflections,
+        narrative_memory: narrativeMemory,
+        engagement_curve: engagementCurve,
       };
     }
   } catch {

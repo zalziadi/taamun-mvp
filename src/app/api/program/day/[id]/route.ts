@@ -186,7 +186,14 @@ export async function GET(_: Request, { params }: Params) {
       }));
     } catch {}
 
-    // Build orchestrator — the unified journey decision
+    // V3: Build narrative timeline from recent reflections + awareness state
+    const narrativeTimeline = recentRefs.slice(0, 7).map((r: any) => ({
+      day: r.day,
+      state: r.awareness_state ?? "shadow",
+      keyEvent: r.note ? String(r.note).slice(0, 60) : undefined,
+    }));
+
+    // Build orchestrator — V3 unified journey decision
     orchestrator = buildOrchestrator({
       progress: progressState,
       journey: journeyState,
@@ -199,6 +206,7 @@ export async function GET(_: Request, { params }: Params) {
       reflectionCount: recentRefs.length,
       ritualSeenToday: false,
       recentDecisions,
+      narrativeTimeline,
     });
   } catch {
     // Guidance generation is optional

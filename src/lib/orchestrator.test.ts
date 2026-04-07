@@ -303,6 +303,92 @@ describe("orchestrator V2 — identity update", () => {
   });
 });
 
+describe("orchestrator V3 — identity reflection", () => {
+  it("returns identity reflection in state", () => {
+    const result = buildOrchestrator(makeInputs());
+    expect(result.identityReflection).toBeDefined();
+    expect(result.identityReflection?.message).toBeTruthy();
+    expect(result.identityReflection?.before_state).toBeTruthy();
+    expect(result.identityReflection?.after_state).toBeTruthy();
+  });
+
+  it("reflection message scales with action intensity", () => {
+    const decisionResult = buildOrchestrator(makeInputs({
+      ritualSeenToday: true,
+      userRequestedHelp: true,
+    }));
+    const todayResult = buildOrchestrator(makeInputs({ ritualSeenToday: true }));
+    // Decision shift should be higher than today (reflection action)
+    expect(decisionResult.identityUpdate!.identity_shift).toBeGreaterThanOrEqual(
+      todayResult.identityUpdate!.identity_shift
+    );
+  });
+});
+
+describe("orchestrator V3 — narrative memory", () => {
+  it("returns narrative memory when timeline provided", () => {
+    const result = buildOrchestrator(makeInputs({
+      narrativeTimeline: [
+        { day: 1, state: "shadow" },
+        { day: 3, state: "gift" },
+        { day: 5, state: "best_possibility" },
+      ],
+    }));
+    expect(result.narrativeMemory).toBeDefined();
+    expect(result.narrativeMemory!.length).toBeGreaterThan(0);
+  });
+
+  it("returns empty array when no timeline", () => {
+    const result = buildOrchestrator(makeInputs());
+    expect(result.narrativeMemory).toEqual([]);
+  });
+});
+
+describe("orchestrator V3 — anticipation", () => {
+  it("returns anticipation hint + progress", () => {
+    const result = buildOrchestrator(makeInputs({
+      progress: makeProgress({ streak: 5 }),
+    }));
+    expect(result.anticipation).toBeDefined();
+    expect(result.anticipation?.hint).toBeTruthy();
+    expect(result.anticipation?.progress).toBeGreaterThan(0);
+    expect(result.anticipation?.nextMilestone).toBeGreaterThan(0);
+  });
+});
+
+describe("orchestrator V3 — adaptive pressure", () => {
+  it("returns pressure level + class + CTA", () => {
+    const result = buildOrchestrator(makeInputs());
+    expect(result.pressureLevel).toBeGreaterThanOrEqual(0);
+    expect(result.pressureLevel).toBeLessThanOrEqual(1);
+    expect(result.pressureClass).toBeDefined();
+    expect(result.pressureCTA).toBeTruthy();
+  });
+
+  it("lower pressure when user is resistant", () => {
+    const resistant = buildOrchestrator(makeInputs({
+      journey: makeJourney({ emotionalState: "resistant" }),
+    }));
+    const engaged = buildOrchestrator(makeInputs({
+      journey: makeJourney({ emotionalState: "engaged", riskLevel: "low" }),
+      progress: makeProgress({ momentum: 7 }),
+    }));
+    expect(resistant.pressureLevel!).toBeLessThan(engaged.pressureLevel!);
+  });
+
+  it("decision step receives pressure data inline", () => {
+    const result = buildOrchestrator(makeInputs({
+      ritualSeenToday: true,
+      userRequestedHelp: true,
+    }));
+    expect(result.currentStep.type).toBe("decision");
+    expect(result.currentStep.data.pressureLevel).toBeDefined();
+    expect(result.currentStep.data.pressureCTA).toBeTruthy();
+    expect(result.currentStep.data.reflection).toBeDefined();
+    expect(result.currentStep.data.anticipation).toBeDefined();
+  });
+});
+
 describe("boostZonesAfterDecision", () => {
   it("boosts power and action zones", () => {
     const city: CityMap = {
