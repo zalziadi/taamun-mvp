@@ -16,6 +16,7 @@ import { generateAction } from "@/lib/actionGenerator";
 import { buildOrchestrator, boostZonesAfterDecision, DECISION_MICRO_REWARD } from "@/lib/orchestrator";
 import { normalizeUserModel, type UserModel } from "@/lib/adaptive/model";
 import { updateUserModelDetailed } from "@/lib/adaptive/learn";
+import { runPrism } from "@/lib/prism/engine";
 
 export const dynamic = "force-dynamic";
 
@@ -209,6 +210,27 @@ export async function GET(_: Request, { params }: Params) {
       userModel = normalizeUserModel(null);
     }
 
+    // V5: Prism Engine — transforms raw data into experience profile
+    // Runs BEFORE orchestrator and produces hints + direction
+    const prismOutput = runPrism({
+      user: { id: auth.user.id },
+      adaptiveModel: userModel,
+      behaviorSignals: {
+        userRequestedHelp: false,
+        completionTime: 60,
+        quickActions: progressState.streak,
+        deepEngagement: identity.reflectionDepth === "deep",
+        requestedDepth: false,
+      },
+      journeyState,
+      context: {
+        progress: progressState,
+        cognitive,
+        patterns,
+        reflectionCount: recentRefs.length,
+      },
+    });
+
     // Build orchestrator — V4 unified journey decision (with adaptive model)
     orchestrator = buildOrchestrator({
       progress: progressState,
@@ -225,6 +247,11 @@ export async function GET(_: Request, { params }: Params) {
       narrativeTimeline,
       userModel,
     });
+
+    // V5: Attach Prism output as a separate experience layer
+    if (orchestrator) {
+      (orchestrator as any).prism = prismOutput;
+    }
 
     // V4: Persist updated user model after each request (best-effort)
     // Learning signals derived from current state
