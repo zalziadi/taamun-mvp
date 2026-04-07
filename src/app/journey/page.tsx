@@ -28,6 +28,19 @@ type CognitivePayload = {
   engagement_curve?: number;
 } | null;
 
+type PrismPayload = {
+  experienceProfile?: {
+    mode?: string;
+    tone?: string;
+    pressureLevel?: number;
+    depthMode?: string;
+    energyState?: string;
+  };
+  primaryDirection?: { type?: string; reason?: string };
+  experienceSignals?: { userState?: string; dominantPattern?: string; recommendedFlow?: string };
+  orchestratorHint?: { lockFlow?: boolean; lockReason?: string };
+} | null;
+
 type AnalyticsPayload = {
   ok?: boolean;
   metrics?: {
@@ -55,6 +68,7 @@ export default function JourneyPage() {
     awareness_entries: 0,
   });
   const [cognitive, setCognitive] = useState<CognitivePayload>(null);
+  const [prism, setPrism] = useState<PrismPayload>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -72,6 +86,20 @@ export default function JourneyPage() {
           setTimeline(data.timeline ?? []);
           if (data.metrics) setMetrics(data.metrics);
           if (data.cognitive) setCognitive(data.cognitive);
+        }
+
+        // V5: Fetch Prism from current day API
+        try {
+          const progressRes = await fetch("/api/program/progress", { cache: "no-store" });
+          const progressData = await progressRes.json();
+          const currentDay = progressData.current_day ?? 1;
+          const dayRes = await fetch(`/api/program/day/${currentDay}`, { cache: "no-store" });
+          const dayData = await dayRes.json();
+          if (dayData.orchestrator?.prism) {
+            setPrism(dayData.orchestrator.prism);
+          }
+        } catch {
+          // Prism is optional
         }
       } finally {
         setLoading(false);
@@ -160,6 +188,58 @@ export default function JourneyPage() {
                     : "البداية"
                 }
               />
+            </div>
+          )}
+
+          {/* V5: Prism Experience Profile */}
+          {prism?.experienceProfile && (
+            <div className="rounded-2xl border border-[#d4a853]/40 bg-gradient-to-b from-[#1a1410] to-[#0f1623] p-4 space-y-3">
+              <div className="flex items-center justify-between">
+                <h3 className="text-xs tracking-[0.2em] text-[#d4a853]">تجربتك الآن</h3>
+                {prism.orchestratorHint?.lockFlow && (
+                  <span className="rounded-full border border-[#d4a853]/40 bg-[#d4a853]/10 px-2 py-0.5 text-[10px] text-[#d4a853]">
+                    🔒 تركيز
+                  </span>
+                )}
+              </div>
+              <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
+                <div className="rounded-lg border border-[#3b4252] bg-[#0b111c]/60 p-2 text-center">
+                  <p className="text-[10px] text-[#9aa4b8]">الوضع</p>
+                  <p className="mt-0.5 text-xs font-semibold text-[#fdf3df]">
+                    {prism.experienceProfile.mode === "decide" ? "قرار" :
+                     prism.experienceProfile.mode === "focus" ? "تركيز" :
+                     prism.experienceProfile.mode === "reflect" ? "تأمل" :
+                     prism.experienceProfile.mode === "expand" ? "توسّع" : "استكشاف"}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-[#3b4252] bg-[#0b111c]/60 p-2 text-center">
+                  <p className="text-[10px] text-[#9aa4b8]">النبرة</p>
+                  <p className="mt-0.5 text-xs font-semibold text-[#fdf3df]">
+                    {prism.experienceProfile.tone === "soft" ? "لطيفة" :
+                     prism.experienceProfile.tone === "firm" ? "حازمة" :
+                     prism.experienceProfile.tone === "intense" ? "قوية" : "هادئة"}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-[#3b4252] bg-[#0b111c]/60 p-2 text-center">
+                  <p className="text-[10px] text-[#9aa4b8]">العمق</p>
+                  <p className="mt-0.5 text-xs font-semibold text-[#fdf3df]">
+                    {prism.experienceProfile.depthMode === "deep" ? "عميق" :
+                     prism.experienceProfile.depthMode === "short" ? "قصير" : "متوسط"}
+                  </p>
+                </div>
+                <div className="rounded-lg border border-[#3b4252] bg-[#0b111c]/60 p-2 text-center">
+                  <p className="text-[10px] text-[#9aa4b8]">الطاقة</p>
+                  <p className="mt-0.5 text-xs font-semibold text-[#fdf3df]">
+                    {prism.experienceProfile.energyState === "high" ? "↑ عالية" :
+                     prism.experienceProfile.energyState === "low" ? "↓ منخفضة" : "↔ متوسطة"}
+                  </p>
+                </div>
+              </div>
+              {prism.primaryDirection?.reason && (
+                <p className="text-xs text-[#d2c5b2] leading-relaxed">
+                  <span className="text-[#d4a853]">→</span> {prism.primaryDirection.reason}
+                </p>
+              )}
             </div>
           )}
 

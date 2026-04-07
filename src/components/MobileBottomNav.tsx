@@ -90,9 +90,9 @@ export function MobileBottomNav({ ramadanClosed: _unused }: { ramadanClosed: boo
   const items: NavItem[] = [
     { href: "/", label: "الرئيسية", icon: "home", activeWhen: (p) => p === "/" },
     { href: "/program", label: "البرنامج", icon: "program", activeWhen: (p) => p.startsWith("/program") },
+    { href: "/city", label: "المدينة", icon: "city", activeWhen: (p) => p.startsWith("/city") },
     { href: "/journey", label: "الرحلة", icon: "journey", activeWhen: (p) => p.startsWith("/journey") },
     { href: "/reflection", label: "التأمل", icon: "reflection", activeWhen: (p) => p.startsWith("/reflection") },
-    { href: "/tasbeeh", label: "المسبحة", icon: "tasbeeh" as const, activeWhen: (p: string) => p.startsWith("/tasbeeh") },
     { href: "/account", label: "كهفي", icon: "account", activeWhen: (p) => p.startsWith("/account") },
   ];
 
