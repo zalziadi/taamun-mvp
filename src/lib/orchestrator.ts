@@ -30,7 +30,7 @@ import { updateIdentityState, type IdentityUpdateResult } from "./identity/updat
 import { buildIdentityReflection, type IdentityReflection } from "./identity/reflection";
 import { buildNarrativeMemory, type NarrativeMemoryDay } from "./narrative/memory";
 import { buildAnticipation, type Anticipation } from "./engagement/anticipation";
-import { detectPressure, classifyPressure, buildPressureCTA, type PressureLevel } from "./tone/pressure";
+import { detectPressure, classifyPressure, classifyPressureSimple, buildPressureCTA, type PressureLevel, type PressureClassSimple } from "./tone/pressure";
 
 // V4 imports — Adaptive Intelligence Layer
 import { type UserModel, normalizeUserModel, DEFAULT_USER_MODEL } from "./adaptive/model";
@@ -74,6 +74,7 @@ export interface OrchestratorState {
   // V3: Adaptive pressure level (0-1) + classification + CTA
   pressureLevel?: number;
   pressureClass?: PressureLevel;
+  pressureClassSimple?: PressureClassSimple;  // V4: 3-class system per spec
   pressureCTA?: string;
 
   // V4: Adaptive intelligence layer
@@ -184,6 +185,24 @@ function shouldTriggerDecision(inputs: OrchestratorInputs): TriggerResult {
     return {
       trigger: true,
       reason: "الالتزام في انخفاض — قرار واحد قد يعيد الزخم",
+      triggerType: "reactive",
+    };
+  }
+
+  // V4 spec: 5. High resistance from user model
+  if (userModel.resistanceLevel > 0.7) {
+    return {
+      trigger: true,
+      reason: "النظام يلاحظ مقاومة متراكمة — قرار صغير قد يكسر الجمود",
+      triggerType: "reactive",
+    };
+  }
+
+  // V4 spec: 6. Low consistency (< 0.3) with at least 3 days of activity
+  if (userModel.consistencyScore < 0.3 && inputs.progress.completedDays.length >= 3) {
+    return {
+      trigger: true,
+      reason: "الاستمرارية ضعيفة — وقت قرار يعيد التوازن",
       triggerType: "reactive",
     };
   }
@@ -436,14 +455,18 @@ export function buildOrchestrator(inputs: OrchestratorInputs): OrchestratorState
     momentum: inputs.progress.momentum,
     commitment: inputs.context?.commitmentScore ?? 100,
   });
-  // V4: Apply user pressure sensitivity
-  // High sensitivity → reduce pressure (gentle for sensitive user)
+  // V4 spec formula: pressureLevel = basePressure * (1 - resistanceLevel) * (1 - sensitivity)
+  // resistance is already in basePressure via detectPressure, so we apply
+  // additional user-level resistance damping + full sensitivity damping
+  const userResistanceDamping = 1 - userModel.resistanceLevel * 0.4;
+  const userSensitivityDamping = 1 - userModel.pressureSensitivity * 0.6;
   const adjustedPressure = Math.max(
     0,
-    Math.min(1, basePressure * (1 - userModel.pressureSensitivity * 0.5))
+    Math.min(1, basePressure * userResistanceDamping * userSensitivityDamping)
   );
   const pressureLevel = Math.round(adjustedPressure * 100) / 100;
   const pressureClass = classifyPressure(pressureLevel);
+  const pressureClassSimple = classifyPressureSimple(pressureLevel);
   const pressureCTA = buildPressureCTA(pressureLevel);
 
   // V4: Adaptive anticipation — boost milestone for consistent users
@@ -466,9 +489,27 @@ export function buildOrchestrator(inputs: OrchestratorInputs): OrchestratorState
       anticipation: adaptedAnticipation,
       pressureLevel,
       pressureClass,
+      pressureClassSimple,
       pressureCTA,
       depthMode,
     };
+  }
+
+  // V4 spec section 6: Auto-boost city when 3+ reflections OR signal = emerging+
+  let boostedCity = inputs.city;
+  if (boostedCity) {
+    const hasEnoughReflections = inputs.reflectionCount >= 3;
+    const hasEmergingSignal =
+      inputs.identity?.transformationSignal === "emerging" ||
+      inputs.identity?.transformationSignal === "deepening" ||
+      inputs.identity?.transformationSignal === "integrated";
+
+    if (hasEnoughReflections || hasEmergingSignal) {
+      boostedCity = boostZonesAfterDecision(boostedCity);
+      // Reflect boosted city back into the city step data
+      const cityStep = steps.find((s) => s.type === "city");
+      if (cityStep) cityStep.data = boostedCity;
+    }
   }
 
   return {
@@ -483,6 +524,7 @@ export function buildOrchestrator(inputs: OrchestratorInputs): OrchestratorState
     anticipation: adaptedAnticipation,
     pressureLevel,
     pressureClass,
+    pressureClassSimple,
     pressureCTA,
     // V4: Adaptive layer
     adaptive: {

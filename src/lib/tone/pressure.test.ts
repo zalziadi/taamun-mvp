@@ -1,5 +1,5 @@
 import { describe, it, expect } from "vitest";
-import { detectPressure, classifyPressure, buildPressureCTA, applyPressureToMessage } from "./pressure";
+import { detectPressure, classifyPressure, classifyPressureSimple, buildPressureCTA, applyPressureToMessage } from "./pressure";
 
 describe("detectPressure", () => {
   it("returns baseline 0.5 for neutral state", () => {
@@ -41,6 +41,17 @@ describe("classifyPressure", () => {
     expect(classifyPressure(0.5)).toBe("moderate");
     expect(classifyPressure(0.7)).toBe("firm");
     expect(classifyPressure(0.9)).toBe("urgent");
+  });
+});
+
+describe("classifyPressureSimple (V4 spec)", () => {
+  it("classifies in 3 buckets per V4 spec", () => {
+    expect(classifyPressureSimple(0.1)).toBe("soft");
+    expect(classifyPressureSimple(0.29)).toBe("soft");
+    expect(classifyPressureSimple(0.3)).toBe("medium");
+    expect(classifyPressureSimple(0.5)).toBe("medium");
+    expect(classifyPressureSimple(0.6)).toBe("strong");
+    expect(classifyPressureSimple(0.95)).toBe("strong");
   });
 });
 

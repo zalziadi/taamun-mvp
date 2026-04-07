@@ -46,12 +46,25 @@ export function detectPressure(input: PressureInput): number {
 
 export type PressureLevel = "gentle" | "soft" | "moderate" | "firm" | "urgent";
 
+// V4 spec: simplified 3-class system
+export type PressureClassSimple = "soft" | "medium" | "strong";
+
 export function classifyPressure(pressure: number): PressureLevel {
   if (pressure < 0.2) return "gentle";
   if (pressure < 0.4) return "soft";
   if (pressure < 0.6) return "moderate";
   if (pressure < 0.8) return "firm";
   return "urgent";
+}
+
+// V4 spec: 3-class mapping
+// 0.0–0.3 → soft
+// 0.3–0.6 → medium
+// 0.6–1.0 → strong
+export function classifyPressureSimple(pressure: number): PressureClassSimple {
+  if (pressure < 0.3) return "soft";
+  if (pressure < 0.6) return "medium";
+  return "strong";
 }
 
 // ── Pressure-aware CTA text ──

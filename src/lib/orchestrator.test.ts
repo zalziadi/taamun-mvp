@@ -389,6 +389,150 @@ describe("orchestrator V3 — adaptive pressure", () => {
   });
 });
 
+describe("orchestrator V4 spec — refined decision triggers", () => {
+  it("triggers decision when resistance > 0.7", () => {
+    const result = buildOrchestrator(makeInputs({
+      ritualSeenToday: true,
+      userModel: {
+        decisionThreshold: 0.7,
+        pressureSensitivity: 0.5,
+        reflectionDepthPreference: 0.5,
+        consistencyScore: 0.5,
+        resistanceLevel: 0.85,
+      },
+    }));
+    expect(result.currentStep.type).toBe("decision");
+  });
+
+  it("triggers decision when consistency < 0.3 AND 3+ days completed", () => {
+    const result = buildOrchestrator(makeInputs({
+      ritualSeenToday: true,
+      progress: makeProgress({ completedDays: [1, 2, 3, 4] }),
+      userModel: {
+        decisionThreshold: 0.7,
+        pressureSensitivity: 0.5,
+        reflectionDepthPreference: 0.5,
+        consistencyScore: 0.2,
+        resistanceLevel: 0.5,
+      },
+    }));
+    expect(result.currentStep.type).toBe("decision");
+  });
+
+  it("does NOT trigger decision when consistency low but < 3 days", () => {
+    const result = buildOrchestrator(makeInputs({
+      ritualSeenToday: true,
+      progress: makeProgress({ completedDays: [1] }),
+      userModel: {
+        decisionThreshold: 0.7,
+        pressureSensitivity: 0.5,
+        reflectionDepthPreference: 0.5,
+        consistencyScore: 0.2,
+        resistanceLevel: 0.5,
+      },
+    }));
+    expect(result.currentStep.type).not.toBe("decision");
+  });
+});
+
+describe("orchestrator V4 spec — pressureClassSimple", () => {
+  it("returns 3-class simple pressure value", () => {
+    const result = buildOrchestrator(makeInputs());
+    expect(["soft", "medium", "strong"]).toContain(result.pressureClassSimple);
+  });
+
+  it("decision step receives pressureClassSimple", () => {
+    const result = buildOrchestrator(makeInputs({
+      ritualSeenToday: true,
+      userRequestedHelp: true,
+    }));
+    expect(["soft", "medium", "strong"]).toContain(result.currentStep.data.pressureClassSimple);
+  });
+});
+
+describe("orchestrator V4 spec — pressure formula", () => {
+  it("damps pressure with high resistance + sensitivity", () => {
+    const heavy = buildOrchestrator(makeInputs({
+      userModel: {
+        decisionThreshold: 0.7,
+        pressureSensitivity: 1,
+        reflectionDepthPreference: 0.5,
+        consistencyScore: 0.5,
+        resistanceLevel: 1,
+      },
+    }));
+    const baseline = buildOrchestrator(makeInputs({
+      userModel: {
+        decisionThreshold: 0.7,
+        pressureSensitivity: 0,
+        reflectionDepthPreference: 0.5,
+        consistencyScore: 0.5,
+        resistanceLevel: 0,
+      },
+    }));
+    expect(heavy.pressureLevel!).toBeLessThan(baseline.pressureLevel!);
+  });
+});
+
+describe("orchestrator V4 spec — auto city boost", () => {
+  it("boosts city power+action zones when reflectionCount >= 3", () => {
+    const city: CityMap = {
+      zones: [
+        { id: "power", name: "power", state: "growing", signal: "test", energy: 30 },
+        { id: "action", name: "action", state: "growing", signal: "test", energy: 30 },
+      ],
+      dominantZone: null,
+      weakestZone: null,
+    };
+    const result = buildOrchestrator(makeInputs({
+      reflectionCount: 5,
+      city,
+    }));
+    const cityStep = result.steps.find((s) => s.type === "city");
+    const power = cityStep?.data?.zones?.find((z: any) => z.id === "power");
+    const action = cityStep?.data?.zones?.find((z: any) => z.id === "action");
+    expect(power?.energy).toBe(45);
+    expect(action?.energy).toBe(45);
+  });
+
+  it("boosts city when transformationSignal is emerging+", () => {
+    const city: CityMap = {
+      zones: [
+        { id: "power", name: "power", state: "weak", signal: "test", energy: 20 },
+        { id: "action", name: "action", state: "weak", signal: "test", energy: 20 },
+      ],
+      dominantZone: null,
+      weakestZone: null,
+    };
+    const result = buildOrchestrator(makeInputs({
+      reflectionCount: 0,
+      city,
+      identity: makeIdentity({ transformationSignal: "deepening" }),
+    }));
+    const cityStep = result.steps.find((s) => s.type === "city");
+    const power = cityStep?.data?.zones?.find((z: any) => z.id === "power");
+    expect(power?.energy).toBe(35);
+  });
+
+  it("does NOT boost when conditions not met", () => {
+    const city: CityMap = {
+      zones: [
+        { id: "power", name: "power", state: "weak", signal: "test", energy: 20 },
+      ],
+      dominantZone: null,
+      weakestZone: null,
+    };
+    const result = buildOrchestrator(makeInputs({
+      reflectionCount: 0,
+      city,
+      identity: makeIdentity({ transformationSignal: "early" }),
+    }));
+    const cityStep = result.steps.find((s) => s.type === "city");
+    const power = cityStep?.data?.zones?.find((z: any) => z.id === "power");
+    expect(power?.energy).toBe(20); // unchanged
+  });
+});
+
 describe("orchestrator V4 — adaptive layer", () => {
   it("returns adaptive block in state", () => {
     const result = buildOrchestrator(makeInputs());
