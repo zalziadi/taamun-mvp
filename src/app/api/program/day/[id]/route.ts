@@ -13,6 +13,7 @@ import { loadAndBuildIdentity } from "@/lib/identityTracker";
 import { buildCityMap } from "@/lib/cityEngine";
 import { buildDailyRitual } from "@/lib/ritualEngine";
 import { generateAction } from "@/lib/actionGenerator";
+import { buildOrchestrator, boostZonesAfterDecision, DECISION_MICRO_REWARD } from "@/lib/orchestrator";
 
 export const dynamic = "force-dynamic";
 
@@ -75,11 +76,12 @@ export async function GET(_: Request, { params }: Params) {
     { completedCount: progress.completedDays.length, drift }
   );
 
-  // Build guidance + personality + micro-rewards + city + ritual
+  // Build guidance + personality + micro-rewards + city + ritual + orchestrator
   let guidance = null;
   let microReward = null;
   let city = null;
   let ritual = null;
+  let orchestrator = null;
   try {
     const { data: profile } = await auth.supabase
       .from("profiles")
@@ -166,6 +168,38 @@ export async function GET(_: Request, { params }: Params) {
       actionsCompleted: identity.daysWithReflection,
       actionEffectiveness: 5,
     });
+
+    // Get recent decisions for orchestrator health check
+    let recentDecisions: { decision: string; goal: string; date: string }[] = [];
+    try {
+      const { data: actions } = await auth.supabase
+        .from("cognitive_actions")
+        .select("label, description, created_at")
+        .eq("user_id", auth.user.id)
+        .eq("type", "decision")
+        .order("created_at", { ascending: false })
+        .limit(10);
+      recentDecisions = (actions ?? []).map((a: any) => ({
+        decision: String(a.label ?? ""),
+        goal: String(a.description ?? "").slice(0, 80),
+        date: String(a.created_at ?? ""),
+      }));
+    } catch {}
+
+    // Build orchestrator — the unified journey decision
+    orchestrator = buildOrchestrator({
+      progress: progressState,
+      journey: journeyState,
+      context: cognitive,
+      guidance,
+      identity,
+      ritual,
+      city,
+      patterns,
+      reflectionCount: recentRefs.length,
+      ritualSeenToday: false,
+      recentDecisions,
+    });
   } catch {
     // Guidance generation is optional
   }
@@ -205,5 +239,6 @@ export async function GET(_: Request, { params }: Params) {
     ritual,
     micro_reward: microReward,
     city,
+    orchestrator,
   });
 }
