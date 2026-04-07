@@ -12,6 +12,18 @@ type TimelineDay = {
   awareness_score: number | null;
 };
 
+type CognitivePayload = {
+  momentum?: number;
+  emotional_drift?: string;
+  mode?: string;
+  streak?: number;
+  trajectory?: string;
+  transformation_signal?: string;
+  engagement_score?: number;
+  adjusted_awareness_avg?: number;
+  identity_shift_history?: { date: string; engagementScore: number; trajectory: string }[];
+} | null;
+
 type AnalyticsPayload = {
   ok?: boolean;
   metrics?: {
@@ -22,6 +34,7 @@ type AnalyticsPayload = {
     awareness_entries: number;
   };
   timeline?: TimelineDay[];
+  cognitive?: CognitivePayload;
 };
 
 const TOTAL_DAYS = 28;
@@ -37,6 +50,7 @@ export default function JourneyPage() {
     awareness_avg: 0,
     awareness_entries: 0,
   });
+  const [cognitive, setCognitive] = useState<CognitivePayload>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -53,6 +67,7 @@ export default function JourneyPage() {
         if (res.ok && data.ok !== false) {
           setTimeline(data.timeline ?? []);
           if (data.metrics) setMetrics(data.metrics);
+          if (data.cognitive) setCognitive(data.cognitive);
         }
       } finally {
         setLoading(false);
@@ -113,6 +128,36 @@ export default function JourneyPage() {
             <MetricCard label="متوسط الوعي" value={metrics.awareness_avg || "—"} />
             <MetricCard label="إدخالات الوعي" value={metrics.awareness_entries} />
           </div>
+
+          {/* V2: Cognitive metrics */}
+          {cognitive && (
+            <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-4">
+              <MetricCard label="الزخم" value={cognitive.momentum ?? 0} />
+              <MetricCard label="الاستمرارية" value={`${cognitive.streak ?? 0} يوم`} />
+              <MetricCard
+                label="المسار"
+                value={
+                  cognitive.trajectory === "improving"
+                    ? "↗ يتحسّن"
+                    : cognitive.trajectory === "declining"
+                    ? "↘ يتراجع"
+                    : "↔ متغيّر"
+                }
+              />
+              <MetricCard
+                label="إشارة التحوّل"
+                value={
+                  cognitive.transformation_signal === "integrated"
+                    ? "متكامل"
+                    : cognitive.transformation_signal === "deepening"
+                    ? "يتعمّق"
+                    : cognitive.transformation_signal === "emerging"
+                    ? "يظهر"
+                    : "البداية"
+                }
+              />
+            </div>
+          )}
 
           <div className="rounded-2xl border border-[#343947] bg-[#0b111c] p-3">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-3">

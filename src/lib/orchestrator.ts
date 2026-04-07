@@ -20,9 +20,22 @@ import type { UserIdentity } from "./identityTracker";
 import type { Pattern } from "./reflectionLinker";
 import { runDecisionPipeline, checkDecisionHealth, type Decision, type DecisionInput } from "./decisionEngine";
 
+// V2 imports — Consciousness Engine
+import { buildJustification, type Justification } from "./decision/justification";
+import { predictDecisionNeedDetailed, type PredictionResult } from "./patterns/predict";
+import { detectTone, applyTone, type ToneType } from "./tone";
+import { updateIdentityState, type IdentityUpdateResult } from "./identity/update";
+
 // ── Types ──
 
 export type StepType = "ritual" | "today" | "progress" | "city" | "decision";
+
+export type DecisionTriggerType = "reactive" | "predictive";
+
+export interface FlowLock {
+  enabled: boolean;
+  reason: string;
+}
 
 export interface OrchestratorStep {
   type: StepType;
@@ -37,6 +50,12 @@ export interface OrchestratorState {
   steps: OrchestratorStep[];
   // The dominant signal driving the current step
   primarySignal: string;
+  // V2: Flow lock for critical steps (e.g., decision focus)
+  flowLock?: FlowLock;
+  // V2: Adaptive tone for the whole orchestrator
+  tone?: ToneType;
+  // V2: Identity update from current action
+  identityUpdate?: IdentityUpdateResult;
 }
 
 export interface OrchestratorInputs {
@@ -66,36 +85,70 @@ export interface OrchestratorInputs {
 
 const INDECISION_KEYWORDS = ["تردد", "حيرة", "تأجيل", "مقاومة"];
 const COMMITMENT_THRESHOLD = 30;
+const PREDICTIVE_THRESHOLD = 0.7;
 
-function shouldTriggerDecision(inputs: OrchestratorInputs): { trigger: boolean; reason: string } {
-  // 1. User explicitly requested help
+interface TriggerResult {
+  trigger: boolean;
+  reason: string;
+  triggerType: DecisionTriggerType;
+  prediction?: PredictionResult;
+}
+
+function shouldTriggerDecision(inputs: OrchestratorInputs): TriggerResult {
+  // 1. User explicitly requested help (REACTIVE)
   if (inputs.userRequestedHelp) {
-    return { trigger: true, reason: "طلبت المساعدة في القرار" };
+    return { trigger: true, reason: "طلبت المساعدة في القرار", triggerType: "reactive" };
   }
 
-  // 2. Health check shows stuck
+  // 2. Health check shows stuck (REACTIVE)
   if (inputs.recentDecisions.length >= 3) {
     const health = checkDecisionHealth(inputs.recentDecisions);
     if (health.status === "stuck") {
-      return { trigger: true, reason: health.suggestion };
+      return { trigger: true, reason: health.suggestion, triggerType: "reactive" };
     }
   }
 
-  // 3. Indecision patterns detected
+  // 3. PREDICTIVE: Run prediction engine on patterns + entries
+  const patternKeywords = inputs.patterns.map((p) => p.keyword);
+  const entryTexts = inputs.recentDecisions.map((d) => d.decision);
+  const commitment = inputs.context?.commitmentScore ?? 100;
+
+  const prediction = predictDecisionNeedDetailed({
+    patterns: patternKeywords,
+    recentEntries: entryTexts,
+    commitmentScore: commitment,
+  });
+
+  if (prediction.probability > PREDICTIVE_THRESHOLD) {
+    return {
+      trigger: true,
+      reason: `النظام يتوقع قرار قريب (${Math.round(prediction.probability * 100)}%): ${prediction.signals.join(" • ")}`,
+      triggerType: "predictive",
+      prediction,
+    };
+  }
+
+  // 4. Reactive fallbacks: pattern match + low commitment
   const hasIndecisionPattern = inputs.patterns.some((p) =>
     INDECISION_KEYWORDS.some((kw) => p.keyword.includes(kw))
   );
   if (hasIndecisionPattern) {
-    return { trigger: true, reason: "أنماط التردد ظاهرة في تأملاتك — وقت القرار" };
+    return {
+      trigger: true,
+      reason: "أنماط التردد ظاهرة في تأملاتك — وقت القرار",
+      triggerType: "reactive",
+    };
   }
 
-  // 4. Low commitment score
-  const commitment = inputs.context?.commitmentScore ?? 100;
   if (commitment < COMMITMENT_THRESHOLD && inputs.progress.completedDays.length > 3) {
-    return { trigger: true, reason: "الالتزام في انخفاض — قرار واحد قد يعيد الزخم" };
+    return {
+      trigger: true,
+      reason: "الالتزام في انخفاض — قرار واحد قد يعيد الزخم",
+      triggerType: "reactive",
+    };
   }
 
-  return { trigger: false, reason: "" };
+  return { trigger: false, reason: "", triggerType: "reactive" };
 }
 
 // ── Visibility Rules ──
@@ -177,12 +230,25 @@ function buildCityStep(inputs: OrchestratorInputs): OrchestratorStep {
 }
 
 function buildDecisionStep(inputs: OrchestratorInputs): OrchestratorStep {
-  const { trigger, reason } = shouldTriggerDecision(inputs);
+  const { trigger, reason, triggerType, prediction } = shouldTriggerDecision(inputs);
 
   // If user provided inline input, run pipeline immediately
   let decision: Decision | null = null;
   if (inputs.inlineDecisionInput) {
     decision = runDecisionPipeline(inputs.inlineDecisionInput);
+  }
+
+  // V2: Build justification when triggered
+  let justification: Justification | null = null;
+  if (trigger) {
+    const patternKeywords = inputs.patterns.map((p) => p.keyword);
+    const entries = inputs.recentDecisions.map((d) => ({ text: d.decision }));
+    const commitment = inputs.context?.commitmentScore ?? 100;
+    justification = buildJustification({
+      patterns: patternKeywords,
+      recentEntries: entries,
+      commitmentScore: commitment,
+    });
   }
 
   return {
@@ -192,7 +258,10 @@ function buildDecisionStep(inputs: OrchestratorInputs): OrchestratorStep {
     reason,
     data: {
       triggered: trigger,
-      decision,                  // null until user submits input
+      triggerType,
+      prediction: prediction ?? null,
+      justification,
+      decision,
       requiresInput: trigger && !decision,
     },
   };
@@ -240,26 +309,67 @@ export function buildOrchestrator(inputs: OrchestratorInputs): OrchestratorState
   // Pick currentStep: highest-priority visible step
   const visibleSteps = steps.filter((s) => s.visible);
   const sorted = [...visibleSteps].sort((a, b) => b.priority - a.priority);
-  const currentStep = sorted[0] ?? buildTodayStep(inputs);
+  let currentStep = sorted[0] ?? buildTodayStep(inputs);
 
-  // Derive primary signal
-  let primarySignal: string;
+  // V2: Flow Lock — when decision is current, lock other steps
+  let flowLock: FlowLock | undefined = undefined;
   if (currentStep.type === "decision") {
-    primarySignal = "🎯 وقت القرار — كل شيء آخر ينتظر";
-  } else if (currentStep.type === "progress") {
-    primarySignal = "⏳ الرحلة تنتظر عودتك";
-  } else if (currentStep.type === "ritual") {
-    primarySignal = "🫁 لحظة البداية";
-  } else if (currentStep.type === "city") {
-    primarySignal = "🏙️ مدينتك تتشكّل";
-  } else {
-    primarySignal = "✦ اليوم بين يديك";
+    flowLock = { enabled: true, reason: "decision_focus" };
+    // Hide all other steps from secondary nav
+    for (const step of steps) {
+      if (step.type !== "decision") {
+        step.visible = false;
+      }
+    }
   }
+
+  // V2: Detect tone from progress + commitment + hesitation
+  const hasHesitation = inputs.patterns.some((p) =>
+    INDECISION_KEYWORDS.some((kw) => p.keyword.includes(kw))
+  );
+  const tone: ToneType = detectTone({
+    momentum: inputs.progress.momentum,
+    drift: inputs.progress.drift,
+    commitment: inputs.context?.commitmentScore ?? 100,
+    hesitationPatterns: hasHesitation,
+  });
+
+  // Derive primary signal (V2: tone-aware)
+  let baseSignal: string;
+  if (currentStep.type === "decision") {
+    baseSignal = "🎯 وقت القرار — كل شيء آخر ينتظر";
+  } else if (currentStep.type === "progress") {
+    baseSignal = "⏳ الرحلة تنتظر عودتك";
+  } else if (currentStep.type === "ritual") {
+    baseSignal = "🫁 لحظة البداية";
+  } else if (currentStep.type === "city") {
+    baseSignal = "🏙️ مدينتك تتشكّل";
+  } else {
+    baseSignal = "✦ اليوم بين يديك";
+  }
+  const primarySignal = applyTone(baseSignal, tone);
+
+  // V2: Identity update for the current action
+  const actionMap: Record<StepType, "decision" | "ritual" | "progress" | "reflection"> = {
+    decision: "decision",
+    ritual: "ritual",
+    progress: "progress",
+    today: "reflection",
+    city: "reflection",
+  };
+  const intensity = currentStep.priority >= 100 ? 0.9 : currentStep.priority >= 50 ? 0.6 : 0.3;
+  const identityUpdate = updateIdentityState({
+    action: actionMap[currentStep.type],
+    intensity,
+  });
 
   return {
     currentStep,
     steps,
     primarySignal,
+    flowLock,
+    tone,
+    identityUpdate,
   };
 }
 

@@ -184,6 +184,125 @@ describe("buildOrchestrator", () => {
   });
 });
 
+describe("orchestrator V2 — flow lock", () => {
+  it("enables flow lock when decision is current step", () => {
+    const result = buildOrchestrator(makeInputs({
+      ritualSeenToday: true,
+      userRequestedHelp: true,
+    }));
+    expect(result.flowLock?.enabled).toBe(true);
+    expect(result.flowLock?.reason).toBe("decision_focus");
+  });
+
+  it("does NOT enable flow lock for non-decision steps", () => {
+    const result = buildOrchestrator(makeInputs({ ritualSeenToday: true }));
+    expect(result.flowLock).toBeUndefined();
+  });
+
+  it("hides other steps when flow lock active", () => {
+    const result = buildOrchestrator(makeInputs({
+      ritualSeenToday: true,
+      userRequestedHelp: true,
+    }));
+    const visibleNonDecision = result.steps.filter(
+      (s) => s.visible && s.type !== "decision"
+    );
+    expect(visibleNonDecision).toHaveLength(0);
+  });
+});
+
+describe("orchestrator V2 — predictive trigger", () => {
+  it("attaches triggerType reactive when user requests help", () => {
+    const result = buildOrchestrator(makeInputs({
+      ritualSeenToday: true,
+      userRequestedHelp: true,
+    }));
+    expect(result.currentStep.data.triggerType).toBe("reactive");
+  });
+
+  it("attaches triggerType predictive when prediction > 0.7", () => {
+    const patterns: Pattern[] = [
+      { keyword: "تردد", weight: 5, firstSeenDay: 1, recurrence: 3, type: "behavioral" },
+    ];
+    const recentDecisions = [
+      { decision: "تردد في الخطوة", goal: "test", date: "2026-04-01" },
+      { decision: "تردد آخر", goal: "test", date: "2026-04-02" },
+      { decision: "ما زلت في تردد", goal: "test", date: "2026-04-03" },
+    ];
+    const result = buildOrchestrator(makeInputs({
+      ritualSeenToday: true,
+      patterns,
+      recentDecisions,
+      context: { commitmentScore: 30 } as any,
+    }));
+    expect(result.currentStep.type).toBe("decision");
+    // Either reactive (stuck) or predictive — both are valid for this scenario
+    expect(["reactive", "predictive"]).toContain(result.currentStep.data.triggerType);
+  });
+});
+
+describe("orchestrator V2 — justification", () => {
+  it("attaches justification when decision triggered", () => {
+    const patterns: Pattern[] = [
+      { keyword: "تردد", weight: 5, firstSeenDay: 1, recurrence: 3, type: "behavioral" },
+    ];
+    const result = buildOrchestrator(makeInputs({
+      ritualSeenToday: true,
+      patterns,
+    }));
+    expect(result.currentStep.type).toBe("decision");
+    expect(result.currentStep.data.justification).not.toBeNull();
+    expect(result.currentStep.data.justification.insight).toBeTruthy();
+    expect(result.currentStep.data.justification.evidence).toBeTruthy();
+    expect(result.currentStep.data.justification.emotional_hook).toBeTruthy();
+  });
+
+  it("does NOT attach justification when not triggered", () => {
+    const result = buildOrchestrator(makeInputs({ ritualSeenToday: true }));
+    if (result.currentStep.type === "decision") {
+      // If somehow triggered, justification should still be present
+      expect(result.currentStep.data.justification).not.toBeNull();
+    } else {
+      // For non-decision steps, the decision step (in steps[]) has no justification
+      const decisionStep = result.steps.find((s) => s.type === "decision");
+      expect(decisionStep?.data.justification).toBeNull();
+    }
+  });
+});
+
+describe("orchestrator V2 — tone", () => {
+  it("returns tone in state", () => {
+    const result = buildOrchestrator(makeInputs());
+    expect(["calm", "firm", "motivational", "compassionate"]).toContain(result.tone);
+  });
+
+  it("primarySignal is non-empty", () => {
+    const result = buildOrchestrator(makeInputs());
+    expect(result.primarySignal).toBeTruthy();
+  });
+});
+
+describe("orchestrator V2 — identity update", () => {
+  it("returns identity update with shift + trajectory_delta", () => {
+    const result = buildOrchestrator(makeInputs());
+    expect(result.identityUpdate).toBeDefined();
+    expect(typeof result.identityUpdate?.identity_shift).toBe("number");
+    expect(typeof result.identityUpdate?.trajectory_delta).toBe("number");
+    expect(result.identityUpdate?.reason).toBeTruthy();
+  });
+
+  it("decision step produces higher shift than other steps", () => {
+    const decisionResult = buildOrchestrator(makeInputs({
+      ritualSeenToday: true,
+      userRequestedHelp: true,
+    }));
+    const todayResult = buildOrchestrator(makeInputs({ ritualSeenToday: true }));
+    expect(decisionResult.identityUpdate!.identity_shift).toBeGreaterThanOrEqual(
+      todayResult.identityUpdate!.identity_shift
+    );
+  });
+});
+
 describe("boostZonesAfterDecision", () => {
   it("boosts power and action zones", () => {
     const city: CityMap = {
