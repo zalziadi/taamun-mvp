@@ -8,6 +8,7 @@ import DecisionCTA from "@/components/DecisionCTA";
 import IdentityReflectionCard from "@/components/IdentityReflectionCard";
 import { getNextStepOptions } from "@/lib/nextStep";
 import { useUserBehavior } from "@/hooks/useUserBehavior";
+import { useJourneyMemory } from "@/hooks/useJourneyMemory";
 
 type AnswerPayload = {
   ok?: boolean;
@@ -21,6 +22,8 @@ type AnswerPayload = {
 export default function ReflectionPage() {
   const router = useRouter();
   const { behavior, pattern, track } = useUserBehavior("reflection");
+  // V9: Journey memory — auto-save answers for continuity
+  const journey = useJourneyMemory({ pageName: "/reflection" });
   const [day, setDay] = useState(1);
   const [observe, setObserve] = useState("");
   const [insight, setInsight] = useState("");
@@ -115,6 +118,23 @@ export default function ReflectionPage() {
       // V7: Track reflection save behavior
       if (reflectionSaved) {
         track.reflectionSaved();
+
+        // V9: Update journey memory with the reflection content
+        const combinedNote = [observe, insight, contemplate].filter(Boolean).join(" • ");
+        journey.update({
+          lastAnswer: combinedNote.slice(0, 500),
+          lastQuestion: `يوم ${day} — ${emotion || "تمعّن"}`,
+          addInsight: insight.trim().slice(0, 200) || undefined,
+          completedStep: `reflection_day_${day}`,
+          progressDelta: 3,
+          currentDay: day,
+          currentZone: "reflection",
+          emotionalState: awarenessState === "best_possibility"
+            ? "clear"
+            : awarenessState === "gift"
+            ? "flow"
+            : "uncertain",
+        });
       }
 
       // Mark as saved + fetch orchestrator state for decision lock + identity reflection

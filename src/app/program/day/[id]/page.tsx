@@ -5,6 +5,7 @@ import { useParams, useRouter } from "next/navigation";
 import { DailyJourney, type JourneyContent } from "@/components/journey/DailyJourney";
 import { getTaamunDailyByDay } from "@/lib/taamun-daily";
 import { PROGRAM_ROUTE } from "@/lib/routes";
+import { useJourneyMemory } from "@/hooks/useJourneyMemory";
 
 const TOTAL_DAYS = 28;
 
@@ -65,6 +66,8 @@ export default function ProgramDayPage() {
   const router = useRouter();
   const params = useParams();
   const day = Number(params.id);
+  // V9: Journey memory — track day visit + completion
+  const journey = useJourneyMemory({ pageName: `/program/day/${day}` });
 
   const [loading, setLoading] = useState(true);
   const [content, setContent] = useState<JourneyContent | null>(null);
@@ -79,6 +82,9 @@ export default function ProgramDayPage() {
       router.replace("/program/day/1");
       return;
     }
+
+    // V9: Record that user entered this day (updates currentDay in memory)
+    journey.update({ currentDay: day });
 
     const load = async () => {
       setLoading(true);
@@ -145,6 +151,8 @@ export default function ProgramDayPage() {
     };
 
     load();
+    // journey.update is stable (useCallback); intentionally not in deps to avoid re-run loop
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [day, router]);
 
   if (loading || !content) {
@@ -168,7 +176,16 @@ export default function ProgramDayPage() {
         content={content}
         streak={streak}
         isFirstTime={isFirstTime}
-        onComplete={() => router.push(PROGRAM_ROUTE)}
+        onComplete={() => {
+          // V9: Record day completion in journey memory
+          journey.update({
+            completedStep: `day_${day}`,
+            currentDay: day,
+            progressDelta: 5,
+            emotionalState: "flow",
+          });
+          router.push(PROGRAM_ROUTE);
+        }}
       />
 
       {/* Ritual closing (after journey is done, shown subtly) */}
