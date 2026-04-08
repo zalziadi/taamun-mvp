@@ -10,6 +10,7 @@ import DecisionCTA from "@/components/DecisionCTA";
 import NextStepPanel from "@/components/NextStepPanel";
 import { getNextStepOptions } from "@/lib/nextStep";
 import { useUserBehavior } from "@/hooks/useUserBehavior";
+import { useSystemBrain } from "@/hooks/useSystemBrain";
 
 type DayPayload = {
   ok?: boolean;
@@ -31,6 +32,8 @@ type ProgressPayload = {
 export default function CityPage() {
   const router = useRouter();
   const { behavior, pattern, track } = useUserBehavior("city");
+  // V8: Brain drives dailyFocus + greeting message
+  const { decision: brainDecision } = useSystemBrain({ pageName: "city" });
   const [loading, setLoading] = useState(true);
   const [city, setCity] = useState<CityMap | null>(null);
   const [microReward, setMicroReward] = useState<MicroReward | null>(null);
@@ -128,12 +131,27 @@ export default function CityPage() {
         </p>
       </section>
 
+      {/* V8: Brain-driven daily focus banner */}
+      {brainDecision?.uiHints?.showToast && (
+        <section className="tm-card border-[#c4a265] bg-gradient-to-b from-[#faf4e4] to-[#fcfaf7] p-4 sm:p-5 text-center space-y-2">
+          <p className="text-[10px] tracking-[0.18em] text-[#8c7851]/80">توجيه النظام</p>
+          <p className="text-base font-semibold text-[#2f2619]">{brainDecision.message}</p>
+          {brainDecision.uiHints.highlightZone && city?.zones?.find((z) => z.id === brainDecision.uiHints.highlightZone) && (
+            <p className="text-xs text-[#5f5648]/85">
+              منطقة اليوم: <span className="font-semibold text-[#5a4531]">
+                {city.zones.find((z) => z.id === brainDecision.uiHints.highlightZone)?.name}
+              </span>
+            </p>
+          )}
+        </section>
+      )}
+
       {city ? (
         <section className="tm-card relative bg-[#15130f] p-6 sm:p-8 overflow-hidden">
           <LivingCityMap
             city={city}
             emotionalState={emotionalState}
-            focusZoneId={guidanceFocus}
+            focusZoneId={brainDecision?.uiHints?.highlightZone ?? guidanceFocus}
             microReward={microReward}
           />
         </section>

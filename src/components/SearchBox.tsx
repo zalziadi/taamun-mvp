@@ -3,6 +3,7 @@
 import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
+import { useSystemBrain } from "@/hooks/useSystemBrain";
 
 // ── Searchable routes catalog ──
 type SearchEntry = {
@@ -65,6 +66,9 @@ export function SearchBox() {
   const [highlight, setHighlight] = useState(0);
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  // V8: Brain suggestion — shown at top when query is empty
+  const { decision: brainDecision } = useSystemBrain({ pageName: "searchbox" });
 
   // Close on click outside
   useEffect(() => {
@@ -150,6 +154,22 @@ export function SearchBox() {
 
       {open && results.length > 0 && (
         <div className="absolute top-full right-0 mt-2 w-[min(92vw,320px)] rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] shadow-[0_12px_32px_rgba(47,38,25,0.12)] overflow-hidden z-50">
+          {/* V8: Brain suggestion at the top when query is empty */}
+          {!query.trim() && brainDecision && (
+            <Link
+              href={brainDecision.primaryAction.target}
+              onClick={() => { setOpen(false); setQuery(""); }}
+              className="block border-b border-[#e8dfc9] bg-gradient-to-b from-[#faf4e4] to-[#fcfaf7] px-3 py-3 transition-colors hover:bg-[#f4ead7]"
+            >
+              <div className="flex items-center justify-between gap-2 mb-1">
+                <span className="text-[9px] tracking-[0.15em] text-[#8c7851]/80">اقتراح النظام</span>
+                <span className="text-[10px] text-[#c4a265]">✦</span>
+              </div>
+              <p className="text-xs text-[#5f5648] leading-relaxed text-right">{brainDecision.message}</p>
+              <p className="mt-1.5 text-[13px] font-semibold text-[#5a4531] text-right">← {brainDecision.primaryAction.label}</p>
+            </Link>
+          )}
+
           <ul role="listbox" className="max-h-[320px] overflow-y-auto">
             {results.map((r, i) => (
               <li key={r.route}>

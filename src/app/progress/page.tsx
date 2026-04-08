@@ -5,6 +5,7 @@ import Link from "next/link";
 import { getTaamunDailyByDay } from "@/lib/taamun-daily";
 import { PROGRAM_ROUTE } from "@/lib/routes";
 import { loadProgress } from "@/lib/storage";
+import { useSystemBrain } from "@/hooks/useSystemBrain";
 
 type Reflection = {
   id: string;
@@ -77,6 +78,9 @@ export default function ProgressPage() {
     void load();
   }, []);
 
+  // V8: Brain hook MUST be called before any early return (React rules-of-hooks)
+  const { decision: brainDecision } = useSystemBrain({ pageName: "progress" });
+
   if (status === "loading") {
     return (
       <div className="min-h-screen bg-[#15130f] flex items-center justify-center">
@@ -127,7 +131,7 @@ export default function ProgressPage() {
           </div>
         )}
 
-        {/* Empty state — shown whenever there are no reflections, regardless of status */}
+        {/* V8: Empty state — brain-driven guidance */}
         {isEmpty && (
           <div className="rounded-2xl border border-white/10 bg-white/5 p-8 text-center space-y-4">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-full border border-[#c9b88a]/30 bg-[#c9b88a]/5">
@@ -139,22 +143,40 @@ export default function ProgressPage() {
               </svg>
             </div>
             <div className="space-y-1">
-              <p className="text-base font-semibold text-[#e8e1d9]">ابدأ سجلك الآن</p>
-              <p className="text-xs text-[#c9b88a]/80">كل تمعّن يُحفظ هنا — لتعود إليه وتبني عليه</p>
+              <p className="text-base font-semibold text-[#e8e1d9]">
+                {brainDecision?.message ?? "ابدأ سجلك الآن"}
+              </p>
+              <p className="text-xs text-[#c9b88a]/80">
+                كل تمعّن يُحفظ هنا — لتعود إليه وتبني عليه
+              </p>
             </div>
             <div className="flex flex-wrap items-center justify-center gap-2">
-              <Link
-                href="/program/day/1"
-                className="inline-block rounded-xl bg-[#c9b88a] px-5 py-2.5 text-sm font-semibold text-[#15130f] hover:opacity-90 transition-opacity"
-              >
-                ابدأ اليوم الأول
-              </Link>
-              <Link
-                href="/reflection"
-                className="inline-block rounded-xl border border-[#c9b88a]/40 px-5 py-2.5 text-sm text-[#c9b88a] hover:bg-[#c9b88a]/10 transition-colors"
-              >
-                افتح التمعّن
-              </Link>
+              {brainDecision ? (
+                <>
+                  <Link
+                    href={brainDecision.primaryAction.target}
+                    className="inline-block rounded-xl bg-[#c9b88a] px-5 py-2.5 text-sm font-semibold text-[#15130f] hover:opacity-90 transition-opacity"
+                  >
+                    ← {brainDecision.primaryAction.label}
+                  </Link>
+                  {brainDecision.secondaryActions.map((a) => (
+                    <Link
+                      key={a.target}
+                      href={a.target}
+                      className="inline-block rounded-xl border border-[#c9b88a]/40 px-5 py-2.5 text-sm text-[#c9b88a] hover:bg-[#c9b88a]/10 transition-colors"
+                    >
+                      {a.label}
+                    </Link>
+                  ))}
+                </>
+              ) : (
+                <Link
+                  href="/program/day/1"
+                  className="inline-block rounded-xl bg-[#c9b88a] px-5 py-2.5 text-sm font-semibold text-[#15130f] hover:opacity-90 transition-opacity"
+                >
+                  ابدأ اليوم الأول
+                </Link>
+              )}
             </div>
           </div>
         )}
