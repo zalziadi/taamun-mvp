@@ -175,7 +175,7 @@ export function SearchBox() {
 
       {open && results.length === 0 && query.trim() && (
         <div className="absolute top-full right-0 mt-2 w-[min(92vw,320px)] rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] p-4 text-center text-xs text-[#7d7362] shadow-[0_12px_32px_rgba(47,38,25,0.12)] z-50">
-          لا توجد نتائج لـ "{query}"
+          لا توجد نتائج لـ &quot;{query}&quot;
         </div>
       )}
     </div>
