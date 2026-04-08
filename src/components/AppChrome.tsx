@@ -5,6 +5,7 @@ import { usePathname } from "next/navigation";
 import { NavAuth } from "@/components/NavAuth";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { JourneyGuideRail } from "@/components/JourneyGuideRail";
+import { SearchBox } from "@/components/SearchBox";
 import { APP_NAME } from "@/lib/appConfig";
 import {
   CITY_ROUTE,
@@ -19,7 +20,8 @@ import {
 
 function shouldHideGlobalChrome(pathname: string | null) {
   if (!pathname) return false;
-  if (pathname === "/" || pathname === "/breathing" || pathname === "/journal" || pathname === "/tasbeeh") return true;
+  // Note: "/" is intentionally NOT hidden so the search + كهفي show on home
+  if (pathname === "/breathing" || pathname === "/journal" || pathname === "/tasbeeh") return true;
   if (pathname.startsWith("/ramadan")) return true;
   if (pathname.startsWith("/admin")) return true;
   return false;
@@ -85,7 +87,8 @@ export function AppChrome({
               </Link>
             </nav>
 
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2 sm:gap-3">
+              <SearchBox />
               <NavAuth />
             </div>
           </div>
