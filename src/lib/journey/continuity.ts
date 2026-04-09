@@ -1,12 +1,13 @@
 /**
  * Continuity — the layer where user state becomes the source of truth.
  *
- * Pure module. Takes a UserJourneyState and answers the three questions
+ * Pure module. Takes a UserJourneyState and answers the four questions
  * every page should ask before rendering:
  *
  *   1. hasStarted(state)           → should this user be onboarded or resumed?
  *   2. resumeRoute(state)          → where does "continue" actually go?
  *   3. classifyVisit(day, state)   → does this URL agree with my state?
+ *   4. resolveJourneyRoute(state)  → what shape of UI should the router hub show?
  *
  * Design principle (from the Continuity prompt):
  *   "The user state is the source of truth, not the URL."
@@ -291,4 +292,56 @@ export function reconciliationFor(
         blocking: false,
       };
   }
+}
+
+// ---------------------------------------------------------------------------
+// 6. resolveJourneyRoute — router hub decision
+// ---------------------------------------------------------------------------
+
+/**
+ * The three shapes a journey hub (`/program`) can take for a given
+ * state. Used by the router hub to decide whether to show a welcome
+ * experience, auto-redirect to the user's current day, or send them
+ * to reflect on a completed run.
+ *
+ * Thin adapter over hasStarted + resumeRoute + day completion detection.
+ * Adds no new logic — just classifies existing logic into the shape
+ * pages want to switch on.
+ */
+export type JourneyRouteDecision =
+  | { kind: "welcome"; reason: "no_evidence_yet" }
+  | { kind: "day"; day: number; route: string }
+  | { kind: "completed"; route: string };
+
+/**
+ * Given a user's journey state, decide what shape of UI the router
+ * hub should show.
+ *
+ *   welcome   → user has no evidence of starting (fresh or 1st session)
+ *   completed → all 28 days done and day 28 is in completedSteps
+ *   day       → anything else — mid-journey, uses resumeRoute
+ */
+export function resolveJourneyRoute(state: UserJourneyState): JourneyRouteDecision {
+  if (!hasStarted(state)) {
+    return { kind: "welcome", reason: "no_evidence_yet" };
+  }
+
+  if (
+    state.currentDay >= TOTAL_DAYS &&
+    state.completedSteps.includes(`day_${TOTAL_DAYS}`)
+  ) {
+    return { kind: "completed", route: "/progress" };
+  }
+
+  // Mid-journey — honor resumeRoute so lastPageVisited is respected
+  const route = resumeRoute(state);
+
+  // resumeRoute may return /reflection or /city when the user was on
+  // an interior page. For the { kind: "day", day } decision we still
+  // need a concrete day number, so we derive it from the URL when
+  // possible, otherwise fall back to state.currentDay.
+  const dayFromRoute = /^\/program\/day\/(\d+)/.exec(route)?.[1];
+  const day = dayFromRoute ? Number(dayFromRoute) : clampDay(state.currentDay);
+
+  return { kind: "day", day, route };
 }

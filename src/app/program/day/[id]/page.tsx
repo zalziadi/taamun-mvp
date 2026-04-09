@@ -8,7 +8,11 @@ import { PROGRAM_ROUTE } from "@/lib/routes";
 import { useJourneyMemory } from "@/hooks/useJourneyMemory";
 import { WhyYouAreHereCard } from "@/components/journey/WhyYouAreHereCard";
 import { ResumeNotice } from "@/components/journey/ResumeNotice";
-import { classifyVisit, reconciliationFor } from "@/lib/journey/continuity";
+import {
+  resolveJourneyRoute,
+  classifyVisit,
+  reconciliationFor,
+} from "@/lib/journey/continuity";
 
 const TOTAL_DAYS = 28;
 
@@ -137,26 +141,55 @@ export default function ProgramDayPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [day, router]);
 
-  if (loading || !content) {
+  // Task 2 (Hybrid): Journey Guard.
+  //
+  // URL is NOT the source of truth — journey state is. But there's a
+  // nuance: moving FORWARD without permission is forbidden, while
+  // revisiting PAST days is a legitimate act of reflection.
+  //
+  //   welcome                          → strict redirect to /program
+  //   completed                        → strict redirect to /progress
+  //   day && URL  > decision.day       → forward mismatch → strict redirect
+  //   day && URL  < decision.day       → backward revisit → render + soft notice
+  //   day && URL === decision.day      → match → render normally
+  //
+  // The forward/welcome/completed cases use router.replace and are
+  // gated by the loader to prevent wrong-content flashes. The
+  // backward case renders the actual day content with a non-blocking
+  // ResumeNotice above the bridge, so the user can re-read or add
+  // to a past reflection while still knowing where their real
+  // journey is.
+  const decision = resolveJourneyRoute(journey.state);
+  let redirectTo: string | null = null;
+  if (decision.kind === "welcome") {
+    redirectTo = "/program";
+  } else if (decision.kind === "completed") {
+    redirectTo = "/progress";
+  } else if (decision.kind === "day" && day > decision.day) {
+    // Forward mismatch: URL is ahead of state → strict redirect
+    redirectTo = decision.route;
+  }
+
+  // Backward revisit: compute the soft reconciliation to display.
+  // classifyVisit returns behind_state, reconciliationFor produces
+  // the voice-v2 message ("يوم X — مكتملٌ من قبل. لا بأس بالعودة...").
+  const isBackwardRevisit =
+    decision.kind === "day" && day < decision.day;
+  const softReconciliation = isBackwardRevisit
+    ? reconciliationFor(classifyVisit(day, journey.state))
+    : null;
+
+  // Fire redirect as a side effect (not during render).
+  useEffect(() => {
+    if (redirectTo) {
+      router.replace(redirectTo);
+    }
+  }, [redirectTo, router]);
+
+  if (loading || !content || redirectTo) {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-parchment journey-shell">
         <div className="breathe-circle w-16 h-16 rounded-full bg-breath/30" />
-      </div>
-    );
-  }
-
-  // V10 PR-3: Continuity reconciliation — state is source of truth, not URL.
-  // Compare the visited day with journey.state.currentDay. If they disagree,
-  // show a reconciliation banner. Blocking mismatches stop the day from rendering.
-  const classification = classifyVisit(day, journey.state);
-  const reconciliation = reconciliationFor(classification);
-
-  if (reconciliation.blocking) {
-    return (
-      <div className="min-h-screen bg-parchment py-10 px-4">
-        <div className="mx-auto max-w-[720px] space-y-6">
-          <ResumeNotice reconciliation={reconciliation} variant="parchment" />
-        </div>
       </div>
     );
   }
@@ -166,9 +199,11 @@ export default function ProgramDayPage() {
     return (
       <div className="min-h-screen bg-parchment py-10 px-4">
         <div className="mx-auto max-w-[720px] space-y-6">
-          {/* Non-blocking reconciliation notice (e.g., revisiting an old day) */}
-          {reconciliation.visible && !reconciliation.blocking && (
-            <ResumeNotice reconciliation={reconciliation} variant="parchment" />
+          {/* Hybrid guard: backward revisit notice (non-blocking).
+              Only shown when URL day < state.currentDay — the user
+              is deliberately revisiting a past day. */}
+          {softReconciliation && softReconciliation.visible && (
+            <ResumeNotice reconciliation={softReconciliation} variant="parchment" />
           )}
 
           <WhyYouAreHereCard

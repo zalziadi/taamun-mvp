@@ -1,13 +1,13 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import { programDayRoute } from "@/lib/routes";
 import DecisionCTA from "@/components/DecisionCTA";
 import IdentityReflectionCard from "@/components/IdentityReflectionCard";
 import { useUserBehavior } from "@/hooks/useUserBehavior";
 import { useJourneyMemory } from "@/hooks/useJourneyMemory";
-import { resumeRoute, hasStarted } from "@/lib/journey/continuity";
+import { resumeRoute, hasStarted, resolveJourneyRoute } from "@/lib/journey/continuity";
 
 const TOTAL_DAYS = 28;
 
@@ -63,6 +63,11 @@ export default function ProgramPage() {
   const { pattern, track } = useUserBehavior("program");
   // V10 PR-3: journey memory — state is source of truth for "continue"
   const journey = useJourneyMemory({ pageName: "/program" });
+  // Task 1: router hub decision. Returning users are auto-redirected;
+  // fresh users (welcome kind) see the existing 28-day grid as the
+  // welcome UI. The decision is recomputed whenever journey.state
+  // changes, but the effect below guards against repeated redirects.
+  const journeyDecision = resolveJourneyRoute(journey.state);
   const [loading, setLoading] = useState(true);
   const [redirecting, setRedirecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -137,6 +142,27 @@ export default function ProgramPage() {
 
     void load();
   }, [router]);
+
+  // Task 1: resolveJourneyRoute-driven auto-redirect.
+  //
+  // If the user has started (day) → replace to their current day
+  // If the run is completed       → replace to /progress
+  // If fresh (welcome)            → stay on this page, show the grid
+  //
+  // Using router.replace (not push) so /program doesn't pollute the
+  // back stack when it's acting as a router hub. The redirect only
+  // fires once per mount via the hasRedirectedRef guard so state
+  // updates in useJourneyMemory don't cause re-fires.
+  const hasRedirectedRef = useRef(false);
+  useEffect(() => {
+    if (hasRedirectedRef.current) return;
+    if (journey.loading) return; // wait for state hydration
+    if (journeyDecision.kind === "welcome") return;
+
+    hasRedirectedRef.current = true;
+    setRedirecting(true);
+    router.replace(journeyDecision.route);
+  }, [journey.loading, journeyDecision, router]);
 
   const completedCount = completedDays.length;
   const streak = useMemo(() => calculateStreak(completedDays), [completedDays]);
