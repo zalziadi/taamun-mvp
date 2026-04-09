@@ -57,25 +57,25 @@ function baseSignals(state: UserJourneyState): string[] {
   const out: string[] = [];
 
   if (state.resistance >= 0.6) {
-    out.push(`المقاومة مرتفعة (${Math.round(state.resistance * 100)}%)`);
+    out.push("مقاومةٌ مرتفعة");
   } else if (state.resistance >= 0.3) {
-    out.push("هناك مقاومة خفيفة اليوم");
+    out.push("مقاومةٌ خفيفة");
   }
 
   if (state.momentum >= 4) {
-    out.push(`الزخم قوي (+${state.momentum})`);
+    out.push(`زخمٌ متراكم (+${state.momentum})`);
   } else if (state.momentum <= -2) {
-    out.push(`الزخم متراجع (${state.momentum})`);
+    out.push("إيقاعٌ متراجع");
   }
 
   if (state.drift >= 3) {
-    out.push(`انحراف ${state.drift} أيام عن الإيقاع`);
+    out.push(`${state.drift} أيام بلا كتابة`);
   }
 
-  if (state.emotionalState === "resistance") out.push("الحالة الحالية: مقاومة");
-  else if (state.emotionalState === "flow") out.push("الحالة الحالية: انسياب");
-  else if (state.emotionalState === "avoidant") out.push("الحالة الحالية: تجنّب");
-  else if (state.emotionalState === "clear") out.push("الحالة الحالية: وضوح");
+  if (state.emotionalState === "resistance") out.push("ما تشعر به الآن: مقاومة");
+  else if (state.emotionalState === "flow") out.push("ما تشعر به الآن: انسياب");
+  else if (state.emotionalState === "avoidant") out.push("ما تشعر به الآن: تجنّب");
+  else if (state.emotionalState === "clear") out.push("ما تشعر به الآن: وضوح");
 
   return out;
 }
@@ -153,26 +153,26 @@ function reasonsFor(action: ExplainableAction, state: UserJourneyState): string[
 function humanSentenceFor(action: ExplainableAction, state: UserJourneyState): string {
   switch (action) {
     case "start_day_one":
-      return "لأنّ أول يوم هو الأصعب — ويستحقّ أن يُعاش الآن.";
+      return "لأنّ أوّل يومٍ لا يختفي — يبقى منتظراً حتى تدخله.";
     case "continue_day":
-      return `لأنّ يوم ${state.currentDay} يخصّك، والإيقاع الذي بنيته لا يكسره شيء.`;
+      return "لأنّك لا تبدأ من جديد. أنتَ تكمل من حيث توقفت — حتى لو لم يعجبك هذا المكان.";
     case "reflection":
       return state.resistance >= 0.5
-        ? "لأنّ تسمية ما تشعر به يُذيب مقاومته."
-        : "لأنّ كتابة سطر واحد أقوى من قراءة مئة.";
+        ? "لأنّ ما لا تُسمّيه يظلّ يتحكّم بك من الخلف."
+        : "لأنّ الكلمة الواحدة تعرف أحياناً ما لا تعرفه مئات الكلمات.";
     case "city_visit":
-      return "لأنّ مدينتك تتغيّر كل يوم — وما لم تره قد يكون مفتاحاً.";
+      return "لأنّ مدينتك تعرفك أكثر ممّا تعرف نفسك الآن.";
     case "resume_where_left":
       return state.lastAnswer
-        ? "لأنّك تركت كلمات لم تُغلق — والعودة إليها جزء من الإجابة."
-        : "لأنّك هنا الآن، ومن هنا نكمل.";
+        ? "لأنّ ما لم تُكمله لا يختفي. يبقى في الخلفية… إلى أن تنظر إليه بوضوح."
+        : "لأنّك لستَ بعيداً. أنتَ فقط تحتاج أن ترى أين توقفت.";
     case "read_previous_insight":
-      return "لأنّ ما أدركته بالأمس قد يُنير ما تعيشه اليوم.";
+      return "لأنّ ما أدركتَه بالأمس قد يكون الجواب الذي تبحث عنه اليوم.";
     case "open_program":
-      return `لأنّك في مرحلة ${state.currentPhase} — ولكل مرحلة إيقاعها.`;
+      return "لأنّ الرحلة لم تنتظر — هي تسير فيك، حتى حين لا تفتحها.";
     case "custom":
     default:
-      return "لأنّ هذه الخطوة تنسجم مع حالتك الحاليّة.";
+      return "لأنّ هذه الخطوة هي ما طلبه ما عشتَه — لا ما اخترناه لك.";
   }
 }
 

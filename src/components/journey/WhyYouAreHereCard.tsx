@@ -35,20 +35,29 @@ export function WhyYouAreHereCard({
   const isDark = variant === "dark";
 
   const containerClass = isDark
-    ? "rounded-2xl border border-[#c9b88a]/30 bg-white/5 p-6 space-y-4"
-    : "tm-card border-[#c4a265]/40 bg-gradient-to-b from-[#faf4e4] to-[#fcfaf7] p-6 space-y-4";
+    ? "rounded-2xl border border-[#c9b88a]/30 bg-white/5 p-6 space-y-5"
+    : "tm-card border-[#c4a265]/40 bg-gradient-to-b from-[#faf4e4] to-[#fcfaf7] p-6 space-y-5";
 
   const labelClass = isDark
     ? "text-[10px] tracking-[0.18em] text-[#c9b88a]/80"
     : "text-[10px] tracking-[0.18em] text-[#8c7851]/80";
 
   const summaryClass = isDark
-    ? "text-base leading-relaxed text-[#e8e1d9] font-semibold"
-    : "text-base leading-relaxed text-[#2f2619] font-semibold";
+    ? "text-base leading-[1.9] text-[#e8e1d9] font-semibold whitespace-pre-line"
+    : "text-base leading-[1.9] text-[#2f2619] font-semibold whitespace-pre-line";
 
   const transitionClass = isDark
-    ? "text-sm leading-relaxed text-[#c9b88a] italic"
-    : "text-sm leading-relaxed text-[#5f5648]/90 italic";
+    ? "text-sm leading-[1.9] text-[#c9b88a] italic whitespace-pre-line"
+    : "text-sm leading-[1.9] text-[#5f5648]/90 italic whitespace-pre-line";
+
+  // The mirror — the direct line. Slightly stronger than the summary, no italic.
+  const mirrorWrapperClass = isDark
+    ? "rounded-xl border-r-2 border-[#c9b88a]/50 bg-[#c9b88a]/5 px-4 py-3"
+    : "rounded-xl border-r-2 border-[#c4a265]/60 bg-[#f4ead7]/50 px-4 py-3";
+
+  const mirrorTextClass = isDark
+    ? "text-sm leading-[1.95] text-[#e8e1d9] whitespace-pre-line"
+    : "text-sm leading-[1.95] text-[#3a2e1c] whitespace-pre-line";
 
   const reasonBoxClass = isDark
     ? "rounded-xl border border-white/10 bg-[#15130f]/50 p-3 space-y-1.5"
@@ -75,7 +84,7 @@ export function WhyYouAreHereCard({
         <span className={isDark ? "text-[#c9b88a]" : "text-[#c4a265]"}>✦</span>
       </div>
 
-      <div className="space-y-2">
+      <div className="space-y-3">
         <p className={summaryClass}>{bridge.summary}</p>
         <p className={transitionClass}>{bridge.transition}</p>
       </div>
@@ -101,6 +110,13 @@ export function WhyYouAreHereCard({
               ))}
             </ul>
           )}
+        </div>
+      )}
+
+      {/* The mirror — the direct truth. No toggle. Always visible. */}
+      {bridge.mirror && (
+        <div className={mirrorWrapperClass}>
+          <p className={mirrorTextClass}>{bridge.mirror}</p>
         </div>
       )}
 

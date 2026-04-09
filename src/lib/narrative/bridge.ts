@@ -1,221 +1,479 @@
 /**
  * Bridge — "Why you are here now"
  *
- * V10 PR-2. This is the layer that makes the system feel like it's
- * *walking with you*, not tracking you. Every screen that matters
- * (home, day page, city) opens with a bridge generated from YOUR state —
- * past, present, future, and the reasons behind them.
+ * V10 PR-2 · Voice v2 (Real Layer). This module produces the language
+ * that opens every screen that matters (home, day, city). The voice
+ * was tuned in conversation with the user to remove "beautification"
+ * and add friction — the mirror must be honest, not elegant.
  *
- * Design principle: nothing generic. Every sentence must name a real
- * signal (resistance score, last answer, completion count, phase shift)
- * so the user feels: "this emerged from me, not from a template".
+ * Voice laws (enforced in every generator below):
+ *
+ *   1. No imperative verbs in summary/transition/mirror. Only in CTA.
+ *   2. No softeners like "لعلّك" / "ربّما" / "قد يكون" in the mirror line.
+ *      The mirror is the one place the system tells the truth directly.
+ *   3. No metaphors unless they're concrete. "بابٌ لم يُطرق" → out.
+ *      "أنتَ تتجنّبه" → in.
+ *   4. Every signal block ends with a meta-reason when the user is
+ *      overcoming something: "ومع ذلك — أنت هنا".
+ *   5. The last line always returns time to the user, not demand.
+ *
+ * Structure (four layers, not three):
+ *
+ *   summary    → the observation    (what is)
+ *   transition → the interpretation (what it means)
+ *   mirror     → the direct truth   (what you already know)
+ *   nextHint   → the step           (where to go, if anywhere)
  *
  * Pure module — no React, no IO.
  */
 
-import type { UserJourneyState, JourneyPhase } from "@/lib/journey/memory";
+import type { UserJourneyState } from "@/lib/journey/memory";
 import { phaseFromDay } from "@/lib/journey/memory";
 import type { Timeline } from "@/lib/journey/timeline";
 import { PHASE_LABEL_AR } from "@/lib/journey/phases";
 
+// ---------------------------------------------------------------------------
+// Public type — now includes `mirror` as a first-class layer
+// ---------------------------------------------------------------------------
+
 export interface WhyYouAreHere {
-  /** One-line "you are here because X" summary. */
+  /** The observation — what is happening, named without judgment. */
   summary: string;
-  /** Concrete signals that produced this moment (max 4). */
-  reasons: string[];
-  /** The inner shift happening right now. */
+  /** The interpretation — what the observation means under the surface. */
   transition: string;
+  /**
+   * The mirror — the direct truth. This is the one line that doesn't
+   * soften anything. "أنتَ لا تبدأ من جديد". "أنتَ تتجنّبه". May contain
+   * multiple short lines separated by \n.
+   */
+  mirror: string;
+  /** Concrete signals that produced this moment (max 5). */
+  reasons: string[];
   /** Optional next step hint — route + label + human reason. */
   nextHint: {
     label: string;
     route: string;
     reason: string;
   } | null;
-  /** How confident we are the signals are meaningful (0..1). */
+  /** How grounded these signals are (0..1). */
   confidence: number;
+  /** Machine-readable situation label — for debug/analytics. */
+  situation: Situation;
 }
 
 interface BridgeInputs {
   state: UserJourneyState;
   /** Optional: if the caller already fetched /api/journey/timeline. */
   timeline?: Timeline | null;
-  /** Which page is asking — tweaks the summary voice. */
+  /** Which page is asking — tweaks the voice. */
   context?: "home" | "day" | "city" | "generic";
   /** When rendering on /program/day/[id], the day being opened. */
   openingDay?: number;
 }
 
 // ---------------------------------------------------------------------------
-// Reason extraction — name real signals, never vague claims
+// Situation classifier — the voice is chosen by the situation, not context
 // ---------------------------------------------------------------------------
 
-function collectReasons(inputs: BridgeInputs): string[] {
+export type Situation =
+  | "first_visit"
+  | "returning_after_break"
+  | "returning_with_resistance"
+  | "scattered"
+  | "momentum_rising"
+  | "silent_doer"
+  | "word_heavy"
+  | "stuck"
+  | "opening_day_resistance"
+  | "opening_day_momentum"
+  | "opening_day_default"
+  | "baseline";
+
+function classifySituation(inputs: BridgeInputs): Situation {
+  const { state, context, openingDay } = inputs;
+
+  // --- Day page branches first — they override everything else ---
+  if (context === "day" && typeof openingDay === "number") {
+    if (state.resistance >= 0.5 || state.momentum <= 0) return "opening_day_resistance";
+    if (state.momentum >= 3) return "opening_day_momentum";
+    return "opening_day_default";
+  }
+
+  // --- First visit: nothing yet ---
+  const hasAnyActivity =
+    state.sessionCount > 1 ||
+    state.completedSteps.length > 0 ||
+    state.keyInsights.length > 0 ||
+    !!state.lastAnswer;
+  if (!hasAnyActivity) return "first_visit";
+
+  // --- Returning (drift + previously active) ---
+  if (state.drift >= 3 && state.resistance >= 0.4) return "returning_with_resistance";
+  if (state.drift >= 3) return "returning_after_break";
+
+  // --- Stuck: big drift, no movement ---
+  if (state.drift >= 5 && state.momentum <= 0) return "stuck";
+
+  // --- Scattered: only detectable with timeline signal ---
+  // Proxy: if timeline shows multiple phases touched in short time with
+  // no concentration, or currentZone keeps flipping. For now we detect
+  // it via timeline.totals when available.
+  if (inputs.timeline) {
+    const tl = inputs.timeline;
+    const sectionsReached = tl.sections.filter((s) => s.reached).length;
+    const tooThin =
+      sectionsReached >= 2 &&
+      tl.totals.reflections <= 1 &&
+      tl.totals.completedDays >= 3;
+    if (tooThin) return "scattered";
+  }
+
+  // --- Momentum rising ---
+  if (state.momentum >= 4 && state.resistance < 0.4) return "momentum_rising";
+
+  // --- Silent doer: actions without words ---
+  if (
+    completedDayCount(state) >= 2 &&
+    state.keyInsights.length === 0 &&
+    !state.lastAnswer
+  ) {
+    return "silent_doer";
+  }
+
+  // --- Word heavy: words without actions ---
+  if (state.keyInsights.length >= 3 && completedDayCount(state) <= 1) {
+    return "word_heavy";
+  }
+
+  return "baseline";
+}
+
+// ---------------------------------------------------------------------------
+// Tiny helpers — Arabic numerals stay ASCII; counting phrases are fus7a
+// ---------------------------------------------------------------------------
+
+function completedDayCount(state: UserJourneyState): number {
+  return state.completedSteps.filter((s) => /^day_\d+$/.test(s)).length;
+}
+
+function arabicDaysPhrase(n: number, shape: "passed" | "without_writing" | "started"): string {
+  // "يومٌ واحد" / "يومان" / "3 أيام" / "11 يوماً"
+  const count =
+    n === 1 ? "يومٌ واحد" :
+    n === 2 ? "يومان" :
+    n >= 3 && n <= 10 ? `${n} أيام` :
+    `${n} يوماً`;
+
+  switch (shape) {
+    case "passed":
+      return `${count} مرّت`;
+    case "without_writing":
+      return `${count} لم تكتب فيها`;
+    case "started":
+      return n === 1
+        ? `يومٌ واحد بدأتَه ثم توقفت`
+        : n === 2
+          ? `يومان بدأتَهما ثم توقفت`
+          : `${count} بدأتَها ثم توقفت`;
+  }
+}
+
+function previewAnswer(state: UserJourneyState, max = 50): string | null {
+  if (!state.lastAnswer) return null;
+  const t = state.lastAnswer.trim();
+  if (!t.length) return null;
+  return t.length > max ? `${t.slice(0, max)}…` : t;
+}
+
+// ---------------------------------------------------------------------------
+// Voice generators — one block per situation, tuned in the v2 conversation
+// ---------------------------------------------------------------------------
+
+interface Lines {
+  summary: string;
+  transition: string;
+  mirror: string;
+}
+
+function linesFor(sit: Situation, inputs: BridgeInputs): Lines {
+  const { state, openingDay } = inputs;
+  const day = openingDay ?? state.currentDay;
+
+  switch (sit) {
+    case "first_visit":
+      return {
+        summary: "أنتَ هنا الآن، ولا شيء يُلزمك بالبقاء.",
+        transition: "ومع ذلك، فتحتَ هذه الصفحة.",
+        mirror:
+          "هذا وحده يعني شيئاً.\nلا يحتاج إلى تفسير، ولا إلى تبرير.",
+      };
+
+    case "returning_after_break":
+      return {
+        summary: `${arabicDaysPhrase(Math.max(1, state.drift || 2), "passed")}، وفي داخلك جزءٌ لم يقبل أن يكتمل المشهد بدونك.`,
+        transition: "لم يكن الصمت راحةً كاملة… كان محاولة للابتعاد، ثم رجوع.",
+        mirror:
+          "ما زال هناك شيء لم تُواجهه بعد.\nوشيءٌ فيك يعرف ذلك، لذلك لم يتركك تبتعد تماماً.",
+      };
+
+    case "returning_with_resistance":
+      return {
+        summary: `${arabicDaysPhrase(Math.max(1, state.drift || 2), "passed")}، وعدتَ — رغم أنّ شيئاً فيك كان يُقاوم العودة.`,
+        transition: "لم يكن الانقطاع نسياناً. كان ثقلاً لم تعرف كيف تحمله.",
+        mirror:
+          "ومع ذلك — أنت هنا.\nوهذا ليس ضعفاً في المقاومة.\nهذا ما هو أقوى منها.",
+      };
+
+    case "scattered":
+      return {
+        summary:
+          "تحرّكتَ في أكثر من اتجاه هذا الأسبوع، لكنّ الخطوات لم تمسك بيد بعضها.",
+        transition: "هذا ليس تنوّعاً فقط. هذا تشتّت لم يُحسم بعد.",
+        mirror:
+          "أنتَ لا تجهل مركزك.\nأنتَ تتجنّبه.",
+      };
+
+    case "momentum_rising":
+      return {
+        summary: `${state.momentum} نقاطٍ من الزخم — ولم تلتفت إليها بعد.`,
+        transition: "هذا الإيقاع لم يأتِ صدفة.",
+        mirror:
+          "أنتَ من صنعه.\nحتى لو لم تنتبه أنّك كنتَ تصنعه.",
+      };
+
+    case "silent_doer": {
+      const dc = completedDayCount(state);
+      return {
+        summary: `${arabicDaysPhrase(dc, "passed").replace("مرّت", "عشتَها")}، بلا كلمةٍ واحدةٍ مكتوبة.`,
+        transition:
+          "لستَ صامتاً لأنّك لا تعرف. أنتَ صامتٌ لأنّ الكلمات لم تُطلَب منك بعد.",
+        mirror:
+          "لكنّ ما عشتَه بدأ يضغط.\nوما يضغط، يخرج — إمّا بالكلمة أو بغيرها.",
+      };
+    }
+
+    case "word_heavy":
+      return {
+        summary: `${state.keyInsights.length} إدراكات مسجّلة، ويومٌ واحد مكتمل.`,
+        transition: "الكلماتُ عندك. الخطواتُ تنتظر.",
+        mirror:
+          "أنتَ تعرف.\nما زال الباقي أن تعيش ما تعرفه.",
+      };
+
+    case "stuck":
+      return {
+        summary: `${arabicDaysPhrase(state.drift, "without_writing")}، وإيقاعٌ يقترب من الصمت.`,
+        transition: "هذا ليس فشلاً. هذا حدّ.",
+        mirror:
+          "والحدّ ليس نهاية.\nهو المكان الذي يصبح فيه الاختيار مرئيّاً.",
+      };
+
+    case "opening_day_resistance":
+      return {
+        summary: `هذا اليوم قد لا يكون مريحاً.\nوهذا واضحٌ من الزخم الذي تحته.`,
+        transition:
+          "لكن وجودك هنا يعني شيئاً واحداً: جزءٌ منكَ لم ينسحب بالكامل.",
+        mirror:
+          "أنتَ لا تبدأ من جديد.\nأنتَ تكمل من حيث توقفت… حتى لو لم يعجبك هذا المكان.",
+      };
+
+    case "opening_day_momentum":
+      return {
+        summary: `يوم ${day}، والإيقاع يحملك.`,
+        transition: "هذه ليست لحظة صدفة. هي امتدادٌ لما بنيتَه.",
+        mirror:
+          "ما كان جهداً بالأمس، أصبح طريقةً اليوم.\nوأنتَ من صنع هذا.",
+      };
+
+    case "opening_day_default":
+      return {
+        summary: `يوم ${day} — وأنتَ هنا.`,
+        transition: "لم تأتِ لتُكمل واجباً. أتيتَ لأنّ شيئاً ما لم يُحسم بعد.",
+        mirror:
+          "هذه الصفحة ليست اختباراً.\nهي لحظةٌ تخصّك، كما أنتَ الآن.",
+      };
+
+    case "baseline":
+    default: {
+      const phaseAr = PHASE_LABEL_AR[state.currentPhase];
+      return {
+        summary: `أنتَ في ${phaseAr}، وما عشتَه حتى الآن جزءٌ منك.`,
+        transition: "لم تصل إلى هنا صدفة، ولم تصل إليه بمخطّط.",
+        mirror:
+          "وصلتَ لأنّ كلّ يومٍ مضى طلب منك شيئاً… وأجبتَه.",
+      };
+    }
+  }
+}
+
+// ---------------------------------------------------------------------------
+// Reasons — short, factual, and end with "ومع ذلك — أنت هنا" when earned
+// ---------------------------------------------------------------------------
+
+function collectReasons(inputs: BridgeInputs, sit: Situation): string[] {
   const { state, timeline, openingDay } = inputs;
   const out: string[] = [];
 
-  // Signal 1: resistance
-  if (state.resistance >= 0.6) {
-    out.push(`مستوى المقاومة مرتفع (${Math.round(state.resistance * 100)}%)`);
-  } else if (state.resistance >= 0.3) {
-    out.push(`لديك مقاومة خفيفة اليوم`);
-  }
+  // Most personal first: what they last said to themselves
+  const last = previewAnswer(state);
+  if (last) out.push(`آخر ما قلتَه: "${last}"`);
 
-  // Signal 2: momentum
-  if (state.momentum >= 4) {
-    out.push(`زخم قوي في الأيام الماضية (+${state.momentum})`);
-  } else if (state.momentum <= -2) {
-    out.push(`الزخم متراجع (${state.momentum})`);
-  }
-
-  // Signal 3: drift
-  if (state.drift >= 3) {
-    out.push(`انحراف ${state.drift} أيام عن الإيقاع`);
-  }
-
-  // Signal 4: last answer (most personal)
-  if (state.lastAnswer && state.lastAnswer.trim().length > 0) {
-    const preview = state.lastAnswer.trim().slice(0, 50);
-    out.push(`آخر ما كتبت: "${preview}${state.lastAnswer.length > 50 ? "…" : ""}"`);
-  }
-
-  // Signal 5: key insights
-  if (state.keyInsights.length >= 3) {
-    out.push(`لديك ${state.keyInsights.length} إدراكات مفتاحية مسجّلة`);
-  } else if (state.keyInsights.length > 0) {
-    out.push(`أوّل إدراك سجّلته: "${state.keyInsights[0].slice(0, 40)}"`);
-  }
-
-  // Signal 6: completed steps
-  if (state.completedSteps.length > 0) {
-    const dayCount = state.completedSteps.filter((s) => /^day_\d+$/.test(s)).length;
-    if (dayCount > 0) out.push(`أكملت ${dayCount} يوم حتى الآن`);
-  }
-
-  // Signal 7: timeline-derived (only if caller provided it)
-  if (timeline) {
-    if (timeline.totals.reflections > 0 && timeline.totals.completedDays > 0) {
+  // Completed days framed by situation
+  const dc = completedDayCount(state);
+  if (dc > 0) {
+    if (sit === "returning_after_break" || sit === "returning_with_resistance") {
+      out.push(arabicDaysPhrase(dc, "started"));
+    } else if (sit === "silent_doer") {
+      out.push(`${dc === 1 ? "يومٌ واحد" : dc === 2 ? "يومان" : `${dc} أيام`} بلا كلمة`);
+    } else {
       out.push(
-        `في رحلتك: ${timeline.totals.completedDays} يوم مكتمل و${timeline.totals.reflections} تأمّل مكتوب`
+        dc === 1
+          ? "يومٌ واحد مكتمل"
+          : dc === 2
+            ? "يومان مكتملان"
+            : `${dc} أيام مكتملة`
       );
     }
   }
 
-  // Signal 8: opening a specific day (program/day/[id])
-  if (typeof openingDay === "number" && openingDay >= 1 && openingDay <= 28) {
-    const phase = phaseFromDay(openingDay);
-    out.push(`اليوم الذي تفتحه الآن في مرحلة ${PHASE_LABEL_AR[phase]}`);
+  // Drift framed as silence
+  if (state.drift >= 2) {
+    out.push(arabicDaysPhrase(state.drift, "without_writing"));
   }
 
-  // Keep the strongest 4
-  return out.slice(0, 4);
+  // Resistance — only when the mirror doesn't already name it
+  if (state.resistance >= 0.5 && sit !== "momentum_rising") {
+    out.push("مقاومةٌ مرتفعة");
+  }
+
+  // Momentum
+  if (state.momentum >= 4 && sit === "momentum_rising") {
+    out.push(`زخمٌ متراكم (+${state.momentum})`);
+  } else if (state.momentum <= -2) {
+    out.push("إيقاعٌ لم يستقرّ");
+  }
+
+  // Insights — "words in your possession"
+  if (state.keyInsights.length >= 3) {
+    out.push(`${state.keyInsights.length} إدراكاتٍ مسجّلة`);
+  }
+
+  // Day context
+  if (typeof openingDay === "number") {
+    out.push(`يوم ${openingDay} في مرحلة ${PHASE_LABEL_AR[phaseFromDay(openingDay)]}`);
+  }
+
+  // Timeline enrichment (baseline situations only — don't clutter confrontational ones)
+  if (timeline && sit === "baseline") {
+    if (timeline.totals.completedDays > 0) {
+      out.push(
+        `${timeline.totals.completedDays} يوم مكتمل و${timeline.totals.reflections} تأمّل`
+      );
+    }
+  }
+
+  // Scattered situation — name the avoidance using last zone
+  if (sit === "scattered" && state.currentZone) {
+    out.push(`أعمق ما ظهر كان في: ${state.currentZone}`);
+    out.push("ثم ابتعدتَ عنها");
+  }
+
+  // THE META REASON — "ومع ذلك — أنت هنا"
+  const deservesMeta =
+    sit === "returning_after_break" ||
+    sit === "returning_with_resistance" ||
+    sit === "opening_day_resistance" ||
+    sit === "stuck";
+  if (deservesMeta) {
+    out.push("ومع ذلك — أنت هنا");
+  }
+
+  return out.slice(0, 5);
 }
 
 // ---------------------------------------------------------------------------
-// Summary & transition — human sentences, not templates
+// Next hint — the CTA. The only place where imperative verbs are allowed.
 // ---------------------------------------------------------------------------
 
-function buildSummary(inputs: BridgeInputs): string {
-  const { state, context, openingDay } = inputs;
-  const phase = state.currentPhase;
-  const phaseAr = PHASE_LABEL_AR[phase];
-
-  // Context: opening a day
-  if (context === "day" && typeof openingDay === "number") {
-    if (state.lastAnswer && state.lastAnswer.trim().length > 0) {
-      return `تفتح يوم ${openingDay} لأنّ ما كتبته سابقاً ما زال يتنفّس — والخطوة القادمة امتداد له.`;
-    }
-    if (state.resistance >= 0.5) {
-      return `تفتح يوم ${openingDay} رغم المقاومة — وهذا بالضبط ما يجعل هذا اليوم مهمّاً.`;
-    }
-    if (state.momentum >= 3) {
-      return `تفتح يوم ${openingDay} والزخم معك — الإيقاع الذي بنيته يحملك.`;
-    }
-    return `تفتح يوم ${openingDay} الآن لأنّك اخترت أن تكمل — لا أكثر ولا أقلّ.`;
-  }
-
-  // Context: home
-  if (context === "home") {
-    if (state.sessionCount === 0) {
-      return "أنت هنا لأنّ شيئاً ما دعاك — حتى لو لم تسمّه بعد.";
-    }
-    if (state.lastAnswer) {
-      return `أنت هنا لأنّك تركت سؤالاً مفتوحاً، والعودة جزء من الإجابة.`;
-    }
-    if (state.resistance >= 0.5 && state.momentum < 2) {
-      return `أنت هنا رغم المقاومة — وهذا حضور حقيقي.`;
-    }
-    return `أنت هنا في ${phaseAr} — ليس صدفة، بل لأنّ كل يوم مضى قادك إلى هذه اللحظة.`;
-  }
-
-  // Context: city
-  if (context === "city") {
-    return `مدينتك تعكس ${phaseAr} — كل منطقة تُضيء بما عشته فيها، لا بما خطّطته لها.`;
-  }
-
-  // Generic
-  return `أنت في ${phaseAr}، ويوم ${state.currentDay} هو النقطة التي وصلت إليها بنفسك.`;
-}
-
-function buildTransition(state: UserJourneyState): string {
-  // Strong positive movement
-  if (state.momentum >= 4 && state.resistance < 0.4) {
-    return "تتحرّك من الفعل المنفرد إلى الإيقاع — ما كان جهداً أصبح طبيعة.";
-  }
-
-  // Shadow movement
-  if (state.resistance >= 0.6 && state.keyInsights.length > 0) {
-    return "تنتقل من التجنّب إلى الملاحظة — أصعب انتقال وأهمّه.";
-  }
-
-  // Phase-based transitions
-  switch (state.currentPhase) {
-    case "entry":
-      return "لحظة السؤال مفتوحة — لا تسرع في إغلاقها.";
-    case "deepening":
-      return "ترى ما لم تكن تراه — هذا نصف التحوّل.";
-    case "integrating":
-      return "ما كان تمريناً بدأ يصبح حركة يومية.";
-    case "mastery":
-      return "ما تعلّمته لم يعد خارجك — أصبح طريقتك.";
-  }
-}
-
-function buildNextHint(inputs: BridgeInputs): WhyYouAreHere["nextHint"] {
+function buildNextHint(inputs: BridgeInputs, sit: Situation): WhyYouAreHere["nextHint"] {
   const { state, context } = inputs;
 
-  // On the day page itself, no "next" hint — they are already there
+  // On the day page the CTA is the day itself — no hint here
   if (context === "day") return null;
 
-  if (state.resistance >= 0.6) {
-    return {
-      route: "/reflection",
-      label: "اكتب سطراً واحداً",
-      reason: "لأنّ تسمية المقاومة تُذيبها — قبل أن تتقدّم.",
-    };
+  switch (sit) {
+    case "first_visit":
+      return {
+        route: "/program/day/1",
+        label: "ادخل يوم ١",
+        reason:
+          "ليس لأنّه أوّل يوم، بل لأنّه أوّل ما قلتَه لنفسك: \"سأحاول\".",
+      };
+
+    case "returning_after_break":
+    case "returning_with_resistance":
+      return {
+        route: "/reflection",
+        label: "اقرأ آخر ما كتبتَه",
+        reason: "ليس لإكماله… بل لترى أين توقفتَ فعلاً.",
+      };
+
+    case "scattered":
+      return {
+        route: "/reflection",
+        label: "عُد إلى أعمق ما كتبتَه",
+        reason:
+          "ما تهرب منه لا يختفي. يبقى في الخلف… إلى أن تواجهه مباشرة.",
+      };
+
+    case "momentum_rising":
+      return {
+        route: `/program/day/${Math.min(28, state.currentDay)}`,
+        label: `تابع من يوم ${state.currentDay}`,
+        reason:
+          "الإيقاع ليس عطاءً دائماً. هو نافذةٌ — وأنتَ داخلها الآن.",
+      };
+
+    case "silent_doer":
+      return {
+        route: "/reflection",
+        label: "اكتب سطراً واحداً",
+        reason:
+          "ما عشتَه بدأ يضغط. هذا السطر يُخفّف الضغط قبل أن يُثقلك.",
+      };
+
+    case "word_heavy":
+      return {
+        route: `/program/day/${Math.min(28, state.currentDay)}`,
+        label: `اعبر إلى يوم ${state.currentDay}`,
+        reason:
+          "الكلماتُ وصلت إلى حدّها. ما يلي هو الحركة.",
+      };
+
+    case "stuck":
+      return {
+        route: "/reflection",
+        label: "اكتب كلمةً واحدة",
+        reason:
+          "لا تحتاج أن تبدأ الرحلة من جديد. تحتاج أن تُسمّي المكان الذي أنتَ فيه.",
+      };
+
+    case "baseline":
+    default:
+      return {
+        route: `/program/day/${Math.min(28, state.currentDay)}`,
+        label: `تابع من يوم ${state.currentDay}`,
+        reason:
+          "ليس لأنّه مكتوبٌ في البرنامج، بل لأنّك وقفتَ هنا بإرادتك.",
+      };
   }
-  if (state.momentum >= 3) {
-    return {
-      route: `/program/day/${Math.min(28, state.currentDay)}`,
-      label: `استأنف يوم ${state.currentDay}`,
-      reason: "لأنّ الزخم نادر، ويستحقّ أن يُستثمر الآن.",
-    };
-  }
-  if (state.sessionCount === 0) {
-    return {
-      route: "/program/day/1",
-      label: "ابدأ اليوم الأول",
-      reason: "لأنّ أول يوم هو أصعب يوم — ويستحقّ أن يُعاش الآن.",
-    };
-  }
-  return {
-    route: `/program/day/${state.currentDay}`,
-    label: `تابع من يوم ${state.currentDay}`,
-    reason: "لأنّك وقفت هنا — ومن هنا نكمل.",
-  };
 }
 
+// ---------------------------------------------------------------------------
+// Confidence — more real signals = more confident
+// ---------------------------------------------------------------------------
+
 function computeConfidence(reasons: string[], state: UserJourneyState): number {
-  // More real signals = higher confidence
   let c = 0.3 + reasons.length * 0.12;
   if (state.lastAnswer) c += 0.1;
   if (state.keyInsights.length > 0) c += 0.08;
@@ -230,22 +488,25 @@ function computeConfidence(reasons: string[], state: UserJourneyState): number {
 /**
  * Build a "Why you are here now" message for a given moment.
  *
- * Works from journey state alone (fast path) or with optional timeline
- * for richer signals. Every output is derived from real user signals —
- * no templates, no generic fallbacks.
+ * The voice is chosen by the SITUATION, not the page. Every line is
+ * derived from real state — no templates, no generic fallbacks. When
+ * in doubt, the mirror tells the truth that the summary and transition
+ * were too polite to say.
  */
 export function generateWhyYouAreHere(inputs: BridgeInputs): WhyYouAreHere {
-  const reasons = collectReasons(inputs);
-  const summary = buildSummary(inputs);
-  const transition = buildTransition(inputs.state);
-  const nextHint = buildNextHint(inputs);
+  const situation = classifySituation(inputs);
+  const { summary, transition, mirror } = linesFor(situation, inputs);
+  const reasons = collectReasons(inputs, situation);
+  const nextHint = buildNextHint(inputs, situation);
   const confidence = computeConfidence(reasons, inputs.state);
 
   return {
     summary,
-    reasons,
     transition,
+    mirror,
+    reasons,
     nextHint,
     confidence,
+    situation,
   };
 }
