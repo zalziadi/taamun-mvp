@@ -35,6 +35,7 @@ import { resolveJourneyRoute, hasStarted, resumeRoute } from "@/lib/journey/cont
 import {
   readJourneyEvents,
   clearJourneyEvents,
+  logJourneyEvent,
   type JourneyEvent,
 } from "@/lib/journey/navigation";
 import { loadTimeline, clearTimeline, type JourneyTimeline } from "@/lib/journey/stack";
@@ -224,6 +225,177 @@ function Inspector() {
     setTimeout(refresh, 50);
   };
 
+  // ----- Advanced simulations -----
+
+  /**
+   * 1. Drop-off — user stopped engaging for N days.
+   * Pushes drift up, drops momentum below zero, sets emotional state
+   * to avoidant. Logs a state_merged event tagged with the simulation
+   * so it's distinguishable from real merges.
+   */
+  const simulateDropOff = (days: number = 5) => {
+    journey.update({
+      drift: days,
+      momentum: -3,
+      resistance: 0.55,
+      emotionalState: "avoidant",
+    });
+    logJourneyEvent({
+      kind: "state_merged",
+      meta: {
+        simulation: "drop_off",
+        drift_days: days,
+        reason: "simulated_inactivity",
+      },
+    });
+    setTimeout(refresh, 50);
+  };
+
+  /**
+   * 2. Repeated revisits — same day opened N times.
+   * Writes N nav_attempt events with the same route, alternating
+   * between nav_allowed and nav_soft_notice to simulate a user who
+   * keeps bouncing back to a completed day.
+   */
+  const simulateRepeatedRevisits = (day: number = 3, times: number = 5) => {
+    for (let i = 0; i < times; i += 1) {
+      logJourneyEvent({
+        kind: "nav_attempt",
+        route: `/program/day/${day}`,
+        meta: { simulation: "repeated_revisit", iteration: i + 1 },
+      });
+      logJourneyEvent({
+        kind: i === 0 ? "nav_allowed" : "nav_soft_notice",
+        route: `/program/day/${day}`,
+        rule: "day_behind_completed",
+        decision: i === 0 ? "allow" : "soft_notice",
+        meta: { simulation: "repeated_revisit", iteration: i + 1 },
+      });
+    }
+    setTimeout(refresh, 50);
+  };
+
+  /**
+   * 3. Rapid forward jumps — user tries 1 → 10 → 20.
+   * First (day 1) is allowed (matches state). The rest are blocked
+   * as "day_ahead" — the same path a real user would trigger by
+   * typing URLs manually. Shows how the event log tells the story.
+   */
+  const simulateRapidForwardJumps = () => {
+    const jumps = [1, 10, 20];
+    jumps.forEach((day, i) => {
+      logJourneyEvent({
+        kind: "nav_attempt",
+        route: `/program/day/${day}`,
+        meta: { simulation: "rapid_forward_jump", order: i + 1 },
+      });
+      if (i === 0) {
+        logJourneyEvent({
+          kind: "nav_allowed",
+          route: `/program/day/${day}`,
+          rule: "day_match",
+          decision: "allow",
+          meta: { simulation: "rapid_forward_jump" },
+        });
+      } else {
+        logJourneyEvent({
+          kind: "nav_blocked",
+          route: `/program/day/${day}`,
+          rule: "day_ahead",
+          decision: "block",
+          meta: {
+            simulation: "rapid_forward_jump",
+            blocked_day: day,
+          },
+        });
+      }
+    });
+    setTimeout(refresh, 50);
+  };
+
+  /**
+   * 4. Local/server mismatch — local is behind server.
+   * We can't actually talk to the server from a debug button, but
+   * we can simulate the observable outcome: write a low currentDay
+   * locally and log a state_merged event describing what would
+   * happen when the hook's refresh() detects newer server state.
+   */
+  const simulateLocalBehindServer = () => {
+    journey.update({
+      currentDay: 3,
+      completedStep: "day_1",
+    });
+    journey.update({ completedStep: "day_2" });
+    logJourneyEvent({
+      kind: "state_merged",
+      meta: {
+        simulation: "local_behind_server",
+        local_current_day: 3,
+        server_current_day: 8,
+        resolution: "server_wins_on_merge",
+        note: "mergeStates picks newer updatedAt",
+      },
+    });
+    setTimeout(refresh, 50);
+  };
+
+  /**
+   * 5. Corrupted localStorage — write valid JSON with an invalid
+   * schema (currentDay out of range). On reload, safeLoad's
+   * sanityCheck will catch it, log its own state_corrupted +
+   * state_reset events, and auto-recover to fresh defaults.
+   *
+   * This is the end-to-end proof that the failure-mode layer
+   * from PR-4 actually works.
+   */
+  const simulateCorruption = () => {
+    const ok = window.confirm(
+      "سيتم كتابة بيانات فاسدة في localStorage ثم إعادة تحميل الصفحة.\n" +
+        "safeLoad يجب أن يكتشفها ويتعافى تلقائياً.\nمتابعة؟"
+    );
+    if (!ok) return;
+
+    try {
+      // Valid JSON, invalid schema: currentDay out of [1,28]
+      const corrupted = JSON.stringify({
+        userId: "anonymous",
+        currentDay: 99,
+        currentPhase: "entry",
+        currentZone: "identity",
+        progressScore: 500,
+        completedSteps: ["day_1", "day_2"],
+        emotionalState: "uncertain",
+        energyLevel: 0.5,
+        lastQuestion: null,
+        lastAnswer: null,
+        keyInsights: [],
+        drift: -3,
+        momentum: 50,
+        resistance: 2.5,
+        predictedNextState: null,
+        createdAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+        lastPageVisited: null,
+        sessionCount: 1,
+      });
+      window.localStorage.setItem("taamun.journey.state.v1", corrupted);
+
+      logJourneyEvent({
+        kind: "state_corrupted",
+        meta: {
+          simulation: "manual_corruption",
+          method: "invalid_schema",
+          fields: "currentDay=99, momentum=50, resistance=2.5, drift=-3",
+        },
+      });
+
+      // Give the log a moment to write before reload
+      setTimeout(() => window.location.reload(), 150);
+    } catch (err) {
+      window.alert("فشل محاكاة الفساد: " + String(err));
+    }
+  };
+
   return (
     <div className="mx-auto max-w-[840px] px-4 py-8 space-y-6">
       {/* Header */}
@@ -391,13 +563,42 @@ function Inspector() {
           </div>
 
           <div className="space-y-2 pt-3 border-t border-[#e1d7c7]">
-            <p className="text-xs font-semibold text-[#9b5548]">خطر: يمسح الحالة المحلّية</p>
+            <p className="text-xs font-semibold text-[#8c7851]">محاكاة متقدّمة (سيناريوهات حقيقية)</p>
+            <div className="flex flex-wrap gap-2">
+              <Button onClick={() => simulateDropOff(5)}>
+                توقّف عن التقدّم (٥ أيام)
+              </Button>
+              <Button onClick={() => simulateRepeatedRevisits(3, 5)}>
+                زيارات متكرّرة ليوم ٣
+              </Button>
+              <Button onClick={simulateRapidForwardJumps}>
+                قفزات سريعة (١ → ١٠ → ٢٠)
+              </Button>
+              <Button onClick={simulateLocalBehindServer}>
+                تضارب محلّي/سيرفر
+              </Button>
+            </div>
+            <p className="text-[10px] text-[#8c7851]/70 leading-relaxed">
+              كلّ زرّ يُحدّث الحالة ويُسجّل events بعلامة <code>simulation</code> في الـ meta.
+              افتح <strong>Event Log</strong> أعلاه لترى ما حدث.
+            </p>
+          </div>
+
+          <div className="space-y-2 pt-3 border-t border-[#e1d7c7]">
+            <p className="text-xs font-semibold text-[#9b5548]">خطر: يمسح / يُفسد الحالة المحلّية</p>
             <div className="flex flex-wrap gap-2">
               <Button onClick={refresh}>تحديث اللقطة</Button>
+              <Button onClick={simulateCorruption} tone="danger">
+                فساد localStorage + تعافٍ
+              </Button>
               <Button onClick={resetAll} tone="danger">
                 مسح كلّ شيء + إعادة تحميل
               </Button>
             </div>
+            <p className="text-[10px] text-[#8c7851]/70 leading-relaxed">
+              الـ &quot;فساد&quot; يكتب schema غير صحيح ثم يُعيد تحميل الصفحة —
+              safeLoad يجب أن يكتشفه ويُصلحه تلقائياً. راقب الـ Event Log بعد التحميل.
+            </p>
           </div>
         </div>
       </Section>
