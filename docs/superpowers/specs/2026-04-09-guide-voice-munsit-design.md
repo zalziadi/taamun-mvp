@@ -158,6 +158,24 @@ Documented in the project's env example file during implementation.
 
 None blocking. Voice ID selection, rate-limit tuning, and `voice_sessions` schema details will be confirmed during implementation.
 
+## Implementation Order (incremental loop)
+
+Build a minimal end-to-end loop first, then layer audio output. Do **not** build everything in one pass.
+
+**Phase 1 — Record → STT → Chat (text-only reply):**
+1. `useVoiceSession.ts` — state machine + MediaRecorder, exposes `start/stop/cancel` and `{ state, transcript, reply, error }`. Initial states: `idle`, `listening`, `thinking`. No `speaking` state yet.
+2. `POST /api/voice/stt` — authenticated Munsit STT proxy. Verify end-to-end with curl before wiring the UI.
+3. Wire the hook to the existing `POST /api/guide/chat` so the reply comes back as **text only**.
+4. Minimal `page.tsx` + basic `VoiceOrb` (two states: idle / listening / thinking): record button, live transcript, text reply rendered on screen.
+5. **Gate:** manual QA — hold button, speak Arabic, see transcript, see guide reply as text. Loop works before moving on.
+
+**Phase 2 — add TTS:**
+6. `POST /api/voice/tts` — Munsit TTS proxy streaming audio/mpeg.
+7. Extend `useVoiceSession` with the `speaking` state and `<audio>` playback.
+8. Extend `VoiceOrb` with the `speaking` variant (waveform ripple).
+9. Eye toggle for transcript, final polish, error toasts.
+10. **Gate:** full voice loop on a real device; `voice_sessions` row written.
+
 ## Rollout
 
 - Ship behind the normal auth gate, no feature flag.
