@@ -7,6 +7,8 @@ import { readUserProgress } from "@/lib/progressStore";
 import { computeCalendarDay } from "@/lib/calendarDay";
 import { attachDecision } from "@/lib/decisionLayer";
 import { generateNarrative } from "@/lib/narrativeEngine";
+import { analyzeReflection } from "@/lib/ai/analyzeReflection";
+import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 
 export const dynamic = "force-dynamic";
 
@@ -87,6 +89,23 @@ export async function POST(req: Request) {
 
   if (error) {
     return NextResponse.json({ ok: false, error: "save_failed" }, { status: 500 });
+  }
+
+  // Phase 4 · Task 2 — fire-and-forget AI enhancement.
+  //
+  // Rules (from the task spec):
+  //   1. DO NOT block the mutation on AI
+  //   2. DO NOT throw if AI fails
+  //   3. DO NOT retry AI
+  //   4. DO NOT delay the response
+  //
+  // The call is intentionally not awaited. Any error is swallowed
+  // silently so the reflection save always reports success to the
+  // user regardless of AI state. On Vercel's Node runtime, background
+  // promises typically complete before the container freezes —
+  // occasional misses are acceptable and leave ai_* columns NULL.
+  if (note && note.length >= 3) {
+    void enhanceReflectionWithAI(user.id, day, note);
   }
 
   // Link reflection to patterns + generate action (non-blocking on failure)
@@ -195,4 +214,46 @@ export async function POST(req: Request) {
     ...(narrative && { narrative }),
     ...(actionWithDecision ? { action: actionWithDecision } : action ? { action } : {}),
   });
+}
+
+/**
+ * Phase 4 · Task 2 — fire-and-forget AI enhancement helper.
+ *
+ * Called by POST above via `void enhanceReflectionWithAI(...)` so the
+ * response is sent before the OpenAI round-trip completes.
+ *
+ * Behavior contract:
+ *   - Swallows ALL errors (missing key, network, bad model output,
+ *     DB update failure). Never throws.
+ *   - Uses the admin Supabase client because the request's cookie
+ *     auth context is no longer guaranteed after the response.
+ *   - Only updates the ai_* columns — never touches note/surah/etc.
+ *   - Identified by (user_id, day) so it targets the row the POST
+ *     just upserted.
+ *
+ * If this helper misses (cold container frozen mid-flight, OpenAI
+ * slow, key missing), the row simply stays without ai_* fields.
+ * The UI handles the null case.
+ */
+async function enhanceReflectionWithAI(
+  userId: string,
+  day: number,
+  text: string
+): Promise<void> {
+  try {
+    const analysis = await analyzeReflection(text, day);
+    const admin = getSupabaseAdmin();
+    await admin
+      .from("reflections")
+      .update({
+        ai_sentiment: analysis.sentiment,
+        ai_theme: analysis.theme,
+        ai_mirror: analysis.mirror,
+        ai_suggestion: analysis.suggestion,
+      })
+      .eq("user_id", userId)
+      .eq("day", day);
+  } catch {
+    // Silent per spec: don't retry, don't throw, don't block.
+  }
 }
