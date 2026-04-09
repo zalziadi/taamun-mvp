@@ -180,6 +180,9 @@ export default function GuidePage() {
           <Link href="/program" className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-2 text-sm text-[#5f5648]">
             متابعة البرنامج
           </Link>
+          <Link href="/guide/voice" className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-2 text-sm text-[#5f5648]">
+            🎙️ جلسة صوتية
+          </Link>
         </div>
       </section>
 
