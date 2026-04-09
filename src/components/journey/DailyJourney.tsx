@@ -25,15 +25,23 @@ type Step =
 
 type Props = {
   content: JourneyContent;
-  streak: number;
   isFirstTime: boolean;
   onComplete: () => void; // called after Step 7
 };
 
 // ─── Helpers ──────────────────────────────────────────────────────────────────
 
-function streakLabel(streak: number): string {
-  return `اليوم ${streak} من التمعّن`;
+/**
+ * Header label shown on arrival + closing screens.
+ *
+ * BUG FIX (PR-5 Task 0): previously used `streak` (number of consecutive
+ * completed days), which caused "اليوم 7 من التمعّن" to show on any day
+ * the user opened once their streak reached 7. The correct source is
+ * `day` — the day the user is actually opening right now. Streak is
+ * still tracked separately and can be rendered elsewhere if needed.
+ */
+function dayLabel(day: number): string {
+  return `اليوم ${day} من التمعّن`;
 }
 
 function buildShareText(content: JourneyContent): string {
@@ -110,12 +118,10 @@ function StepOnboarding({
 function StepArrival({
   visible,
   day,
-  streak,
   onNext,
 }: {
   visible: boolean;
   day: number;
-  streak: number;
   onNext: () => void;
 }) {
   const [ready, setReady] = useState(false);
@@ -137,7 +143,7 @@ function StepArrival({
 
         <div className="space-y-2">
           <p className="text-sm tracking-widest text-ink3 uppercase">الوصول</p>
-          <p className="text-2xl font-bold text-ink">{streakLabel(streak || day)}</p>
+          <p className="text-2xl font-bold text-ink">{dayLabel(day)}</p>
           <p className="text-ink3">خذ ثلاث أنفاس قبل أن تبدأ</p>
         </div>
 
@@ -377,12 +383,10 @@ function StepAwareness({
 function StepClosing({
   visible,
   content,
-  streak,
   onComplete,
 }: {
   visible: boolean;
   content: JourneyContent;
-  streak: number;
   onComplete: () => void;
 }) {
   const [shareStatus, setShareStatus] = useState<"idle" | "copied">("idle");
@@ -411,7 +415,7 @@ function StepClosing({
         <div className="space-y-2">
           <p className="text-xs tracking-widest text-ink3">إغلاق اليوم</p>
           <p className="text-2xl font-bold text-ink">أتممت اليوم</p>
-          <p className="text-ink3">{streakLabel(streak || content.day)}</p>
+          <p className="text-ink3">{dayLabel(content.day)}</p>
         </div>
 
         {showQuote && content.whisper && (
@@ -452,7 +456,7 @@ const STEP_ORDER: Step[] = [
   "closing",
 ];
 
-export function DailyJourney({ content, streak, isFirstTime, onComplete }: Props) {
+export function DailyJourney({ content, isFirstTime, onComplete }: Props) {
   const [step, setStep] = useState<Step>(isFirstTime ? "onboarding" : "arrival");
   const [visible, setVisible] = useState(true);
 
@@ -493,7 +497,6 @@ export function DailyJourney({ content, streak, isFirstTime, onComplete }: Props
         <StepArrival
           visible={visible}
           day={content.day}
-          streak={streak}
           onNext={next}
         />
       )}
@@ -529,7 +532,6 @@ export function DailyJourney({ content, streak, isFirstTime, onComplete }: Props
         <StepClosing
           visible={visible}
           content={content}
-          streak={streak}
           onComplete={handleClosingComplete}
         />
       )}

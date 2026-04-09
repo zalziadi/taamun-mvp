@@ -41,29 +41,10 @@ type ProgramDayPayload = {
   micro_reward?: { type: string; message: string; intensity: string } | null;
 };
 
-type ProgressPayload = {
-  ok?: boolean;
-  error?: string;
-  current_day?: number;
-  completed_days?: number[];
-};
-
 type ReflectionsPayload = {
   ok?: boolean;
   reflections?: Array<{ id: string; day: number }>;
 };
-
-function calculateStreak(completedDays: number[]): number {
-  if (!completedDays.length) return 0;
-  const sorted = [...completedDays].sort((a, b) => b - a);
-  let streak = 0;
-  let expected = sorted[0];
-  for (const d of sorted) {
-    if (d === expected) { streak++; expected--; }
-    else break;
-  }
-  return streak;
-}
 
 export default function ProgramDayPage() {
   const router = useRouter();
@@ -80,7 +61,6 @@ export default function ProgramDayPage() {
 
   const [loading, setLoading] = useState(true);
   const [content, setContent] = useState<JourneyContent | null>(null);
-  const [streak, setStreak] = useState(0);
   const [isFirstTime, setIsFirstTime] = useState(false);
   const [ritual, setRitual] = useState<RitualPayload>(null);
   const [guidanceMsg, setGuidanceMsg] = useState<string | null>(null);
@@ -110,14 +90,7 @@ export default function ProgramDayPage() {
         }
 
         const dayData = (await dayRes.json()) as ProgramDayPayload;
-        const progressData = (await progressRes.json()) as ProgressPayload;
         const reflectionsData = (await reflectionsRes.json()) as ReflectionsPayload;
-
-        // Streak from completed days
-        const completed = Array.isArray(progressData.completed_days)
-          ? progressData.completed_days
-          : [];
-        setStreak(calculateStreak(completed));
 
         // First time check
         const reflectionCount = reflectionsData.reflections?.length ?? 0;
@@ -232,7 +205,6 @@ export default function ProgramDayPage() {
 
       <DailyJourney
         content={content}
-        streak={streak}
         isFirstTime={isFirstTime}
         onComplete={() => {
           // V9: Record day completion in journey memory
