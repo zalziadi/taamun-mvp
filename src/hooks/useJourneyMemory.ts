@@ -13,6 +13,8 @@ import {
   type ContinuityMessage,
   type SessionKind,
 } from "@/lib/journey/memory";
+import { safeLoadJourneyState } from "@/lib/journey/safeLoad";
+import { logJourneyEvent } from "@/lib/journey/navigation";
 import type { Timeline } from "@/lib/journey/timeline";
 import type { NarrativeSnapshot } from "@/lib/journey/narrative";
 import {
@@ -85,8 +87,12 @@ export function useJourneyMemory(options: UseJourneyMemoryOptions = {}): UseJour
     openingDay,
   } = options;
 
-  // Initial state from localStorage (instant)
-  const [state, setState] = useState<UserJourneyState>(() => loadLocalJourneyState("anonymous"));
+  // Initial state from localStorage (instant) — with corruption recovery
+  const [state, setState] = useState<UserJourneyState>(() => {
+    const result = safeLoadJourneyState("anonymous");
+    // The loader itself already logs corruption/reset events
+    return result.state;
+  });
   const [loading, setLoading] = useState(syncWithServer);
   const [timeline, setTimeline] = useState<Timeline | null>(null);
   const [narrative, setNarrative] = useState<NarrativeSnapshot | null>(null);
@@ -139,7 +145,18 @@ export function useJourneyMemory(options: UseJourneyMemoryOptions = {}): UseJour
     if (hasLoadedRef.current) return;
     hasLoadedRef.current = true;
 
-    const initial = loadLocalJourneyState("anonymous");
+    // Use the safe loader so corruption is healed on every boot
+    const { state: initial } = safeLoadJourneyState("anonymous");
+
+    // Log boot event with the current page
+    logJourneyEvent({
+      kind: "boot",
+      route: pageName ?? (typeof window !== "undefined" ? window.location.pathname : undefined),
+      meta: {
+        sessionCount: initial.sessionCount,
+        currentDay: initial.currentDay,
+      },
+    });
 
     const incrementPatch: JourneyStatePatch = {
       incrementSession: true,
