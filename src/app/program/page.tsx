@@ -6,6 +6,8 @@ import { programDayRoute } from "@/lib/routes";
 import DecisionCTA from "@/components/DecisionCTA";
 import IdentityReflectionCard from "@/components/IdentityReflectionCard";
 import { useUserBehavior } from "@/hooks/useUserBehavior";
+import { useJourneyMemory } from "@/hooks/useJourneyMemory";
+import { resumeRoute, hasStarted } from "@/lib/journey/continuity";
 
 const TOTAL_DAYS = 28;
 
@@ -59,6 +61,8 @@ function chunkDays(days: number[], size = 7): number[][] {
 export default function ProgramPage() {
   const router = useRouter();
   const { pattern, track } = useUserBehavior("program");
+  // V10 PR-3: journey memory — state is source of truth for "continue"
+  const journey = useJourneyMemory({ pageName: "/program" });
   const [loading, setLoading] = useState(true);
   const [redirecting, setRedirecting] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -188,10 +192,16 @@ export default function ProgramPage() {
 
           <button
             type="button"
-            onClick={() => router.push(programDayRoute(currentDay))}
+            onClick={() => {
+              // V10 PR-3: canonical resume — respects lastPageVisited + end-of-run + fresh users
+              const route = hasStarted(journey.state)
+                ? resumeRoute(journey.state)
+                : programDayRoute(currentDay);
+              router.push(route);
+            }}
             className="tm-gold-btn rounded-xl px-5 py-2.5 text-sm"
           >
-            متابعة اليوم {currentDay}
+            {hasStarted(journey.state) ? `تابع من يوم ${journey.state.currentDay || currentDay}` : `ابدأ يوم ${currentDay}`}
           </button>
         </div>
 

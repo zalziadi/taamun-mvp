@@ -7,6 +7,8 @@ import { getTaamunDailyByDay } from "@/lib/taamun-daily";
 import { PROGRAM_ROUTE } from "@/lib/routes";
 import { useJourneyMemory } from "@/hooks/useJourneyMemory";
 import { WhyYouAreHereCard } from "@/components/journey/WhyYouAreHereCard";
+import { ResumeNotice } from "@/components/journey/ResumeNotice";
+import { classifyVisit, reconciliationFor } from "@/lib/journey/continuity";
 
 const TOTAL_DAYS = 28;
 
@@ -170,11 +172,32 @@ export default function ProgramDayPage() {
     );
   }
 
+  // V10 PR-3: Continuity reconciliation — state is source of truth, not URL.
+  // Compare the visited day with journey.state.currentDay. If they disagree,
+  // show a reconciliation banner. Blocking mismatches stop the day from rendering.
+  const classification = classifyVisit(day, journey.state);
+  const reconciliation = reconciliationFor(classification);
+
+  if (reconciliation.blocking) {
+    return (
+      <div className="min-h-screen bg-parchment py-10 px-4">
+        <div className="mx-auto max-w-[720px] space-y-6">
+          <ResumeNotice reconciliation={reconciliation} variant="parchment" />
+        </div>
+      </div>
+    );
+  }
+
   // V10 PR-2: Bridge shown once before DailyJourney takes over
   if (!bridgeDismissed) {
     return (
       <div className="min-h-screen bg-parchment py-10 px-4">
         <div className="mx-auto max-w-[720px] space-y-6">
+          {/* Non-blocking reconciliation notice (e.g., revisiting an old day) */}
+          {reconciliation.visible && !reconciliation.blocking && (
+            <ResumeNotice reconciliation={reconciliation} variant="parchment" />
+          )}
+
           <WhyYouAreHereCard
             bridge={journey.whyYouAreHere}
             variant="parchment"

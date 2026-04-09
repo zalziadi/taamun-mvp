@@ -7,6 +7,7 @@ import { JourneyLanding } from "./JourneyLanding";
 import { useJourneyMemory } from "@/hooks/useJourneyMemory";
 import { WhyYouAreHereCard } from "@/components/journey/WhyYouAreHereCard";
 import { DecisionExplainer } from "@/components/journey/DecisionExplainer";
+import { hasStarted, resumeRoute } from "@/lib/journey/continuity";
 
 type UserLite = {
   id: string;
@@ -168,10 +169,20 @@ export default function Home() {
       />
 
       {/* Explainer for the primary CTA — expandable "why this step?" */}
-      <div className="px-1">
+      {/* Also override the bridge's nextHint route with the canonical resume route
+          so every "continue" button in the app agrees on destination. */}
+      <div className="px-1 space-y-2">
+        {journey.whyYouAreHere.nextHint && (
+          <Link
+            href={hasStarted(journey.state) ? resumeRoute(journey.state) : "/program/day/1"}
+            className="tm-gold-btn inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold"
+          >
+            ← {hasStarted(journey.state) ? `تابع من يوم ${journey.state.currentDay}` : "ابدأ يوم ١"}
+          </Link>
+        )}
         <DecisionExplainer
           explanation={journey.explain(
-            journey.state.sessionCount === 0 ? "start_day_one" : "resume_where_left"
+            hasStarted(journey.state) ? "resume_where_left" : "start_day_one"
           )}
           variant="parchment"
         />
