@@ -6,6 +6,7 @@ import { DailyJourney, type JourneyContent } from "@/components/journey/DailyJou
 import { getTaamunDailyByDay } from "@/lib/taamun-daily";
 import { PROGRAM_ROUTE } from "@/lib/routes";
 import { useJourneyMemory } from "@/hooks/useJourneyMemory";
+import { WhyYouAreHereCard } from "@/components/journey/WhyYouAreHereCard";
 
 const TOTAL_DAYS = 28;
 
@@ -66,8 +67,14 @@ export default function ProgramDayPage() {
   const router = useRouter();
   const params = useParams();
   const day = Number(params.id);
-  // V9: Journey memory — track day visit + completion
-  const journey = useJourneyMemory({ pageName: `/program/day/${day}` });
+  // V10 PR-2: Journey memory with day-context bridge
+  const journey = useJourneyMemory({
+    pageName: `/program/day/${day}`,
+    loadTimeline: true,
+    bridgeContext: "day",
+    openingDay: day,
+  });
+  const [bridgeDismissed, setBridgeDismissed] = useState(false);
 
   const [loading, setLoading] = useState(true);
   const [content, setContent] = useState<JourneyContent | null>(null);
@@ -159,6 +166,34 @@ export default function ProgramDayPage() {
     return (
       <div className="fixed inset-0 z-50 flex items-center justify-center bg-parchment journey-shell">
         <div className="breathe-circle w-16 h-16 rounded-full bg-breath/30" />
+      </div>
+    );
+  }
+
+  // V10 PR-2: Bridge shown once before DailyJourney takes over
+  if (!bridgeDismissed) {
+    return (
+      <div className="min-h-screen bg-parchment py-10 px-4">
+        <div className="mx-auto max-w-[720px] space-y-6">
+          <WhyYouAreHereCard
+            bridge={journey.whyYouAreHere}
+            variant="parchment"
+            hideNext
+            headingLabel={`يوم ${day} — لماذا الآن`}
+          />
+          <div className="flex justify-center">
+            <button
+              type="button"
+              onClick={() => setBridgeDismissed(true)}
+              className="tm-gold-btn inline-flex items-center justify-center rounded-xl px-8 py-3 text-sm font-semibold"
+            >
+              ابدأ يوم {day} ←
+            </button>
+          </div>
+          <p className="text-center text-[11px] text-[#8c7851]/70">
+            هذه اللحظة لك. خذها حين تكون مستعدّاً.
+          </p>
+        </div>
       </div>
     );
   }

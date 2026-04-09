@@ -5,6 +5,8 @@ import Link from "next/link";
 import { createBrowserClient } from "@supabase/ssr";
 import { JourneyLanding } from "./JourneyLanding";
 import { useJourneyMemory } from "@/hooks/useJourneyMemory";
+import { WhyYouAreHereCard } from "@/components/journey/WhyYouAreHereCard";
+import { DecisionExplainer } from "@/components/journey/DecisionExplainer";
 
 type UserLite = {
   id: string;
@@ -26,8 +28,12 @@ function isActiveSubscription(profile: ProfileLite) {
 }
 
 export default function Home() {
-  // V9: Journey memory — continuity banner for returning users
-  const journey = useJourneyMemory({ pageName: "/" });
+  // V10 PR-2: Journey memory with live bridge + timeline
+  const journey = useJourneyMemory({
+    pageName: "/",
+    loadTimeline: true,
+    bridgeContext: "home",
+  });
   const supabase = useMemo(
     () =>
       createBrowserClient(
@@ -146,33 +152,30 @@ export default function Home() {
 
   return (
     <div className="tm-shell space-y-6 pb-10 pt-4">
-      {/* V9: Journey Memory — Continuity banner (returning users only) */}
-      {journey.session !== "first_visit" && (
-        <section className="tm-card border-[#c4a265]/40 bg-gradient-to-b from-[#faf4e4] to-[#fcfaf7] p-5 sm:p-6 space-y-3">
-          <div className="flex items-center gap-2">
-            <span className="text-[10px] tracking-[0.18em] text-[#8c7851]/80">
-              {journey.session === "returning_same_day"
-                ? "رجعت اليوم"
-                : journey.session === "returning_next_day"
+      {/* V10 PR-2: WhyYouAreHere bridge — causal, not generic */}
+      <WhyYouAreHereCard
+        bridge={journey.whyYouAreHere}
+        variant="parchment"
+        headingLabel={
+          journey.session === "first_visit"
+            ? "لحظة البداية"
+            : journey.session === "returning_same_day"
+              ? "رجعت اليوم"
+              : journey.session === "returning_next_day"
                 ? "أهلاً من جديد"
-                : "رجعت بعد غياب"}
-            </span>
-            <span className="text-[#c4a265]">✦</span>
-          </div>
-          <div>
-            <h2 className="text-lg font-semibold text-[#2f2619]">{journey.continuity.title}</h2>
-            <p className="mt-1.5 text-sm leading-relaxed text-[#5f5648]/90">
-              {journey.continuity.body}
-            </p>
-          </div>
-          <Link
-            href={journey.continuity.ctaRoute}
-            className="tm-gold-btn inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold"
-          >
-            ← {journey.continuity.cta}
-          </Link>
-        </section>
-      )}
+                : "رجعت بعد غياب"
+        }
+      />
+
+      {/* Explainer for the primary CTA — expandable "why this step?" */}
+      <div className="px-1">
+        <DecisionExplainer
+          explanation={journey.explain(
+            journey.state.sessionCount === 0 ? "start_day_one" : "resume_where_left"
+          )}
+          variant="parchment"
+        />
+      </div>
 
       {showEidPopup ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 px-4">

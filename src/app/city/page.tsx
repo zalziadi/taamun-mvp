@@ -11,6 +11,8 @@ import NextStepPanel from "@/components/NextStepPanel";
 import { getNextStepOptions } from "@/lib/nextStep";
 import { useUserBehavior } from "@/hooks/useUserBehavior";
 import { useSystemBrain } from "@/hooks/useSystemBrain";
+import { useJourneyMemory } from "@/hooks/useJourneyMemory";
+import { WhyYouAreHereCard } from "@/components/journey/WhyYouAreHereCard";
 
 type DayPayload = {
   ok?: boolean;
@@ -34,6 +36,12 @@ export default function CityPage() {
   const { behavior, pattern, track } = useUserBehavior("city");
   // V8: Brain drives dailyFocus + greeting message
   const { decision: brainDecision } = useSystemBrain({ pageName: "city" });
+  // V10 PR-2: Bridge — "why your city looks like this now"
+  const journey = useJourneyMemory({
+    pageName: "/city",
+    loadTimeline: true,
+    bridgeContext: "city",
+  });
   const [loading, setLoading] = useState(true);
   const [city, setCity] = useState<CityMap | null>(null);
   const [microReward, setMicroReward] = useState<MicroReward | null>(null);
@@ -117,6 +125,13 @@ export default function CityPage() {
         variant="banner"
         patternType={pattern.type}
         onClick={() => track.decisionClick()}
+      />
+
+      {/* V10 PR-2: Bridge — why your city looks like this now */}
+      <WhyYouAreHereCard
+        bridge={journey.whyYouAreHere}
+        variant="parchment"
+        headingLabel="لماذا مدينتك هكذا الآن"
       />
 
       <section className="tm-card p-6 sm:p-7 text-center">
