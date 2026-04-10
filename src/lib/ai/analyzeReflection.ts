@@ -88,9 +88,24 @@ const SYSTEM_PROMPT = `أنت مرآةٌ صامتة لشخصٍ يكتب تأمّ
  * try/catch and swallow the error silently (that's the contract
  * for the /api/reflections POST fire-and-forget path).
  */
+/**
+ * System Activation: analyzeReflection now accepts optional intelligence
+ * context blocks. When provided, the AI mirror becomes aware of:
+ *   1. toneInstruction — how to speak to THIS user (from behavioral state)
+ *   2. fingerprintBlock — who this user IS (compressed identity)
+ *   3. memoryBlock — what this user SAID recently (chronological story)
+ *
+ * All three are optional. Without them, the analyzer works in
+ * single-shot mode (original behavior). Backward compatible.
+ */
 export async function analyzeReflection(
   rawText: string,
-  day: number
+  day: number,
+  context?: {
+    toneInstruction?: string;
+    fingerprintBlock?: string;
+    memoryBlock?: string;
+  }
 ): Promise<ReflectionAnalysis> {
   const text = String(rawText ?? "").trim();
   if (text.length < 3) {
@@ -106,8 +121,29 @@ export async function analyzeReflection(
   }
 
   const boundedText = text.length > MAX_INPUT_CHARS ? text.slice(0, MAX_INPUT_CHARS) : text;
-  const userPrompt = `يوم ${day} من الرحلة. هذه كلمات المتأمّل:
 
+  // Build context blocks — only include non-empty sections
+  const sections: string[] = [];
+
+  if (context?.memoryBlock?.trim()) {
+    sections.push(
+      `— سياق من رحلته السابقة (للخلفيّة فقط، لا تقتبس منه) —\n${context.memoryBlock.trim()}\n— نهاية السياق —`
+    );
+  }
+
+  if (context?.fingerprintBlock?.trim()) {
+    sections.push(context.fingerprintBlock.trim());
+  }
+
+  const contextBlock = sections.length > 0 ? `\n${sections.join("\n\n")}\n` : "";
+
+  // Tone instruction injected into system prompt when available
+  const toneAddendum = context?.toneInstruction?.trim()
+    ? `\n\nتعليمات إضافية حول هذا المتأمّل:\n${context.toneInstruction.trim()}`
+    : "";
+
+  const userPrompt = `يوم ${day} من الرحلة. هذه كلمات المتأمّل:
+${contextBlock}
 """
 ${boundedText}
 """
@@ -126,7 +162,7 @@ ${boundedText}
       max_tokens: MAX_TOKENS,
       response_format: { type: "json_object" },
       messages: [
-        { role: "system", content: SYSTEM_PROMPT },
+        { role: "system", content: SYSTEM_PROMPT + toneAddendum },
         { role: "user", content: userPrompt },
       ],
     }),

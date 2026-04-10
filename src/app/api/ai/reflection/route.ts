@@ -20,6 +20,19 @@
 import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/authz";
 import { analyzeReflection } from "@/lib/ai/analyzeReflection";
+import { ensureUserProgress } from "@/lib/progressStore";
+import { orchestrate } from "@/lib/ai/orchestrate";
+import { computeBehavioralSignals } from "@/lib/ai/signals";
+import {
+  buildFingerprint,
+  fingerprintToPromptBlock,
+} from "@/lib/ai/memoryEvolution";
+import { evaluateFeedbackLoop } from "@/lib/ai/feedbackLoop";
+import {
+  fetchRecentReflections,
+  compressToPromptContext,
+} from "@/lib/ai/memory";
+import type { ReflectionForAnalysis } from "@/lib/ai/patterns";
 
 export const dynamic = "force-dynamic";
 
@@ -52,8 +65,65 @@ export async function POST(req: Request) {
     return NextResponse.json({ ok: false, error: "invalid_day" }, { status: 400 });
   }
 
+  // System Activation: build full intelligence context for the AI.
+  // All from DB — zero localStorage. Progressive: if any step fails,
+  // the analyzer still works in single-shot mode.
+  let aiContext: Parameters<typeof analyzeReflection>[2] = undefined;
   try {
-    const analysis = await analyzeReflection(text, day);
+    // Fetch recent reflections + progress for context
+    const [recentRows, progress] = await Promise.all([
+      fetchRecentReflections(auth.supabase, auth.user.id, {
+        excludeDay: day,
+        limit: 10,
+      }),
+      ensureUserProgress(auth.supabase, auth.user.id),
+    ]);
+
+    if (progress.ok && recentRows.length > 0) {
+      // Memory block
+      const memoryCtx = compressToPromptContext(recentRows.slice(0, 4));
+
+      // Orchestrate for tone
+      const orch = orchestrate({
+        currentDay: progress.currentDay,
+        completedDays: progress.completedDays,
+        reflections: recentRows as ReflectionForAnalysis[],
+      });
+
+      // Fingerprint for identity
+      const signals = computeBehavioralSignals(
+        progress.currentDay,
+        progress.completedDays,
+        recentRows as ReflectionForAnalysis[]
+      );
+      const feedback = evaluateFeedbackLoop(
+        progress.currentDay,
+        progress.completedDays,
+        recentRows as ReflectionForAnalysis[]
+      );
+      const fp = buildFingerprint({
+        archetype: orch.profile.behavioralState,
+        signals,
+        evolution: feedback.stateChange,
+        topThemes: orch.profile.patternInsight.recurringThemes
+          .slice(0, 3)
+          .map((t) => t.theme),
+        currentDay: progress.currentDay,
+        completedCount: progress.completedDays.length,
+      });
+
+      aiContext = {
+        toneInstruction: orch.tone.instruction,
+        fingerprintBlock: fingerprintToPromptBlock(fp),
+        memoryBlock: memoryCtx.promptText,
+      };
+    }
+  } catch {
+    // Intelligence is progressive — analyzer works without context
+  }
+
+  try {
+    const analysis = await analyzeReflection(text, day, aiContext);
     return NextResponse.json({ ok: true, analysis });
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
