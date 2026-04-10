@@ -1,10 +1,13 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Amiri, Manrope, Noto_Serif } from "next/font/google";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { AppChrome } from "@/components/AppChrome";
 import { APP_DESCRIPTION, APP_DOMAIN, APP_NAME } from "@/lib/appConfig";
 import { isRamadanProgramClosed } from "@/lib/season";
 import "./globals.css";
+
+const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
 
 const amiri = Amiri({
   subsets: ["arabic"],
@@ -73,6 +76,24 @@ export default function RootLayout({
 
   return (
     <html lang="ar" dir="rtl">
+      <head>
+        {META_PIXEL_ID && (
+          <Script id="meta-pixel" strategy="afterInteractive">
+            {`
+              !function(f,b,e,v,n,t,s)
+              {if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+              n.callMethod.apply(n,arguments):n.queue.push(arguments)};
+              if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';
+              n.queue=[];t=b.createElement(e);t.async=!0;
+              t.src=v;s=b.getElementsByTagName(e)[0];
+              s.parentNode.insertBefore(t,s)}(window, document,'script',
+              'https://connect.facebook.net/en_US/fbevents.js');
+              fbq('init', '${META_PIXEL_ID}');
+              fbq('track', 'PageView');
+            `}
+          </Script>
+        )}
+      </head>
       <body
         className={`${amiri.variable} ${manrope.variable} ${notoSerif.variable} tm-body antialiased`}
       >

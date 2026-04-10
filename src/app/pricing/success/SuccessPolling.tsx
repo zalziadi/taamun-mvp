@@ -1,7 +1,8 @@
 "use client";
 
-import { useEffect, useState, useCallback } from "react";
+import { useEffect, useState, useCallback, useRef } from "react";
 import Link from "next/link";
+import { track, trackFbq, getStoredUtm } from "@/lib/analytics";
 
 type SubStatus = {
   active: boolean;
@@ -29,6 +30,7 @@ export function SuccessPolling() {
   );
   const [sub, setSub] = useState<SubStatus | null>(null);
   const [dots, setDots] = useState(0);
+  const purchaseTracked = useRef(false);
 
   const checkStatus = useCallback(async () => {
     try {
@@ -40,6 +42,22 @@ export function SuccessPolling() {
       if (data.ok && data.active) {
         setSub(data);
         setStatus("active");
+
+        // ── Conversion tracking (fire once) ──
+        if (!purchaseTracked.current) {
+          purchaseTracked.current = true;
+          const utm = getStoredUtm();
+          track("purchase_completed", {
+            tier: data.tier,
+            ...(utm ?? {}),
+          });
+          trackFbq("Purchase", {
+            content_name: "taamun_subscription",
+            content_category: data.tier ?? "unknown",
+            currency: "SAR",
+          });
+        }
+
         return true;
       }
     } catch {

@@ -5,6 +5,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "../../lib/supabaseClient";
 import { getAppOriginClient } from "@/lib/appOrigin";
+import { track, trackFbq, identifyUser } from "@/lib/analytics";
 
 interface AuthClientProps {
   embedded?: boolean;
@@ -147,6 +148,10 @@ export function AuthClient({ embedded }: AuthClientProps) {
       setSent(true);
       setResendCooldown();
       setNotice("تم إرسال رابط الدخول إلى بريدك. افحص الوارد/السبام.");
+
+      // Conversion: Lead (magic link sent = intent to register)
+      track("signup_started", { method: "email" });
+      trackFbq("Lead", { content_name: "email_magic_link" });
     } catch (e) {
       const raw = e instanceof Error ? e.message : "";
       const lowered = raw.toLowerCase();
@@ -250,6 +255,17 @@ export function AuthClient({ embedded }: AuthClientProps) {
         type: "magiclink",
       });
       if (verifyError) throw verifyError;
+
+      // Conversion: CompleteRegistration (session created)
+      track("signup_completed", { method: "phone" });
+      trackFbq("CompleteRegistration", { content_name: "phone_otp" });
+
+      // Identify user in analytics (link anonymous → real)
+      const { data: userData } = await supabase.auth.getUser();
+      if (userData?.user?.id) {
+        identifyUser(userData.user.id, { method: "phone" });
+      }
+
       router.replace("/program");
     } catch (e) {
       console.error("[Phone OTP] Verify error:", e);

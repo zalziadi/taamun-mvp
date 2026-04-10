@@ -2,7 +2,7 @@
 
 export type AgentName = "warda" | "musakhar" | "samra";
 
-export type Platform = "twitter" | "instagram";
+export type Platform = "twitter" | "instagram" | "whatsapp";
 
 export interface IncomingMessage {
   platform: Platform;
