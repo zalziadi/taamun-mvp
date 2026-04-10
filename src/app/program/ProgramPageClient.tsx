@@ -111,6 +111,8 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
   const [feedbackSummary, setFeedbackSummary] = useState<string | null>(null);
   const [engagementLevel, setEngagementLevel] = useState<string | null>(null);
   const [behavioralScore, setBehavioralScore] = useState<number | null>(null);
+  // Awareness Layer — Gene Keys secondary lens (non-disruptive badge)
+  const [awarenessLabel, setAwarenessLabel] = useState<string | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -184,6 +186,8 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
               if (intData.feedback?.summary) setFeedbackSummary(intData.feedback.summary);
               if (intData.signals?.engagementLevel) setEngagementLevel(intData.signals.engagementLevel);
               if (typeof intData.signals?.behavioralScore === "number") setBehavioralScore(intData.signals.behavioralScore);
+              // Awareness layer — safe secondary badge
+              if (intData.awareness?.label) setAwarenessLabel(intData.awareness.label);
             }
           }
         } catch {
@@ -352,6 +356,18 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
             <p className="text-sm leading-relaxed text-[#2f2619]">
               {intelligenceAction.reason}
             </p>
+          )}
+          {/* Awareness badge — Gene Keys secondary lens. Non-disruptive,
+              purely informational. Does NOT affect routing, CTA, or scoring. */}
+          {awarenessLabel && (
+            <div className="flex items-center gap-2 pt-2 border-t border-[#d8cdb9]/50">
+              <span className="text-[10px] tracking-[0.15em] text-[#8c7851]/70">
+                وعي الرحلة
+              </span>
+              <span className="text-xs font-semibold text-[#5a4531]">
+                {awarenessLabel}
+              </span>
+            </div>
           )}
         </section>
       )}
