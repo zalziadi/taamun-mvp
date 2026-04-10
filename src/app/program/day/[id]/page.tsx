@@ -141,28 +141,26 @@ export default function ProgramDayPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [day, router]);
 
-  // Task 2 (Hybrid): Journey Guard.
+  // Hybrid Journey Guard.
   //
-  // URL is NOT the source of truth — journey state is. But there's a
-  // nuance: moving FORWARD without permission is forbidden, while
-  // revisiting PAST days is a legitimate act of reflection.
-  //
-  //   welcome                          → strict redirect to /program
-  //   completed                        → strict redirect to /progress
-  //   day && URL  > decision.day       → forward mismatch → strict redirect
-  //   day && URL  < decision.day       → backward revisit → render + soft notice
+  //   welcome && day === 1             → ALLOW (fresh user's entry point)
+  //   welcome && day > 1               → redirect to /program/day/1
+  //   completed                        → redirect to /progress
+  //   day && URL > decision.day        → forward mismatch → redirect
+  //   day && URL < decision.day        → backward revisit → soft notice
   //   day && URL === decision.day      → match → render normally
   //
-  // The forward/welcome/completed cases use router.replace and are
-  // gated by the loader to prevent wrong-content flashes. The
-  // backward case renders the actual day content with a non-blocking
-  // ResumeNotice above the bridge, so the user can re-read or add
-  // to a past reflection while still knowing where their real
-  // journey is.
+  // The welcome-allows-day-1 rule fixes the bootstrap paradox: fresh
+  // users couldn't enter day 1, but day 1 is their only path out of
+  // "welcome" state. Without this, every "Start" button in the app
+  // created an infinite redirect loop.
   const decision = resolveJourneyRoute(journey.state);
   let redirectTo: string | null = null;
   if (decision.kind === "welcome") {
-    redirectTo = "/program";
+    if (day !== 1) {
+      redirectTo = "/program/day/1";
+    }
+    // day === 1 → fall through, allow rendering
   } else if (decision.kind === "completed") {
     redirectTo = "/progress";
   } else if (decision.kind === "day" && day > decision.day) {
