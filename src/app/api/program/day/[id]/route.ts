@@ -161,16 +161,23 @@ export async function GET(_: Request, { params }: Params) {
       streakDays: progressState.streak,
     });
 
-    // Build city map
-    city = buildCityMap({
-      identity,
-      progress: progressState,
-      context: cognitive,
-      journey: journeyState,
-      patterns,
-      actionsCompleted: identity.daysWithReflection,
-      actionEffectiveness: 5,
-    });
+    // Build city map — in its own try/catch so a failure in identity,
+    // personality, or guidance doesn't kill the city. The city can render
+    // with partial inputs and is the most visible feature on /city.
+    try {
+      city = buildCityMap({
+        identity,
+        progress: progressState,
+        context: cognitive,
+        journey: journeyState,
+        patterns,
+        actionsCompleted: identity.daysWithReflection,
+        actionEffectiveness: 5,
+      });
+    } catch {
+      // City build failed — leave city as null. The /city page shows
+      // "المدينة تتشكّل مع تقدّمك" which is acceptable as a fallback.
+    }
 
     // Get recent decisions for orchestrator health check
     let recentDecisions: { decision: string; goal: string; date: string }[] = [];
