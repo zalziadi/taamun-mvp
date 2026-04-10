@@ -102,6 +102,16 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
     after_state?: string;
   } | null>(null);
 
+  // System Activation: intelligence-driven adaptive UI
+  const [intelligenceAction, setIntelligenceAction] = useState<{
+    type: string;
+    route: string;
+    reason: string;
+  } | null>(null);
+  const [feedbackSummary, setFeedbackSummary] = useState<string | null>(null);
+  const [engagementLevel, setEngagementLevel] = useState<string | null>(null);
+  const [behavioralScore, setBehavioralScore] = useState<number | null>(null);
+
   useEffect(() => {
     const load = async () => {
       setLoading(true);
@@ -160,6 +170,24 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
           }
         } catch {
           // Best-effort enrichment
+        }
+
+        // System Activation: fetch intelligence for adaptive UI
+        try {
+          const intRes = await fetch("/api/journey/intelligence", {
+            cache: "no-store",
+          });
+          if (intRes.ok) {
+            const intData = await intRes.json();
+            if (intData.ok) {
+              if (intData.nextAction) setIntelligenceAction(intData.nextAction);
+              if (intData.feedback?.summary) setFeedbackSummary(intData.feedback.summary);
+              if (intData.signals?.engagementLevel) setEngagementLevel(intData.signals.engagementLevel);
+              if (typeof intData.signals?.behavioralScore === "number") setBehavioralScore(intData.signals.behavioralScore);
+            }
+          }
+        } catch {
+          // Intelligence is progressive enhancement — never blocks
         }
       } catch {
         setError("تعذر الاتصال بالخادم. حاول مرة أخرى.");
@@ -237,7 +265,11 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
 
           <button
             type="button"
-            onClick={() => router.push(programDayRoute(currentDay))}
+            onClick={() => {
+              // Intelligence-driven CTA: use the recommended route when available
+              const route = intelligenceAction?.route ?? programDayRoute(currentDay);
+              router.push(route);
+            }}
             className="tm-gold-btn rounded-xl px-5 py-2.5 text-sm"
           >
             {completedCount > 0
@@ -283,6 +315,46 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
           <p className="mt-4 text-sm text-[#9b5548]">{error}</p>
         )}
       </section>
+
+      {/* System Activation: intelligence-driven insight card */}
+      {(feedbackSummary || intelligenceAction?.reason) && (
+        <section className="tm-card border-[#c4a265]/30 bg-gradient-to-b from-[#faf4e4] to-[#fcfaf7] p-5 sm:p-6 space-y-3">
+          {behavioralScore !== null && (
+            <div className="flex items-center gap-3">
+              <div
+                className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold ${
+                  engagementLevel === "high"
+                    ? "bg-[#c4a265]/20 text-[#8c7851]"
+                    : engagementLevel === "medium"
+                      ? "bg-[#b39b71]/15 text-[#7b694a]"
+                      : "bg-[#d8cdb9]/20 text-[#7d7362]"
+                }`}
+              >
+                {behavioralScore}
+              </div>
+              <div>
+                <p className="text-[10px] tracking-[0.18em] text-[#8c7851]/80">
+                  {engagementLevel === "high"
+                    ? "حضورٌ مرتفع"
+                    : engagementLevel === "medium"
+                      ? "حضورٌ متوسّط"
+                      : "حضورٌ خفيف"}
+                </p>
+              </div>
+            </div>
+          )}
+          {feedbackSummary && (
+            <p className="text-sm leading-relaxed text-[#5f5648]/90 italic">
+              {feedbackSummary}
+            </p>
+          )}
+          {intelligenceAction?.reason && (
+            <p className="text-sm leading-relaxed text-[#2f2619]">
+              {intelligenceAction.reason}
+            </p>
+          )}
+        </section>
+      )}
 
       {catchUp && (
         <section className="tm-card border-[#c4a265]/30 bg-[#faf6ee] p-5 sm:p-6 space-y-3">
