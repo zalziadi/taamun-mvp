@@ -240,10 +240,22 @@ export default function ProgramDayPage() {
         content={content}
         isFirstTime={isFirstTime}
         onComplete={() => {
-          // V9: Record day completion in journey memory
+          // Record day completion in BOTH state sources so the hybrid
+          // guard and the progress API agree on what day the user is on.
+          //
+          // Critical: currentDay must be day + 1 (the NEXT day the user
+          // should open), not the day they just completed. If we write
+          // currentDay = day, the guard thinks they haven't advanced and
+          // will let them re-enter the same day rather than advance.
+          //
+          // The progress table POST (inside DailyJourney.handleClosingComplete)
+          // already sets current_day = completedDays.includes(currentDay)
+          //   ? min(TOTAL_DAYS, currentDay + 1) : currentDay
+          // so we mirror that logic here for consistency.
+          const nextDay = Math.min(28, day + 1);
           journey.update({
             completedStep: `day_${day}`,
-            currentDay: day,
+            currentDay: nextDay,
             progressDelta: 5,
             emotionalState: "flow",
           });
