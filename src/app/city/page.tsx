@@ -52,6 +52,10 @@ export default function CityPage() {
   const [decisionReason, setDecisionReason] = useState("");
   const [currentDay, setCurrentDay] = useState(1);
 
+  // System Activation: intelligence-driven city rendering
+  const [intelligenceZone, setIntelligenceZone] = useState<string | null>(null);
+  const [intelligenceReason, setIntelligenceReason] = useState<string | null>(null);
+
   useEffect(() => {
     const load = async () => {
       setLoading(true);
@@ -89,6 +93,29 @@ export default function CityPage() {
         if (dayData.orchestrator?.flowLock?.enabled) {
           setFlowLockEnabled(true);
           setDecisionReason(dayData.orchestrator.currentStep?.reason ?? "");
+        }
+        // System Activation: fetch intelligence for city signals
+        try {
+          const intRes = await fetch("/api/journey/intelligence", { cache: "no-store" });
+          if (intRes.ok) {
+            const intData = await intRes.json();
+            if (intData.ok && intData.citySignals) {
+              if (intData.citySignals.highlightZone) {
+                setIntelligenceZone(intData.citySignals.highlightZone);
+              }
+              if (intData.citySignals.reason) {
+                setIntelligenceReason(intData.citySignals.reason);
+              }
+              // Map behavioral state to emotional state for city rendering
+              const state = intData.profile?.behavioralState;
+              if (state === "deep_reflector") setEmotionalState("engaged");
+              else if (state === "avoidant") setEmotionalState("resistant");
+              else if (state === "inconsistent") setEmotionalState("lost");
+              else if (state === "new_user") setEmotionalState("curious");
+            }
+          }
+        } catch {
+          // Intelligence is progressive — never blocks
         }
       } catch {
         setError("تعذر الاتصال بالخادم");
@@ -161,12 +188,20 @@ export default function CityPage() {
         </section>
       )}
 
+      {/* System Activation: intelligence-driven zone highlight reason */}
+      {intelligenceReason && (
+        <section className="tm-card border-[#c4a265]/30 bg-gradient-to-b from-[#faf4e4] to-[#fcfaf7] p-4 text-center">
+          <p className="text-[10px] tracking-[0.18em] text-[#8c7851]/80">ما يُضيء الآن</p>
+          <p className="mt-1 text-sm font-semibold text-[#2f2619]">{intelligenceReason}</p>
+        </section>
+      )}
+
       {city ? (
         <section className="tm-card relative bg-[#15130f] p-6 sm:p-8 overflow-hidden">
           <LivingCityMap
             city={city}
             emotionalState={emotionalState}
-            focusZoneId={brainDecision?.uiHints?.highlightZone ?? guidanceFocus}
+            focusZoneId={intelligenceZone ?? brainDecision?.uiHints?.highlightZone ?? guidanceFocus}
             microReward={microReward}
           />
         </section>
