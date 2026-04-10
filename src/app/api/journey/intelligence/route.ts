@@ -33,6 +33,7 @@ import {
   buildFingerprint,
   fingerprintToPromptBlock,
 } from "@/lib/ai/memoryEvolution";
+import { mapAwareness } from "@/lib/ai/awarenessLayer";
 import type { ReflectionForAnalysis } from "@/lib/ai/patterns";
 
 export const dynamic = "force-dynamic";
@@ -114,7 +115,18 @@ export async function GET() {
 
   const fingerprintBlock = fingerprintToPromptBlock(fingerprint);
 
-  // 7. Return unified intelligence output
+  // 7. Awareness layer — secondary lens, additive only
+  //    Does NOT affect any field above. Safe to remove entirely.
+  const awareness = mapAwareness({
+    behavioralScore: signals.behavioralScore,
+    consistencyIndex: signals.consistencyIndex,
+    engagementLevel: signals.engagementLevel,
+    avgNoteLength: signals.avgNoteLength,
+    stateChange: feedback.stateChange,
+    completedCount: progress.completedDays.length,
+  });
+
+  // 8. Return unified intelligence output
   return NextResponse.json({
     ok: true,
 
@@ -158,5 +170,8 @@ export async function GET() {
       patterns: orch.aiPatternBlock,
       fingerprint: fingerprintBlock,
     },
+
+    // Awareness layer — secondary Gene Keys lens (additive, non-disruptive)
+    awareness,
   });
 }
