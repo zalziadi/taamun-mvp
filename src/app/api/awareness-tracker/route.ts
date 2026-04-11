@@ -40,8 +40,8 @@ export async function GET() {
     .order("day", { ascending: true });
 
   if (error) {
-    // awareness_logs query failed — return empty data instead of 500
-    return NextResponse.json({ ok: true, total_days: TOTAL_DAYS, entries: [], counts: { shadow: 0, gift: 0, best_possibility: 0 } });
+    // DEBUG: expose actual error for diagnosis
+    return NextResponse.json({ ok: true, total_days: TOTAL_DAYS, entries: [], counts: { shadow: 0, gift: 0, best_possibility: 0 }, _debug_error: error.message, _debug_code: error.code, _debug_hint: error.hint });
   }
 
   const entries = (data ?? [])
