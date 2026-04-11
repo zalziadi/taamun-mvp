@@ -1,6 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { buildGuideSystemPrompt, detectConversionStage, type UserMemory } from "@/lib/guide-prompt";
+import { z } from "zod";
 
 const GUIDE_API_URL = process.env.GUIDE_API_URL ?? "https://api.openai.com/v1/chat/completions";
 const GUIDE_API_KEY = process.env.GUIDE_API_KEY ?? process.env.OPENAI_API_KEY ?? "";
@@ -18,12 +19,27 @@ const DEFAULT_MEMORY: UserMemory = {
   actions_completed: 0,
 };
 
-interface GuideRequest {
-  message: string;
-  context: { verse: string; day: number };
-  memory?: UserMemory; // for anonymous users
-  history?: Array<{ role: string; content: string }>;
-}
+const GuideRequestSchema = z.object({
+  message: z.string().min(1).max(2000),
+  context: z.object({
+    verse: z.string().max(500),
+    day: z.number().int().min(1).max(28),
+  }),
+  memory: z.object({
+    patterns: z.array(z.string()).max(20).optional(),
+    awareness_level: z.enum(["surface", "growing", "deep"]).optional(),
+    commitment_score: z.number().int().min(0).max(10).optional(),
+    last_topic: z.string().max(200).nullable().optional(),
+    last_action_taken: z.boolean().optional(),
+    current_day: z.number().int().min(1).max(28).optional(),
+    actions_completed: z.number().int().min(0).optional(),
+    // conversion_stage ممنوع من العميل — يُحسب server-side فقط
+  }).optional(),
+  history: z.array(z.object({
+    role: z.enum(["user", "assistant"]),
+    content: z.string().max(2000),
+  })).max(20).optional(),
+});
 
 interface GuideResponse {
   reply: string;
@@ -37,18 +53,35 @@ interface GuideResponse {
 }
 
 export async function POST(req: NextRequest) {
-  const body: GuideRequest = await req.json();
-  const { message, context, history = [] } = body;
+  let body: z.infer<typeof GuideRequestSchema>;
 
-  if (!message?.trim()) {
-    return NextResponse.json({ error: "message required" }, { status: 400 });
+  try {
+    const raw = await req.json();
+    body = GuideRequestSchema.parse(raw);
+  } catch {
+    return NextResponse.json({ error: "invalid request" }, { status: 400 });
   }
+
+  const { message, context, history = [] } = body;
 
   const supabase = await createSupabaseServerClient();
   const { data: { user } } = await supabase.auth.getUser();
 
   // ── Load memory ──
-  let memory: UserMemory = body.memory ?? DEFAULT_MEMORY;
+  // Only safe fields from client; conversion_stage always starts "cold"
+  let memory: UserMemory = {
+    ...DEFAULT_MEMORY,
+    ...(body.memory ? {
+      patterns: body.memory.patterns ?? [],
+      awareness_level: body.memory.awareness_level ?? "surface",
+      commitment_score: body.memory.commitment_score ?? 0,
+      last_topic: body.memory.last_topic ?? null,
+      last_action_taken: body.memory.last_action_taken ?? false,
+      current_day: body.memory.current_day ?? 1,
+      actions_completed: body.memory.actions_completed ?? 0,
+      conversion_stage: "cold", // never from client
+    } : {}),
+  };
   let isAnonymous = !user;
 
   if (user) {
@@ -189,10 +222,10 @@ export async function POST(req: NextRequest) {
       update.last_action_taken = false; // reset — new action given
       update.last_topic = mu.action_given;
     }
-    // Track conversion stage from LLM
-    const muAny = mu as Record<string, unknown>;
-    if (muAny.conversion_stage) {
-      update.conversion_stage = muAny.conversion_stage;
+    // conversion_stage computed server-side only — never from LLM
+    const computedStage = detectConversionStage(memory);
+    if (computedStage !== memory.conversion_stage) {
+      update.conversion_stage = computedStage;
     }
     // If action stage → increment actions_completed
     if (guideResponse.stage === "action" && memory.last_action_taken) {
