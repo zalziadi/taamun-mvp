@@ -62,7 +62,8 @@ export async function POST(req: Request) {
   );
 
   if (error) {
-    return NextResponse.json({ ok: false, error: "save_failed" }, { status: 500 });
+    console.error("[awareness-log] save error:", error.message);
+    return NextResponse.json({ ok: false, error: "save_failed", detail: error.message }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true, day, level });
