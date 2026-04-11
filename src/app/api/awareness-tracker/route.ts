@@ -35,20 +35,20 @@ export async function GET() {
   const { supabase, user } = auth;
   const { data, error } = await supabase
     .from("awareness_logs")
-    .select("day, level, created_at")
+    .select("day, level")
     .eq("user_id", user.id)
     .order("day", { ascending: true });
 
   if (error) {
     // DEBUG: expose actual error for diagnosis
-    return NextResponse.json({ ok: true, total_days: TOTAL_DAYS, entries: [], counts: { shadow: 0, gift: 0, best_possibility: 0 }, _debug_error: error.message, _debug_code: error.code, _debug_hint: error.hint });
+    return NextResponse.json({ ok: true, total_days: TOTAL_DAYS, entries: [], counts: { shadow: 0, gift: 0, best_possibility: 0 } });
   }
 
   const entries = (data ?? [])
     .map((row) => ({
       day: Number(row.day),
       state: toState(String(row.level ?? "")),
-      created_at: row.created_at,
+
     }))
     .filter((row) => row.state !== null);
 
