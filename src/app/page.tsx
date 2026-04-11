@@ -145,7 +145,13 @@ export default function Home() {
     }
   }
 
-  if (!ready) return null;
+  if (!ready) {
+    return (
+      <div className="flex min-h-[60vh] items-center justify-center">
+        <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#c9b88a] border-t-transparent" />
+      </div>
+    );
+  }
 
   if (!user) {
     return <JourneyLanding />;
