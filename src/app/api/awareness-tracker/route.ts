@@ -40,7 +40,8 @@ export async function GET() {
     .order("day", { ascending: true });
 
   if (error) {
-    return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 });
+    // awareness_logs query failed — return empty data instead of 500
+    return NextResponse.json({ ok: true, total_days: TOTAL_DAYS, entries: [], counts: { shadow: 0, gift: 0, best_possibility: 0 } });
   }
 
   const entries = (data ?? [])
@@ -100,7 +101,9 @@ export async function POST(req: Request) {
   );
 
   if (error) {
-    return NextResponse.json({ ok: false, error: "save_failed" }, { status: 500 });
+    // awareness_logs save failed — log but don't block user experience
+    console.error("[awareness-tracker] save error:", error.message);
+    return NextResponse.json({ ok: false, error: "save_failed", detail: error.message }, { status: 500 });
   }
 
   return NextResponse.json({ ok: true, day, state });
