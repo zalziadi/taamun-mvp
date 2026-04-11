@@ -21,9 +21,19 @@ export async function GET() {
 
   const { supabase, user } = auth;
 
-  // Read real progress (completed_days) from progress table
+  // Read real progress from progress table
   const progress = await readUserProgress(supabase, user.id);
-  const completedDaysSet = new Set<number>(progress.ok ? progress.completedDays : []);
+
+  // Build completed days set
+  // If completedDays array is empty but currentDay > 1, infer days 1..(currentDay-1) as completed
+  let completedDaysArr: number[] = progress.ok ? progress.completedDays : [];
+  const currentDay = progress.ok ? progress.currentDay : 1;
+
+  if (completedDaysArr.length === 0 && currentDay > 1) {
+    completedDaysArr = Array.from({ length: currentDay - 1 }, (_, i) => i + 1);
+  }
+
+  const completedDaysSet = new Set<number>(completedDaysArr);
 
   const { data: awarenessRows, error: awarenessError } = await supabase
     .from("awareness_logs")
@@ -86,30 +96,27 @@ export async function GET() {
 
       const state = buildProgressState(
         progress.currentDay,
-        progress.completedDays,
+        completedDaysArr,
         profile?.subscription_start_date
       );
 
       const identity = await loadAndBuildIdentity(
         supabase,
         user.id,
-        progress.completedDays,
+        completedDaysArr,
         progress.currentDay
       );
 
-      // Identity shift history (last N snapshots)
       const identityShiftHistory = identity.identityTimeline.map((snap) => ({
         date: snap.date,
         engagementScore: snap.engagementScore,
         trajectory: snap.trajectory,
       }));
 
-      // Adjust awareness_avg weighting by recent identity shifts
       const recentShifts = identityShiftHistory.slice(-5);
       const trajectoryBoost = recentShifts.filter((s) => s.trajectory === "improving").length / Math.max(1, recentShifts.length);
       const adjustedAvg = metrics.awareness_avg * (1 + trajectoryBoost * 0.2);
 
-      // V3: Build narrative memory from timeline
       const narrativeDays = timeline
         .filter((t) => t.completed && t.awareness_state)
         .map((t) => ({
@@ -120,7 +127,6 @@ export async function GET() {
         ? buildNarrativeMemory({ lastDays: narrativeDays })
         : [];
 
-      // V3: Engagement curve
       const engagementCurve = identityShiftHistory.length > 0
         ? Number((
             identityShiftHistory.reduce((sum, s) => sum + s.engagementScore, 0) /
@@ -128,7 +134,6 @@ export async function GET() {
           ).toFixed(2))
         : identity.engagementScore;
 
-      // V3: Identity reflections
       const identityReflections = identityShiftHistory.slice(-5);
 
       cognitive = {
@@ -141,14 +146,13 @@ export async function GET() {
         engagement_score: identity.engagementScore,
         identity_shift_history: identityShiftHistory,
         adjusted_awareness_avg: Number(adjustedAvg.toFixed(2)),
-        // V3 additions
         identity_reflections: identityReflections,
         narrative_memory: narrativeMemory,
         engagement_curve: engagementCurve,
       };
     }
   } catch {
-    // Cognitive metrics are optional \u2014 fall back to legacy response
+    // Cognitive metrics are optional
   }
 
   return NextResponse.json({
