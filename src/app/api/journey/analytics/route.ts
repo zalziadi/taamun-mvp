@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/authz";
 import { readUserProgress } from "@/lib/progressStore";
+import { computeCalendarDay } from "@/lib/calendarDay";
 import { buildProgressState } from "@/lib/progressEngine";
 import { loadAndBuildIdentity } from "@/lib/identityTracker";
 import { buildNarrativeMemory } from "@/lib/narrative/memory";
@@ -21,16 +22,27 @@ export async function GET() {
 
   const { supabase, user } = auth;
 
-  // Read real progress from progress table
+  // Read progress from DB
   const progress = await readUserProgress(supabase, user.id);
+  const storedCompletedDays: number[] = progress.ok ? progress.completedDays : [];
+  const storedCurrentDay = progress.ok ? progress.currentDay : 1;
 
-  // Build completed days set
-  // If completedDays array is empty but currentDay > 1, infer days 1..(currentDay-1) as completed
-  let completedDaysArr: number[] = progress.ok ? progress.completedDays : [];
-  const currentDay = progress.ok ? progress.currentDay : 1;
+  // Get subscription start date to compute real calendar day
+  const { data: profile } = await supabase
+    .from("profiles")
+    .select("subscription_start_date")
+    .eq("id", user.id)
+    .maybeSingle();
 
-  if (completedDaysArr.length === 0 && currentDay > 1) {
-    completedDaysArr = Array.from({ length: currentDay - 1 }, (_, i) => i + 1);
+  const subscriptionStartDate = profile?.subscription_start_date ?? null;
+  const calendarDay = computeCalendarDay(subscriptionStartDate);
+  const effectiveCurrentDay = Math.max(storedCurrentDay, calendarDay);
+
+  // If completed_days array is empty but user is past day 1,
+  // infer days 1..(effectiveCurrentDay-1) as completed
+  let completedDaysArr = storedCompletedDays;
+  if (completedDaysArr.length === 0 && effectiveCurrentDay > 1) {
+    completedDaysArr = Array.from({ length: effectiveCurrentDay - 1 }, (_, i) => i + 1);
   }
 
   const completedDaysSet = new Set<number>(completedDaysArr);
@@ -88,23 +100,17 @@ export async function GET() {
   let cognitive = null;
   try {
     if (progress.ok) {
-      const { data: profile } = await supabase
-        .from("profiles")
-        .select("subscription_start_date")
-        .eq("id", user.id)
-        .maybeSingle();
-
       const state = buildProgressState(
-        progress.currentDay,
+        storedCurrentDay,
         completedDaysArr,
-        profile?.subscription_start_date
+        subscriptionStartDate
       );
 
       const identity = await loadAndBuildIdentity(
         supabase,
         user.id,
         completedDaysArr,
-        progress.currentDay
+        effectiveCurrentDay
       );
 
       const identityShiftHistory = identity.identityTimeline.map((snap) => ({
