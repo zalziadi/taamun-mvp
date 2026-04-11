@@ -53,9 +53,7 @@ export async function GET() {
     .eq("user_id", user.id)
     .order("day", { ascending: true });
 
-  if (awarenessError) {
-    return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 });
-  }
+  // awareness_logs failure is non-fatal — continue with empty data
 
   const awarenessByDay = new Map<
     number,
