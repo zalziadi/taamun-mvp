@@ -49,7 +49,7 @@ export async function GET() {
 
   const { data: awarenessRows, error: awarenessError } = await supabase
     .from("awareness_logs")
-    .select("day, level, created_at")
+    .select("day, level")
     .eq("user_id", user.id)
     .order("day", { ascending: true });
 
@@ -57,13 +57,13 @@ export async function GET() {
 
   const awarenessByDay = new Map<
     number,
-    { state: "shadow" | "gift" | "best_possibility"; created_at: string | null }
+    { state: "shadow" | "gift" | "best_possibility" }
   >();
   (awarenessRows ?? []).forEach((row) => {
     const day = Number(row.day);
     const state = LEGACY_TO_STATE[String(row.level ?? "")];
     if (!state) return;
-    awarenessByDay.set(day, { state, created_at: row.created_at ?? null });
+    awarenessByDay.set(day, { state });
   });
 
   const timeline = Array.from({ length: TOTAL_DAYS }, (_, i) => {
@@ -75,7 +75,7 @@ export async function GET() {
       awareness_state: awareness?.state ?? null,
       awareness_score:
         awareness?.state === "shadow" ? 1 : awareness?.state === "gift" ? 2 : awareness?.state === "best_possibility" ? 3 : null,
-      recorded_at: awareness?.created_at ?? null,
+      recorded_at: null,
     };
   });
 
