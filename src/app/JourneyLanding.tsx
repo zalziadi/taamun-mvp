@@ -94,6 +94,10 @@ export function JourneyLanding() {
       <section className="jl-hero">
         <span className="jl-hero-badge">برنامج 28 يوم</span>
 
+        <p className="jl-hero-tagline">
+          رحلة تأمل قرآنية تعيد ضبط علاقتك بالآيات — من القراءة إلى التجربة
+        </p>
+
         <h1 className="jl-hero-title">
           من الظل...
           <br />

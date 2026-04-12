@@ -98,15 +98,12 @@ export function LandingNavbar() {
       >
         <nav className="flex items-center justify-between gap-3">
           {/* Brand */}
-          <div className="flex items-center gap-3">
-            <div className="h-9 w-9 rounded-xl bg-[color:var(--parchment-deep)] border border-[color:var(--glass-border)] grid place-items-center text-[color:var(--ink)] font-bold">
+          <div className="flex items-center gap-2 sm:gap-3">
+            <div className="h-9 w-9 shrink-0 rounded-xl bg-[color:var(--parchment-deep)] border border-[color:var(--glass-border)] grid place-items-center text-[color:var(--ink)] font-bold">
               ت
             </div>
             <div className="leading-tight">
-              <div className="text-[13px] text-[color:var(--text-quiet)]">
-                {APP_NAME}
-              </div>
-              <div className="font-amiri text-[18px] text-[color:var(--ink)]">
+              <div className="font-amiri text-[16px] sm:text-[18px] text-[color:var(--ink)]">
                 {APP_NAME}
               </div>
             </div>

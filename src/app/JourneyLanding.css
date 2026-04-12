@@ -115,6 +115,16 @@
   opacity: 0.3;
 }
 
+.jl-hero-tagline {
+  font-size: clamp(0.95rem, 2vw, 1.15rem);
+  color: var(--jl-text);
+  max-width: 480px;
+  line-height: 2;
+  margin-bottom: 1.5rem;
+  opacity: 0;
+  animation: jlFadeIn 0.8s 0.5s forwards;
+}
+
 .jl-hero-title {
   font-family: var(--font-amiri), 'Amiri', serif;
   font-size: clamp(2.2rem, 6vw, 4rem);

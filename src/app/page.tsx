@@ -239,7 +239,7 @@ export default function Home() {
           </>
         ) : (
           <>
-            <h1 className="tm-heading mt-3 text-4xl leading-tight sm:text-5xl">أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ</h1>
+            <h1 className="tm-heading mt-3 text-2xl leading-tight sm:text-4xl lg:text-5xl">أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ</h1>
             <p className="tm-mono mt-3 text-xs text-[#8c7851]">الرعد · ٢٨</p>
           </>
         )}

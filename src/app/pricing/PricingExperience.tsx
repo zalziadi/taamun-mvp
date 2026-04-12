@@ -211,9 +211,9 @@ export default function PricingExperience() {
         {/* ── العنوان ── */}
         <section className="rounded-3xl border border-white/10 bg-[#2b2824] p-7 sm:p-8">
           <p className="text-xs tracking-[0.18em] text-[#c9b88a]">PRICING</p>
-          <h2 className="mt-2 font-[var(--font-amiri)] text-4xl text-[#e8e1d9]">الأسعار والاشتراك</h2>
+          <h2 className="mt-2 font-[var(--font-amiri)] text-2xl sm:text-4xl text-[#e8e1d9]">الأسعار والاشتراك</h2>
           <p className="mt-3 max-w-[720px] text-sm leading-relaxed text-[#e8e1d9]/85">
-            اختر الباقة المناسبة — حوّل المبلغ عبر التحويل البنكي أو STC Pay — ثم أدخل كود التفعيل الذي سيصلك.
+            اختر الباقة المناسبة — حوّل المبلغ عبر التحويل البنكي أو STC Pay — ثم فعّل الكود.
           </p>
         </section>
 
@@ -243,7 +243,7 @@ export default function PricingExperience() {
                   {tier.saving}
                 </span>
               )}
-              <h3 className={`font-[var(--font-amiri)] text-2xl text-[#e8e1d9] ${tier.badge || tier.highlight || tier.saving ? "mt-6" : ""}`}>{tier.name}</h3>
+              <h3 className={`font-[var(--font-amiri)] text-xl sm:text-2xl text-[#e8e1d9] ${tier.badge || tier.highlight || tier.saving ? "mt-6" : ""}`}>{tier.name}</h3>
               <p className="mt-1 text-xs text-[#c9b88a]">{tier.note}</p>
               <p className="mt-4 text-3xl font-bold text-[#e8e1d9]">
                 {tier.price} <span className="text-base font-normal">ر.س</span>

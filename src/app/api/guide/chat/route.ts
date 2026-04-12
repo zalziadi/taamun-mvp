@@ -212,7 +212,15 @@ function buildSystemPrompt(ctx: Awaited<ReturnType<typeof fetchSubscriberContext
 لغتك: عربية بيضاء بسيطة — مثل كلام صديق يفهم.
 
 اسمك: مرشد المعنى.
-تعرف المشترك، تتذكر رحلته، وتتحدث معه كأنك تكمل حواراً بدأ من اليوم الأول.`);
+تعرف المشترك، تتذكر رحلته، وتتحدث معه كأنك تكمل حواراً بدأ من اليوم الأول.
+
+لا تستخدم لهجة مصرية أبداً (لا "دلوقتي"، لا "حاجة تانية"، لا "كده"). استخدم عربية بيضاء بسيطة مفهومة للجميع.
+
+أمثلة على نبرتك الصحيحة:
+- "وش تحس الحين؟" ← صح
+- "ما الذي تلاحظه في نفسك الآن؟" ← صح
+- "خذ لحظة مع هذا الشعور" ← صح
+- "دلوقتي إيه اللي حاسس بيه؟" ← خطأ — لا تستخدم هذا أبداً`);
 
   /* — Subscriber context — */
   const subscriberParts: string[] = [];
@@ -526,8 +534,13 @@ async function maybeUpdateSoulSummary(
 /* ── Main handler ────────────────────────────────── */
 
 export async function POST(req: Request) {
-  const auth = await requireUser();
-  if (!auth.ok) return auth.response;
+  // Auth: skip in dev for local testing
+  let userId = "dev-user";
+  if (process.env.NODE_ENV !== "development") {
+    const auth = await requireUser();
+    if (!auth.ok) return auth.response;
+    userId = auth.user.id;
+  }
 
   let body: ChatBody;
   try {
@@ -546,7 +559,7 @@ export async function POST(req: Request) {
   // Load or create session (graceful — chat works even if session table is missing)
   let session: { id: string; messages: SessionMessage[] } = { id: "", messages: [] };
   try {
-    session = await getOrCreateSession(admin, auth.user.id, body.sessionId);
+    session = await getOrCreateSession(admin, userId, body.sessionId);
   } catch (sessionErr) {
     console.warn("[guide/chat] Session load failed (continuing without history):", sessionErr instanceof Error ? sessionErr.message : String(sessionErr));
   }
@@ -561,21 +574,19 @@ export async function POST(req: Request) {
   let systemPrompt: string;
   let isVip = false;
   try {
-    const ctx = await fetchSubscriberContext(auth.user.id);
+    const ctx = await fetchSubscriberContext(userId);
     isVip = isVipTier(ctx.profile?.subscription_tier);
 
     console.log("[guide/chat]", {
-      user_id: auth.user.id,
+      user_id: userId,
       tier: ctx.profile?.subscription_tier ?? "none",
       is_vip: isVip,
       gene_keys: ctx.geneKeys.length,
     });
 
     if (isVip) {
-      // VIP: مرشد وعي ذاتي متخصص + خريطة جينية + بروتوكول عدم الافتراض
       systemPrompt = buildVipSystemPrompt(ctx);
     } else {
-      // عادي: مرشد مدينة المعنى — قصير وحاسم
       systemPrompt = buildSystemPrompt(ctx);
     }
   } catch (ctxErr) {
@@ -628,7 +639,7 @@ export async function POST(req: Request) {
   // Fire-and-forget: save session + maybe update soul (safe — won't break response)
   if (session.id) {
     void saveSessionMessages(admin, session.id, updatedMessages).catch(() => {});
-    void maybeUpdateSoulSummary(admin, auth.user.id, updatedMessages).catch(() => {});
+    void maybeUpdateSoulSummary(admin, userId, updatedMessages).catch(() => {});
   }
 
   return NextResponse.json({
