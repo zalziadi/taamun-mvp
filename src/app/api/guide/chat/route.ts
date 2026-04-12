@@ -3,6 +3,7 @@ import { requireUser } from "@/lib/authz";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { completeWithContext, embedText, generateSoulSummary } from "@/lib/rag";
 import type { ChatMessage } from "@/lib/rag";
+import { buildVipSystemPrompt, isVipTier } from "@/lib/guide-prompt-vip";
 
 export const dynamic = "force-dynamic";
 
@@ -42,6 +43,8 @@ type ProgressRow = {
 
 type ProfileRow = {
   full_name: string | null;
+  subscription_tier: string | null;
+  subscription_status: string | null;
 };
 
 type VerseRow = {
@@ -134,7 +137,7 @@ async function fetchSubscriberContext(userId: string) {
 
   const [profileRes, progressRes, reflectionsRes, awarenessRes, insightRes, memoryRes, geneKeysRes] =
     await Promise.all([
-      admin.from("profiles").select("full_name").eq("id", userId).maybeSingle(),
+      admin.from("profiles").select("full_name, subscription_tier, subscription_status").eq("id", userId).maybeSingle(),
       admin.from("progress").select("current_day, completed_days").eq("user_id", userId).maybeSingle(),
       admin
         .from("reflections")
@@ -556,25 +559,25 @@ export async function POST(req: Request) {
 
   // Fetch subscriber soul data + build dynamic prompt
   let systemPrompt: string;
+  let isVip = false;
   try {
     const ctx = await fetchSubscriberContext(auth.user.id);
+    isVip = isVipTier(ctx.profile?.subscription_tier);
 
-    // Debug: log gene keys fetch result
-    console.log("[guide/chat] DEBUG gene_keys:", {
+    console.log("[guide/chat]", {
       user_id: auth.user.id,
-      gene_keys_count: ctx.geneKeys.length,
-      gene_keys_spheres: ctx.geneKeys.map((gk: GeneKeyRow) => `${gk.sphere}:${gk.gene_key}.${gk.line}`),
+      tier: ctx.profile?.subscription_tier ?? "none",
+      is_vip: isVip,
+      gene_keys: ctx.geneKeys.length,
     });
 
-    systemPrompt = buildSystemPrompt(ctx);
-
-    // Debug: confirm gene keys section is in prompt
-    const hasGeneKeysSection = systemPrompt.includes("خريطة الوعي");
-    console.log("[guide/chat] DEBUG prompt:", {
-      prompt_length: systemPrompt.length,
-      has_gene_keys_section: hasGeneKeysSection,
-      first_100: systemPrompt.slice(0, 100),
-    });
+    if (isVip) {
+      // VIP: مرشد وعي ذاتي متخصص + خريطة جينية + بروتوكول عدم الافتراض
+      systemPrompt = buildVipSystemPrompt(ctx);
+    } else {
+      // عادي: مرشد مدينة المعنى — قصير وحاسم
+      systemPrompt = buildSystemPrompt(ctx);
+    }
   } catch (ctxErr) {
     console.error("[guide/chat] fetchSubscriberContext FAILED:", ctxErr instanceof Error ? ctxErr.message : String(ctxErr));
     systemPrompt = `أنت مرشد مدينة المعنى — رفيق تأملي يساعد المشتركين في برنامج "تمعّن" على فهم أنفسهم وربط المعنى القرآني بحياتهم اليومية. اجعل ردودك قصيرة (2-4 أسطر). اسأل سؤالاً واحداً عميقاً في كل رد.`;
