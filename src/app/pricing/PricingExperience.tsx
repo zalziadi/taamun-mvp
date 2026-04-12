@@ -243,7 +243,7 @@ export default function PricingExperience() {
                   {tier.saving}
                 </span>
               )}
-              <h3 className="font-[var(--font-amiri)] text-2xl text-[#e8e1d9]">{tier.name}</h3>
+              <h3 className={`font-[var(--font-amiri)] text-2xl text-[#e8e1d9] ${tier.badge || tier.highlight || tier.saving ? "mt-6" : ""}`}>{tier.name}</h3>
               <p className="mt-1 text-xs text-[#c9b88a]">{tier.note}</p>
               <p className="mt-4 text-3xl font-bold text-[#e8e1d9]">
                 {tier.price} <span className="text-base font-normal">ر.س</span>
@@ -317,7 +317,7 @@ export default function PricingExperience() {
                 <div>
                   <p className="text-[10px] text-white/40">رقم STC Pay</p>
                   <div className="mt-0.5 flex items-center justify-between">
-                    <p dir="ltr" className="font-mono text-lg font-semibold text-[#e8e1d9]">+966553930885</p>
+                    <p dir="ltr" className="font-mono text-sm sm:text-lg font-semibold text-[#e8e1d9] break-all">+966553930885</p>
                     <CopyButton text="+966553930885" label="الرقم" />
                   </div>
                 </div>

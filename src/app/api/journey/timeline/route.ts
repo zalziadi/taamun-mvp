@@ -35,21 +35,23 @@ export async function GET() {
       .from("reflections")
       .select("day, note, created_at, updated_at")
       .eq("user_id", user.id)
-      .order("day", { ascending: true }),
-    ensureUserProgress(supabase, user.id),
+      .order("day", { ascending: true })
+      .then((r) => r, () => ({ data: null, error: { message: "reflections_catch" } })),
+    ensureUserProgress(supabase, user.id)
+      .catch(() => ({ ok: false as const, error: { message: "progress_catch" } })),
     supabase
       .from("user_memory")
       .select("identity")
       .eq("user_id", user.id)
-      .maybeSingle(),
+      .maybeSingle()
+      .then((r) => r, () => ({ data: null, error: { message: "memory_catch" } })),
   ]);
 
-  if (reflectionsRes.error) {
-    return NextResponse.json({ ok: false, error: "reflections_failed" }, { status: 500 });
-  }
-  if (!progress.ok) {
-    return NextResponse.json({ ok: false, error: "progress_failed" }, { status: 500 });
-  }
+  // Degrade gracefully — use empty data instead of 500 for non-critical failures
+  const reflections = reflectionsRes.error ? [] : (reflectionsRes.data ?? []);
+  const progressOk = progress.ok !== false;
+  const completedDays = progressOk ? (progress as { completedDays: number[] }).completedDays : [];
+  const currentDay = progressOk ? (progress as { currentDay: number }).currentDay : 1;
 
   // Pull V9 completedSteps from user_memory.identity.journey_state (optional)
   const stored = (memRes.data?.identity as { journey_state?: Partial<UserJourneyState> } | null)
@@ -57,10 +59,10 @@ export async function GET() {
   const journeyState = normalizeJourneyState(stored, user.id);
 
   // Enrich each day with theme + verse from static content
-  const reflectionDays = (reflectionsRes.data ?? []).map((r) => Number(r.day));
+  const reflectionDays = reflections.map((r) => Number(r.day));
   const uniqueDays = new Set<number>([
     ...reflectionDays,
-    ...progress.completedDays,
+    ...completedDays,
   ]);
   const dayMeta: Record<number, { theme?: string | null; verseArabic?: string | null }> = {};
   for (const d of uniqueDays) {
@@ -74,13 +76,13 @@ export async function GET() {
   }
 
   const timeline = buildTimeline({
-    reflections: (reflectionsRes.data ?? []).map((r) => ({
+    reflections: reflections.map((r) => ({
       day: Number(r.day),
       note: (r.note as string | null) ?? null,
       created_at: (r.created_at as string | null) ?? null,
       updated_at: (r.updated_at as string | null) ?? null,
     })),
-    completedDays: progress.completedDays,
+    completedDays,
     completedSteps: journeyState.completedSteps,
     dayMeta,
   });
@@ -89,7 +91,7 @@ export async function GET() {
 
   return NextResponse.json({
     ok: true,
-    current_day: progress.currentDay,
+    current_day: currentDay,
     timeline,
     narrative,
   });
