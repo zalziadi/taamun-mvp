@@ -58,6 +58,20 @@ type MemoryRow = {
   soul_summary: string | null;
 };
 
+type GeneKeyRow = {
+  sphere: string;
+  gene_key: number;
+  line: number;
+  shadow: string | null;
+  gift: string | null;
+  siddhi: string | null;
+  wm: string | null;
+  wf: string | null;
+  ws: string | null;
+  ayah: string | null;
+  ayah_ref: string | null;
+};
+
 type SessionRow = {
   id: string;
   messages: ChatMessage[];
@@ -118,7 +132,7 @@ function buildFallbackAnswer(message: string): string {
 async function fetchSubscriberContext(userId: string) {
   const admin = getSupabaseAdmin();
 
-  const [profileRes, progressRes, reflectionsRes, awarenessRes, insightRes, memoryRes] =
+  const [profileRes, progressRes, reflectionsRes, awarenessRes, insightRes, memoryRes, geneKeysRes] =
     await Promise.all([
       admin.from("profiles").select("full_name").eq("id", userId).maybeSingle(),
       admin.from("progress").select("current_day, completed_days").eq("user_id", userId).maybeSingle(),
@@ -142,6 +156,10 @@ async function fetchSubscriberContext(userId: string) {
         .limit(1)
         .maybeSingle(),
       admin.from("guide_memory").select("soul_summary").eq("user_id", userId).maybeSingle(),
+      admin
+        .from("user_gene_keys_profile")
+        .select("sphere, gene_key, line, shadow, gift, siddhi, wm, wf, ws, ayah, ayah_ref")
+        .eq("user_id", userId),
     ]);
 
   const profile = profileRes.data as ProfileRow | null;
@@ -150,6 +168,7 @@ async function fetchSubscriberContext(userId: string) {
   const awareness = (awarenessRes.data ?? []) as AwarenessRow[];
   const insight = insightRes.data as InsightRow | null;
   const memory = memoryRes.data as MemoryRow | null;
+  const geneKeys = (geneKeysRes.data ?? []) as GeneKeyRow[];
 
   // Fetch today's verse if we know current day
   let todayVerse: string | null = null;
@@ -174,13 +193,13 @@ async function fetchSubscriberContext(userId: string) {
     }
   }
 
-  return { profile, progress, reflections, awareness, insight, memory, todayVerse };
+  return { profile, progress, reflections, awareness, insight, memory, todayVerse, geneKeys };
 }
 
 /* ── Build dynamic system prompt ─────────────────── */
 
 function buildSystemPrompt(ctx: Awaited<ReturnType<typeof fetchSubscriberContext>>): string {
-  const { profile, progress, reflections, awareness, insight, memory, todayVerse } = ctx;
+  const { profile, progress, reflections, awareness, insight, memory, todayVerse, geneKeys } = ctx;
 
   const sections: string[] = [];
 
@@ -271,6 +290,52 @@ function buildSystemPrompt(ctx: Awaited<ReturnType<typeof fetchSubscriberContext
     sections.push(
       `## ذاكرة المشترك (soul)\n\nهذه ملاحظات مبنية على تفاعلاته السابقة. استخدمها لتجعل الحوار شخصياً — لكن لا تقرأها عليه حرفياً. دعها تُوجّه أسئلتك وملاحظاتك بشكل طبيعي.\n\n${soulParts.join("\n\n")}`
     );
+  }
+
+  /* — Gene Keys Profile — */
+  if (geneKeys.length > 0) {
+    const SPHERE_LABELS: Record<string, string> = {
+      lifes_work: "عمل الحياة (Life's Work)",
+      evolution: "التطور (Evolution)",
+      radiance: "الإشراق (Radiance)",
+      purpose: "الغاية (Purpose)",
+      attraction: "الجاذبية (Attraction)",
+      iq: "الذكاء العقلي (IQ)",
+      eq: "الذكاء العاطفي (EQ)",
+      sq: "الذكاء الروحي (SQ)",
+      vocation: "الدعوة (Vocation)",
+      culture: "الثقافة (Culture)",
+      pearl: "اللؤلؤة (Pearl)",
+    };
+
+    const lines = geneKeys.map((gk) => {
+      const label = SPHERE_LABELS[gk.sphere] ?? gk.sphere;
+      const wm = gk.wm ?? gk.shadow ?? "—";
+      const wf = gk.wf ?? gk.gift ?? "—";
+      const ws = gk.ws ?? gk.siddhi ?? "—";
+      const ayahPart = gk.ayah ? `\n    الآية: ${gk.ayah} (${gk.ayah_ref ?? ""})` : "";
+      return `- ${label}: المفتاح ${gk.gene_key}.${gk.line}\n    المسموم: ${wm} / الفائق: ${wf} / السامي: ${ws}${ayahPart}`;
+    });
+
+    sections.push(`## الخريطة الجينية — خريطة الوعي
+
+هذه خريطة المشترك الجينية المحسوبة من تاريخ ميلاده. استخدمها كبوصلة لفهم أنماطه العميقة — لكن لا تقرأها عليه كقائمة. اربط بينها وبين ما يشاركه في الحوار بشكل طبيعي.
+
+المصطلحات:
+- **الوعي المسموم (وم)**: النمط المتكرر الذي يعيق — الظل الذي يحتاج ملاحظة
+- **الوعي الفائق (وف)**: الهدية المخفية — القوة التي تظهر حين يُلاحَظ الظل
+- **الوعي السامي (وس)**: أعلى احتمال — الحالة التي يصل إليها حين يعيش الهدية بالكامل
+- **الآية**: المرآة القرآنية لهذا المفتاح — استخدمها حين تربط بين خريطته والقرآن
+
+${lines.join("\n")}
+
+### كيف تستخدم الخريطة:
+- إذا لاحظت نمطاً يتكرر عنده → تحقق هل يتطابق مع "الوعي المسموم" في إحدى كراته
+- إذا أظهر قوة أو بصيرة → اربطها بـ "الوعي الفائق" في خريطته
+- حين يسأل عن آية أو يتأمل في نص قرآني → اربط بالآية المناسبة من خريطته
+- لا تذكر أرقام المفاتيح صراحةً إلا إذا سأل عن خريطته
+- ركّز على عمل الحياة واللؤلؤة — هما الأكثر ظهوراً في السلوك اليومي
+- استخدم مصطلحات تمعّن (المسموم/الفائق/السامي) وليس Shadow/Gift/Siddhi`);
   }
 
   /* — Conceptual framework — */
@@ -475,8 +540,25 @@ export async function POST(req: Request) {
   let systemPrompt: string;
   try {
     const ctx = await fetchSubscriberContext(auth.user.id);
+
+    // Debug: log gene keys fetch result
+    console.log("[guide/chat] DEBUG gene_keys:", {
+      user_id: auth.user.id,
+      gene_keys_count: ctx.geneKeys.length,
+      gene_keys_spheres: ctx.geneKeys.map((gk: GeneKeyRow) => `${gk.sphere}:${gk.gene_key}.${gk.line}`),
+    });
+
     systemPrompt = buildSystemPrompt(ctx);
-  } catch {
+
+    // Debug: confirm gene keys section is in prompt
+    const hasGeneKeysSection = systemPrompt.includes("خريطة الوعي");
+    console.log("[guide/chat] DEBUG prompt:", {
+      prompt_length: systemPrompt.length,
+      has_gene_keys_section: hasGeneKeysSection,
+      first_100: systemPrompt.slice(0, 100),
+    });
+  } catch (ctxErr) {
+    console.error("[guide/chat] fetchSubscriberContext FAILED:", ctxErr instanceof Error ? ctxErr.message : String(ctxErr));
     systemPrompt = `أنت مرشد مدينة المعنى — رفيق تأملي يساعد المشتركين في برنامج "تمعّن" على فهم أنفسهم وربط المعنى القرآني بحياتهم اليومية. اجعل ردودك قصيرة (2-4 أسطر). اسأل سؤالاً واحداً عميقاً في كل رد.`;
   }
 

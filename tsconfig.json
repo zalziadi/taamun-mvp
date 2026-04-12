@@ -38,6 +38,7 @@
   "exclude": [
     "node_modules",
     "scripts",
-    "najm-command-center"
+    "najm-command-center",
+    "supabase/functions"
   ]
 }

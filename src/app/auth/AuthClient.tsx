@@ -139,7 +139,10 @@ export function AuthClient({ embedded }: AuthClientProps) {
     setNotice(null);
     setLoading(true);
     try {
-      const redirectTo = `${getAppOriginClient()}/auth/callback`;
+      const nextParam = searchParams.get("next");
+      const callbackUrl = new URL(`${getAppOriginClient()}/auth/callback`);
+      if (nextParam) callbackUrl.searchParams.set("next", nextParam);
+      const redirectTo = callbackUrl.toString();
       const { error: signInError } = await supabase.auth.signInWithOtp({
         email: email.trim(),
         options: { emailRedirectTo: redirectTo },
