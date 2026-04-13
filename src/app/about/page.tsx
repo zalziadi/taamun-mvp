@@ -11,13 +11,13 @@ export default function AboutPage() {
       <div className="mx-auto max-w-3xl space-y-10">
         {/* Header */}
         <div className="space-y-4">
-          <h1 className="tm-heading text-5xl md:text-6xl leading-tight">عن تمعّن</h1>
+          <h1 className="tm-heading text-3xl sm:text-5xl md:text-6xl leading-tight">عن تمعّن</h1>
           <p className="text-lg text-[#7d7362]">برنامج 28 يوماً لإعادة اكتشاف المعنى الحقيقي</p>
         </div>
 
         {/* Story Section */}
         <section className="tm-card p-8 space-y-4">
-          <h2 className="tm-heading text-3xl">ما هي تمعّن؟</h2>
+          <h2 className="tm-heading text-xl sm:text-3xl">ما هي تمعّن؟</h2>
           <p className="leading-8 text-[#5f5648]">
             تمعّن ليست تطبيقاً عادياً للقرآن. إنها برنامج 28 يوماً يُعيد ضبط علاقتك بالآيات.
             كل يوم يأخذك أعمق — من السطح إلى المعنى الحقيقي.
@@ -30,7 +30,7 @@ export default function AboutPage() {
 
         {/* How It Works Section */}
         <section className="tm-card p-8 space-y-6">
-          <h2 className="tm-heading text-3xl">كيف تعمل؟</h2>
+          <h2 className="tm-heading text-xl sm:text-3xl">كيف تعمل؟</h2>
           <div className="space-y-5">
             <div className="flex gap-4">
               <div className="flex-shrink-0 w-10 h-10 rounded-full bg-[#8c7851]/20 flex items-center justify-center text-sm font-semibold text-[#8c7851]">
@@ -86,7 +86,7 @@ export default function AboutPage() {
 
         {/* Philosophy Section */}
         <section className="tm-card p-8 space-y-4 border-[#8c7851]/30 bg-[#fcfaf7]/80">
-          <h2 className="tm-heading text-3xl">فلسفتنا</h2>
+          <h2 className="tm-heading text-xl sm:text-3xl">فلسفتنا</h2>
           <div className="space-y-3 text-[#5f5648] leading-8">
             <p>
               <span className="text-[#8c7851] font-semibold">نؤمن أن التمعّن الحقيقي يبدأ بالصمت.</span>
@@ -105,7 +105,7 @@ export default function AboutPage() {
 
         {/* CTA Section */}
         <section className="text-center space-y-6">
-          <h2 className="tm-heading text-3xl">جاهز للبدء؟</h2>
+          <h2 className="tm-heading text-xl sm:text-3xl">جاهز للبدء؟</h2>
           <p className="text-[#7d7362] max-w-2xl mx-auto">
             الرحلة تبدأ بخطوة واحدة. يوم واحد. آية واحدة. صمت واحد.
           </p>

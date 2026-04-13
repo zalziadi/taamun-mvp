@@ -14,7 +14,7 @@ async function upsertSubscription(
   const periodEnd = (sub as unknown as { current_period_end: number })
     .current_period_end;
 
-  await admin.from("customer_subscriptions").upsert(
+  const { error } = await admin.from("customer_subscriptions").upsert(
     {
       user_id: userId,
       stripe_customer_id: sub.customer as string,
@@ -29,6 +29,10 @@ async function upsertSubscription(
     },
     { onConflict: "stripe_subscription_id" }
   );
+  if (error) {
+    console.error("[stripe/webhook] subscription upsert failed:", error);
+    throw error;
+  }
 }
 
 export async function POST(req: Request) {
@@ -65,10 +69,14 @@ export async function POST(req: Request) {
 
   if (event.type === "customer.subscription.deleted") {
     const sub = event.data.object as Stripe.Subscription;
-    await admin
+    const { error: cancelErr } = await admin
       .from("customer_subscriptions")
       .update({ status: "canceled", updated_at: new Date().toISOString() })
       .eq("stripe_subscription_id", sub.id);
+    if (cancelErr) {
+      console.error("[stripe/webhook] cancel update failed:", cancelErr);
+      return NextResponse.json({ error: "db_update_failed" }, { status: 500 });
+    }
   }
 
   return NextResponse.json({ received: true });

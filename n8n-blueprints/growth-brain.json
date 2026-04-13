@@ -1,0 +1,274 @@
+{
+  "name": "Growth Brain - Intelligence Layer",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 4
+            }
+          ]
+        }
+      },
+      "name": "Every 4 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_REVENUE_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Revenue",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        250
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_CONTENT_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Content Performance",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        400
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_PATTERNS_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Winning Patterns",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        550
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// DATA COLLECTOR — Aggregate all signals\nconst revenue = $('Read Revenue').all();\nconst content = $('Read Content Performance').all();\nconst patterns = $('Read Winning Patterns').all();\n\n// Revenue metrics\nconst totalCustomers = revenue.length;\nconst totalRevenue = totalCustomers * 350;\nconst target = 28;\nconst remaining = target - totalCustomers;\n\n// Content metrics\nconst totalVideos = content.length;\nconst avgScore = content.length > 0 \n  ? content.reduce((sum, c) => sum + (c.json.performance_score || 0), 0) / content.length \n  : 0;\nconst topVideos = content.filter(c => (c.json.performance_score || 0) >= 70).length;\nconst deadVideos = content.filter(c => (c.json.performance_score || 0) <= 30).length;\n\n// DM metrics\nconst totalDMs = content.reduce((sum, c) => sum + (c.json.dms_generated || 0), 0);\nconst conversionRate = totalDMs > 0 ? (totalCustomers / totalDMs * 100).toFixed(1) : 0;\n\n// Patterns\nconst scalePatterns = patterns.filter(p => p.json.result === 'SCALE').length;\nconst killPatterns = patterns.filter(p => p.json.result === 'KILL').length;\nconst winRate = patterns.length > 0 \n  ? (scalePatterns / patterns.length * 100).toFixed(1) \n  : 0;\n\n// Deadline\nconst deadline = new Date('2026-04-05T23:59:59');\nconst now = new Date();\nconst hoursLeft = Math.max(0, Math.round((deadline - now) / (1000 * 60 * 60)));\nconst daysLeft = Math.round(hoursLeft / 24);\n\n// Velocity\nconst customersPerDay = daysLeft > 0 ? (remaining / daysLeft).toFixed(1) : remaining;\n\nreturn {\n  json: {\n    revenue: { totalCustomers, totalRevenue, remaining, target },\n    content: { totalVideos, avgScore: Math.round(avgScore), topVideos, deadVideos },\n    dms: { totalDMs, conversionRate },\n    patterns: { scalePatterns, killPatterns, winRate },\n    time: { hoursLeft, daysLeft, customersPerDay }\n  }\n};"
+      },
+      "name": "Data Collector",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        650,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// DYNAMIC PRICING ENGINE\nconst data = $input.item.json;\nconst { revenue, dms, time } = data;\n\nconst currentPrice = 350;\nconst basePrice = 820;\nlet recommendedPrice = currentPrice;\nlet pricingAction = '';\nlet urgencyLevel = '';\n\n// High demand + High conversion → Price UP\nif (parseFloat(dms.conversionRate) > 15 && revenue.remaining > 10) {\n  recommendedPrice = 450;\n  pricingAction = 'رفع السعر إلى 450 — الطلب عالي والتحويل ممتاز';\n  urgencyLevel = 'PRICE_UP';\n}\n// Very high demand → Premium pricing\nelse if (parseFloat(dms.conversionRate) > 25) {\n  recommendedPrice = 550;\n  pricingAction = 'رفع السعر إلى 550 — الطلب استثنائي';\n  urgencyLevel = 'PRICE_UP';\n}\n// Low demand → Flash sale\nelse if (dms.totalDMs < 20 && time.daysLeft <= 3) {\n  recommendedPrice = 280;\n  pricingAction = 'تخفيض مؤقت 280 — آخر 3 أيام + الطلب منخفض';\n  urgencyLevel = 'FLASH_SALE';\n}\n// Medium demand → Add scarcity\nelse if (parseFloat(dms.conversionRate) < 5 && dms.totalDMs > 30) {\n  recommendedPrice = currentPrice;\n  pricingAction = 'السعر ثابت + فعّل Scarcity (باقي 5 مقاعد فقط)';\n  urgencyLevel = 'ADD_SCARCITY';\n}\n// Normal → Keep price\nelse {\n  pricingAction = 'السعر مناسب — استمر';\n  urgencyLevel = 'STABLE';\n}\n\n// Scarcity message\nlet scarcityMsg = '';\nif (time.daysLeft <= 2) {\n  scarcityMsg = `⏰ العرض ينتهي خلال ${time.daysLeft} يوم فقط!`;\n} else if (revenue.remaining <= 10) {\n  scarcityMsg = `🔥 باقي ${revenue.remaining} مقعد فقط!`;\n}\n\nreturn {\n  json: {\n    ...data,\n    pricing: {\n      current: currentPrice,\n      recommended: recommendedPrice,\n      action: pricingAction,\n      urgency: urgencyLevel,\n      scarcity: scarcityMsg\n    }\n  }\n};"
+      },
+      "name": "Dynamic Pricing Engine",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        850,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// PREDICTIVE SCALING ENGINE\nconst data = $input.item.json;\nconst { revenue, content, dms, patterns, time, pricing } = data;\n\nlet predictions = [];\nlet actions = [];\n\n// Prediction 1: Content velocity\nif (content.totalVideos < 5 && time.daysLeft > 1) {\n  predictions.push('⚠️ الإنتاج بطيء — لن نصل للهدف بالمعدل الحالي');\n  actions.push('🎬 ضاعف الإنتاج: 10+ فيديو اليوم');\n}\n\n// Prediction 2: DM drought\nif (dms.totalDMs < 15 && content.totalVideos > 5) {\n  predictions.push('📉 المحتوى لا يولّد تفاعل — Hook ضعيف');\n  actions.push('🐺 ذئب الشمال: جدد الـ Hooks فوراً');\n}\n\n// Prediction 3: Conversion bottleneck\nif (dms.totalDMs > 30 && parseFloat(dms.conversionRate) < 5) {\n  predictions.push('🔴 عندنا leads لكن ما ينغلقوا — مشكلة إغلاق');\n  actions.push('🌹 وردة: ركزي على Interest → Close مباشرة');\n}\n\n// Prediction 4: Winning pattern available\nif (parseFloat(patterns.winRate) > 60 && content.topVideos > 0) {\n  predictions.push('🟢 عندنا Pattern ناجح — وقت المضاعفة');\n  actions.push('🔥 Scale: أنتج 5 نسخ من أفضل فيديو');\n}\n\n// Prediction 5: Time pressure\nif (time.daysLeft <= 2 && revenue.remaining > 15) {\n  predictions.push('🚨 وقت ضيق + هدف بعيد — يلزم إجراء عاجل');\n  actions.push('⚡ فعّل وضع الطوارئ: كل الموارد على الإغلاق');\n}\n\n// Prediction 6: Almost there\nif (revenue.remaining <= 5 && revenue.remaining > 0) {\n  predictions.push('🎯 قريبين جداً من الهدف!');\n  actions.push('💪 Push أخير: تواصل مباشر مع كل Lead مفتوح');\n}\n\n// Overall strategy\nlet overallStrategy = '';\nif (actions.length === 0) {\n  overallStrategy = '✅ النظام يعمل بشكل جيد — استمر';\n  actions.push('📊 راقب وكرر اللي يشتغل');\n} else {\n  overallStrategy = `⚠️ ${predictions.length} تنبيهات — تدخل مطلوب`;\n}\n\nreturn {\n  json: {\n    ...data,\n    brain: {\n      predictions,\n      actions,\n      overallStrategy,\n      timestamp: new Date().toISOString()\n    }\n  }\n};"
+      },
+      "name": "Predictive Scaling Engine",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1050,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🧠 *GROWTH BRAIN — تقرير كل 4 ساعات*\n\n━━━━━━━━━━━━━━━━━━\n📊 *الأرقام*\n👥 العملاء: {{ $json.revenue.totalCustomers }} / {{ $json.revenue.target }}\n💰 الإيراد: {{ $json.revenue.totalRevenue }} ريال\n⏳ باقي: {{ $json.time.daysLeft }} يوم\n📈 المطلوب: {{ $json.time.customersPerDay }} عميل/يوم\n\n━━━━━━━━━━━━━━━━━━\n🎬 *المحتوى*\n📹 فيديوهات: {{ $json.content.totalVideos }}\n⭐ ناجح: {{ $json.content.topVideos }} | 💀 فاشل: {{ $json.content.deadVideos }}\n📊 متوسط: {{ $json.content.avgScore }}/100\n\n━━━━━━━━━━━━━━━━━━\n📩 *التحويل*\nDMs: {{ $json.dms.totalDMs }}\nConversion: {{ $json.dms.conversionRate }}%\nWin Rate: {{ $json.patterns.winRate }}%\n\n━━━━━━━━━━━━━━━━━━\n💰 *التسعير*\n{{ $json.pricing.action }}\n{{ $json.pricing.scarcity }}\n\n━━━━━━━━━━━━━━━━━━\n🧠 *التوقعات*\n{{ $json.brain.predictions.join('\\n') }}\n\n━━━━━━━━━━━━━━━━━━\n⚡ *الأوامر*\n{{ $json.brain.actions.join('\\n') }}\n\n━━━━━━━━━━━━━━━━━━\n📍 {{ $json.brain.overallStrategy }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Growth Brain Report",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1300,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "create",
+        "databaseId": "={{ $env.NOTION_BRAIN_LOG_DB }}",
+        "properties": {
+          "title": "=Growth Brain — {{ $now.format('yyyy-MM-dd HH:mm') }}",
+          "strategy": "={{ $json.brain.overallStrategy }}",
+          "customers": "={{ $json.revenue.totalCustomers }}",
+          "revenue": "={{ $json.revenue.totalRevenue }}",
+          "conversion": "={{ $json.dms.conversionRate }}",
+          "pricing_action": "={{ $json.pricing.action }}"
+        }
+      },
+      "name": "Log to Notion",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1300,
+        500
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Every 4 Hours": {
+      "main": [
+        [
+          {
+            "node": "Read Revenue",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Content Performance",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Winning Patterns",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Revenue": {
+      "main": [
+        [
+          {
+            "node": "Data Collector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Content Performance": {
+      "main": [
+        [
+          {
+            "node": "Data Collector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Winning Patterns": {
+      "main": [
+        [
+          {
+            "node": "Data Collector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Data Collector": {
+      "main": [
+        [
+          {
+            "node": "Dynamic Pricing Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Dynamic Pricing Engine": {
+      "main": [
+        [
+          {
+            "node": "Predictive Scaling Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Predictive Scaling Engine": {
+      "main": [
+        [
+          {
+            "node": "Growth Brain Report",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log to Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "1008"
+}

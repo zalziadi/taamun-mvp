@@ -1,0 +1,361 @@
+{
+  "name": "IG Engagement Booster — Proactive Comment & Story Strategy",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 3
+            }
+          ]
+        }
+      },
+      "name": "Every 3 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://graph.instagram.com/v21.0/{{ $env.INSTAGRAM_PAGE_ID }}/media",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "fields",
+              "value": "id,caption,timestamp,like_count,comments_count,media_type"
+            },
+            {
+              "name": "limit",
+              "value": "10"
+            }
+          ]
+        }
+      },
+      "name": "Fetch Recent Posts",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        420,
+        300
+      ],
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "IG_TOKEN_CREDENTIAL_ID",
+          "name": "Instagram Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://graph.instagram.com/v21.0/{{ $env.INSTAGRAM_PAGE_ID }}/insights",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "metric",
+              "value": "accounts_engaged,reach,profile_views"
+            },
+            {
+              "name": "period",
+              "value": "day"
+            }
+          ]
+        }
+      },
+      "name": "Fetch Account Insights",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        420,
+        500
+      ],
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "IG_TOKEN_CREDENTIAL_ID",
+          "name": "Instagram Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// ==========================================\n// ENGAGEMENT ANALYZER\n// Analyzes recent posts performance + finds\n// unanswered comments to reply to\n// ==========================================\nconst posts = $('Fetch Recent Posts').first()?.json?.data || [];\nconst insights = $('Fetch Account Insights').first()?.json?.data || [];\n\nconst now = new Date();\nconst threeHoursAgo = new Date(now - 3 * 60 * 60 * 1000);\n\n// Post performance\nconst postStats = posts.map(p => {\n  const postDate = new Date(p.timestamp);\n  const hoursAge = Math.round((now - postDate) / (1000 * 60 * 60));\n  const engagementRate = p.comments_count + p.like_count;\n  return {\n    id: p.id,\n    caption: (p.caption || '').substring(0, 100),\n    likes: p.like_count || 0,\n    comments: p.comments_count || 0,\n    hours_age: hoursAge,\n    engagement: engagementRate,\n    is_recent: hoursAge <= 6,\n    needs_boost: p.comments_count < 3 && hoursAge <= 12,\n    type: p.media_type\n  };\n});\n\n// Account insights\nconst insightMap = {};\ninsights.forEach(i => {\n  insightMap[i.name] = i.values?.[0]?.value || 0;\n});\n\n// Find posts needing attention\nconst lowEngagement = postStats.filter(p => p.needs_boost);\nconst topPost = postStats.sort((a, b) => b.engagement - a.engagement)[0];\n\n// Recommendations\nconst actions = [];\n\nif (lowEngagement.length > 0) {\n  actions.push({\n    type: 'boost_comments',\n    message: `${lowEngagement.length} بوست تفاعله ضعيف — جرب Pin comment أو Story share`,\n    posts: lowEngagement.map(p => p.id)\n  });\n}\n\nif (topPost && topPost.comments >= 5) {\n  actions.push({\n    type: 'reply_top_post',\n    message: `أفضل بوست عنده ${topPost.comments} تعليق — رد على كل واحد`,\n    post_id: topPost.id\n  });\n}\n\n// Timing recommendation\nconst hour = now.getHours();\nlet bestAction = '';\nif (hour >= 20 || hour <= 1) bestAction = '🌙 وقت الذروة — انشر Story تفاعلي (استفتاء/سؤال)';\nelse if (hour >= 6 && hour <= 9) bestAction = '☀️ صباح — انشر Reel أو Carousel';\nelse if (hour >= 13 && hour <= 15) bestAction = '🕐 وقت الظهر — شارك اقتباس من تمعّن';\nelse bestAction = '⏳ وقت هادئ — رد على التعليقات + DMs المعلقة';\n\nreturn {\n  json: {\n    timestamp: now.toISOString(),\n    total_posts_analyzed: postStats.length,\n    insights: {\n      accounts_engaged: insightMap.accounts_engaged || 'N/A',\n      reach: insightMap.reach || 'N/A',\n      profile_views: insightMap.profile_views || 'N/A'\n    },\n    top_post: topPost || null,\n    low_engagement_posts: lowEngagement.length,\n    actions,\n    timing_recommendation: bestAction,\n    post_stats: postStats.slice(0, 5)\n  }\n};"
+      },
+      "name": "Analyze Engagement",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "GET",
+        "url": "=https://graph.instagram.com/v21.0/{{ $json.top_post ? $json.top_post.id : $json.post_stats[0]?.id }}/comments",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendQuery": true,
+        "queryParameters": {
+          "parameters": [
+            {
+              "name": "fields",
+              "value": "id,text,username,timestamp,replies{id}"
+            },
+            {
+              "name": "limit",
+              "value": "50"
+            }
+          ]
+        }
+      },
+      "name": "Fetch Unanswered Comments",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        950,
+        300
+      ],
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "IG_TOKEN_CREDENTIAL_ID",
+          "name": "Instagram Token"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Find comments we haven't replied to yet\nconst comments = $('Fetch Unanswered Comments').first()?.json?.data || [];\nconst analysis = $('Analyze Engagement').first()?.json || {};\n\nconst unanswered = comments.filter(c => {\n  const hasReplies = c.replies?.data?.length > 0;\n  return !hasReplies;\n}).slice(0, 5); // Max 5 auto-replies per cycle\n\nreturn {\n  json: {\n    ...analysis,\n    unanswered_comments: unanswered.map(c => ({\n      id: c.id,\n      text: c.text,\n      username: c.username,\n      timestamp: c.timestamp\n    })),\n    unanswered_count: unanswered.length\n  }\n};"
+      },
+      "name": "Find Unanswered",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        950,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.unanswered_count }}",
+              "value2": 0,
+              "operation": "larger"
+            }
+          ]
+        }
+      },
+      "name": "Has Unanswered?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1150,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-haiku-4-5-20251001\",\n  \"max_tokens\": 1000,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"أنت مدير تفاعل Instagram لمنتج 'تمعّن' — رحلة قرآنية 28 يوم.\\n\\nالمطلوب: اكتب ردود قصيرة وجذابة لهذه التعليقات.\\nالهدف: تفاعل حقيقي + تحويلهم لـ DM إذا أمكن.\\nالأسلوب: ودود، روحاني، مختصر (سطر أو سطرين max).\\n\\nالتعليقات:\\n{{ JSON.stringify($json.unanswered_comments) }}\\n\\nرد بـ JSON فقط:\\n[\\n  { \\\"comment_id\\\": \\\"...\\\", \\\"reply\\\": \\\"...\\\" }\\n]\"\n    }\n  ]\n}"
+      },
+      "name": "Claude Generate Replies",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1350,
+        400
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ANTHROPIC_CREDENTIAL_ID",
+          "name": "Anthropic API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const response = $input.item.json;\nconst analysis = $('Find Unanswered').first()?.json || {};\nlet replies = [];\n\ntry {\n  const content = response.content?.[0]?.text || '[]';\n  let jsonStr = content;\n  if (jsonStr.includes('```json')) jsonStr = jsonStr.split('```json')[1].split('```')[0].trim();\n  else if (jsonStr.includes('```')) jsonStr = jsonStr.split('```')[1].split('```')[0].trim();\n  replies = JSON.parse(jsonStr);\n} catch (e) {\n  replies = [];\n}\n\nreturn {\n  json: {\n    ...analysis,\n    auto_replies: replies,\n    replies_count: replies.length\n  }\n};"
+      },
+      "name": "Parse Replies",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1350,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=📸 *IG ENGAGEMENT BOOSTER*\n⏰ {{ $json.timestamp }}\n\n━━━━━━━━━━━━━━━━━━\n📊 *الإحصائيات*\n👥 Engaged: {{ $json.insights.accounts_engaged }}\n📡 Reach: {{ $json.insights.reach }}\n👁️ Profile Views: {{ $json.insights.profile_views }}\n\n━━━━━━━━━━━━━━━━━━\n📝 *آخر 5 بوستات:*\n{{ ($json.post_stats || []).map((p, i) => `${i+1}. ❤️${p.likes} 💬${p.comments} (${p.hours_age}h ago) ${p.needs_boost ? '⚠️ ضعيف' : '✅'}`).join('\\n') }}\n\n━━━━━━━━━━━━━━━━━━\n💬 *تعليقات بدون رد:* {{ $json.unanswered_count || 0 }}\n{{ ($json.auto_replies || []).map((r, i) => `${i+1}. ← ${r.reply}`).join('\\n') || 'لا يوجد' }}\n\n━━━━━━━━━━━━━━━━━━\n⚡ *التوصية:*\n{{ $json.timing_recommendation }}\n{{ ($json.actions || []).map(a => '• ' + a.message).join('\\n') || 'لا إجراءات مطلوبة' }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Engagement Report",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1600,
+        400
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Every 3 Hours": {
+      "main": [
+        [
+          {
+            "node": "Fetch Recent Posts",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Fetch Account Insights",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Recent Posts": {
+      "main": [
+        [
+          {
+            "node": "Analyze Engagement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Account Insights": {
+      "main": [
+        [
+          {
+            "node": "Analyze Engagement",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Engagement": {
+      "main": [
+        [
+          {
+            "node": "Fetch Unanswered Comments",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Fetch Unanswered Comments": {
+      "main": [
+        [
+          {
+            "node": "Find Unanswered",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Find Unanswered": {
+      "main": [
+        [
+          {
+            "node": "Has Unanswered?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Unanswered?": {
+      "main": [
+        [
+          {
+            "node": "Claude Generate Replies",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Engagement Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude Generate Replies": {
+      "main": [
+        [
+          {
+            "node": "Parse Replies",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Replies": {
+      "main": [
+        [
+          {
+            "node": "Engagement Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "1009"
+}

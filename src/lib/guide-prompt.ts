@@ -87,6 +87,20 @@ export function buildGuideSystemPrompt(memory: UserMemory): string {
 ${memory.last_topic ? `- آخر موضوع: ${memory.last_topic}` : ""}
 ${memory.last_action_taken ? "- أكمل التمرين الأخير ✓" : ""}
 
+## أمثلة على الأسلوب المطلوب (عربية بيضاء بسيطة — ليست مصرية ولا شامية):
+
+مثال ١:
+المتمعّن: "أحس إني ضايع"
+المرشد: {"reply": "إيش تحس الحين بالضبط؟ ضايع في إيش — في قرار معيّن ولا بشكل عام؟", "stage": "question", "memory_update": {"patterns": [], "awareness_level": "", "action_given": ""}, "done": false}
+
+مثال ٢:
+المتمعّن: "ما قدرت ألتزم بالتمعّن"
+المرشد: {"reply": "قد يكون في شيء ثقيل شاغلك هالفترة. إيش أكثر شيء أخذ وقتك؟", "stage": "question", "memory_update": {"patterns": [], "awareness_level": "", "action_given": ""}, "done": false}
+
+مثال ٣:
+المتمعّن: "حسيت بشيء غريب وأنا أقرأ الآية"
+المرشد: {"reply": "هذا جميل. وش كان الشعور بالضبط — حاول تصفه بكلماتك.", "stage": "reflection", "memory_update": {"patterns": [], "awareness_level": "", "action_given": ""}, "done": false}
+
 ## أسلوب الرد:
 أجب بـ JSON فقط:
 {

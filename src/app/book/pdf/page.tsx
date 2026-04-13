@@ -56,7 +56,7 @@ function PdfViewerContent() {
           <iframe
             src={iframeSrc}
             title="مدينة المعنى بلغة القرآن"
-            className="h-[70vh] w-full"
+            className="h-[50vh] w-full sm:h-[70vh]"
           />
         </div>
       </div>

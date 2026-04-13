@@ -1,0 +1,106 @@
+[     167ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3003/bundle.js:77192
+[   34599ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3003/bundle.js:77192
+[  196297ms] [LOG] [Fast refresh] ./src/TaamunCave/TaamunCaveFinal.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  196297ms] [LOG] [Fast refresh] ./src/TaamunCave/index.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  251674ms] [LOG] [Fast refresh] ./src/TaamunCave/TaamunCaveFinal.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  251674ms] [LOG] [Fast refresh] ./src/TaamunCave/index.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  301915ms] [LOG] [Fast refresh] ./src/TaamunCave/TaamunCaveFinal.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  301915ms] [LOG] [Fast refresh] ./src/TaamunCave/index.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  602497ms] [LOG] [Fast refresh] ./src/TaamunCave/config.ts fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  602497ms] [LOG] [Fast refresh] ./src/TaamunCave/TaamunCave.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  602497ms] [LOG] [Fast refresh] ./src/TaamunCave/scenes/AnswerScene.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  602497ms] [LOG] [Fast refresh] ./src/TaamunCave/scenes/ImaginationScene.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  602497ms] [LOG] [Fast refresh] ./src/TaamunCave/scenes/TransformScene.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  602497ms] [LOG] [Fast refresh] ./src/TaamunCave/scenes/RevelationScene.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  602497ms] [LOG] [Fast refresh] ./src/TaamunCave/scenes/EssenceScene.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  602497ms] [LOG] [Fast refresh] ./src/TaamunCave/scenes/CTAScene.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  602497ms] [LOG] [Fast refresh] ./src/TaamunCave/TaamunCaveVisuals.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  602497ms] [LOG] [Fast refresh] ./src/TaamunCave/TaamunCaveFinal.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  602497ms] [LOG] [Fast refresh] ./src/TaamunCave/index.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  717262ms] [LOG] [Fast refresh] ./src/TaamunCave/TaamunCaveFinal.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  717262ms] [LOG] [Fast refresh] ./src/TaamunCave/index.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  763165ms] [LOG] [Fast refresh] ./src/TaamunCave/theme.ts fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  763165ms] [LOG] [Fast refresh] ./src/TaamunCave/components/TypewriterText.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  763165ms] [LOG] [Fast refresh] ./src/TaamunCave/components/TextCard.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  763165ms] [LOG] [Fast refresh] ./src/TaamunCave/scenes/HookScene.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  763165ms] [LOG] [Fast refresh] ./src/TaamunCave/components/WordReveal.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  763165ms] [LOG] [Fast refresh] ./src/TaamunCave/components/GoldenParticles.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  763165ms] [LOG] [Fast refresh] ./src/TaamunCave/scenes/VerseScene.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  763165ms] [LOG] [Fast refresh] ./src/TaamunCave/components/ShockwaveRing.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  763165ms] [LOG] [Fast refresh] ./src/TaamunCave/scenes/AnswerScene.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  763165ms] [LOG] [Fast refresh] ./src/TaamunCave/scenes/ImaginationScene.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  763165ms] [LOG] [Fast refresh] ./src/TaamunCave/scenes/TransformScene.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  763165ms] [LOG] [Fast refresh] ./src/TaamunCave/scenes/RevelationScene.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  763165ms] [LOG] [Fast refresh] ./src/TaamunCave/scenes/EssenceScene.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  763165ms] [LOG] [Fast refresh] ./src/TaamunCave/scenes/CTAScene.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  763165ms] [LOG] [Fast refresh] ./src/TaamunCave/TaamunCave.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  763165ms] [LOG] [Fast refresh] ./src/TaamunCave/TaamunCaveVisuals.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  763165ms] [LOG] [Fast refresh] ./src/TaamunCave/TaamunCaveFinal.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  763165ms] [LOG] [Fast refresh] ./src/TaamunCave/index.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  768277ms] [ERROR] Error: Cannot find module '../components/TypewriterText'
+    at webpackMissingModule (http://localhost:3003/main.358cd62f37b2b8ce.hot-update.js:20:50)
+    at ./src/TaamunCave/scenes/AnswerScene.tsx (http://localhost:3003/main.358cd62f37b2b8ce.hot-update.js:20:153)
+    at options.factory (http://localhost:3003/bundle.js:171165:31)
+    at __webpack_require__ (http://localhost:3003/bundle.js:170552:33)
+    at Object._requireSelf [as require] (http://localhost:3003/bundle.js:170832:15)
+    at onAccepted (http://localhost:3003/bundle.js:171596:23)
+    at async Promise.all (index 0) @ http://localhost:3003/bundle.js:41169
+[  768278ms] [WARNING] Ignored an error while updating module ./src/TaamunCave/scenes/AnswerScene.tsx (self-accept-errored) @ http://localhost:3003/bundle.js:47053
+[  768278ms] [ERROR] Error: Cannot find module '../components/TypewriterText'
+    at webpackMissingModule (http://localhost:3003/main.358cd62f37b2b8ce.hot-update.js:214:50)
+    at ./src/TaamunCave/scenes/HookScene.tsx (http://localhost:3003/main.358cd62f37b2b8ce.hot-update.js:214:153)
+    at options.factory (http://localhost:3003/bundle.js:171165:31)
+    at __webpack_require__ (http://localhost:3003/bundle.js:170552:33)
+    at Object._requireSelf [as require] (http://localhost:3003/bundle.js:170832:15)
+    at onAccepted (http://localhost:3003/bundle.js:171596:23)
+    at async Promise.all (index 0) @ http://localhost:3003/bundle.js:41169
+[  768278ms] [WARNING] Ignored an error while updating module ./src/TaamunCave/scenes/HookScene.tsx (self-accept-errored) @ http://localhost:3003/bundle.js:47053
+[  768278ms] [LOG] [Fast refresh] ./src/TaamunCave/components/TypewriterText.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  768278ms] [LOG] [Fast refresh] ./src/TaamunCave/scenes/AnswerScene.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  768278ms] [LOG] [Fast refresh] ./src/TaamunCave/scenes/HookScene.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  785924ms] [LOG] [Fast refresh] ./src/TaamunCave/TaamunCaveFinal.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  785924ms] [LOG] [Fast refresh] ./src/TaamunCave/index.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  787916ms] [ERROR] Error: Cannot find module '../components/TypewriterText'
+    at webpackMissingModule (http://localhost:3003/main.358cd62f37b2b8ce.hot-update.js:214:50)
+    at ./src/TaamunCave/scenes/HookScene.tsx (http://localhost:3003/main.358cd62f37b2b8ce.hot-update.js:214:153)
+    at options.factory (http://localhost:3003/bundle.js:171165:31)
+    at __webpack_require__ (http://localhost:3003/bundle.js:170552:33)
+    at Object._requireSelf [as require] (http://localhost:3003/bundle.js:170832:15)
+    at onAccepted (http://localhost:3003/bundle.js:171596:23)
+    at async Promise.all (index 0) @ http://localhost:3003/bundle.js:41169
+[  787916ms] [WARNING] Ignored an error while updating module ./src/TaamunCave/index.tsx (self-accept-errored) @ http://localhost:3003/bundle.js:47053
+[  787916ms] [LOG] [Fast refresh] ./src/TaamunCave/components/CinematicTransitions.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  787916ms] [LOG] [Fast refresh] ./src/TaamunCave/TaamunCave.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  787917ms] [LOG] [Fast refresh] ./src/TaamunCave/index.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  787946ms] [ERROR] Error: Cannot find module '../components/TypewriterText'
+    at webpackMissingModule (http://localhost:3003/main.358cd62f37b2b8ce.hot-update.js:20:50)
+    at ./src/TaamunCave/scenes/AnswerScene.tsx (http://localhost:3003/main.358cd62f37b2b8ce.hot-update.js:20:153)
+    at options.factory (http://localhost:3003/bundle.js:171165:31)
+    at __webpack_require__ (http://localhost:3003/bundle.js:170552:33)
+    at Object._requireSelf [as require] (http://localhost:3003/bundle.js:170832:15)
+    at onAccepted (http://localhost:3003/bundle.js:171596:23)
+    at async Promise.all (index 0) @ http://localhost:3003/bundle.js:41169
+[  787946ms] [WARNING] Ignored an error while updating module ./src/Root.tsx (self-accept-errored) @ http://localhost:3003/bundle.js:47053
+[  787946ms] [LOG] [Fast refresh] ./src/TaamunCave/scenes/HookScene.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  787946ms] [LOG] [Fast refresh] ./src/TaamunCave/TaamunCave.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  787946ms] [LOG] [Fast refresh] ./src/TaamunCave/index.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  787946ms] [LOG] [Fast refresh] ./src/Root.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  790085ms] [LOG] [Fast refresh] ./src/TaamunCave/components/PunchText.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  790085ms] [LOG] [Fast refresh] ./src/TaamunCave/scenes/HookScene.tsx fast refreshed. @ http://localhost:3003/bundle.js:47137
+[  791018ms] [WARNING] Ignored an update to unaccepted module ./src/TaamunCave/scenes/AnswerScene.tsx -> ./src/TaamunCave/TaamunCave.tsx -> ./src/TaamunCave/index.tsx -> ./src/Root.tsx -> ./src/index.ts @ http://localhost:3003/bundle.js:47038
+[  791018ms] [WARNING] [Fast refresh] The following modules couldn't be hot updated: (Full reload needed)
+This is usually because the modules which have changed (and their parents) do not know how to hot reload themselves. See https://webpack.js.org/concepts/hot-module-replacement/ for more details. @ http://localhost:3003/bundle.js:47118
+[  791018ms] [WARNING] [Fast refresh]  - ./src/TaamunCave/scenes/AnswerScene.tsx @ http://localhost:3003/bundle.js:47126
+[  791018ms] [WARNING] [Fast refresh] Reloading page @ http://localhost:3003/bundle.js:47163
+[  791243ms] [INFO] %cDownload the React DevTools for a better development experience: https://react.dev/link/react-devtools font-weight:bold @ http://localhost:3003/bundle.js:77423
+[  794187ms] [LOG] [Fast refresh] ./src/TaamunCave/scenes/AnswerScene.tsx fast refreshed. @ http://localhost:3003/bundle.js:47368
+[  798155ms] [LOG] [Fast refresh] ./src/TaamunCave/TaamunCaveFinal.tsx fast refreshed. @ http://localhost:3003/bundle.js:47368
+[  798155ms] [LOG] [Fast refresh] ./src/TaamunCave/index.tsx fast refreshed. @ http://localhost:3003/bundle.js:47368
+[  825967ms] [LOG] [Fast refresh] ./src/TaamunCave/TaamunCaveFinal.tsx fast refreshed. @ http://localhost:3003/bundle.js:47368
+[  825967ms] [LOG] [Fast refresh] ./src/TaamunCave/index.tsx fast refreshed. @ http://localhost:3003/bundle.js:47368
+[  962258ms] [LOG] [Fast refresh] ./node_modules/@remotion/transitions/dist/esm/fade.mjs fast refreshed. @ http://localhost:3003/bundle.js:47368
+[  962258ms] [LOG] [Fast refresh] ./node_modules/@remotion/transitions/dist/esm/wipe.mjs fast refreshed. @ http://localhost:3003/bundle.js:47368
+[  962258ms] [LOG] [Fast refresh] ./src/TaamunCave/TaamunCave.tsx fast refreshed. @ http://localhost:3003/bundle.js:47368
+[  962258ms] [LOG] [Fast refresh] ./src/TaamunCave/index.tsx fast refreshed. @ http://localhost:3003/bundle.js:47368
+[ 1529644ms] [LOG] [Fast refresh] ./src/TaamunCave/TaamunCaveFinal.tsx fast refreshed. @ http://localhost:3003/bundle.js:47368
+[ 1529655ms] [LOG] [Fast refresh] ./src/TaamunCave/index.tsx fast refreshed. @ http://localhost:3003/bundle.js:47368

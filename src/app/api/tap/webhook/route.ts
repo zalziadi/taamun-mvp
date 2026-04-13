@@ -32,7 +32,7 @@ export async function POST(req: Request) {
     const periodEnd = new Date();
     periodEnd.setMonth(periodEnd.getMonth() + months);
 
-    await admin.from("customer_subscriptions").upsert(
+    const { error: upsertErr } = await admin.from("customer_subscriptions").upsert(
       {
         user_id:            userId,
         stripe_customer_id: `tap_${userId}`,
@@ -44,11 +44,18 @@ export async function POST(req: Request) {
       },
       { onConflict: "user_id" }
     );
+    if (upsertErr) {
+      console.error("[tap/webhook] subscription upsert failed:", upsertErr);
+      return NextResponse.json({ error: "db_upsert_failed" }, { status: 500 });
+    }
   } else if (FAILED_STATUSES.has(charge.status)) {
-    await admin
+    const { error: updateErr } = await admin
       .from("customer_subscriptions")
       .update({ status: "inactive", tap_charge_id: charge.id, updated_at: new Date().toISOString() })
       .eq("user_id", userId);
+    if (updateErr) {
+      console.error("[tap/webhook] subscription update failed:", updateErr);
+    }
   }
 
   return NextResponse.json({ received: true });

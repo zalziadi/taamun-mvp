@@ -1,0 +1,74 @@
+- generic [ref=e2]:
+  - generic:
+    - generic:
+      - heading "لعرض اختصارات لوحة المفاتيح، اضغط على علامة الاستفهام عرض اختصارات لوحة المفاتيح" [level=2] [ref=e3]:
+        - generic [ref=e4]: لعرض اختصارات لوحة المفاتيح، اضغط على علامة الاستفهام
+        - link "عرض اختصارات لوحة المفاتيح" [ref=e5] [cursor=pointer]:
+          - /url: /i/keyboard_shortcuts
+      - generic [ref=e6]:
+        - button "التخطي إلى يوميات الصفحة الرئيسيّة" [ref=e7] [cursor=pointer]
+        - button "التخطي إلى الموضوعات المتداوَلة" [ref=e9] [cursor=pointer]
+        - banner [ref=e11]:
+          - generic [ref=e13]:
+            - generic [ref=e14]:
+              - heading "X" [level=1] [ref=e16] [cursor=pointer]:
+                - link "X" [ref=e17]:
+                  - /url: /home
+                  - img [ref=e19]
+              - navigation "أساسي" [ref=e23]:
+                - link "الرئيسيّة" [ref=e24] [cursor=pointer]:
+                  - /url: /home
+                  - img [ref=e27]
+                - link "بحث واستكشاف" [ref=e30] [cursor=pointer]:
+                  - /url: /explore
+                  - img [ref=e33]
+                - link "التنبيهات" [ref=e36] [cursor=pointer]:
+                  - /url: /notifications
+                  - img [ref=e39]
+                - link "متابعة" [ref=e42] [cursor=pointer]:
+                  - /url: /i/connect_people
+                  - img [ref=e45]
+                - link "الرسائل الخاصّة" [ref=e48] [cursor=pointer]:
+                  - /url: /i/chat
+                  - img [ref=e51]
+                - link "Grok" [ref=e54] [cursor=pointer]:
+                  - /url: /i/grok
+                  - generic [ref=e56]:
+                    - img [ref=e57]
+                    - generic "undefined من العناصر غير المقروءة" [ref=e60]
+                - link "Premium" [ref=e61] [cursor=pointer]:
+                  - /url: /i/premium_sign_up
+                  - img [ref=e64]
+                - link "الملف الشخصيّ" [ref=e67] [cursor=pointer]:
+                  - /url: /zalziadi
+                  - img [ref=e70]
+                - button "المزيد من عناصر القائمة" [ref=e73] [cursor=pointer]:
+                  - img [ref=e76]
+              - link "نشر" [ref=e80] [cursor=pointer]:
+                - /url: /compose/post
+                - img [ref=e82]
+            - button "قائمة الحساب" [ref=e87] [cursor=pointer]:
+              - generic [ref=e95]:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic "زياد الزيادي 🎩":
+                        - img "زياد الزيادي 🎩"
+        - main [ref=e98]:
+          - generic "الخطّ الزمنيّ الرئيسيّ" [ref=e103]:
+            - generic [ref=e105]:
+              - generic [ref=e108]:
+                - generic [ref=e109]:
+                  - generic [ref=e111]: الدردشة
+                  - button [ref=e113] [cursor=pointer]:
+                    - img [ref=e114]
+                - generic [ref=e118]:
+                  - img [ref=e119]
+                  - generic [ref=e121]: بحث
+              - generic [ref=e158]:
+                - img [ref=e160]
+                - generic [ref=e162]:
+                  - generic [ref=e163]: بدء المحادثة
+                  - generic [ref=e164]: اختر من محادثاتك الحالية، أو ابدأ محادثة جديدة.
+                - button "دردشة جديدة" [ref=e165] [cursor=pointer]:
+                  - generic [ref=e166]: دردشة جديدة

@@ -1,0 +1,202 @@
+- generic [ref=e9]:
+  - generic [ref=e12]:
+    - link "Instagram" [ref=e17] [cursor=pointer]:
+      - /url: /
+      - img "Instagram" [ref=e22]
+    - generic [ref=e25]:
+      - link "الصفحة الرئيسية" [ref=e30] [cursor=pointer]:
+        - /url: /
+        - img "الصفحة الرئيسية" [ref=e35]
+      - link "ريلز" [ref=e40] [cursor=pointer]:
+        - /url: /reels/
+        - img "ريلز" [ref=e45]
+      - link "الرسائل" [ref=e750] [cursor=pointer]:
+        - /url: /direct/inbox/
+        - img "الرسائل" [ref=e57]
+      - link "بحث" [ref=e62] [cursor=pointer]:
+        - /url: "#"
+        - img "بحث" [ref=e67]
+      - link "استكشاف" [ref=e73] [cursor=pointer]:
+        - /url: /explore/
+        - img "استكشاف" [ref=e78]
+      - link "الإشعارات" [ref=e86] [cursor=pointer]:
+        - /url: "#"
+        - img "الإشعارات" [ref=e91]
+      - link "منشور جديد" [ref=e97] [cursor=pointer]:
+        - /url: "#"
+        - img "منشور جديد" [ref=e102]
+      - link "لوحة المعلومات الاحترافية" [ref=e107] [cursor=pointer]:
+        - /url: "#"
+        - img "لوحة المعلومات الاحترافية" [ref=e112]
+      - link "صورة ملف zalziadi الشخصي" [ref=e119] [cursor=pointer]:
+        - /url: /zalziadi/
+        - link "صورة ملف zalziadi الشخصي" [ref=e124]:
+          - img "صورة ملف zalziadi الشخصي" [ref=e125]
+    - generic [ref=e126]:
+      - link "الإعدادات" [ref=e129] [cursor=pointer]:
+        - /url: "#"
+        - img "الإعدادات" [ref=e134]
+      - link "أيضًا من Meta" [ref=e137] [cursor=pointer]:
+        - /url: "#"
+        - img "أيضًا من Meta" [ref=e142]
+  - main [ref=e146]:
+    - generic [ref=e237]:
+      - navigation "قائمة سلاسل الرسائل" [ref=e238]:
+        - generic [ref=e239]:
+          - generic [ref=e240]:
+            - button "zalziadi أيقونة شارة رتبة عسكرية لأسفل" [ref=e241] [cursor=pointer]:
+              - heading "zalziadi" [level=2] [ref=e243]:
+                - generic [ref=e244]: zalziadi
+              - img "أيقونة شارة رتبة عسكرية لأسفل" [ref=e246]
+            - button "رسالة جديدة" [ref=e250] [cursor=pointer]:
+              - img "رسالة جديدة" [ref=e252]
+          - tablist [ref=e257]:
+            - tab "Primary" [selected] [ref=e258] [cursor=pointer]:
+              - generic [ref=e260]: Primary
+            - tab "General" [ref=e261] [cursor=pointer]:
+              - generic [ref=e263]: General
+            - tab "طلبات" [ref=e265] [cursor=pointer]:
+              - generic [ref=e267]: طلبات
+          - generic [ref=e271]:
+            - img "بحث" [ref=e273]
+            - textbox "بحث" [ref=e276]
+          - generic [ref=e277]:
+            - list [ref=e281]:
+              - listitem [ref=e282]
+              - listitem [ref=e283]
+              - listitem [ref=e284]:
+                - button "عُد للساحة بملاحظة... ملاحظتك" [ref=e286] [cursor=pointer]:
+                  - generic [ref=e287]:
+                    - generic [ref=e293]: عُد للساحة بملاحظة...
+                    - generic [ref=e294]:
+                      - link [ref=e296]
+                      - generic [ref=e298]: ملاحظتك
+              - listitem [ref=e299]:
+                - button "التشخيص الحدسي الاثنين القادم صورة ملف noorkaizen369 الشخصي Noor Faraj - نورفرج" [ref=e302] [cursor=pointer]:
+                  - generic [ref=e303]:
+                    - generic [ref=e310]: التشخيص الحدسي الاثنين القادم
+                    - generic [ref=e311]:
+                      - link "صورة ملف noorkaizen369 الشخصي" [ref=e313]:
+                        - img "صورة ملف noorkaizen369 الشخصي" [ref=e314]
+                      - generic [ref=e317]: Noor Faraj - نورفرج
+            - generic [ref=e321]:
+              - button "user-profile-picture ‏‎Zahra Mahdi‎‏ حازت رسالة على إعجاب منذ يومين" [ref=e1028] [cursor=pointer]:
+                - generic [ref=e1030]:
+                  - img "user-profile-picture" [ref=e1034]
+                  - generic [ref=e1037]:
+                    - generic [ref=e1041]: ‏‎Zahra Mahdi‎‏
+                    - generic [ref=e1043]:
+                      - generic [ref=e1045]: حازت رسالة على إعجاب
+                      - generic [ref=e1046]:
+                        - generic [ref=e1048]: ·
+                        - generic "منذ يومين" [ref=e1052]: 2 ي
+              - button "user-profile-picture ‏Nezar Senan - نزار سنان‏ السلام عليكم منذ يومين خيارات إضافية" [pressed] [ref=e1223] [cursor=pointer]:
+                - generic [ref=e1058]:
+                  - img "user-profile-picture" [ref=e1062]
+                  - generic [ref=e1065]:
+                    - generic [ref=e1069]: ‏Nezar Senan - نزار سنان‏
+                    - generic [ref=e1071]:
+                      - generic [ref=e1073]: السلام عليكم
+                      - generic [ref=e1074]:
+                        - generic [ref=e1076]: ·
+                        - generic "منذ يومين" [ref=e1080]: 2 ي
+                  - button "خيارات إضافية" [ref=e1226]:
+                    - img "خيارات إضافية" [ref=e1229]
+              - 'button "user-profile-picture ‏‎_1u7‎‏ أنت: وعندي لك عرض خاص ما راح يتكرر 🎁 باقة 820 ريال الكاملة (تأمل + مسح الآيات + كل المحتوى) — بس لك بـ 350 ريال فقط 💗 رديلي \"نعم\" وأرسلك رابط التفعيل مباشرة 🙏 منذ يومين" [ref=e1084] [cursor=pointer]':
+                - generic [ref=e1086]:
+                  - img "user-profile-picture" [ref=e1090]
+                  - generic [ref=e1093]:
+                    - generic [ref=e1097]: ‏‎_1u7‎‏
+                    - generic [ref=e1099]:
+                      - generic [ref=e1101]: "أنت: وعندي لك عرض خاص ما راح يتكرر 🎁 باقة 820 ريال الكاملة (تأمل + مسح الآيات + كل المحتوى) — بس لك بـ 350 ريال فقط 💗 رديلي \"نعم\" وأرسلك رابط التفعيل مباشرة 🙏"
+                      - generic [ref=e1102]:
+                        - generic [ref=e1104]: ·
+                        - generic "منذ يومين" [ref=e1108]: 2 ي
+              - 'button "user-profile-picture ‏‎Safaa‎‏ أنت: وعندي لك عرض خاص ما راح يتكرر 🎁 باقة 820 ريال الكاملة (تأمل + مسح الآيات + كل المحتوى) — بس لك بـ 350 ريال فقط 💗 رديلي \"نعم\" وأرسلك رابط التفعيل مباشرة 🙏 منذ ٣ أيام" [ref=e1112] [cursor=pointer]':
+                - generic [ref=e1114]:
+                  - img "user-profile-picture" [ref=e1118]
+                  - generic [ref=e1121]:
+                    - generic [ref=e1125]: ‏‎Safaa‎‏
+                    - generic [ref=e1127]:
+                      - generic [ref=e1129]: "أنت: وعندي لك عرض خاص ما راح يتكرر 🎁 باقة 820 ريال الكاملة (تأمل + مسح الآيات + كل المحتوى) — بس لك بـ 350 ريال فقط 💗 رديلي \"نعم\" وأرسلك رابط التفعيل مباشرة 🙏"
+                      - generic [ref=e1130]:
+                        - generic [ref=e1132]: ·
+                        - generic "منذ ٣ أيام" [ref=e1136]: 3 ي
+              - button "user-profile-picture ‏‎Greg Isenberg‎‏ مُحقّق تم إرسال مرفق بواسطة ‏‎Greg‎‏. منذ ٣ أيام" [ref=e1140] [cursor=pointer]:
+                - generic [ref=e1142]:
+                  - img "user-profile-picture" [ref=e1146]
+                  - generic [ref=e1149]:
+                    - generic [ref=e1151]:
+                      - generic [ref=e1153]: ‏‎Greg Isenberg‎‏
+                      - img "مُحقّق" [ref=e1155]
+                    - generic [ref=e1158]:
+                      - generic [ref=e1160]: تم إرسال مرفق بواسطة ‏‎Greg‎‏.
+                      - generic [ref=e1161]:
+                        - generic [ref=e1163]: ·
+                        - generic "منذ ٣ أيام" [ref=e1167]: 3 ي
+              - button "user-profile-picture ‏مستخدم Instagram‏ تم إرسال مرفق بواسطة ‏مستخدم Instagram‏. منذ أسبوع" [ref=e1171] [cursor=pointer]:
+                - generic [ref=e1173]:
+                  - img "user-profile-picture" [ref=e1177]
+                  - generic [ref=e1180]:
+                    - generic [ref=e1184]: ‏مستخدم Instagram‏
+                    - generic [ref=e1186]:
+                      - generic [ref=e1188]: تم إرسال مرفق بواسطة ‏مستخدم Instagram‏.
+                      - generic [ref=e1189]:
+                        - generic [ref=e1191]: ·
+                        - generic "منذ أسبوع" [ref=e1195]: 1 أ
+              - button "جارٍ التحميل... جارٍ التحميل... جارٍ التحميل..." [ref=e521] [cursor=pointer]:
+                - generic [ref=e523]:
+                  - status "جارٍ التحميل..." [ref=e526]
+                  - generic [ref=e529]:
+                    - status "جارٍ التحميل..." [ref=e531]
+                    - status "جارٍ التحميل..." [ref=e533]
+      - generic "محادثة مع Nezar Senan - نزار سنان" [ref=e1233]:
+        - generic [ref=e1234]:
+          - generic [ref=e1238]:
+            - link "Open the profile page of sencpb" [ref=e1239] [cursor=pointer]:
+              - /url: /sencpb/
+              - generic [ref=e1240]:
+                - img "user-profile-picture" [ref=e1244]
+                - generic [ref=e1245]:
+                  - heading "‏Nezar Senan - نزار سنان‏" [level=2] [ref=e1247]:
+                    - generic [ref=e1248]: ‏Nezar Senan - نزار سنان‏
+                  - generic [ref=e1252]: sencpb
+            - generic [ref=e1253]:
+              - button "مكالمة صوتية" [ref=e1254] [cursor=pointer]:
+                - img "مكالمة صوتية" [ref=e1256]
+              - button "مكالمة فيديو" [ref=e1258] [cursor=pointer]:
+                - img "مكالمة فيديو" [ref=e1260]
+              - button "معلومات المحادثة" [ref=e1263] [cursor=pointer]:
+                - img "معلومات المحادثة" [ref=e1265]
+          - generic [ref=e1269]:
+            - generic [ref=e1273]:
+              - generic [ref=e1274]:
+                - img "user-profile-picture" [ref=e1278]
+                - generic [ref=e1279]:
+                  - heading "‏Nezar Senan - نزار سنان‏" [level=2] [ref=e1282]:
+                    - generic [ref=e1283]: ‏Nezar Senan - نزار سنان‏
+                  - generic [ref=e1285]: sencpb · Instagram
+                  - link "عرض الملف الشخصي" [ref=e1287] [cursor=pointer]:
+                    - /url: /sencpb/
+              - generic [ref=e1291]:
+                - generic [ref=e1294]: إثنين 7:14 م
+                - group [ref=e1295]:
+                  - generic [ref=e1297]:
+                    - link "Open the profile page of sencpb" [ref=e1300] [cursor=pointer]:
+                      - /url: /sencpb
+                      - img "user-profile-picture" [ref=e1303]
+                    - generic [ref=e1308]: السلام عليكم
+            - generic [ref=e1318]:
+              - button "اختيار رمز تعبيري" [ref=e1321] [cursor=pointer]:
+                - img "اختيار رمز تعبيري" [ref=e1323]
+              - generic [ref=e1325]:
+                - textbox [active] [ref=e1326]:
+                  - paragraph [ref=e1327]
+                - generic: مراسلة...
+              - generic [ref=e1328]:
+                - button "مقطع صوتي" [ref=e1329] [cursor=pointer]:
+                  - img "مقطع صوتي" [ref=e1331]
+                - button "إضافة صورة أو فيديو" [ref=e1334] [cursor=pointer]:
+                  - img "إضافة صورة أو فيديو" [ref=e1336]
+                - button "اختيار صورة GIF أو ملصق" [ref=e1341] [cursor=pointer]:
+                  - img "اختيار صورة GIF أو ملصق" [ref=e1343]

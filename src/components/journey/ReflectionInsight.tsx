@@ -258,7 +258,7 @@ export function ReflectionInsight({
         {trimmedTheme && (
           <div className="flex items-center gap-2">
             <span
-              className={`text-[10px] tracking-[0.18em] ${tint.labelText}`}
+              className={`text-xs tracking-[0.18em] ${tint.labelText}`}
             >
               {trimmedTheme}
             </span>

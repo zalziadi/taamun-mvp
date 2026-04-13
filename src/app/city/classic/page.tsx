@@ -179,28 +179,28 @@ export default function CityPage() {
                 <div className="w-5 h-5 rounded-full border-2 border-[#5a4a38] bg-[#2a2118]" />
               </div>
               <p className="text-xs font-semibold text-[#5f5648]">الظل</p>
-              <p className="text-[11px] text-[#7d7362]">لم تبدأ بعد — المجال في ظلام</p>
+              <p className="text-xs text-[#7d7362]">لم تبدأ بعد — المجال في ظلام</p>
             </div>
             <div className="space-y-1.5">
               <div className="flex justify-center">
                 <div className="w-5 h-5 rounded-full border-2 border-[#c4a265] bg-[#4a3d2a]" />
               </div>
               <p className="text-xs font-semibold text-[#5f5648]">الهدية</p>
-              <p className="text-[11px] text-[#7d7362]">بدأت الرحلة — ضوء يتشكّل</p>
+              <p className="text-xs text-[#7d7362]">بدأت الرحلة — ضوء يتشكّل</p>
             </div>
             <div className="space-y-1.5">
               <div className="flex justify-center">
                 <div className="w-5 h-5 rounded-full border-2 border-[#e7c468] bg-[#6b5830]" />
               </div>
               <p className="text-xs font-semibold text-[#5f5648]">أفضل إمكانية</p>
-              <p className="text-[11px] text-[#7d7362]">تمعّنت بعمق — المجال مُشرق</p>
+              <p className="text-xs text-[#7d7362]">تمعّنت بعمق — المجال مُشرق</p>
             </div>
           </div>
         </div>
       </section>
 
       {/* ── Illumination Progress Ring ─────────────────────────────────── */}
-      <section className="flex items-center justify-center gap-6">
+      <section className="flex items-center justify-center gap-3 sm:gap-6">
         <div className="relative w-20 h-20">
           <svg viewBox="0 0 100 100" className="w-full h-full -rotate-90">
             <circle
@@ -325,9 +325,9 @@ export default function CityPage() {
                           : "border-[#2a2118]/40 bg-[#1a1610]/50 text-[#4a4038] cursor-not-allowed opacity-50",
                       ].join(" ")}
                     >
-                      <span className="text-[10px]">اليوم</span>
+                      <span className="text-xs">اليوم</span>
                       <span className="text-lg font-semibold">{day}</span>
-                      <span className="text-[10px]">
+                      <span className="text-xs">
                         {isCompleted ? "مكتمل" : isAvailable ? "متاح" : "مقفل"}
                       </span>
                     </button>
@@ -398,7 +398,7 @@ export default function CityPage() {
                 >
                   {d.title}
                 </p>
-                <p className="text-[10px] text-[#7d7362]">
+                <p className="text-xs text-[#7d7362]">
                   {STATE_LABELS[ds.state]}
                 </p>
                 {/* Mini dots for day progress */}
@@ -431,7 +431,7 @@ export default function CityPage() {
       {/* ── Completion Message ──────────────────────────────────────────── */}
       {allDomainsLit && (
         <section className="tm-card p-6 text-center space-y-4 city-card-enter">
-          <p className="tm-heading text-3xl">رحلتك اكتملت بنور</p>
+          <p className="tm-heading text-xl sm:text-3xl">رحلتك اكتملت بنور</p>
           <p className="text-sm text-[#5f5648]/85 max-w-md mx-auto">
             لقد أتممت 28 يوماً من التمعّن والبناء. مدينتك الآن تشع بالتوازن
             والانسجام بين كافة جوانب الحياة.

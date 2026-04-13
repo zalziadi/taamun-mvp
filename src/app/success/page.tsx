@@ -17,7 +17,7 @@ export default function SuccessPage() {
           <span className="text-4xl">🌿</span>
         </div>
 
-        <h1 className="text-4xl font-bold mb-4">مبروك!</h1>
+        <h1 className="text-2xl sm:text-4xl font-bold mb-4">مبروك!</h1>
         <p className="text-zinc-400 text-lg mb-12">
           رحلتك مع تمعّن بدأت الآن — كل يوم خطوة نحو الأفضل
         </p>

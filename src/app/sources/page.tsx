@@ -44,7 +44,7 @@ export default async function SourcesPage() {
     <div className="tm-shell space-y-6">
       <section className="tm-card p-7">
         <p className="text-xs tracking-[0.22em] text-[#8c7851]">SOURCES</p>
-        <h1 className="tm-heading mt-2 text-4xl leading-tight">مصادر</h1>
+        <h1 className="tm-heading mt-2 text-2xl sm:text-4xl leading-tight">مصادر</h1>
         <p className="mt-3 max-w-[780px] text-sm leading-relaxed text-[#5f5648]/85">
           مرجعان أساسيان في المنصة: القرآن الكريم، وكتاب مدينة المعنى. اختر المصدر الذي تريد البدء منه.
         </p>
@@ -55,7 +55,7 @@ export default async function SourcesPage() {
           <div className="mb-3 inline-flex rounded-full border border-[#cdb98f] bg-[#f1e7d4] px-3 py-1 text-xs text-[#7b694a]">
             المصدر الأول
           </div>
-          <h2 className="tm-heading text-3xl text-[#5a4531]">القرآن الكريم</h2>
+          <h2 className="tm-heading text-xl sm:text-3xl text-[#5a4531]">القرآن الكريم</h2>
           <p className="mt-2 text-sm leading-relaxed text-[#6f6455]">
             اقرأ الآيات مباشرة من مصدر موثوق للرجوع السريع أثناء التمعّن.
           </p>
@@ -73,7 +73,7 @@ export default async function SourcesPage() {
           <div className="mb-3 inline-flex rounded-full border border-[#cdb98f] bg-[#f1e7d4] px-3 py-1 text-xs text-[#7b694a]">
             المصدر الثاني
           </div>
-          <h2 className="tm-heading text-3xl text-[#5a4531]">كتاب مدينة المعنى</h2>
+          <h2 className="tm-heading text-xl sm:text-3xl text-[#5a4531]">كتاب مدينة المعنى</h2>
           <p className="mt-2 text-sm leading-relaxed text-[#6f6455]">
             تصفح فصول الكتاب داخل الموقع أو افتح نسخة PDF للقراءة المركزة.
           </p>

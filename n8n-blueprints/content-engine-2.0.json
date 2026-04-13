@@ -1,0 +1,364 @@
+{
+  "name": "Content Engine 2.0 - Self-Learning Factory",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 1
+            }
+          ]
+        }
+      },
+      "name": "Every Hour",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_CONTENT_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Content DB",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        400
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// STEP 1: Capture — filter top performing videos\nconst items = $input.all();\nconst threshold = 80;\n\nconst winners = items.filter(item => {\n  const score = item.json.performance_score || 0;\n  return score >= threshold;\n});\n\nif (winners.length === 0) {\n  // No winners — take best available\n  const sorted = items.sort((a, b) => \n    (b.json.performance_score || 0) - (a.json.performance_score || 0)\n  );\n  if (sorted.length > 0) {\n    return [{\n      json: {\n        has_winner: true,\n        video: sorted[0].json,\n        score: sorted[0].json.performance_score || 0,\n        hook: sorted[0].json.hook || '',\n        script: sorted[0].json.script || '',\n        cta: sorted[0].json.cta || '',\n        source: 'best_available'\n      }\n    }];\n  }\n  return [{ json: { has_winner: false } }];\n}\n\n// Return top winner\nconst best = winners.sort((a, b) => \n  (b.json.performance_score || 0) - (a.json.performance_score || 0)\n)[0];\n\nreturn [{\n  json: {\n    has_winner: true,\n    video: best.json,\n    score: best.json.performance_score || 0,\n    hook: best.json.hook || '',\n    script: best.json.script || '',\n    cta: best.json.cta || '',\n    source: 'top_performer'\n  }\n}];"
+      },
+      "name": "Capture Best Video",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        600,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.has_winner }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "Has Winner?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        800,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-20250514",
+        "messages": {
+          "values": [
+            {
+              "role": "user",
+              "content": "=حلل هذا الفيديو الناجح:\n\nHook: {{ $json.hook }}\nScript: {{ $json.script }}\nCTA: {{ $json.cta }}\nScore: {{ $json.score }}\n\nأعطني:\n1. لماذا نجح؟ (3 أسباب)\n2. ما هو الـ Pattern؟\n3. ما المشاعر المستخدمة؟ (خوف / طموح / فضول / ألم)\n4. ما نوع CTA؟\n\nأجب بـ JSON:\n{\n  \"reasons\": [\"...\", \"...\", \"...\"],\n  \"pattern\": \"...\",\n  \"emotion\": \"...\",\n  \"cta_type\": \"...\"\n}"
+            }
+          ]
+        }
+      },
+      "name": "Analyze Success (Claude)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1000,
+        300
+      ],
+      "notes": "Replace with Claude API node or HTTP Request to Anthropic API"
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-20250514",
+        "messages": {
+          "values": [
+            {
+              "role": "user",
+              "content": "=بناءً على هذا الفيديو الناجح:\n\nHook الأصلي: {{ $json.hook }}\nScript الأصلي: {{ $json.script }}\nCTA الأصلي: {{ $json.cta }}\nPattern: {{ $json.pattern }}\nEmotion: {{ $json.emotion }}\n\nأنشئ 5 نسخ جديدة:\n- نفس الفكرة الأساسية\n- Hooks مختلفة\n- زوايا مختلفة (خوف / طموح / فضول)\n\nلكل نسخة:\n- hook: أول 3 ثواني\n- script: 15-30 ثانية\n- cta: واضح ومباشر\n- angle: الزاوية العاطفية\n\nأجب بـ JSON array:\n[\n  {\"hook\": \"...\", \"script\": \"...\", \"cta\": \"...\", \"angle\": \"...\"}\n]"
+            }
+          ]
+        }
+      },
+      "name": "Generate 5 Variations (Claude)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1200,
+        300
+      ],
+      "notes": "Replace with Claude API node or HTTP Request to Anthropic API"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Parse the 5 variations and prepare for production\nconst variations = JSON.parse($input.item.json.body || '[]');\n\n// Take top 3 only (Rule of 3)\nconst top3 = variations.slice(0, 3);\n\nconst output = top3.map((v, i) => ({\n  json: {\n    variation_id: i + 1,\n    hook: v.hook,\n    script: v.script,\n    cta: v.cta,\n    angle: v.angle,\n    status: 'pending_production',\n    ab_tag: `Hook_${String.fromCharCode(65 + i)}` // A, B, C\n  }\n}));\n\nreturn output;"
+      },
+      "name": "Prepare Top 3 (Rule of 3)",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1400,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "model": "claude-sonnet-4-20250514",
+        "messages": {
+          "values": [
+            {
+              "role": "user",
+              "content": "=حوّل هذا السكربت إلى Prompt احترافي لـ Kling:\n\nHook: {{ $json.hook }}\nScript: {{ $json.script }}\nAngle: {{ $json.angle }}\n\nأعطني:\n- وصف المشهد بالتفصيل\n- حركة الكاميرا\n- المشاعر والأجواء\n- النص الظاهر على الشاشة\n- المدة: 15-30 ثانية\n\nالهدف: فيديو عالي التحويل"
+            }
+          ]
+        }
+      },
+      "name": "Convert to Kling Prompt (Claude)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1600,
+        300
+      ],
+      "notes": "Replace with Claude API node"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.KLING_API_URL }}",
+        "sendBody": true,
+        "bodyParameters": {
+          "parameters": [
+            {
+              "name": "prompt",
+              "value": "={{ $json.kling_prompt }}"
+            }
+          ]
+        }
+      },
+      "name": "Kling API (Video Production)",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1800,
+        300
+      ],
+      "notes": "Connect to Kling API when available"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "create",
+        "databaseId": "={{ $env.NOTION_CONTENT_DB }}",
+        "properties": {
+          "title": "={{ $json.hook }}",
+          "status": "published",
+          "ab_tag": "={{ $json.ab_tag }}",
+          "parent_video": "={{ $json.parent_video_id }}",
+          "angle": "={{ $json.angle }}"
+        }
+      },
+      "name": "Save to Notion",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        2000,
+        300
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🎬 *Content Engine 2.0*\n\n✅ تم إنتاج {{ $json.variation_id }} نسخ من الفيديو الناجح\n\n🏷 Tag: {{ $json.ab_tag }}\n🎣 Hook: {{ $json.hook }}\n🎭 Angle: {{ $json.angle }}\n\n⏳ بعد ساعة: A/B Test يبدأ",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Notify Borhan",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        2000,
+        500
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=⚠️ *Content Engine*\n\nلا يوجد فيديو ناجح حالياً\nالنظام ينتظر بيانات أداء...",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "No Winner Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1000,
+        500
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Every Hour": {
+      "main": [
+        [
+          {
+            "node": "Read Content DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Content DB": {
+      "main": [
+        [
+          {
+            "node": "Capture Best Video",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Capture Best Video": {
+      "main": [
+        [
+          {
+            "node": "Has Winner?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Has Winner?": {
+      "main": [
+        [
+          {
+            "node": "Analyze Success (Claude)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "No Winner Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Success (Claude)": {
+      "main": [
+        [
+          {
+            "node": "Generate 5 Variations (Claude)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate 5 Variations (Claude)": {
+      "main": [
+        [
+          {
+            "node": "Prepare Top 3 (Rule of 3)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Top 3 (Rule of 3)": {
+      "main": [
+        [
+          {
+            "node": "Convert to Kling Prompt (Claude)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to Kling Prompt (Claude)": {
+      "main": [
+        [
+          {
+            "node": "Kling API (Video Production)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Kling API (Video Production)": {
+      "main": [
+        [
+          {
+            "node": "Save to Notion",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Notify Borhan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "1004"
+}

@@ -1,0 +1,92 @@
+- generic [ref=e788]:
+  - generic [ref=e791]:
+    - link "Instagram" [ref=e796] [cursor=pointer]:
+      - /url: /
+      - img "Instagram" [ref=e801]
+    - generic [ref=e804]:
+      - link "الصفحة الرئيسية" [ref=e809] [cursor=pointer]:
+        - /url: /
+        - img "الصفحة الرئيسية" [ref=e814]
+      - link "ريلز" [ref=e819] [cursor=pointer]:
+        - /url: /reels/
+        - img "ريلز" [ref=e824]
+      - link "الرسائل مراسلة عبر Direct - رابط إشعار واحد جديد" [ref=e831] [cursor=pointer]:
+        - /url: /direct/inbox/
+        - generic [ref=e834]:
+          - img "الرسائل" [ref=e836]
+          - generic "مراسلة عبر Direct - رابط إشعار واحد جديد" [ref=e838]:
+            - generic [ref=e840]: "1"
+      - link "بحث" [ref=e844] [cursor=pointer]:
+        - /url: "#"
+        - img "بحث" [ref=e849]
+      - link "استكشاف" [ref=e855] [cursor=pointer]:
+        - /url: /explore/
+        - img "استكشاف" [ref=e860]
+      - link "الإشعارات" [ref=e868] [cursor=pointer]:
+        - /url: "#"
+        - img "الإشعارات" [ref=e873]
+      - link "منشور جديد" [ref=e879] [cursor=pointer]:
+        - /url: "#"
+        - img "منشور جديد" [ref=e884]
+      - link "لوحة المعلومات الاحترافية" [ref=e889] [cursor=pointer]:
+        - /url: "#"
+        - img "لوحة المعلومات الاحترافية" [ref=e894]
+      - link "صورة ملف zalziadi الشخصي" [ref=e901] [cursor=pointer]:
+        - /url: /zalziadi/
+        - link "صورة ملف zalziadi الشخصي" [ref=e906]:
+          - img "صورة ملف zalziadi الشخصي" [ref=e907]
+    - generic [ref=e908]:
+      - link "الإعدادات" [ref=e911] [cursor=pointer]:
+        - /url: "#"
+        - img "الإعدادات" [ref=e916]
+      - link "أيضًا من Meta" [ref=e919] [cursor=pointer]:
+        - /url: "#"
+        - img "أيضًا من Meta" [ref=e924]
+  - main [ref=e928]:
+    - generic [ref=e934]:
+      - navigation "قائمة سلاسل الرسائل" [ref=e935]:
+        - generic [ref=e936]:
+          - generic [ref=e937]:
+            - button "عودة" [ref=e939] [cursor=pointer]:
+              - img "عودة" [ref=e942]
+            - generic [ref=e944]: طلبات المراسلة
+          - generic [ref=e946]:
+            - generic [ref=e947]: افتح دردشة للتعرف على مزيد من المعلومات عمن يراسلك. ولن يعرف مرسل الرسالة أنك رأيت الرسالة إلا بعد قبول طلب المراسلة.
+            - link "حدد الأشخاص الذين يمكنهم مراسلتك" [ref=e948] [cursor=pointer]:
+              - /url: "#"
+              - generic [ref=e949]: حدد الأشخاص الذين يمكنهم مراسلتك
+          - generic [ref=e952]:
+            - button "أيقونة العين المغمضة للطلبات المخفية الطلبات المخفية أيقونة شارة رتبة عسكرية تشير إلى الدخول إلى نافذة الطلبات المخفية" [ref=e953] [cursor=pointer]:
+              - generic [ref=e955]:
+                - img "أيقونة العين المغمضة للطلبات المخفية" [ref=e958]
+                - generic [ref=e963]: الطلبات المخفية
+                - img "أيقونة شارة رتبة عسكرية تشير إلى الدخول إلى نافذة الطلبات المخفية" [ref=e966]
+            - generic [ref=e968]:
+              - button "user-profile-picture ‏‎Sabrina Hanifa🎨🌎🏇✈‎‏ 😍 منذ أسبوعين" [ref=e972] [cursor=pointer]:
+                - generic [ref=e974]:
+                  - img "user-profile-picture" [ref=e978]
+                  - generic [ref=e981]:
+                    - generic [ref=e985]: ‏‎Sabrina Hanifa🎨🌎🏇✈‎‏
+                    - generic [ref=e987]:
+                      - generic [ref=e989]: 😍
+                      - generic [ref=e990]:
+                        - generic [ref=e992]: ·
+                        - generic "منذ أسبوعين" [ref=e996]: 2 أ
+              - button "user-profile-picture ‏‎Dr. Sam Trabulsi | The Personal Brand & Business Mentor‎‏ مرحبا أستاذ زياد كيف حالك؟ منذ ٤ أسابيع" [ref=e1000] [cursor=pointer]:
+                - generic [ref=e1002]:
+                  - img "user-profile-picture" [ref=e1006]
+                  - generic [ref=e1009]:
+                    - generic [ref=e1013]: ‏‎Dr. Sam Trabulsi | The Personal Brand & Business Mentor‎‏
+                    - generic [ref=e1015]:
+                      - generic [ref=e1017]: مرحبا أستاذ زياد كيف حالك؟
+                      - generic [ref=e1018]:
+                        - generic [ref=e1020]: ·
+                        - generic "منذ ٤ أسابيع" [ref=e1024]: 4 أ
+          - generic [ref=e1025]:
+            - separator [ref=e1026]
+            - button "Delete all 2" [ref=e1028] [cursor=pointer]:
+              - generic [ref=e1029]: Delete all 2
+      - generic [ref=e1033]:
+        - img [ref=e1036]
+        - heading "طلبات المراسلة" [active] [level=2] [ref=e1039]
+        - generic [ref=e1042]: هذه الرسائل من أشخاص قمت بتقييدهم أو لا تتابعهم. ولن يعرفوا أنك قد رأيت طلبهم حتى تسمح لهم بمراسلتك.

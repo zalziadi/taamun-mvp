@@ -1,0 +1,74 @@
+- generic [active]:
+  - alert [ref=e1]
+  - dialog [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - heading "Build Error" [level=1] [ref=e7]
+        - paragraph [ref=e8]: Failed to compile
+        - generic [ref=e9]:
+          - text: Next.js (14.2.18) is outdated
+          - link "(learn more)" [ref=e11] [cursor=pointer]:
+            - /url: https://nextjs.org/docs/messages/version-staleness
+      - generic [ref=e12]:
+        - generic [ref=e13]:
+          - link "./src/app/api/journey/timeline/route.ts" [ref=e14] [cursor=pointer]:
+            - text: ./src/app/api/journey/timeline/route.ts
+            - img [ref=e15]
+          - generic [ref=e19]:
+            - generic [ref=e20]: "Error:"
+            - text: x
+            - generic [ref=e21]: Merge conflict marker encountered. ,-[
+            - text: /Users/ziyadalziyadi/Projects/taamun-mvp/src/app/api/journey/timeline/route.ts
+            - generic [ref=e22]: :47:1]
+            - text: "47"
+            - generic [ref=e23]: "| .then((r) => r, () => ({ data: null, error: { message: \"memory_catch\" } })),"
+            - text: "48"
+            - generic [ref=e24]: "| ]);"
+            - text: "49"
+            - generic [ref=e25]: "|"
+            - text: "50"
+            - generic [ref=e26]: "| <<<<<<< Updated upstream :"
+            - text: ^^^^^^^ 51
+            - generic [ref=e27]: "| // Degrade gracefully — use empty data instead of 500 for non-critical failures"
+            - text: "52"
+            - generic [ref=e28]: "| const reflections = reflectionsRes.error ? [] : (reflectionsRes.data ?? []);"
+            - text: "53"
+            - generic [ref=e29]: "| const progressOk = progress.ok !== false; `----"
+            - text: x
+            - generic [ref=e30]: Merge conflict marker encountered. ,-[
+            - text: /Users/ziyadalziyadi/Projects/taamun-mvp/src/app/api/journey/timeline/route.ts
+            - generic [ref=e31]: :53:1]
+            - text: "53"
+            - generic [ref=e32]: "| const progressOk = progress.ok !== false;"
+            - text: "54"
+            - generic [ref=e33]: "| const completedDays = progressOk ? (progress as { completedDays: number[] }).completedDays : [];"
+            - text: "55"
+            - generic [ref=e34]: "| const currentDay = progressOk ? (progress as { currentDay: number }).currentDay : 1;"
+            - text: "56"
+            - generic [ref=e35]: "| ======= :"
+            - text: ^^^^^^^ 57
+            - generic [ref=e36]: "| // If reflections query failed, continue with empty reflections"
+            - text: "58"
+            - generic [ref=e37]: "| // instead of returning 500 — so /progress still renders"
+            - text: "59"
+            - generic [ref=e38]: "| const reflections = reflectionsRes.error ? [] : (reflectionsRes.data ?? []); `----"
+            - text: x
+            - generic [ref=e39]: Merge conflict marker encountered. ,-[
+            - text: /Users/ziyadalziyadi/Projects/taamun-mvp/src/app/api/journey/timeline/route.ts
+            - generic [ref=e40]: :78:1]
+            - text: "78"
+            - generic [ref=e41]: "| narrative: emptyNarrative,"
+            - text: "79"
+            - generic [ref=e42]: "| });"
+            - text: "80"
+            - generic [ref=e43]: "| }"
+            - text: "81"
+            - generic [ref=e44]: "| >>>>>>> Stashed changes :"
+            - text: ^^^^^^^ 82
+            - generic [ref=e45]: "|"
+            - text: "83"
+            - generic [ref=e46]: "| // Pull V9 completedSteps from user_memory.identity.journey_state (optional)"
+            - text: "84"
+            - generic [ref=e47]: "| const stored = (memRes.data?.identity as { journey_state?: Partial<UserJourneyState> } | null) `---- Caused by: Syntax Error"
+        - contentinfo [ref=e48]:
+          - paragraph [ref=e49]: This error occurred during the build process and can only be dismissed by fixing the error.

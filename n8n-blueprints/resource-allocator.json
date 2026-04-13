@@ -1,0 +1,215 @@
+{
+  "name": "Resource Allocator — Smart Priority Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "name": "Every 6 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_STRATEGY_DB }}",
+        "returnAll": false,
+        "limit": 1
+      },
+      "name": "Read Latest Strategy",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        300
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_CONTENT_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Content Status",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        500
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_REVENUE_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Revenue Status",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        700
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// ==========================================\n// RESOURCE ALLOCATOR — Dynamic Priority\n// Translates strategy → concrete agent commands\n// ==========================================\nconst strategy = $('Read Latest Strategy').first()?.json || {};\nconst content = $('Read Content Status').all();\nconst revenue = $('Read Revenue Status').all();\n\nconst now = new Date();\nconst deadline = new Date('2026-04-05T23:59:59');\nconst hoursLeft = Math.max(0, Math.round((deadline - now) / (1000 * 60 * 60)));\nconst daysLeft = Math.round(hoursLeft / 24);\n\n// Current state\nconst totalCustomers = revenue.length;\nconst target = 1500;\nconst remaining = target - totalCustomers;\n\nconst totalVideos = content.length;\nconst publishedLast6h = content.filter(c => {\n  const pub = new Date(c.json.published_at || c.json['Published At'] || c.json.createdTime || 0);\n  return (now - pub) < 6 * 60 * 60 * 1000;\n}).length;\nconst totalDMs = content.reduce((s, c) => s + (c.json.dms_generated || c.json['DMs Generated'] || 0), 0);\nconst pendingLeads = revenue.filter(r => (r.json.status || r.json.Status) === 'pending').length;\n\n// Strategy percentages (from Strategic Brain)\nconst contentPct = strategy.content_pct || 40;\nconst salesPct = strategy.sales_pct || 30;\nconst intelPct = 10;\nconst experimentPct = 20;\n\n// === DYNAMIC ALLOCATION RULES ===\nconst commands = [];\n\n// 1. Content Production\nif (publishedLast6h < 3) {\n  commands.push({\n    agent: 'content_engine',\n    action: `أنتج ${Math.max(5, 10 - publishedLast6h)} فيديوهات فوراً`,\n    priority: 'critical',\n    reason: `آخر 6 ساعات: ${publishedLast6h} فيديو فقط — أقل من المطلوب`,\n    allocation_pct: Math.min(60, contentPct + 20)\n  });\n} else if (publishedLast6h >= 5) {\n  commands.push({\n    agent: 'content_engine',\n    action: 'استمر بنفس الوتيرة — الإنتاج جيد',\n    priority: 'medium',\n    reason: `${publishedLast6h} فيديو في 6 ساعات — ممتاز`,\n    allocation_pct: contentPct\n  });\n}\n\n// 2. Sales Closing\nif (pendingLeads >= 3) {\n  commands.push({\n    agent: 'warda',\n    action: `عندك ${pendingLeads} leads معلقين — اقفليهم الحين`,\n    priority: 'critical',\n    reason: 'leads جاهزين للدفع — أسرع طريق للإيراد',\n    allocation_pct: Math.min(50, salesPct + 15)\n  });\n} else if (totalDMs > 20 && totalCustomers < 10) {\n  commands.push({\n    agent: 'warda',\n    action: 'ركزي على Close — فيه DMs كثير لكن المبيعات ضعيفة',\n    priority: 'high',\n    reason: `${totalDMs} DM لكن ${totalCustomers} عميل فقط`,\n    allocation_pct: salesPct + 10\n  });\n}\n\n// 3. Competitor Intel\nif (daysLeft <= 3) {\n  commands.push({\n    agent: 'wolf',\n    action: 'أوقف التحليل — ركز كل شيء على الإغلاق',\n    priority: 'low',\n    reason: 'آخر 3 أيام — مافيه وقت للتحليل',\n    allocation_pct: 0\n  });\n} else {\n  commands.push({\n    agent: 'wolf',\n    action: 'راقب المنافسين + جدد الـ Hooks',\n    priority: 'medium',\n    reason: 'مطلوب بيانات جديدة كل 6 ساعات',\n    allocation_pct: intelPct\n  });\n}\n\n// 4. Experimentation\nif (daysLeft > 5) {\n  commands.push({\n    agent: 'ab_testing',\n    action: 'جرب 2 Hooks جديدة — ابحث عن Gold',\n    priority: 'medium',\n    reason: 'فيه وقت للتجربة',\n    allocation_pct: experimentPct\n  });\n} else {\n  commands.push({\n    agent: 'ab_testing',\n    action: 'أوقف التجارب — استخدم اللي ثبت نجاحه فقط',\n    priority: 'high',\n    reason: 'لا وقت للتجربة — نفذ بالمثبت',\n    allocation_pct: 5\n  });\n}\n\n// 5. Emergency mode\nif (daysLeft <= 2 && remaining > 10) {\n  commands.push({\n    agent: 'borhan',\n    action: '🚨 EMERGENCY MODE — كل الموارد على الإغلاق + Flash Sale',\n    priority: 'critical',\n    reason: `باقي ${daysLeft} يوم و ${remaining} عميل — طوارئ`,\n    allocation_pct: 100\n  });\n}\n\n// 6. Almost there\nif (remaining <= 5 && remaining > 0) {\n  commands.push({\n    agent: 'borhan',\n    action: `💪 باقي ${remaining} عملاء فقط — Push أخير لكل Lead مفتوح`,\n    priority: 'high',\n    reason: 'قريبين جداً — لا تتوقف',\n    allocation_pct: 80\n  });\n}\n\nreturn {\n  json: {\n    timestamp: now.toISOString(),\n    state: {\n      customers: totalCustomers,\n      remaining,\n      days_left: daysLeft,\n      hours_left: hoursLeft,\n      videos_last_6h: publishedLast6h,\n      total_dms: totalDMs,\n      pending_leads: pendingLeads\n    },\n    commands,\n    mode: daysLeft <= 2 ? 'EMERGENCY' : daysLeft <= 5 ? 'SPRINT' : 'NORMAL'\n  }\n};"
+      },
+      "name": "Allocate Resources",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=⚖️ *RESOURCE ALLOCATOR*\n⏰ {{ $json.timestamp }}\n\n━━━━━━━━━━━━━━━━━━\n📍 *الوضع:* {{ $json.mode }}\n👥 {{ $json.state.customers }} عميل | باقي: {{ $json.state.remaining }}\n⏳ {{ $json.state.days_left }} يوم ({{ $json.state.hours_left }} ساعة)\n📹 {{ $json.state.videos_last_6h }} فيديو آخر 6 ساعات\n📩 {{ $json.state.total_dms }} DM | ⏳ {{ $json.state.pending_leads }} معلق\n\n━━━━━━━━━━━━━━━━━━\n⚡ *الأوامر*\n{{ $json.commands.map((c, i) => `${i+1}. [${c.priority.toUpperCase()}] → ${c.agent}\\n   📋 ${c.action}\\n   💡 ${c.reason}\\n   📊 ${c.allocation_pct}% من الموارد`).join('\\n\\n') }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Allocation Report",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        950,
+        400
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.N8N_WEBHOOK_BASE }}/webhook/control-gate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"decisions\": {{ JSON.stringify($json.commands.map((c, i) => ({\n    id: 'ra_' + i,\n    action: c.action,\n    target_agent: c.agent,\n    priority: c.priority,\n    confidence: 0.9,\n    reason: c.reason,\n    expected_impact: c.allocation_pct + '% من الموارد',\n    risk: 'low',\n    deadline_hours: 6\n  }))) }},\n  \"overall_status\": \"{{ $json.mode === 'EMERGENCY' ? 'critical' : $json.mode === 'SPRINT' ? 'warning' : 'stable' }}\",\n  \"meta\": { \"timestamp\": \"{{ $json.timestamp }}\", \"source\": \"resource_allocator\" }\n}"
+      },
+      "name": "Send to Decision Router",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        950,
+        600
+      ]
+    }
+  ],
+  "connections": {
+    "Every 6 Hours": {
+      "main": [
+        [
+          {
+            "node": "Read Latest Strategy",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Content Status",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Revenue Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Latest Strategy": {
+      "main": [
+        [
+          {
+            "node": "Allocate Resources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Content Status": {
+      "main": [
+        [
+          {
+            "node": "Allocate Resources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Revenue Status": {
+      "main": [
+        [
+          {
+            "node": "Allocate Resources",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Allocate Resources": {
+      "main": [
+        [
+          {
+            "node": "Allocation Report",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send to Decision Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "1014"
+}

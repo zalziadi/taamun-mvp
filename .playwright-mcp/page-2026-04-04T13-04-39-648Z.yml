@@ -1,0 +1,228 @@
+- generic [ref=e9]:
+  - generic [ref=e12]:
+    - link "Instagram" [ref=e17] [cursor=pointer]:
+      - /url: /
+      - img "Instagram" [ref=e22]
+    - generic [ref=e25]:
+      - link "الصفحة الرئيسية" [ref=e30] [cursor=pointer]:
+        - /url: /
+        - img "الصفحة الرئيسية" [ref=e35]
+      - link "ريلز" [ref=e40] [cursor=pointer]:
+        - /url: /reels/
+        - img "ريلز" [ref=e45]
+      - link "الرسائل مراسلة عبر Direct - رابط 3 من الإشعارات الجديدة" [ref=e497] [cursor=pointer]:
+        - /url: /direct/inbox/
+        - generic [ref=e55]:
+          - img "الرسائل" [ref=e57]
+          - generic "مراسلة عبر Direct - رابط 3 من الإشعارات الجديدة" [ref=e498]:
+            - generic [ref=e61]: "3"
+      - link "بحث" [ref=e65] [cursor=pointer]:
+        - /url: "#"
+        - img "بحث" [ref=e70]
+      - link "استكشاف" [ref=e76] [cursor=pointer]:
+        - /url: /explore/
+        - img "استكشاف" [ref=e81]
+      - link "الإشعارات" [ref=e89] [cursor=pointer]:
+        - /url: "#"
+        - img "الإشعارات" [ref=e94]
+      - link "منشور جديد" [ref=e100] [cursor=pointer]:
+        - /url: "#"
+        - img "منشور جديد" [ref=e105]
+      - link "لوحة المعلومات الاحترافية" [ref=e110] [cursor=pointer]:
+        - /url: "#"
+        - img "لوحة المعلومات الاحترافية" [ref=e115]
+      - link "صورة ملف zalziadi الشخصي" [ref=e122] [cursor=pointer]:
+        - /url: /zalziadi/
+        - link "صورة ملف zalziadi الشخصي" [ref=e127]:
+          - img "صورة ملف zalziadi الشخصي" [ref=e128]
+    - generic [ref=e129]:
+      - link "الإعدادات" [ref=e132] [cursor=pointer]:
+        - /url: "#"
+        - img "الإعدادات" [ref=e137]
+      - link "أيضًا من Meta" [ref=e140] [cursor=pointer]:
+        - /url: "#"
+        - img "أيضًا من Meta" [ref=e145]
+  - main [ref=e149]:
+    - generic [ref=e155]:
+      - navigation "قائمة سلاسل الرسائل" [ref=e156]:
+        - generic [ref=e157]:
+          - generic [ref=e158]:
+            - button "zalziadi أيقونة شارة رتبة عسكرية لأسفل" [ref=e159] [cursor=pointer]:
+              - heading "zalziadi" [level=2] [ref=e161]:
+                - generic [ref=e162]: zalziadi
+              - img "أيقونة شارة رتبة عسكرية لأسفل" [ref=e164]
+            - button "رسالة جديدة" [ref=e168] [cursor=pointer]:
+              - img "رسالة جديدة" [ref=e170]
+          - tablist [ref=e175]:
+            - tab "Primary" [ref=e176] [cursor=pointer]:
+              - generic [ref=e178]: Primary
+            - tab "General" [active] [selected] [ref=e179] [cursor=pointer]:
+              - generic [ref=e181]: General
+            - tab "طلبات" [ref=e183] [cursor=pointer]:
+              - generic [ref=e185]: طلبات
+          - generic [ref=e189]:
+            - img "بحث" [ref=e191]
+            - textbox "بحث" [ref=e194]
+          - generic [ref=e195]:
+            - list [ref=e199]:
+              - listitem [ref=e200]
+              - listitem [ref=e201]
+              - listitem [ref=e202]:
+                - button "عُد للساحة بملاحظة... ملاحظتك" [ref=e204] [cursor=pointer]:
+                  - generic [ref=e205]:
+                    - generic [ref=e211]: عُد للساحة بملاحظة...
+                    - generic [ref=e212]:
+                      - link [ref=e214]
+                      - generic [ref=e216]: ملاحظتك
+              - listitem [ref=e217]:
+                - button "أيقونة تصوِّر أمواجًا صوتية بثلاثة أشرطة رأسية يتغير ارتفاعها بشكلٍ نبضي Life Is a Gift from God God Is Love الحب هو معراج الروح إلى النعيم 🫂🤍✨ صورة ملف marwakhuzaie الشخصي Marwa AlKhuzaei" [ref=e220] [cursor=pointer]:
+                  - generic [ref=e221]:
+                    - generic [ref=e227]:
+                      - generic [ref=e228]:
+                        - img "أيقونة تصوِّر أمواجًا صوتية بثلاثة أشرطة رأسية يتغير ارتفاعها بشكلٍ نبضي" [ref=e230]
+                        - generic [ref=e234]: Life Is a Gift from God
+                      - generic [ref=e235]: God Is Love
+                      - generic [ref=e236]: الحب هو معراج الروح إلى النعيم 🫂🤍✨
+                    - generic [ref=e237]:
+                      - link "صورة ملف marwakhuzaie الشخصي" [ref=e239]:
+                        - img "صورة ملف marwakhuzaie الشخصي" [ref=e240]
+                      - generic [ref=e243]: Marwa AlKhuzaei
+              - listitem [ref=e244]:
+                - button "💗🤍💗🤍💗 صورة ملف bothina_fadhel الشخصي Bothina💗" [ref=e247] [cursor=pointer]:
+                  - generic [ref=e248]:
+                    - generic [ref=e255]: 💗🤍💗🤍💗
+                    - generic [ref=e256]:
+                      - link "صورة ملف bothina_fadhel الشخصي" [ref=e258]:
+                        - img "صورة ملف bothina_fadhel الشخصي" [ref=e259]
+                      - generic [ref=e262]: Bothina💗
+            - generic [ref=e266]:
+              - button "user-profile-picture ‏وفاء 369‏ شكرا لكم منذ ١٥ ساعة Unread" [ref=e641] [cursor=pointer]:
+                - generic [ref=e643]:
+                  - img "user-profile-picture" [ref=e647]
+                  - generic [ref=e650]:
+                    - generic [ref=e654]: ‏وفاء 369‏
+                    - generic [ref=e656]:
+                      - generic [ref=e658]: شكرا لكم
+                      - generic [ref=e659]:
+                        - generic [ref=e661]: ·
+                        - generic "منذ ١٥ ساعة" [ref=e665]: ١٥ س
+                  - generic [ref=e669]: Unread
+              - button "user-profile-picture ‏‎angeduciel‎‏ حازت رسالة على إعجاب منذ ١٥ ساعة Unread" [ref=e673] [cursor=pointer]:
+                - generic [ref=e675]:
+                  - img "user-profile-picture" [ref=e679]
+                  - generic [ref=e682]:
+                    - generic [ref=e686]: ‏‎angeduciel‎‏
+                    - generic [ref=e688]:
+                      - generic [ref=e690]: حازت رسالة على إعجاب
+                      - generic [ref=e691]:
+                        - generic [ref=e693]: ·
+                        - generic "منذ ١٥ ساعة" [ref=e697]: ١٥ س
+                  - generic [ref=e701]: Unread
+              - 'button "user-profile-picture ‏‎Amina Haider‎‏ أنت: السلام عليكم 🌿 لفت انتباهي اهتمامك بالتمعّن.. سؤال واحد: ماذا لو كانت رحلتك في الحياة في اتجاه مدينة لا تراها؟ تمعّن — برنامج 28 يوم لاكتشاف المعنى بلغة القرآن. تجربة مجانية 7 أيام، بدون أي التزام. https://www.taamun.com بالتوفيق في رحلتك 🤍 وكلها أسبوع ويكون موقع التحليلات في مدينة المعنى التفاعلية جاهزة تجربة استثنائية انتظارك فيه فرح كبير لك منذ ١٦ ساعة" [ref=e705] [cursor=pointer]':
+                - generic [ref=e707]:
+                  - img "user-profile-picture" [ref=e711]
+                  - generic [ref=e714]:
+                    - generic [ref=e718]: ‏‎Amina Haider‎‏
+                    - generic [ref=e720]:
+                      - generic [ref=e722]: "أنت: السلام عليكم 🌿 لفت انتباهي اهتمامك بالتمعّن.. سؤال واحد: ماذا لو كانت رحلتك في الحياة في اتجاه مدينة لا تراها؟ تمعّن — برنامج 28 يوم لاكتشاف المعنى بلغة القرآن. تجربة مجانية 7 أيام، بدون أي التزام. https://www.taamun.com بالتوفيق في رحلتك 🤍 وكلها أسبوع ويكون موقع التحليلات في مدينة المعنى التفاعلية جاهزة تجربة استثنائية انتظارك فيه فرح كبير لك"
+                      - generic [ref=e723]:
+                        - generic [ref=e725]: ·
+                        - generic "منذ ١٦ ساعة" [ref=e729]: ١٦ س
+              - 'button "user-profile-picture ‏‎ashwaag_all‎‏ أنت: السلام عليكم 🌿 لفت انتباهي اهتمامك بالتمعّن.. سؤال واحد: ماذا لو كانت رحلتك في الحياة في اتجاه مدينة لا تراها؟ تمعّن — برنامج 28 يوم لاكتشاف المعنى بلغة القرآن. تجربة مجانية 7 أيام، بدون أي التزام. https://www.taamun.com بالتوفيق في رحلتك 🤍 منذ ١٦ ساعة" [ref=e733] [cursor=pointer]':
+                - generic [ref=e735]:
+                  - img "user-profile-picture" [ref=e739]
+                  - generic [ref=e742]:
+                    - generic [ref=e746]: ‏‎ashwaag_all‎‏
+                    - generic [ref=e748]:
+                      - generic [ref=e750]: "أنت: السلام عليكم 🌿 لفت انتباهي اهتمامك بالتمعّن.. سؤال واحد: ماذا لو كانت رحلتك في الحياة في اتجاه مدينة لا تراها؟ تمعّن — برنامج 28 يوم لاكتشاف المعنى بلغة القرآن. تجربة مجانية 7 أيام، بدون أي التزام. https://www.taamun.com بالتوفيق في رحلتك 🤍"
+                      - generic [ref=e751]:
+                        - generic [ref=e753]: ·
+                        - generic "منذ ١٦ ساعة" [ref=e757]: ١٦ س
+              - 'button "user-profile-picture ‏‎noaaav‎‏ أنت: السلام عليكم 🌿 لفت انتباهي اهتمامك بالتمعّن.. سؤال واحد: ماذا لو كانت رحلتك في الحياة في اتجاه مدينة لا تراها؟ تمعّن — برنامج 28 يوم لاكتشاف المعنى بلغة القرآن. تجربة مجانية 7 أيام، بدون أي التزام. https://www.taamun.com بالتوفيق في رحلتك 🤍 منذ ١٦ ساعة" [ref=e761] [cursor=pointer]':
+                - generic [ref=e763]:
+                  - img "user-profile-picture" [ref=e767]
+                  - generic [ref=e770]:
+                    - generic [ref=e774]: ‏‎noaaav‎‏
+                    - generic [ref=e776]:
+                      - generic [ref=e778]: "أنت: السلام عليكم 🌿 لفت انتباهي اهتمامك بالتمعّن.. سؤال واحد: ماذا لو كانت رحلتك في الحياة في اتجاه مدينة لا تراها؟ تمعّن — برنامج 28 يوم لاكتشاف المعنى بلغة القرآن. تجربة مجانية 7 أيام، بدون أي التزام. https://www.taamun.com بالتوفيق في رحلتك 🤍"
+                      - generic [ref=e779]:
+                        - generic [ref=e781]: ·
+                        - generic "منذ ١٦ ساعة" [ref=e785]: ١٦ س
+              - button "user-profile-picture ‏‎Sabrina Hanifa🎨🌎🏇✈‎‏ حازت رسالة على إعجاب منذ يوم Unread" [ref=e789] [cursor=pointer]:
+                - generic [ref=e791]:
+                  - img "user-profile-picture" [ref=e795]
+                  - generic [ref=e798]:
+                    - generic [ref=e802]: ‏‎Sabrina Hanifa🎨🌎🏇✈‎‏
+                    - generic [ref=e804]:
+                      - generic [ref=e806]: حازت رسالة على إعجاب
+                      - generic [ref=e807]:
+                        - generic [ref=e809]: ·
+                        - generic "منذ يوم" [ref=e813]: 1ي
+                  - generic [ref=e817]: Unread
+              - button "جارٍ التحميل... جارٍ التحميل... جارٍ التحميل..." [ref=e467] [cursor=pointer]:
+                - generic [ref=e469]:
+                  - status "جارٍ التحميل..." [ref=e472]
+                  - generic [ref=e475]:
+                    - status "جارٍ التحميل..." [ref=e477]
+                    - status "جارٍ التحميل..." [ref=e479]
+      - generic "محادثة مع The Queen Monawar" [ref=e511]:
+        - generic [ref=e512]:
+          - generic [ref=e516]:
+            - link "Open the profile page of the_queen_monawar" [ref=e517] [cursor=pointer]:
+              - /url: /the_queen_monawar/
+              - generic [ref=e518]:
+                - img "user-profile-picture" [ref=e522]
+                - generic [ref=e523]:
+                  - heading "‏‎The Queen Monawar‎‏" [level=2] [ref=e525]:
+                    - generic [ref=e526]: ‏‎The Queen Monawar‎‏
+                  - generic [ref=e530]: the_queen_monawar
+            - generic [ref=e531]:
+              - button "مكالمة صوتية" [ref=e532] [cursor=pointer]:
+                - img "مكالمة صوتية" [ref=e534]
+              - button "مكالمة فيديو" [ref=e536] [cursor=pointer]:
+                - img "مكالمة فيديو" [ref=e538]
+              - button "معلومات المحادثة" [ref=e541] [cursor=pointer]:
+                - img "معلومات المحادثة" [ref=e543]
+          - generic [ref=e547]:
+            - generic [ref=e551]:
+              - generic [ref=e552]:
+                - img "user-profile-picture" [ref=e556]
+                - generic [ref=e557]:
+                  - heading "‏‎The Queen Monawar‎‏" [level=2] [ref=e560]:
+                    - generic [ref=e561]: ‏‎The Queen Monawar‎‏
+                  - generic [ref=e563]: the_queen_monawar · Instagram
+                  - link "عرض الملف الشخصي" [ref=e565] [cursor=pointer]:
+                    - /url: /the_queen_monawar/
+              - generic [ref=e569]:
+                - generic [ref=e572]: جمعة 7:04 ص
+                - group [ref=e573]:
+                  - generic [ref=e574]:
+                    - generic [ref=e578]:
+                      - generic [ref=e581]:
+                        - text: السلام عليكم
+                        - img "🌿" [ref=e583]
+                        - text: "لفت انتباهي اهتمامك بالتمعّن.. سؤال واحد: ماذا لو كانت رحلتك في الحياة في اتجاه مدينة لا تراها؟ تمعّن — برنامج 28 يوم لاكتشاف المعنى بلغة القرآن. تجربة مجانية 7 أيام، بدون أي التزام."
+                        - gridcell "https://www.taamun.com" [ref=e584]:
+                          - link "https://www.taamun.com" [ref=e585] [cursor=pointer]:
+                            - /url: https://www.taamun.com/
+                        - text: بالتوفيق في رحلتك
+                        - img "🤍" [ref=e587]
+                      - link "تمَعُّن" [ref=e588] [cursor=pointer]:
+                        - /url: https://www.taamun.com/
+                        - generic [ref=e593]: تمَعُّن
+                    - button "❤️" [ref=e595] [cursor=pointer]:
+                      - generic [ref=e597]: ❤️
+            - generic [ref=e607]:
+              - button "اختيار رمز تعبيري" [ref=e610] [cursor=pointer]:
+                - img "اختيار رمز تعبيري" [ref=e612]
+              - generic [ref=e614]:
+                - textbox [ref=e615]:
+                  - paragraph [ref=e616]
+                - generic: مراسلة...
+              - generic [ref=e617]:
+                - button "مقطع صوتي" [ref=e618] [cursor=pointer]:
+                  - img "مقطع صوتي" [ref=e620]
+                - button "إضافة صورة أو فيديو" [ref=e623] [cursor=pointer]:
+                  - img "إضافة صورة أو فيديو" [ref=e625]
+                - button "اختيار صورة GIF أو ملصق" [ref=e630] [cursor=pointer]:
+                  - img "اختيار صورة GIF أو ملصق" [ref=e632]

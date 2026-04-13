@@ -1,0 +1,241 @@
+{
+  "name": "Offer Generator — Dynamic Offer Factory",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "offer-generator",
+        "responseMode": "lastNode"
+      },
+      "name": "Offer Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_COMPETITOR_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Competitors",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        300
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_PATTERNS_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Patterns",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        500
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const input = $('Offer Webhook').item.json;\nconst competitors = $('Read Competitors').all();\nconst patterns = $('Read Patterns').all();\n\n// Competitor pricing landscape\nconst compPrices = competitors.map(c => ({\n  name: c.json.name || c.json.Name || '',\n  price: c.json.price || c.json.Price || 0,\n  offer: c.json.offer_type || c.json['Offer Type'] || ''\n}));\n\n// Winning patterns for offer messaging\nconst winningPatterns = patterns\n  .filter(p => (p.json.result || p.json.Result) === 'SCALE')\n  .map(p => ({\n    pattern: p.json.pattern || p.json.Pattern || '',\n    emotion: p.json.emotion || p.json.Emotion || '',\n    score: p.json.score || p.json.Score || 0\n  }));\n\nreturn {\n  json: {\n    strategy_input: input,\n    competitor_prices: compPrices,\n    winning_patterns: winningPatterns\n  }\n};"
+      },
+      "name": "Prepare Offer Context",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        650,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-20250514\",\n  \"max_tokens\": 2000,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"أنت Offer Generator — مولد العروض الذكي.\\n\\nمهمتك: صمم عروض مبنية على البيانات الحقيقية — ليس تخمين.\\n\\n=== المدخلات من Strategic Brain ===\\nالتوصية: {{ JSON.stringify($json.strategy_input.offer_recommendation) }}\\nالتسعير: {{ JSON.stringify($json.strategy_input.pricing_strategy) }}\\nالتموضع: {{ JSON.stringify($json.strategy_input.positioning) }}\\nالأرقام: {{ JSON.stringify($json.strategy_input.snapshot) }}\\n\\n=== أسعار المنافسين ===\\n{{ JSON.stringify($json.competitor_prices) }}\\n\\n=== الأنماط الناجحة ===\\n{{ JSON.stringify($json.winning_patterns) }}\\n\\n=== المطلوب ===\\n\\nصمم 3 عروض مختلفة (JSON فقط):\\n{\\n  \\\"offers\\\": [\\n    {\\n      \\\"name\\\": \\\"اسم العرض\\\",\\n      \\\"type\\\": \\\"main|upsell|flash_sale|bundle|trial\\\",\\n      \\\"price\\\": 0,\\n      \\\"original_price\\\": 0,\\n      \\\"discount_pct\\\": 0,\\n      \\\"includes\\\": [\\\"ما يشمله العرض\\\"],\\n      \\\"scarcity\\\": \\\"رسالة الندرة\\\",\\n      \\\"headline\\\": \\\"العنوان الرئيسي (Hook)\\\",\\n      \\\"subheadline\\\": \\\"العنوان الفرعي\\\",\\n      \\\"cta\\\": \\\"نص زر الإجراء\\\",\\n      \\\"emotion\\\": \\\"المشاعر المستهدفة\\\",\\n      \\\"target_audience\\\": \\\"الجمهور المستهدف\\\",\\n      \\\"expected_conversion\\\": \\\"نسبة التحويل المتوقعة\\\",\\n      \\\"messaging_script\\\": \\\"نص وردة للرد على الاستفسارات\\\",\\n      \\\"valid_until\\\": \\\"تاريخ الانتهاء\\\",\\n      \\\"reason\\\": \\\"لماذا هذا العرض سينجح\\\"\\n    }\\n  ],\\n  \\\"recommended\\\": 0,\\n  \\\"reasoning\\\": \\\"لماذا اخترت هذا العرض كأفضل\\\"\\n}\"\n    }\n  ]\n}"
+      },
+      "name": "Claude Offer Design",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        900,
+        400
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ANTHROPIC_CREDENTIAL_ID",
+          "name": "Anthropic API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const response = $input.item.json;\nlet offers;\n\ntry {\n  const content = response.content?.[0]?.text || '{}';\n  let jsonStr = content;\n  if (jsonStr.includes('```json')) jsonStr = jsonStr.split('```json')[1].split('```')[0].trim();\n  else if (jsonStr.includes('```')) jsonStr = jsonStr.split('```')[1].split('```')[0].trim();\n  offers = JSON.parse(jsonStr);\n} catch (e) {\n  offers = { offers: [], recommended: 0, reasoning: 'خطأ في التحليل: ' + e.message };\n}\n\nreturn { json: offers };"
+      },
+      "name": "Parse Offers",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🎁 *OFFER GENERATOR — عروض جديدة*\n\n━━━━━━━━━━━━━━━━━━\n🏆 *العرض الموصى به: #{{ $json.recommended + 1 }}*\n{{ $json.reasoning }}\n\n{{ $json.offers.map((o, i) => `━━━━━━━━━━━━━━━━━━\\n${i === $json.recommended ? '⭐' : '📋'} *عرض ${i+1}: ${o.name}*\\nالنوع: ${o.type}\\n💰 ${o.price} ريال (بدل ${o.original_price})\\n\\n📝 *العنوان:* ${o.headline}\\n${o.subheadline}\\n\\n📦 يشمل:\\n${o.includes.map(inc => '  • ' + inc).join('\\n')}\\n\\n⏳ الندرة: ${o.scarcity}\\n🎯 CTA: ${o.cta}\\n🎭 المشاعر: ${o.emotion}\\n👥 الجمهور: ${o.target_audience}\\n📊 التحويل المتوقع: ${o.expected_conversion}\\n\\n🌹 *نص وردة:*\\n${o.messaging_script}`).join('\\n\\n') }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Offers Report to Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1350,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"status\": \"generated\", \"offers_count\": {{ $json.offers.length }}, \"recommended\": {{ $json.recommended }} }"
+      },
+      "name": "Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1350,
+        500
+      ]
+    }
+  ],
+  "connections": {
+    "Offer Webhook": {
+      "main": [
+        [
+          {
+            "node": "Read Competitors",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Patterns",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Competitors": {
+      "main": [
+        [
+          {
+            "node": "Prepare Offer Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Patterns": {
+      "main": [
+        [
+          {
+            "node": "Prepare Offer Context",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Offer Context": {
+      "main": [
+        [
+          {
+            "node": "Claude Offer Design",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude Offer Design": {
+      "main": [
+        [
+          {
+            "node": "Parse Offers",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Offers": {
+      "main": [
+        [
+          {
+            "node": "Offers Report to Telegram",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "1013"
+}

@@ -565,7 +565,7 @@ export function AuthClient({ embedded }: AuthClientProps) {
 
   const content = (
     <div className="w-full max-w-md rounded-2xl border border-white/10 bg-white/5 p-8 shadow-[0_10px_36px_rgba(0,0,0,0.3)] backdrop-blur-md md:p-10">
-      <h1 className="mb-2 text-center font-['Amiri'] text-4xl font-bold text-[#e8e1d9]">تسجيل الدخول</h1>
+      <h1 className="mb-2 text-center font-['Amiri'] text-2xl sm:text-4xl font-bold text-[#e8e1d9]">تسجيل الدخول</h1>
       <p className="mb-8 text-center text-sm text-[#c9b88a]">عُد إلى رحلة التمعّن</p>
 
       {/* Phone login disabled temporarily — email only */}
@@ -591,7 +591,7 @@ export function AuthClient({ embedded }: AuthClientProps) {
 
       <header className="relative z-10 flex w-full items-center justify-between px-8 py-8 md:px-12">
         <div className="font-['Amiri'] text-2xl text-[#e6d4a4]">تمعّن</div>
-        <span className="text-[11px] tracking-[0.2em] text-[#c9b88a]/50">TAAMUN</span>
+        <span className="text-xs tracking-[0.2em] text-[#c9b88a]/50">TAAMUN</span>
       </header>
 
       <main className="relative z-10 flex flex-1 items-center justify-center px-6 py-10">
@@ -599,7 +599,7 @@ export function AuthClient({ embedded }: AuthClientProps) {
       </main>
 
       <footer className="relative z-10 pb-10 text-center">
-        <p className="text-[11px] tracking-[0.2em] text-[#c9b88a]/40">© تمعّن</p>
+        <p className="text-xs tracking-[0.2em] text-[#c9b88a]/40">© تمعّن</p>
       </footer>
     </div>
   );

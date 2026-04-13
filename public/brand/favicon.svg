@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" fill="none">
+  <!-- Taamun Favicon — Simplified عُّ calligraphic -->
+  <rect width="32" height="32" rx="7" fill="#FFFFFF"/>
+
+  <!-- شدّة + ضمّة (simplified calligraphic) -->
+  <path d="M14 5.5 Q14 2.5 16.2 2.5 Q18.4 2.5 18.4 5.5 Q18.4 7.5 16.2 8.2 Q15.5 8.4 15.2 7.6"
+        fill="#1a1a1a" stroke="none"/>
+  <path d="M11.5 11.5 Q12.8 8.5 15 9.5 Q16 8 17 9.5 Q19.2 8.5 20.5 11.5"
+        fill="none" stroke="#1a1a1a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M15.2 7.6 Q14.8 8.5 15 9.5"
+        fill="none" stroke="#1a1a1a" stroke-width="1.2" stroke-linecap="round"/>
+
+  <!-- عـ Ain body -->
+  <path d="M12.5 18 Q12.5 14.5 16 14 Q19 13.8 19 16 Q19 17.5 17.5 18"
+        fill="#1a1a1a" stroke="none"/>
+  <rect x="5" y="18" width="22" height="3" rx="0.5" fill="#1a1a1a"/>
+
+  <!-- Wordmark badge -->
+  <rect x="8" y="23" width="16" height="7" rx="2" fill="#F5ECD4"/>
+  <text x="16" y="28.5" font-size="5" font-weight="700" fill="#2A1D10"
+        text-anchor="middle" font-family="Amiri, serif"
+        direction="rtl" xml:lang="ar">تمعّن</text>
+</svg>

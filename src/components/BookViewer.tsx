@@ -27,8 +27,15 @@ export function BookViewer() {
 
   if (error) {
     return (
-      <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-6">
+      <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-6 text-center space-y-3">
         <p className="text-amber-400">{error}</p>
+        <button
+          type="button"
+          onClick={() => { setError(null); setLoaded(false); }}
+          className="rounded-xl bg-amber-500/20 px-5 py-3.5 text-sm font-medium text-amber-300 hover:bg-amber-500/30 transition-colors"
+        >
+          حاول مجدداً
+        </button>
       </div>
     );
   }
@@ -46,7 +53,7 @@ export function BookViewer() {
       <iframe
         src={`${PDF_PATH}#toolbar=0&navpanes=0`}
         title="الكتيّب"
-        className="h-[70vh] w-full"
+        className="h-[50vh] w-full sm:h-[70vh]"
         onLoad={() => setLoaded(true)}
         onError={() => setError("تعذّر تحميل الكتيّب")}
       />

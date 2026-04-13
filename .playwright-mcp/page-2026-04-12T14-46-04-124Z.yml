@@ -1,0 +1,94 @@
+- generic [active]:
+  - alert [ref=e1]
+  - dialog [ref=e4]:
+    - generic [ref=e5]:
+      - generic [ref=e6]:
+        - heading "Build Error" [level=1] [ref=e7]
+        - paragraph [ref=e8]: Failed to compile
+        - generic [ref=e9]:
+          - text: Next.js (14.2.18) is outdated
+          - link "(learn more)" [ref=e11] [cursor=pointer]:
+            - /url: https://nextjs.org/docs/messages/version-staleness
+      - generic [ref=e12]:
+        - generic [ref=e13]:
+          - link "./src/app/page.tsx" [ref=e14] [cursor=pointer]:
+            - text: ./src/app/page.tsx
+            - img [ref=e15]
+          - generic [ref=e19]:
+            - generic [ref=e20]: "Error:"
+            - text: x
+            - generic [ref=e21]: Merge conflict marker encountered. ,-[
+            - text: /Users/ziyadalziyadi/Projects/taamun-mvp/src/app/page.tsx
+            - generic [ref=e22]: :147:1]
+            - text: "147"
+            - generic [ref=e23]: "|"
+            - text: "148"
+            - generic [ref=e24]: "| if (!ready) {"
+            - text: "149"
+            - generic [ref=e25]: "| return ("
+            - text: "150"
+            - generic [ref=e26]: "| <<<<<<< Updated upstream :"
+            - text: ^^^^^^^ 151
+            - generic [ref=e27]: "| <div className=\"flex min-h-[60vh] items-center justify-center\">"
+            - text: "152"
+            - generic [ref=e28]: "| <div className=\"h-8 w-8 animate-spin rounded-full border-2 border-[#c9b88a] border-t-transparent\" />"
+            - text: "153"
+            - generic [ref=e29]: "| ======= `----"
+            - text: x
+            - generic [ref=e30]: Expression expected ,-[
+            - text: /Users/ziyadalziyadi/Projects/taamun-mvp/src/app/page.tsx
+            - generic [ref=e31]: :148:1]
+            - text: "148"
+            - generic [ref=e32]: "| if (!ready) {"
+            - text: "149"
+            - generic [ref=e33]: "| return ("
+            - text: "150"
+            - generic [ref=e34]: "| <<<<<<< Updated upstream"
+            - text: "151"
+            - generic [ref=e35]: "| <div className=\"flex min-h-[60vh] items-center justify-center\"> :"
+            - generic [ref=e36]: ^
+            - text: "152"
+            - generic [ref=e37]: "| <div className=\"h-8 w-8 animate-spin rounded-full border-2 border-[#c9b88a] border-t-transparent\" />"
+            - text: "153"
+            - generic [ref=e38]: "| ======="
+            - text: "154"
+            - generic [ref=e39]: "| <div className=\"min-h-screen flex items-center justify-center bg-[#faf8f4]\"> `----"
+            - text: x
+            - generic [ref=e40]: Merge conflict marker encountered. ,-[
+            - text: /Users/ziyadalziyadi/Projects/taamun-mvp/src/app/page.tsx
+            - generic [ref=e41]: :150:1]
+            - text: "150"
+            - generic [ref=e42]: "| <<<<<<< Updated upstream"
+            - text: "151"
+            - generic [ref=e43]: "| <div className=\"flex min-h-[60vh] items-center justify-center\">"
+            - text: "152"
+            - generic [ref=e44]: "| <div className=\"h-8 w-8 animate-spin rounded-full border-2 border-[#c9b88a] border-t-transparent\" />"
+            - text: "153"
+            - generic [ref=e45]: "| ======= :"
+            - text: ^^^^^^^ 154
+            - generic [ref=e46]: "| <div className=\"min-h-screen flex items-center justify-center bg-[#faf8f4]\">"
+            - text: "155"
+            - generic [ref=e47]: "| <p className=\"text-sm text-[#8c7851]\">جارٍ التحميل...</p>"
+            - text: "156"
+            - generic [ref=e48]: "| >>>>>>> Stashed changes `----"
+            - text: x
+            - generic [ref=e49]: Expected ',', got 'className' ,-[
+            - text: /Users/ziyadalziyadi/Projects/taamun-mvp/src/app/page.tsx
+            - generic [ref=e50]: :151:1]
+            - text: "151"
+            - generic [ref=e51]: "| <div className=\"flex min-h-[60vh] items-center justify-center\">"
+            - text: "152"
+            - generic [ref=e52]: "| <div className=\"h-8 w-8 animate-spin rounded-full border-2 border-[#c9b88a] border-t-transparent\" />"
+            - text: "153"
+            - generic [ref=e53]: "| ======="
+            - text: "154"
+            - generic [ref=e54]: "| <div className=\"min-h-screen flex items-center justify-center bg-[#faf8f4]\"> :"
+            - generic [ref=e55]: ^^^^^^^^^
+            - text: "155"
+            - generic [ref=e56]: "| <p className=\"text-sm text-[#8c7851]\">جارٍ التحميل...</p>"
+            - text: "156"
+            - generic [ref=e57]: "| >>>>>>> Stashed changes"
+            - text: "157"
+            - generic [ref=e58]: "| </div> `---- Caused by: Syntax Error"
+        - contentinfo [ref=e59]:
+          - paragraph [ref=e60]: This error occurred during the build process and can only be dismissed by fixing the error.

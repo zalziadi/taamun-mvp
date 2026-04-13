@@ -1,0 +1,12 @@
+- generic [ref=e2]:
+  - generic:
+    - generic:
+      - heading "لعرض اختصارات لوحة المفاتيح، اضغط على علامة الاستفهام عرض اختصارات لوحة المفاتيح" [level=2] [ref=e3]:
+        - generic [ref=e4]: لعرض اختصارات لوحة المفاتيح، اضغط على علامة الاستفهام
+        - link "عرض اختصارات لوحة المفاتيح" [ref=e5] [cursor=pointer]:
+          - /url: /i/keyboard_shortcuts
+      - generic [ref=e6]:
+        - banner [ref=e7]
+        - main [ref=e8]:
+          - progressbar "جاري التحميل" [ref=e11]:
+            - img [ref=e13]

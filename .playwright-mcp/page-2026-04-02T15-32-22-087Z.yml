@@ -1,0 +1,8 @@
+- generic [ref=e3]:
+  - banner [ref=e4]
+  - main [ref=e5]:
+    - generic [ref=e8]:
+      - region "التنقل في القسم" [ref=e9]:
+        - progressbar "جاري التحميل" [ref=e11]:
+          - img [ref=e13]
+      - region "تفاصيل القسم" [ref=e16]

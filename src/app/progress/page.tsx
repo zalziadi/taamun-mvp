@@ -122,8 +122,23 @@ export default function ProgressPage() {
 
   if (status === "loading" || !timeline || !narrative) {
     return (
-      <div className="min-h-screen bg-[#15130f] flex items-center justify-center">
-        <p className="text-[#c9b88a] text-sm">جارٍ التحميل...</p>
+      <div className="min-h-screen bg-[#15130f] p-4 sm:p-6">
+        <div className="mx-auto max-w-[720px] space-y-6 animate-pulse">
+          <div className="flex items-center justify-between">
+            <div className="h-7 w-20 rounded bg-white/10" />
+            <div className="h-4 w-16 rounded bg-white/10" />
+          </div>
+          {Array.from({ length: 3 }).map((_, i) => (
+            <div key={i} className="rounded-2xl border border-white/10 bg-[#1d1b17] p-5 space-y-3">
+              <div className="flex items-center gap-3">
+                <div className="h-10 w-10 rounded-full bg-white/10" />
+                <div className="h-4 w-32 rounded bg-white/10" />
+              </div>
+              <div className="h-3 w-full rounded bg-white/5" />
+              <div className="h-3 w-3/4 rounded bg-white/5" />
+            </div>
+          ))}
+        </div>
       </div>
     );
   }
@@ -131,7 +146,7 @@ export default function ProgressPage() {
   const isEmpty = timeline.facts.length === 0;
 
   return (
-    <div className="min-h-screen bg-[#15130f] p-6">
+    <div className="min-h-screen bg-[#15130f] p-4 sm:p-6">
       <div className="mx-auto max-w-[720px] space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between gap-3">
@@ -151,7 +166,7 @@ export default function ProgressPage() {
             <button
               type="button"
               onClick={() => void load()}
-              className="rounded-lg border border-[#c9b88a]/30 bg-[#c9b88a]/10 px-3 py-1 text-[11px] font-semibold text-[#c9b88a] hover:bg-[#c9b88a]/20 transition-colors"
+              className="rounded-lg border border-[#c9b88a]/30 bg-[#c9b88a]/10 px-3 py-2.5 text-xs font-semibold text-[#c9b88a] hover:bg-[#c9b88a]/20 transition-colors"
             >
               إعادة المحاولة
             </button>
@@ -164,7 +179,7 @@ export default function ProgressPage() {
             <span>سجّل الدخول لحفظ رحلتك عبر كل أجهزتك</span>
             <Link
               href="/login?next=/progress"
-              className="rounded-lg border border-[#c9b88a]/30 bg-[#c9b88a]/10 px-3 py-1 text-[11px] font-semibold text-[#c9b88a] hover:bg-[#c9b88a]/20 transition-colors"
+              className="rounded-lg border border-[#c9b88a]/30 bg-[#c9b88a]/10 px-3 py-2.5 text-xs font-semibold text-[#c9b88a] hover:bg-[#c9b88a]/20 transition-colors"
             >
               دخول
             </Link>
@@ -321,7 +336,7 @@ function FactLine({ fact }: { fact: JourneyFact }) {
   return (
     <li className="flex items-start gap-3 rounded-xl border border-white/5 bg-[#15130f]/50 px-3 py-2.5">
       <span
-        className={`mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-[11px] font-bold ${
+        className={`mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold ${
           fact.completed
             ? "bg-[#c9b88a]/15 text-[#c9b88a]"
             : "bg-white/5 text-[#c9b88a]/60"
@@ -339,7 +354,7 @@ function FactLine({ fact }: { fact: JourneyFact }) {
       </div>
       <Link
         href={`/program/day/${fact.day}`}
-        className="flex-shrink-0 text-[11px] text-[#c9b88a]/70 hover:text-[#c9b88a] transition-colors"
+        className="flex-shrink-0 text-xs text-[#c9b88a]/70 hover:text-[#c9b88a] transition-colors"
       >
         فتح
       </Link>

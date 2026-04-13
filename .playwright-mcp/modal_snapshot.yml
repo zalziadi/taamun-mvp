@@ -1,0 +1,193 @@
+- generic [ref=e2]:
+  - generic:
+    - generic:
+      - heading "لعرض اختصارات لوحة المفاتيح، اضغط على علامة الاستفهام عرض اختصارات لوحة المفاتيح" [level=2] [ref=e3]:
+        - generic [ref=e4]: لعرض اختصارات لوحة المفاتيح، اضغط على علامة الاستفهام
+        - link "عرض اختصارات لوحة المفاتيح" [ref=e5] [cursor=pointer]:
+          - /url: /i/keyboard_shortcuts
+      - generic:
+        - generic:
+          - button [ref=e18] [cursor=pointer]:
+            - img [ref=e19]
+          - img [ref=e26] [cursor=pointer]
+        - generic:
+          - generic:
+            - generic:
+              - dialog:
+                - group [ref=e1654]:
+                  - dialog [ref=e1656]:
+                    - generic [ref=e1659]:
+                      - progressbar [ref=e1660]
+                      - generic [ref=e1666]:
+                        - button "إغلاق" [ref=e1668] [cursor=pointer]
+                        - button "المسودات" [ref=e1676] [cursor=pointer]
+                      - generic [ref=e1682]:
+                        - generic [ref=e1683]
+                        - generic [ref=e1737]
+      - generic [ref=e6]:
+        - button [ref=e1841] [cursor=pointer]
+        - button [ref=e1842] [cursor=pointer]
+        - banner [ref=e7]:
+          - generic [ref=e33]:
+            - generic [ref=e34]:
+              - heading [level=1] [ref=e1843] [cursor=pointer]:
+                - link [ref=e1844]:
+                  - /url: /home
+                  - img [ref=e39]
+              - navigation [ref=e1845]:
+                - link [ref=e1846] [cursor=pointer]:
+                  - /url: /home
+                  - img [ref=e47]
+                - link [ref=e1847] [cursor=pointer]:
+                  - /url: /explore
+                  - img [ref=e1063]
+                - link [ref=e1848] [cursor=pointer]:
+                  - /url: /notifications
+                  - img [ref=e59]
+                - link [ref=e1849] [cursor=pointer]:
+                  - /url: /i/connect_people
+                  - img [ref=e65]
+                - link [ref=e1850] [cursor=pointer]:
+                  - /url: /i/chat
+                  - img [ref=e71]
+                - link [ref=e1851] [cursor=pointer]:
+                  - /url: /i/grok
+                  - img [ref=e77]
+                - link [ref=e1853] [cursor=pointer]:
+                  - /url: /i/premium_sign_up
+                  - img [ref=e84]
+                - link [ref=e1854] [cursor=pointer]:
+                  - /url: /zalziadi
+                  - img [ref=e90]
+                - button [ref=e1855] [cursor=pointer]:
+                  - img [ref=e96]
+              - link [ref=e1856] [cursor=pointer]:
+                - /url: /compose/post
+                - img [ref=e102]
+            - button [ref=e1857] [cursor=pointer]:
+              - generic [ref=e115]:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic:
+                        - img
+        - main [ref=e8]:
+          - generic [ref=e1067]:
+            - generic [ref=e1858]:
+              - generic [ref=e1070]:
+                - generic [ref=e1076] [cursor=pointer]:
+                  - button [ref=e1859]:
+                    - img [ref=e1080]
+                  - heading [level=2] [ref=e1860]: منشور
+                - generic:
+                  - generic:
+                    - status:
+                      - button:
+                        - generic
+              - region [ref=e1861]:
+                - heading [level=1] [ref=e1862]: محادثة
+                - generic [ref=e1090]:
+                  - generic [ref=e1093]:
+                    - article [ref=e1864]:
+                      - generic [ref=e1096]:
+                        - generic [ref=e1100]
+                        - generic [ref=e1153]
+                    - generic [ref=e1230]:
+                      - button [ref=e1878] [cursor=pointer]:
+                        - text: ردًا على
+                        - generic [ref=e1596]: "@faleh_alfadli"
+                      - generic [ref=e1880]:
+                        - link [ref=e1889] [cursor=pointer]:
+                          - /url: /zalziadi
+                        - generic [ref=e1892]
+                  - generic [ref=e1280]:
+                    - heading [level=2] [ref=e1964]:
+                      - generic [ref=e1282]: اكتشف المزيد
+                    - generic [ref=e1283]: من كل مكان على X
+                  - article [ref=e1965] [cursor=pointer]:
+                    - generic [ref=e1293]:
+                      - link [ref=e1305]:
+                        - /url: /faleh_alfadli
+                      - generic [ref=e1308]:
+                        - generic [ref=e1310]
+                        - generic [ref=e1351]
+                        - group [ref=e1972]
+            - generic [ref=e1426]:
+              - search [ref=e1980]:
+                - generic [ref=e1436]:
+                  - img [ref=e1438]
+                  - combobox [ref=e1981]
+              - complementary [ref=e1982]:
+                - heading [level=2] [ref=e1983]:
+                  - generic [ref=e1449]: الأشخاص ذوو الصلة
+                - list [ref=e1450]:
+                  - listitem [ref=e1451] [cursor=pointer]:
+                    - generic [ref=e1452]:
+                      - link [ref=e1462]:
+                        - /url: /faleh_alfadli
+                      - generic [ref=e1465]:
+                        - generic [ref=e1466]
+                        - generic [ref=e1484]: الحمدلله
+              - region [ref=e1987]:
+                - heading [level=1] [ref=e1988]: المتداوَل الآن
+                - generic [ref=e1489]:
+                  - heading [level=2] [ref=e1990]:
+                    - generic [ref=e1494]: ما يحدث
+                  - link [ref=e1991] [cursor=pointer]:
+                    - generic [ref=e1498]:
+                      - generic [ref=e1500]: المتداول في المملكة العربية السعودية
+                      - generic [ref=e1502]: "#اعلانك_ᅠ_تررند__θ5З2221З48"
+                      - button [ref=e1992]:
+                        - img [ref=e1509]
+                  - link [ref=e1993] [cursor=pointer]:
+                    - generic [ref=e1515]:
+                      - generic [ref=e1517]: المتداول في المملكة العربية السعودية
+                      - generic [ref=e1519]: "#اي_ساعه_فطورك"
+                      - button [ref=e1994]:
+                        - img [ref=e1526]
+                  - link [ref=e1995] [cursor=pointer]:
+                    - generic [ref=e1532]:
+                      - generic [ref=e1534]: المتداول في المملكة العربية السعودية
+                      - generic [ref=e1536]: "#تري_الطيب"
+                      - button [ref=e1996]:
+                        - img [ref=e1543]
+                  - link [ref=e1997] [cursor=pointer]:
+                    - generic [ref=e1549]:
+                      - generic [ref=e1551]: المتداول في المملكة العربية السعودية
+                      - generic [ref=e1553]: "#القابضه_وعطاله_العلاج_التنفسي"
+                      - button [ref=e1998]:
+                        - img [ref=e1560]
+                  - link [ref=e1999] [cursor=pointer]:
+                    - /url: /explore/tabs/for-you
+                    - generic [ref=e1566]: عرض المزيد
+              - navigation [ref=e2000]:
+                - generic [ref=e1569]:
+                  - link [ref=e2001] [cursor=pointer]:
+                    - /url: https://x.com/tos
+                    - text: شروط الخدمة
+                  - generic [ref=e1571]: "|"
+                - generic [ref=e1572]:
+                  - link [ref=e2002] [cursor=pointer]:
+                    - /url: https://x.com/privacy
+                    - text: سياسية الخصوصيّة
+                  - generic [ref=e1574]: "|"
+                - generic [ref=e1575]:
+                  - link [ref=e2003] [cursor=pointer]:
+                    - /url: https://support.x.com/articles/20170514
+                    - text: سياسة الكوكيز
+                  - generic [ref=e1577]: "|"
+                - generic [ref=e1578]:
+                  - link [ref=e2004] [cursor=pointer]:
+                    - /url: https://help.x.com/resources/accessibility
+                    - text: إمكانية الوصول
+                  - generic [ref=e1580]: "|"
+                - generic [ref=e1581]:
+                  - link [ref=e2005] [cursor=pointer]:
+                    - /url: https://business.x.com/en/help/troubleshooting/how-twitter-ads-work.html?ref=web-twc-ao-gbl-adsinfo&utm_source=twc&utm_medium=web&utm_campaign=ao&utm_content=adsinfo
+                    - text: معلومات الإعلان
+                  - generic [ref=e1583]: "|"
+                - button [ref=e2006] [cursor=pointer]:
+                  - generic [ref=e1585]:
+                    - text: المزيد
+                    - img [ref=e1586]
+                - generic [ref=e1589]: © 2026 X Corp.

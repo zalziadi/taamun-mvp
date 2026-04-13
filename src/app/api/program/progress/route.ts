@@ -163,7 +163,10 @@ export async function POST(request: Request) {
   const completionDay = completedDays.includes(progress.currentDay)
     ? Math.min(TOTAL_DAYS, progress.currentDay + 1)
     : progress.currentDay;
-  const currentDay = Math.max(completionDay, calendarDay);
+  // Only factor in calendarDay if user has been actively participating
+  const currentDay = completedDays.length > 0
+    ? Math.max(completionDay, calendarDay)
+    : completionDay;
 
   const saved = await upsertUserProgress(auth.supabase, auth.user.id, {
     currentDay,

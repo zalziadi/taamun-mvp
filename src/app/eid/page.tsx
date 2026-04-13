@@ -162,7 +162,7 @@ export default function EidPage() {
           <p className="text-[#6D8BFF] text-sm font-medium tracking-widest uppercase text-center mb-3">
             ما في العيدية
           </p>
-          <h2 className="text-3xl font-bold text-center mb-12">
+          <h2 className="text-xl sm:text-3xl font-bold text-center mb-12">
             ثلاثة أشياء تغيّر كل شيء
           </h2>
 
@@ -235,7 +235,7 @@ export default function EidPage() {
           <p className="text-[#6D8BFF] text-sm font-medium tracking-widest uppercase text-center mb-3">
             اختر عيديتك
           </p>
-          <h2 className="text-3xl font-bold text-center mb-2">باقات العيدية</h2>
+          <h2 className="text-xl sm:text-3xl font-bold text-center mb-2">باقات العيدية</h2>
           <p className="text-zinc-400 text-center mb-14">هدية حقيقية لكل ميزانية</p>
 
           <div className="grid grid-cols-1 md:grid-cols-3 gap-6 items-center">
@@ -320,7 +320,7 @@ export default function EidPage() {
           <p className="text-[#6D8BFF] text-sm font-medium tracking-widest uppercase text-center mb-3">
             كيف تُهدي؟
           </p>
-          <h2 className="text-3xl font-bold text-center mb-12">٣ خطوات بسيطة</h2>
+          <h2 className="text-xl sm:text-3xl font-bold text-center mb-12">٣ خطوات بسيطة</h2>
 
           <div className="space-y-5">
             {[
@@ -361,7 +361,7 @@ export default function EidPage() {
           TRUST BAR
       ═══════════════════════════════════════ */}
       <section className="border-t border-white/10 py-14 px-4 bg-[#0D1117]">
-        <div className="max-w-2xl mx-auto grid grid-cols-3 gap-8 text-center">
+        <div className="max-w-2xl mx-auto grid grid-cols-1 gap-4 sm:grid-cols-3 sm:gap-8 text-center">
           <div>
             <div className="text-3xl font-bold text-white mb-1">٩٤٪</div>
             <div className="text-zinc-400 text-sm">نسبة رضا العملاء</div>

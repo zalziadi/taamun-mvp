@@ -813,6 +813,15 @@
 @media (max-width: 768px) {
   .jl-footer { flex-direction: column; align-items: center; gap: 2rem; }
   .jl-header { padding: 1.2rem 1.5rem; }
+  .jl-hero { padding: 4rem 1.5rem 3rem; min-height: 90vh; }
+  .jl-problem,
+  .jl-phases,
+  .jl-steps,
+  .jl-dual,
+  .jl-features,
+  .jl-tone,
+  .jl-pricing-section,
+  .jl-final { padding: 3rem 1.5rem; }
 }
 
 /* ─── ANIMATIONS ─── */

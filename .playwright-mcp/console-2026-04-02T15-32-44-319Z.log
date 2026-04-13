@@ -1,0 +1,23 @@
+[    4295ms] [LOG] 
+%cانتبه! font-family:helvetica; font-size:20px; font-size:50px; font-weight:bold; color:red; -webkit-text-stroke:1px black; @ https://static.cdninstagram.com/rsrc.php/v4/yK/r/y3UASupc0mW.js:255
+[    4295ms] [LOG] 
+%cميزة المتصفح هذه موجهة للمطورين. إذا طلب منك شخص ما نسخ ولصق أي شيء هنا لتمكين ميزة على Instagram أو "اختراق" حساب شخص آخر، فإن هذه محاولة احتيالية وستتيح له الوصول إلى حساب Instagram الخاص بك. font-family:helvetica; font-size:20px;  @ https://static.cdninstagram.com/rsrc.php/v4/yK/r/y3UASupc0mW.js:255
+[    4295ms] [LOG] 
+%cيمكنك الاطلاع على https://www.facebook.com/selfxss للحصول على مزيد من المعلومات. font-family:helvetica; font-size:20px;  @ https://static.cdninstagram.com/rsrc.php/v4/yK/r/y3UASupc0mW.js:255
+[    4295ms] [LOG] 
+%c  @ https://static.cdninstagram.com/rsrc.php/v4/yK/r/y3UASupc0mW.js:255
+[    8011ms] [ERROR] Permissions policy violation: unload is not allowed in this document. @ https://static.xx.fbcdn.net/rsrc.php/v4/ya/r/R1pEz0OuWy4.js:251
+[    9795ms] [ERROR] Access to fetch at 'https://edge-chat.instagram.com/mqtt/pull?sid=4245463989485567&chunked=true' from origin 'https://www.instagram.com' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'. @ https://www.instagram.com/direct/inbox/:0
+[    9796ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://edge-chat.instagram.com/mqtt/pull?sid=4245463989485567&chunked=true:0
+[    9991ms] [ERROR] Access to fetch at 'https://edge-chat.instagram.com/mqtt/pull?sid=2170917874565119&chunked=true' from origin 'https://www.instagram.com' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'. @ https://www.instagram.com/direct/inbox/:0
+[    9991ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://edge-chat.instagram.com/mqtt/pull?sid=2170917874565119&chunked=true:0
+[   10313ms] [ERROR] Access to fetch at 'https://edge-chat.instagram.com/mqtt/pull?sid=3607515732377599&chunked=true' from origin 'https://www.instagram.com' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'. @ https://www.instagram.com/direct/inbox/:0
+[   10313ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://edge-chat.instagram.com/mqtt/pull?sid=3607515732377599&chunked=true:0
+[   12700ms] [ERROR] Access to fetch at 'https://edge-chat.instagram.com/mqtt/pull?sid=2652883633831935&chunked=true' from origin 'https://www.instagram.com' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'. @ https://www.instagram.com/direct/inbox/:0
+[   12700ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://edge-chat.instagram.com/mqtt/pull?sid=2652883633831935&chunked=true:0
+[   15001ms] [ERROR] Access to fetch at 'https://edge-chat.instagram.com/mqtt/pull?sid=2979200780730367&chunked=true' from origin 'https://www.instagram.com' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'. @ https://www.instagram.com/direct/inbox/:0
+[   15002ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://edge-chat.instagram.com/mqtt/pull?sid=2979200780730367&chunked=true:0
+[   18942ms] [ERROR] Access to fetch at 'https://edge-chat.instagram.com/mqtt/pull?sid=2454065680220159&chunked=true' from origin 'https://www.instagram.com' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'. @ https://www.instagram.com/direct/inbox/:0
+[   18942ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://edge-chat.instagram.com/mqtt/pull?sid=2454065680220159&chunked=true:0
+[   24160ms] [ERROR] Access to fetch at 'https://edge-chat.instagram.com/mqtt/pull?sid=364562792579071&chunked=true' from origin 'https://www.instagram.com' has been blocked by CORS policy: The value of the 'Access-Control-Allow-Origin' header in the response must not be the wildcard '*' when the request's credentials mode is 'include'. @ https://www.instagram.com/direct/inbox/:0
+[   24160ms] [ERROR] Failed to load resource: net::ERR_FAILED @ https://edge-chat.instagram.com/mqtt/pull?sid=364562792579071&chunked=true:0

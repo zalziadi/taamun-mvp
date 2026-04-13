@@ -1,0 +1,84 @@
+- generic [ref=e2]:
+  - generic:
+    - generic:
+      - heading "لعرض اختصارات لوحة المفاتيح، اضغط على علامة الاستفهام عرض اختصارات لوحة المفاتيح" [level=2] [ref=e13]:
+        - generic [ref=e14]: لعرض اختصارات لوحة المفاتيح، اضغط على علامة الاستفهام
+        - link "عرض اختصارات لوحة المفاتيح" [ref=e15] [cursor=pointer]:
+          - /url: /i/keyboard_shortcuts
+      - generic:
+        - generic:
+          - generic:
+            - generic:
+              - tooltip "الدردشة":
+                - generic: الدردشة
+      - generic [ref=e3]:
+        - button "التخطي إلى يوميات الصفحة الرئيسيّة" [ref=e16] [cursor=pointer]
+        - button "التخطي إلى الموضوعات المتداوَلة" [ref=e18] [cursor=pointer]
+        - banner [ref=e4]:
+          - generic [ref=e21]:
+            - generic [ref=e22]:
+              - heading "X" [level=1] [ref=e24] [cursor=pointer]:
+                - link "X" [ref=e25]:
+                  - /url: /home
+                  - img [ref=e27]
+              - navigation "أساسي" [ref=e31]:
+                - link "الرئيسيّة" [ref=e32] [cursor=pointer]:
+                  - /url: /home
+                  - img [ref=e35]
+                - link "بحث واستكشاف" [ref=e38] [cursor=pointer]:
+                  - /url: /explore
+                  - img [ref=e41]
+                - link "التنبيهات" [ref=e44] [cursor=pointer]:
+                  - /url: /notifications
+                  - img [ref=e47]
+                - link "متابعة" [ref=e50] [cursor=pointer]:
+                  - /url: /i/connect_people
+                  - img [ref=e53]
+                - link "الرسائل الخاصّة" [active] [ref=e56] [cursor=pointer]:
+                  - /url: /i/chat
+                  - img [ref=e59]
+                - link "Grok" [ref=e62] [cursor=pointer]:
+                  - /url: /i/grok
+                  - generic [ref=e64]:
+                    - img [ref=e65]
+                    - generic "undefined من العناصر غير المقروءة" [ref=e68]
+                - link "Premium" [ref=e69] [cursor=pointer]:
+                  - /url: /i/premium_sign_up
+                  - img [ref=e72]
+                - link "الملف الشخصيّ" [ref=e75] [cursor=pointer]:
+                  - /url: /zalziadi
+                  - img [ref=e78]
+                - button "المزيد من عناصر القائمة" [ref=e81] [cursor=pointer]:
+                  - img [ref=e84]
+              - link "نشر" [ref=e88] [cursor=pointer]:
+                - /url: /compose/post
+                - img [ref=e90]
+            - button "قائمة الحساب" [ref=e95] [cursor=pointer]:
+              - generic [ref=e103]:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic "زياد الزيادي 🎩":
+                        - img "زياد الزيادي 🎩"
+        - main [ref=e5]:
+          - generic "الخطّ الزمنيّ الرئيسيّ" [ref=e109]:
+            - generic [ref=e143]:
+              - generic [ref=e144]: مرحبًا بكم في دردشة X الجديدة
+              - generic [ref=e145]:
+                - generic [ref=e146]:
+                  - img [ref=e148]
+                  - generic [ref=e150]:
+                    - generic [ref=e151]: تشفير من طرف إلى طرف
+                    - generic [ref=e152]: يتم تشفير الرسائل من طرف إلى طرف عبر جميع أجهزتك.
+                - generic [ref=e153]:
+                  - img [ref=e155]
+                  - generic [ref=e157]:
+                    - generic [ref=e158]: الخصوصية المتقدمة
+                    - generic [ref=e159]: ليست هناك أي طريقة لأي شخص، بما في ذلك X، لقراءة رسائلك.
+                - generic [ref=e160]:
+                  - img [ref=e162]
+                  - generic [ref=e166]:
+                    - generic [ref=e167]: تعيين رمز المرور
+                    - generic [ref=e168]: لتأمين رسائلك، ستحتاج إلى إعداد رمز مرور.
+              - button "إنشاء رمز مرور" [ref=e169] [cursor=pointer]:
+                - generic [ref=e170]: إنشاء رمز مرور

@@ -1,0 +1,666 @@
+- generic [ref=e2]:
+  - generic:
+    - generic:
+      - heading "لعرض اختصارات لوحة المفاتيح، اضغط على علامة الاستفهام عرض اختصارات لوحة المفاتيح" [level=2] [ref=e3]:
+        - generic [ref=e4]: لعرض اختصارات لوحة المفاتيح، اضغط على علامة الاستفهام
+        - link "عرض اختصارات لوحة المفاتيح" [ref=e5] [cursor=pointer]:
+          - /url: /i/keyboard_shortcuts
+      - generic:
+        - generic:
+          - button [ref=e8] [cursor=pointer]:
+            - img [ref=e9]
+          - img [ref=e16] [cursor=pointer]
+      - generic [ref=e18]:
+        - button "التخطي إلى يوميات الصفحة الرئيسيّة" [ref=e19] [cursor=pointer]
+        - button "التخطي إلى الموضوعات المتداوَلة" [ref=e21] [cursor=pointer]
+        - banner [ref=e23]:
+          - generic [ref=e25]:
+            - generic [ref=e26]:
+              - heading "X" [level=1] [ref=e28] [cursor=pointer]:
+                - link "X" [ref=e29]:
+                  - /url: /home
+                  - img [ref=e31]
+              - navigation "أساسي" [ref=e35]:
+                - link "الرئيسيّة" [ref=e36] [cursor=pointer]:
+                  - /url: /home
+                  - img [ref=e39]
+                - link "بحث واستكشاف" [ref=e42] [cursor=pointer]:
+                  - /url: /explore
+                  - img [ref=e45]
+                - link "التنبيهات" [ref=e48] [cursor=pointer]:
+                  - /url: /notifications
+                  - img [ref=e51]
+                - link "متابعة" [ref=e54] [cursor=pointer]:
+                  - /url: /i/connect_people
+                  - img [ref=e57]
+                - link "الرسائل الخاصّة" [ref=e60] [cursor=pointer]:
+                  - /url: /i/chat
+                  - img [ref=e63]
+                - link "Grok" [ref=e66] [cursor=pointer]:
+                  - /url: /i/grok
+                  - generic [ref=e68]:
+                    - img [ref=e69]
+                    - generic "undefined من العناصر غير المقروءة" [ref=e72]
+                - link "Premium" [ref=e73] [cursor=pointer]:
+                  - /url: /i/premium_sign_up
+                  - img [ref=e76]
+                - link "الملف الشخصيّ" [ref=e79] [cursor=pointer]:
+                  - /url: /zalziadi
+                  - img [ref=e82]
+                - button "المزيد من عناصر القائمة" [ref=e85] [cursor=pointer]:
+                  - img [ref=e88]
+              - link "نشر" [ref=e92] [cursor=pointer]:
+                - /url: /compose/post
+                - img [ref=e94]
+            - button "قائمة الحساب" [ref=e99] [cursor=pointer]:
+              - generic [ref=e107]:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic "زياد الزيادي 🎩":
+                        - img "زياد الزيادي 🎩"
+        - main [ref=e110]:
+          - generic [ref=e113]:
+            - generic "الخطّ الزمنيّ الرئيسيّ" [active] [ref=e115]:
+              - generic [ref=e116]:
+                - generic [ref=e117]:
+                  - generic [ref=e122] [cursor=pointer]:
+                    - heading "التنبيهات" [level=2] [ref=e125]
+                    - link "الإعدادات" [ref=e127]:
+                      - /url: /settings/notifications
+                      - img [ref=e129]
+                  - navigation "الخطوط الزمنية للتنبيهات" [ref=e133]:
+                    - generic [ref=e134]:
+                      - generic:
+                        - button "السابق" [disabled]:
+                          - generic:
+                            - img
+                      - tablist [ref=e136]:
+                        - tab "الكل" [selected] [ref=e137] [cursor=pointer]:
+                          - generic [ref=e140]: الكل
+                        - tab "الأولوية" [ref=e142] [cursor=pointer]:
+                          - generic [ref=e145]: الأولوية
+                        - tab "الإشارات" [ref=e146] [cursor=pointer]:
+                          - generic [ref=e149]: الإشارات
+                      - generic:
+                        - button "التالي" [disabled]:
+                          - generic:
+                            - img
+                - generic:
+                  - generic:
+                    - status:
+                      - button:
+                        - generic:
+                          - img
+                          - generic: رؤية منشورات جديدة
+              - region "التنبيهات" [ref=e219]:
+                - heading "التنبيهات" [level=1] [ref=e220]
+                - 'generic "الخطّ الزمنيّ: التنبيهات" [ref=e221]':
+                  - generic [ref=e222]:
+                    - article [ref=e226] [cursor=pointer]:
+                      - generic [ref=e227]:
+                        - img [ref=e229]
+                        - generic [ref=e234]:
+                          - generic [ref=e236]: حدث تسجيل دخول إلى حسابك @zalziadi من جهاز جديد على Mar 31, 2026. يمكنك مراجعته الآن.
+                          - generic [ref=e237]: ·
+                          - generic "منذ ٣٣ دقيقة" [ref=e238]:
+                            - time [ref=e239]: ٣٣ د
+                    - article [ref=e243] [cursor=pointer]:
+                      - generic [ref=e244]:
+                        - img [ref=e246]
+                        - generic [ref=e250]:
+                          - list [ref=e252]:
+                            - link [ref=e261]:
+                              - /url: /joyy404
+                          - generic [ref=e264]:
+                            - generic [ref=e265]:
+                              - generic [ref=e266]: قام
+                              - link "صُبْح∞" [ref=e268]:
+                                - /url: /joyy404
+                                - generic [ref=e269]: صُبْح∞
+                              - generic [ref=e270]: بمتَابَعتك
+                            - generic [ref=e271]: ·
+                            - generic "منذ ٦ ساعات" [ref=e272]:
+                              - time [ref=e273]: ٦ س
+                    - article "Content Writer & Social media manager. @MANALADNAN14 منذ ١٢ ساعة ردًا على @zalziadi انا متأكدة أيضا. بإذن الله" [ref=e277] [cursor=pointer]:
+                      - generic [ref=e283]:
+                        - link [ref=e295]:
+                          - /url: /MANALADNAN14
+                        - generic [ref=e298]:
+                          - generic [ref=e300]:
+                            - generic [ref=e303]:
+                              - link "Content Writer & Social media manager." [ref=e306]:
+                                - /url: /MANALADNAN14
+                                - generic [ref=e309]: Content Writer & Social media manager.
+                              - generic [ref=e311]:
+                                - link "@MANALADNAN14" [ref=e313]:
+                                  - /url: /MANALADNAN14
+                                  - generic [ref=e314]: "@MANALADNAN14"
+                                - generic [ref=e315]: ·
+                                - link "منذ ١٢ ساعة" [ref=e317]:
+                                  - /url: /MANALADNAN14/status/2038739803085164926
+                                  - time [ref=e318]: ١٢ س
+                            - generic [ref=e320]:
+                              - button "إجراءات Grok" [ref=e322]:
+                                - img [ref=e327]
+                              - button "المزيد" [ref=e333]:
+                                - img [ref=e337]
+                          - generic [ref=e341]:
+                            - text: ردًا على
+                            - link "@zalziadi" [ref=e343]:
+                              - /url: /zalziadi
+                          - generic [ref=e345]: انا متأكدة أيضا. بإذن الله
+                          - group "8 مشاهدات" [ref=e348]:
+                            - button "0 رد. رد" [ref=e350]:
+                              - img [ref=e354]
+                            - button "0 إعادة نشر. إعادة النشر" [ref=e361]:
+                              - img [ref=e365]
+                            - button "0 إعجاب. إعجاب" [ref=e372]:
+                              - img [ref=e376]
+                            - link "8 مشاهدة. عرض تحليلات المنشور" [ref=e383]:
+                              - /url: /MANALADNAN14/status/2038739803085164926/analytics
+                              - generic [ref=e384]:
+                                - img [ref=e387]
+                                - generic [ref=e392]: ٨
+                            - button "إضافة إلى العلامات المرجعية" [ref=e394]:
+                              - img [ref=e398]
+                            - button "مشاركة المنشور" [ref=e403]:
+                              - img [ref=e407]
+                    - article [ref=e413] [cursor=pointer]:
+                      - generic [ref=e414]:
+                        - img [ref=e416]
+                        - generic [ref=e421]:
+                          - generic [ref=e423]: حدث تسجيل دخول إلى حسابك @zalziadi من جهاز جديد على ٣٠ مارس ٢٠٢٦. يمكنك مراجعته الآن.
+                          - generic [ref=e424]: ·
+                          - generic "منذ ١٤ ساعة" [ref=e425]:
+                            - time [ref=e426]: ١٤ س
+                    - generic [ref=e430]:
+                      - generic [ref=e431]:
+                        - heading "التنبيهات الفورية" [level=1] [ref=e432]
+                        - generic [ref=e433]: لا تفوّت مطلقًا ما يحدث على X عن طريق تمكين التنبيهات المباشرة
+                        - button "تشغيل التنبيهات" [ref=e435] [cursor=pointer]:
+                          - generic [ref=e438]: تشغيل التنبيهات
+                      - button "إغلاق" [ref=e440] [cursor=pointer]:
+                        - img [ref=e442]
+                    - article [ref=e448] [cursor=pointer]:
+                      - generic [ref=e449]:
+                        - img [ref=e451]
+                        - generic [ref=e456]:
+                          - generic [ref=e458]: حدث تسجيل دخول إلى حسابك @zalziadi من جهاز جديد على ٣٠ مارس ٢٠٢٦. يمكنك مراجعته الآن.
+                          - generic [ref=e459]: ·
+                          - generic "منذ ١٩ ساعة" [ref=e460]:
+                            - time [ref=e461]: ١٩ س
+                    - article "Content Writer & Social media manager. @MANALADNAN14 ٢٩ مارس ردًا على @zalziadi ممتنة اجربه وأخبرك شكرا لك. 1 رد، 19 مشاهدة" [ref=e465] [cursor=pointer]:
+                      - generic [ref=e471]:
+                        - link [ref=e483]:
+                          - /url: /MANALADNAN14
+                        - generic [ref=e486]:
+                          - generic [ref=e488]:
+                            - generic [ref=e491]:
+                              - link "Content Writer & Social media manager." [ref=e494]:
+                                - /url: /MANALADNAN14
+                                - generic [ref=e497]: Content Writer & Social media manager.
+                              - generic [ref=e499]:
+                                - link "@MANALADNAN14" [ref=e501]:
+                                  - /url: /MANALADNAN14
+                                  - generic [ref=e502]: "@MANALADNAN14"
+                                - generic [ref=e503]: ·
+                                - link "٢٩ مارس" [ref=e505]:
+                                  - /url: /MANALADNAN14/status/2038292201701073319
+                                  - time [ref=e506]: ٢٩ مارس
+                            - generic [ref=e508]:
+                              - button "إجراءات Grok" [ref=e510]:
+                                - img [ref=e515]
+                              - button "المزيد" [ref=e521]:
+                                - img [ref=e525]
+                          - generic [ref=e529]:
+                            - text: ردًا على
+                            - link "@zalziadi" [ref=e531]:
+                              - /url: /zalziadi
+                          - generic [ref=e533]: ممتنة اجربه وأخبرك شكرا لك.
+                          - group "1 رد، 19 مشاهدة" [ref=e536]:
+                            - button "1 رد. رد" [ref=e538]:
+                              - generic [ref=e539]:
+                                - img [ref=e542]
+                                - generic [ref=e547]: ١
+                            - button "0 إعادة نشر. إعادة النشر" [ref=e549]:
+                              - img [ref=e553]
+                            - button "0 إعجاب. إعجاب" [ref=e560]:
+                              - img [ref=e564]
+                            - link "19 مشاهدة. عرض تحليلات المنشور" [ref=e571]:
+                              - /url: /MANALADNAN14/status/2038292201701073319/analytics
+                              - generic [ref=e572]:
+                                - img [ref=e575]
+                                - generic [ref=e580]: ١٩
+                            - button "إضافة إلى العلامات المرجعية" [ref=e582]:
+                              - img [ref=e586]
+                            - button "مشاركة المنشور" [ref=e591]:
+                              - img [ref=e595]
+                    - article [ref=e601] [cursor=pointer]:
+                      - generic [ref=e602]:
+                        - img [ref=e604]
+                        - generic [ref=e608]:
+                          - list [ref=e610]:
+                            - link [ref=e619]:
+                              - /url: /MANALADNAN14
+                          - generic [ref=e622]:
+                            - generic [ref=e623]:
+                              - generic [ref=e624]: قام
+                              - link "Content Writer & Social media manager." [ref=e626]:
+                                - /url: /MANALADNAN14
+                                - generic [ref=e627]: Content Writer & Social media manager.
+                              - generic [ref=e628]: بالإعجاب بردك
+                            - generic [ref=e629]: ·
+                            - generic "٢٩ مارس" [ref=e630]:
+                              - time [ref=e631]: ٢٩ مارس
+                          - generic [ref=e632]:
+                            - text: "آسف على ذلك! جربي هذا الرابط مباشرة:"
+                            - generic [ref=e633]: taamun.com
+                            - text: — وإذا استمرت المشكلة أرسليلي رسالة خاصة وأساعدك بإذن الله
+                            - img "🙏" [ref=e634]
+                    - article [ref=e638] [cursor=pointer]:
+                      - generic [ref=e639]:
+                        - img [ref=e641]
+                        - generic [ref=e645]:
+                          - list [ref=e647]:
+                            - link [ref=e656]:
+                              - /url: /HalaGhamdiat
+                            - link [ref=e667]:
+                              - /url: /LaylaKhanun
+                          - generic [ref=e670]:
+                            - generic [ref=e671]:
+                              - generic [ref=e672]: قام
+                              - link "Hala Al-Ghamdi" [ref=e674]:
+                                - /url: /HalaGhamdiat
+                                - generic [ref=e675]: Hala Al-Ghamdi
+                              - generic [ref=e676]: و
+                              - link "Layla Khan" [ref=e678]:
+                                - /url: /LaylaKhanun
+                                - generic [ref=e679]: Layla Khan
+                              - generic [ref=e680]: بالإعجاب بمنشورك
+                            - generic [ref=e681]: ·
+                            - generic "٢٨ مارس" [ref=e682]:
+                              - time [ref=e683]: ٢٨ مارس
+                          - generic [ref=e684]:
+                            - text: عيدية تمعّن
+                            - img "🌙" [ref=e685]
+                            - text: "28 يوم مع آيات القرآن. آية. تأمل. سؤال عميق. تمرين يومي. 28 ريال فقط — أرخص من قهوة. ابدأ رحلتك:"
+                            - generic [ref=e686]: taamun.com/pricing
+                    - article "Content Writer & Social media manager. @MANALADNAN14 ٢٧ مارس ردًا على @zalziadi ما فتح معي 1 رد، 52 مشاهدة" [ref=e690] [cursor=pointer]:
+                      - generic [ref=e696]:
+                        - link [ref=e708]:
+                          - /url: /MANALADNAN14
+                        - generic [ref=e711]:
+                          - generic [ref=e713]:
+                            - generic [ref=e716]:
+                              - link "Content Writer & Social media manager." [ref=e719]:
+                                - /url: /MANALADNAN14
+                                - generic [ref=e722]: Content Writer & Social media manager.
+                              - generic [ref=e724]:
+                                - link "@MANALADNAN14" [ref=e726]:
+                                  - /url: /MANALADNAN14
+                                  - generic [ref=e727]: "@MANALADNAN14"
+                                - generic [ref=e728]: ·
+                                - link "٢٧ مارس" [ref=e730]:
+                                  - /url: /MANALADNAN14/status/2037459882497003658
+                                  - time [ref=e731]: ٢٧ مارس
+                            - generic [ref=e733]:
+                              - button "إجراءات Grok" [ref=e735]:
+                                - img [ref=e740]
+                              - button "المزيد" [ref=e746]:
+                                - img [ref=e750]
+                          - generic [ref=e754]:
+                            - text: ردًا على
+                            - link "@zalziadi" [ref=e756]:
+                              - /url: /zalziadi
+                          - generic [ref=e758]: ما فتح معي
+                          - group "1 رد، 52 مشاهدة" [ref=e761]:
+                            - button "1 رد. رد" [ref=e763]:
+                              - generic [ref=e764]:
+                                - img [ref=e767]
+                                - generic [ref=e772]: ١
+                            - button "0 إعادة نشر. إعادة النشر" [ref=e774]:
+                              - img [ref=e778]
+                            - button "0 إعجاب. إعجاب" [ref=e785]:
+                              - img [ref=e789]
+                            - link "52 مشاهدة. عرض تحليلات المنشور" [ref=e796]:
+                              - /url: /MANALADNAN14/status/2037459882497003658/analytics
+                              - generic [ref=e797]:
+                                - img [ref=e800]
+                                - generic [ref=e805]: ٥٢
+                            - button "إضافة إلى العلامات المرجعية" [ref=e807]:
+                              - img [ref=e811]
+                            - button "مشاركة المنشور" [ref=e816]:
+                              - img [ref=e820]
+                    - article [ref=e826] [cursor=pointer]:
+                      - generic [ref=e827]:
+                        - img [ref=e829]
+                        - generic [ref=e833]:
+                          - list [ref=e835]:
+                            - link [ref=e844]:
+                              - /url: /MANALADNAN14
+                            - link [ref=e855]:
+                              - /url: /DanaAlDaqq7wtk
+                          - generic [ref=e858]:
+                            - generic [ref=e859]:
+                              - generic [ref=e860]: قام
+                              - link "Content Writer & Social media manager." [ref=e862]:
+                                - /url: /MANALADNAN14
+                                - generic [ref=e863]: Content Writer & Social media manager.
+                              - generic [ref=e864]: و
+                              - link "دانة الدقاق" [ref=e866]:
+                                - /url: /DanaAlDaqq7wtk
+                                - generic [ref=e867]: دانة الدقاق
+                              - generic [ref=e868]: بالإعجاب بمنشورك
+                            - generic [ref=e869]: ·
+                            - generic "٢٧ مارس" [ref=e870]:
+                              - time [ref=e871]: ٢٧ مارس
+                          - generic [ref=e872]:
+                            - text: عيدية تمعّن
+                            - img "🌙" [ref=e873]
+                            - text: "28 يوم مع آيات القرآن. آية. تأمل. سؤال عميق. تمرين يومي. 28 ريال فقط — أرخص من قهوة. ابدأ رحلتك:"
+                            - generic [ref=e874]: taamun.com/pricing
+                    - article [ref=e878] [cursor=pointer]:
+                      - generic [ref=e879]:
+                        - img [ref=e881]
+                        - generic [ref=e886]:
+                          - generic [ref=e888]: حدث تسجيل دخول إلى حسابك @zalziadi من جهاز جديد على ٢٧ مارس ٢٠٢٦. يمكنك مراجعته الآن.
+                          - generic [ref=e889]: ·
+                          - generic "٢٧ مارس" [ref=e890]:
+                            - time [ref=e891]: ٢٧ مارس
+                    - article [ref=e895] [cursor=pointer]:
+                      - generic [ref=e896]:
+                        - img [ref=e898]
+                        - generic [ref=e903]:
+                          - generic [ref=e905]: تمت إعادة تعيين كلمة المرور الخاصة بك على حسابك. بناءً على هذا التغيير، قد يتم تقييد التغييرات الإضافية في حسابك مؤقتًا.
+                          - generic [ref=e906]: ·
+                          - generic "٢٧ مارس" [ref=e907]:
+                            - time [ref=e908]: ٢٧ مارس
+                    - article [ref=e912] [cursor=pointer]:
+                      - generic [ref=e913]:
+                        - img [ref=e915]
+                        - generic [ref=e919]:
+                          - list [ref=e921]:
+                            - link [ref=e930]:
+                              - /url: /rabaaahmed18
+                          - generic [ref=e933]:
+                            - generic [ref=e934]:
+                              - generic [ref=e935]: قام
+                              - link "rabaa ahmed" [ref=e937]:
+                                - /url: /rabaaahmed18
+                                - generic [ref=e938]: rabaa ahmed
+                              - generic [ref=e939]: بمتَابَعتك
+                            - generic [ref=e940]: ·
+                            - generic "٢٦ مارس" [ref=e941]:
+                              - time [ref=e942]: ٢٦ مارس
+                    - article [ref=e946] [cursor=pointer]:
+                      - generic [ref=e947]:
+                        - img [ref=e949]
+                        - generic [ref=e953]:
+                          - list [ref=e955]:
+                            - link [ref=e964]:
+                              - /url: /No0o10507676
+                          - generic [ref=e967]:
+                            - generic [ref=e968]:
+                              - generic [ref=e969]: سجّل
+                              - link "🗝️ Nadia" [ref=e971]:
+                                - /url: /No0o10507676
+                                - img "🗝️" [ref=e972]
+                                - generic [ref=e973]: Nadia
+                              - generic [ref=e974]: إعجابه بمنشورك
+                            - generic [ref=e975]: ·
+                            - generic "٢٦ مارس" [ref=e976]:
+                              - time [ref=e977]: ٢٦ مارس
+                          - generic [ref=e978]:
+                            - text: الليلة بمشيئة الرحمن انطلاق..
+                            - generic [ref=e979]: "#عيدية_تمعن"
+                    - article [ref=e983] [cursor=pointer]:
+                      - generic [ref=e984]:
+                        - img [ref=e986]
+                        - generic [ref=e990]:
+                          - list [ref=e992]:
+                            - link [ref=e1001]:
+                              - /url: /An5oos
+                          - generic [ref=e1004]:
+                            - generic [ref=e1005]:
+                              - generic [ref=e1006]: أُعجب
+                              - link "اللطيفة ✨" [ref=e1008]:
+                                - /url: /An5oos
+                                - generic [ref=e1009]: اللطيفة
+                                - img "✨" [ref=e1010]
+                              - generic [ref=e1011]: بـ ٣ من منشوراتك
+                            - generic [ref=e1012]: ·
+                            - generic "٢٥ مارس" [ref=e1013]:
+                              - time [ref=e1014]: ٢٥ مارس
+                          - generic [ref=e1015]:
+                            - text: تجاوزت مشاهدات هذه التغريدة 100k مشاهدة معلومة بسيطة احب تكون واضحة لك كمتابع .. لا اعرف الغيب ولا اقرا الابراج ولا التنبؤات
+                            - img "❌" [ref=e1016]
+                            - text: لكن اقرأ وبدقة الأبعاد وماذا يجري فيها
+                            - img "✅" [ref=e1017]
+                            - text: وعلى إنستغرام تحديدا قرأت هذه الفترة قبل اكثر من 10 سنوات واذا يهمك هذا النوع من المحتوى خليك قريب
+                            - img "🙏🏼" [ref=e1018]
+                    - article [ref=e1022] [cursor=pointer]:
+                      - generic [ref=e1023]:
+                        - img [ref=e1025]
+                        - generic [ref=e1029]:
+                          - list [ref=e1031]:
+                            - link [ref=e1040]:
+                              - /url: /iX6fm
+                            - link [ref=e1051]:
+                              - /url: /ffatoma111
+                          - generic [ref=e1054]:
+                            - generic [ref=e1055]:
+                              - generic [ref=e1056]: قام
+                              - link "6102826" [ref=e1058]:
+                                - /url: /iX6fm
+                                - generic [ref=e1059]: "6102826"
+                              - generic [ref=e1060]: و
+                              - link "𝐅𝐀𝐓𝐈𝐌𝐀 ♊" [ref=e1062]:
+                                - /url: /ffatoma111
+                                - generic [ref=e1063]: 𝐅𝐀𝐓𝐈𝐌𝐀
+                                - img "♊" [ref=e1064]
+                              - generic [ref=e1065]: بالإعجاب بمنشورك
+                            - generic [ref=e1066]: ·
+                            - generic "٢٥ مارس" [ref=e1067]:
+                              - time [ref=e1068]: ٢٥ مارس
+                          - generic [ref=e1069]:
+                            - generic [ref=e1070]: "#عيدية_تمعن"
+                            - text: تجربة مدتها ٣ أيام من الظل .. إلى الهدية .. إلى افضل احتمال
+                            - generic [ref=e1071]: taamun.com
+                    - article "Content Writer & Social media manager. @MANALADNAN14 ٢٥ مارس ردًا على @zalziadi دخلت الإيمان كذا مرة لم يصلني اي ايميل وما دخلني 1 رد، 35 مشاهدة" [ref=e1075] [cursor=pointer]:
+                      - generic [ref=e1081]:
+                        - link [ref=e1093]:
+                          - /url: /MANALADNAN14
+                        - generic [ref=e1096]:
+                          - generic [ref=e1098]:
+                            - generic [ref=e1101]:
+                              - link "Content Writer & Social media manager." [ref=e1104]:
+                                - /url: /MANALADNAN14
+                                - generic [ref=e1107]: Content Writer & Social media manager.
+                              - generic [ref=e1109]:
+                                - link "@MANALADNAN14" [ref=e1111]:
+                                  - /url: /MANALADNAN14
+                                  - generic [ref=e1112]: "@MANALADNAN14"
+                                - generic [ref=e1113]: ·
+                                - link "٢٥ مارس" [ref=e1115]:
+                                  - /url: /MANALADNAN14/status/2036580463855185930
+                                  - time [ref=e1116]: ٢٥ مارس
+                            - generic [ref=e1118]:
+                              - button "إجراءات Grok" [ref=e1120]:
+                                - img [ref=e1125]
+                              - button "المزيد" [ref=e1131]:
+                                - img [ref=e1135]
+                          - generic [ref=e1139]:
+                            - text: ردًا على
+                            - link "@zalziadi" [ref=e1141]:
+                              - /url: /zalziadi
+                          - generic [ref=e1143]: دخلت الإيمان كذا مرة لم يصلني اي ايميل وما دخلني
+                          - group "1 رد، 35 مشاهدة" [ref=e1146]:
+                            - button "1 رد. رد" [ref=e1148]:
+                              - generic [ref=e1149]:
+                                - img [ref=e1152]
+                                - generic [ref=e1157]: ١
+                            - button "0 إعادة نشر. إعادة النشر" [ref=e1159]:
+                              - img [ref=e1163]
+                            - button "0 إعجاب. إعجاب" [ref=e1170]:
+                              - img [ref=e1174]
+                            - link "35 مشاهدة. عرض تحليلات المنشور" [ref=e1181]:
+                              - /url: /MANALADNAN14/status/2036580463855185930/analytics
+                              - generic [ref=e1182]:
+                                - img [ref=e1185]
+                                - generic [ref=e1190]: ٣٥
+                            - button "إضافة إلى العلامات المرجعية" [ref=e1192]:
+                              - img [ref=e1196]
+                            - button "مشاركة المنشور" [ref=e1201]:
+                              - img [ref=e1205]
+                    - article [ref=e1413] [cursor=pointer]:
+                      - generic [ref=e1414]:
+                        - img [ref=e1416]
+                        - generic [ref=e1420]:
+                          - list [ref=e1422]:
+                            - link [ref=e1431]:
+                              - /url: /meandonlyme101
+                            - link [ref=e1442]:
+                              - /url: /handa02875632
+                          - generic [ref=e1445]:
+                            - generic [ref=e1446]:
+                              - generic [ref=e1447]: قام
+                              - link "🧚🏻‍♀️" [ref=e1449]:
+                                - /url: /meandonlyme101
+                                - img "🧚🏻‍♀️" [ref=e1450]
+                              - generic [ref=e1451]: و
+                              - link "🕊 هند 🕊 369((الله يحبنا )) 🪽" [ref=e1453]:
+                                - /url: /handa02875632
+                                - img "🕊" [ref=e1454]
+                                - generic [ref=e1455]: هند
+                                - img "🕊" [ref=e1456]
+                                - generic [ref=e1457]: 369((الله يحبنا ))
+                                - img "🪽" [ref=e1458]
+                              - generic [ref=e1459]: بالإعجاب بمنشورك
+                            - generic [ref=e1460]: ·
+                            - generic "٢٥ مارس" [ref=e1461]:
+                              - time [ref=e1462]: ٢٥ مارس
+                          - generic [ref=e1463]:
+                            - generic [ref=e1464]: "#عيدية_تمعن"
+                            - text: تجربة مدتها ٣ أيام من الظل .. إلى الهدية .. إلى افضل احتمال
+                            - generic [ref=e1465]: taamun.com
+            - generic "الموضوعات المتداوَلة" [ref=e161]:
+              - generic [ref=e162]:
+                - search "بحث" [ref=e167]:
+                  - generic [ref=e172]:
+                    - img [ref=e174]
+                    - combobox "استعلام البحث" [ref=e179]
+                - region "المتداوَل الآن" [ref=e1208]:
+                  - heading "المتداوَل الآن" [level=1] [ref=e1209]
+                  - 'generic "الخطّ الزمنيّ: المتداوَل الآن" [ref=e1210]':
+                    - generic [ref=e1211]:
+                      - heading "ما يحدث" [level=2] [ref=e1215]:
+                        - generic [ref=e1216]: ما يحدث
+                      - 'link "المتداول في المملكة العربية السعودية #اعلانك_ᅠ_تررند__θ5З2221З48 المزيد" [ref=e1219] [cursor=pointer]':
+                        - generic [ref=e1220]:
+                          - generic [ref=e1222]: المتداول في المملكة العربية السعودية
+                          - generic [ref=e1224]: "#اعلانك_ᅠ_تررند__θ5З2221З48"
+                          - button "المزيد" [ref=e1227]:
+                            - img [ref=e1231]
+                      - 'link "المتداول في المملكة العربية السعودية #اي_ساعه_فطورك المزيد" [ref=e1236] [cursor=pointer]':
+                        - generic [ref=e1237]:
+                          - generic [ref=e1239]: المتداول في المملكة العربية السعودية
+                          - generic [ref=e1241]: "#اي_ساعه_فطورك"
+                          - button "المزيد" [ref=e1244]:
+                            - img [ref=e1248]
+                      - 'link "المتداول في المملكة العربية السعودية #تري_الطيب المزيد" [ref=e1253] [cursor=pointer]':
+                        - generic [ref=e1254]:
+                          - generic [ref=e1256]: المتداول في المملكة العربية السعودية
+                          - generic [ref=e1258]: "#تري_الطيب"
+                          - button "المزيد" [ref=e1261]:
+                            - img [ref=e1265]
+                      - 'link "المتداول في المملكة العربية السعودية #اعدام_الاسري_جريمه المزيد" [ref=e1270] [cursor=pointer]':
+                        - generic [ref=e1271]:
+                          - generic [ref=e1273]: المتداول في المملكة العربية السعودية
+                          - generic [ref=e1275]: "#اعدام_الاسري_جريمه"
+                          - button "المزيد" [ref=e1278]:
+                            - img [ref=e1282]
+                      - link "عرض المزيد" [ref=e1287] [cursor=pointer]:
+                        - /url: /explore/tabs/for-you
+                        - generic [ref=e1288]: عرض المزيد
+                - complementary "اقتراحات المتابعة" [ref=e1289]:
+                  - heading "اقتراحات المتابعة" [level=2] [ref=e1291]:
+                    - generic [ref=e1292]: اقتراحات المتابعة
+                  - list [ref=e1293]:
+                    - listitem [ref=e1294] [cursor=pointer]:
+                      - generic [ref=e1295]:
+                        - link [ref=e1305]:
+                          - /url: /charliejhills
+                        - generic [ref=e1309]:
+                          - generic [ref=e1311]:
+                            - link "Charlie Hills حساب موَثَّق" [ref=e1313]:
+                              - /url: /charliejhills
+                              - generic [ref=e1314]:
+                                - generic [ref=e1316]: Charlie Hills
+                                - img "حساب موَثَّق" [ref=e1319]
+                            - link "@charliejhills" [ref=e1324]:
+                              - /url: /charliejhills
+                              - generic [ref=e1326]: "@charliejhills"
+                          - button "متابعة @charliejhills" [ref=e1328]:
+                            - generic [ref=e1331]: متابعة
+                    - listitem [ref=e1332] [cursor=pointer]:
+                      - generic [ref=e1333]:
+                        - link [ref=e1343]:
+                          - /url: /Remotion
+                        - generic [ref=e1347]:
+                          - generic [ref=e1349]:
+                            - link "Remotion حساب موَثَّق" [ref=e1351]:
+                              - /url: /Remotion
+                              - generic [ref=e1352]:
+                                - generic [ref=e1354]: Remotion
+                                - img "حساب موَثَّق" [ref=e1357]
+                            - link "@Remotion" [ref=e1362]:
+                              - /url: /Remotion
+                              - generic [ref=e1364]: "@Remotion"
+                          - button "متابعة @Remotion" [ref=e1366]:
+                            - generic [ref=e1369]: متابعة
+                    - listitem [ref=e1370] [cursor=pointer]:
+                      - generic [ref=e1371]:
+                        - link [ref=e1381]:
+                          - /url: /Kld_sqr
+                        - generic [ref=e1385]:
+                          - generic [ref=e1387]:
+                            - link "خالد صقر حساب موَثَّق" [ref=e1389]:
+                              - /url: /Kld_sqr
+                              - generic [ref=e1390]:
+                                - generic [ref=e1392]: خالد صقر
+                                - img "حساب موَثَّق" [ref=e1395]
+                            - link "@Kld_sqr" [ref=e1400]:
+                              - /url: /Kld_sqr
+                              - generic [ref=e1402]: "@Kld_sqr"
+                          - button "متابعة @Kld_sqr" [ref=e1404]:
+                            - generic [ref=e1407]: متابعة
+                  - link "عرض المزيد" [ref=e1408] [cursor=pointer]:
+                    - /url: /i/connect_people?user_id=1089822608
+                    - generic [ref=e1409]: عرض المزيد
+                - navigation "الشريط السُفلي" [ref=e197]:
+                  - generic [ref=e198]:
+                    - link "شروط الخدمة" [ref=e199] [cursor=pointer]:
+                      - /url: https://x.com/tos
+                    - generic [ref=e200]: "|"
+                  - generic [ref=e201]:
+                    - link "سياسية الخصوصيّة" [ref=e202] [cursor=pointer]:
+                      - /url: https://x.com/privacy
+                    - generic [ref=e203]: "|"
+                  - generic [ref=e204]:
+                    - link "سياسة الكوكيز" [ref=e205] [cursor=pointer]:
+                      - /url: https://support.x.com/articles/20170514
+                    - generic [ref=e206]: "|"
+                  - generic [ref=e207]:
+                    - link "إمكانية الوصول" [ref=e208] [cursor=pointer]:
+                      - /url: https://help.x.com/resources/accessibility
+                    - generic [ref=e209]: "|"
+                  - generic [ref=e210]:
+                    - link "معلومات الإعلان" [ref=e211] [cursor=pointer]:
+                      - /url: https://business.x.com/en/help/troubleshooting/how-twitter-ads-work.html?ref=web-twc-ao-gbl-adsinfo&utm_source=twc&utm_medium=web&utm_campaign=ao&utm_content=adsinfo
+                    - generic [ref=e212]: "|"
+                  - button "المزيد" [ref=e213] [cursor=pointer]:
+                    - generic [ref=e214]:
+                      - text: المزيد
+                      - img [ref=e215]
+                  - generic [ref=e218]: © 2026 X Corp.

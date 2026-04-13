@@ -81,7 +81,7 @@ export default function EidPageClient() {
         <div className="pointer-events-none absolute -bottom-20 -right-20 h-48 w-48 rounded-full bg-[#8c7851]/10 blur-3xl" aria-hidden />
         <div className="relative">
           <p className="tm-mono text-xs tracking-[0.22em] text-[#8c7851]">عيدية محدودة</p>
-          <h1 className="tm-heading mt-3 max-w-[920px] text-4xl leading-[1.15] text-[#2f2619] sm:text-[2.65rem]">
+          <h1 className="tm-heading mt-3 max-w-[920px] text-2xl leading-[1.15] text-[#2f2619] sm:text-4xl md:text-[2.65rem]">
             عيدية تمَعُّن — رحلة اكتشاف المعنى بلغة القرآن
           </h1>
           <p className="mt-5 max-w-[720px] text-base leading-relaxed text-[#5f5648]/90 sm:text-[17px]">
@@ -105,7 +105,7 @@ export default function EidPageClient() {
       <section className="space-y-6">
         <div className="flex flex-col gap-2 sm:flex-row sm:items-end sm:justify-between">
           <div>
-            <h2 className="tm-heading text-3xl text-[#2f2619]">ثلاثة أيام — ثلاث حالات وعي</h2>
+            <h2 className="tm-heading text-xl sm:text-3xl text-[#2f2619]">ثلاثة أيام — ثلاث حالات وعي</h2>
             <p className="mt-1 text-sm text-[#7d7362]">اختر اليوم لعرض نصّه. نهاية كل يوم تترك سؤالًا مفتوحًا.</p>
           </div>
         </div>
@@ -152,7 +152,7 @@ export default function EidPageClient() {
 
       {/* Conversion */}
       <section className="tm-card border-[#8c7851]/30 bg-[#fcfaf7] p-8 sm:p-10">
-        <h2 className="tm-heading text-3xl text-[#2f2619]">انتهت العيدية المحدودة… وبقي ما يستحقُّ الإكمال</h2>
+        <h2 className="tm-heading text-xl sm:text-3xl text-[#2f2619]">انتهت العيدية المحدودة… وبقي ما يستحقُّ الإكمال</h2>
         <p className="mt-4 max-w-[760px] text-sm leading-relaxed text-[#5f5648]/90 sm:text-[15px]">
           ما رأيتَه خلال ثلاثة أيام كان <strong className="text-[#5a4531]">طعمًا</strong> لا <strong className="text-[#5a4531]">استقلالًا</strong>؛
           التمعّن العميق، والدفتر، والمرشد، ومدينة المعنى، وتحليلات الرحلة تظلُّ خلف بابٍ يفتحه اشتراكٌ يتناسب معك.

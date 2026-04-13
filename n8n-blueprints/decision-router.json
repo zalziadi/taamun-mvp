@@ -1,0 +1,547 @@
+{
+  "name": "Decision Router — Guardrails + Approval + Routing",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "decision-router",
+        "responseMode": "lastNode"
+      },
+      "name": "Decision Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// ========================================\n// 🧯 GUARDRAILS + CONFIDENCE FILTER\n// ========================================\nconst input = $input.item.json;\nconst decisions = input.decisions || [];\nconst pricing = input.pricing || {};\nconst contentStrategy = input.content_strategy || {};\n\n// === GUARDRAILS CONFIG ===\nconst GUARDRAILS = {\n  max_price_increase_per_step: 20,    // % max increase\n  min_price: 200,                      // SAR floor\n  max_price: 820,                      // SAR ceiling\n  max_discount_pct: 50,                // max discount %\n  min_confidence_auto: 0.85,           // auto-execute threshold\n  min_confidence_review: 0.70,         // review threshold (below = BLOCK)\n  max_daily_pricing_changes: 2,        // prevent price flapping\n  blocked_actions: ['delete_all_content', 'disable_sales'], // hard blocks\n  require_approval: ['pricing', 'discount', 'scale_budget', 'pause_campaign']\n};\n\n// === APPROVAL CATEGORIES ===\n// AUTO: content, analytics, notifications\n// REVIEW: pricing, discounts, major scaling\n// BLOCK: confidence < 70%, guardrail violations\n\nconst processed = decisions.map(d => {\n  let execution_mode = 'AUTO';\n  let blocked = false;\n  let block_reason = '';\n  let guardrail_flags = [];\n\n  // 1. Hard block check\n  if (GUARDRAILS.blocked_actions.includes(d.action)) {\n    blocked = true;\n    block_reason = 'Hard-blocked action';\n    execution_mode = 'BLOCKED';\n  }\n\n  // 2. Confidence threshold\n  if (!blocked) {\n    if (d.confidence < GUARDRAILS.min_confidence_review) {\n      execution_mode = 'BLOCKED';\n      blocked = true;\n      block_reason = `Confidence too low: ${Math.round(d.confidence * 100)}% (min: ${GUARDRAILS.min_confidence_review * 100}%)`;\n      guardrail_flags.push('LOW_CONFIDENCE');\n    } else if (d.confidence < GUARDRAILS.min_confidence_auto) {\n      execution_mode = 'REVIEW';\n      guardrail_flags.push('NEEDS_REVIEW');\n    }\n  }\n\n  // 3. Check if target_agent requires approval\n  if (!blocked && GUARDRAILS.require_approval.includes(d.target_agent)) {\n    execution_mode = 'REVIEW';\n    guardrail_flags.push('APPROVAL_REQUIRED');\n  }\n\n  // 4. Pricing guardrails\n  if (!blocked && d.target_agent === 'pricing') {\n    const recommended = pricing.recommended || 350;\n    const current = pricing.current || 350;\n    const changePct = Math.abs((recommended - current) / current * 100);\n\n    if (changePct > GUARDRAILS.max_price_increase_per_step) {\n      execution_mode = 'REVIEW';\n      guardrail_flags.push(`PRICE_JUMP_${Math.round(changePct)}%`);\n    }\n    if (recommended < GUARDRAILS.min_price) {\n      blocked = true;\n      block_reason = `Price ${recommended} below floor ${GUARDRAILS.min_price}`;\n      execution_mode = 'BLOCKED';\n    }\n    if (recommended > GUARDRAILS.max_price) {\n      blocked = true;\n      block_reason = `Price ${recommended} above ceiling ${GUARDRAILS.max_price}`;\n      execution_mode = 'BLOCKED';\n    }\n  }\n\n  // 5. Risk escalation\n  if (!blocked && d.risk === 'high' && d.priority === 'critical') {\n    execution_mode = 'REVIEW';\n    guardrail_flags.push('HIGH_RISK_CRITICAL');\n  }\n\n  return {\n    json: {\n      ...d,\n      pricing,\n      content_strategy: contentStrategy,\n      overall_status: input.overall_status,\n      brain_timestamp: input.meta?.timestamp,\n      // Guardrail outputs\n      execution_mode,\n      blocked,\n      block_reason,\n      guardrail_flags,\n      confidence_pct: Math.round(d.confidence * 100)\n    }\n  };\n});\n\nreturn processed.length > 0 ? processed : [{ json: { action: 'no_decisions', target_agent: 'none', execution_mode: 'BLOCKED' } }];"
+      },
+      "name": "Guardrails + Unpack",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "rules": [
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.execution_mode }}",
+                    "rightValue": "BLOCKED",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": "BLOCKED"
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.execution_mode }}",
+                    "rightValue": "REVIEW",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": "REVIEW"
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.execution_mode }}",
+                    "rightValue": "AUTO",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": "AUTO"
+            }
+          ]
+        }
+      },
+      "name": "Route by Execution Mode",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        650,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🛑 *قرار محظور — Guardrails*\n\n❌ {{ $json.action }}\n🎯 الوكيل: {{ $json.target_agent }}\n🔒 الثقة: {{ $json.confidence_pct }}%\n\n⛔ السبب: {{ $json.block_reason }}\n🏷 الأعلام: {{ $json.guardrail_flags.join(', ') }}\n\n_لن يتم تنفيذ هذا القرار_",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Blocked Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        900,
+        100
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=👑 *قرار يحتاج موافقتك*\n\n📋 {{ $json.action }}\n🎯 الوكيل: {{ $json.target_agent }}\n🔒 الثقة: {{ $json.confidence_pct }}%\n⚠️ المخاطر: {{ $json.risk }}\n🏷 الأعلام: {{ $json.guardrail_flags.join(', ') }}\n\n💡 السبب: {{ $json.reason }}\n📈 التأثير المتوقع: {{ $json.expected_impact }}\n\n✅ /approve\\_{{ $json.id }} — للموافقة\n❌ /reject\\_{{ $json.id }} — للرفض",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Approval Request",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        900,
+        250
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rules": {
+          "rules": [
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.target_agent }}",
+                    "rightValue": "content_engine",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": "Content Engine"
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.target_agent }}",
+                    "rightValue": "warda",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": "Warda Sales"
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.target_agent }}",
+                    "rightValue": "pricing",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": "Pricing Engine"
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.target_agent }}",
+                    "rightValue": "borhan",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": "Borhan Command"
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.target_agent }}",
+                    "rightValue": "wolf",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": "Wolf Intel"
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.target_agent }}",
+                    "rightValue": "sham",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": "Sham Trends"
+            }
+          ]
+        }
+      },
+      "name": "Route by Agent",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        900,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.N8N_WEBHOOK_BASE }}/webhook/content-engine-trigger",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"action\": \"{{ $json.action }}\",\n  \"produce_count\": {{ $json.content_strategy.produce_count || 3 }},\n  \"best_hook\": \"{{ $json.content_strategy.best_hook_type || '' }}\",\n  \"angles\": {{ JSON.stringify($json.content_strategy.angles || []) }},\n  \"kill_list\": {{ JSON.stringify($json.content_strategy.kill_list || []) }},\n  \"priority\": \"{{ $json.priority }}\",\n  \"source\": \"growth_brain\"\n}"
+      },
+      "name": "Trigger Content Engine",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        900,
+        150
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🌹 *أمر من العقل → وردة*\n\n📋 {{ $json.action }}\n🎯 الأولوية: {{ $json.priority }}\n🔒 الثقة: {{ Math.round($json.confidence * 100) }}%\n⏰ التنفيذ خلال: {{ $json.deadline_hours }} ساعة\n\n💡 السبب: {{ $json.reason }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Command Warda",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        900,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Execute pricing change\nconst pricing = $input.item.json.pricing || {};\nconst recommended = pricing.recommended || 350;\nconst scarcity = pricing.scarcity_message || '';\n\n// In production: this would update Stripe/Tap pricing\n// For now: log the command and notify\nreturn {\n  json: {\n    action: 'pricing_update',\n    old_price: pricing.current || 350,\n    new_price: recommended,\n    scarcity_message: scarcity,\n    reason: pricing.reason || '',\n    executed: false,\n    note: 'Manual approval required for price changes'\n  }\n};"
+      },
+      "name": "Pricing Command",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        900,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=💰 *أمر تسعير من العقل*\n\nالسعر الحالي: {{ $json.old_price }} ريال\nالمقترح: {{ $json.new_price }} ريال\nالسبب: {{ $json.reason }}\n\n{{ $json.scarcity_message }}\n\n⚠️ يحتاج موافقة يدوية\n\n/approve_price — للموافقة\n/reject_price — للرفض",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Pricing Approval Request",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1100,
+        450
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=⚔️ *أمر من العقل → برهان*\n\n📋 {{ $json.action }}\n🎯 الأولوية: {{ $json.priority }}\n🔒 الثقة: {{ Math.round($json.confidence * 100) }}%\n⚠️ المخاطر: {{ $json.risk }}\n⏰ خلال: {{ $json.deadline_hours }} ساعة\n\n💡 {{ $json.reason }}\n📈 التأثير المتوقع: {{ $json.expected_impact }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Command Borhan",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        900,
+        600
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🐺 *أمر من العقل → ذئب الشمال*\n\n🔍 {{ $json.action }}\n🎯 الأولوية: {{ $json.priority }}\n⏰ خلال: {{ $json.deadline_hours }} ساعة\n\n💡 {{ $json.reason }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Command Wolf",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        900,
+        750
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🎭 *أمر من العقل → شام*\n\n📋 {{ $json.action }}\n🎯 الأولوية: {{ $json.priority }}\n\n💡 {{ $json.reason }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Command Sham",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        900,
+        900
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"status\": \"routed\", \"decisions_processed\": {{ $('Unpack Decisions').all().length }} }"
+      },
+      "name": "Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1300,
+        400
+      ]
+    }
+  ],
+  "connections": {
+    "Decision Webhook": {
+      "main": [
+        [
+          {
+            "node": "Guardrails + Unpack",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Guardrails + Unpack": {
+      "main": [
+        [
+          {
+            "node": "Route by Execution Mode",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Execution Mode": {
+      "main": [
+        [
+          {
+            "node": "Blocked Alert",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Approval Request",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Route by Agent",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Agent": {
+      "main": [
+        [
+          {
+            "node": "Trigger Content Engine",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Command Warda",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Pricing Command",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Command Borhan",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Command Wolf",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Command Sham",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pricing Command": {
+      "main": [
+        [
+          {
+            "node": "Pricing Approval Request",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Blocked Alert": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Approval Request": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Pricing Approval Request": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Command Borhan": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "1005"
+}

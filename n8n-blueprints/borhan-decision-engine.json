@@ -1,0 +1,285 @@
+{
+  "name": "Borhan 2.0 - Decision Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "name": "Every 30 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_LEAD_FLOW_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Lead Flow",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        200
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_CONTENT_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Content Engine",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        400
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Aggregate data from Lead Flow and Content Engine\nconst dms = items.length > 0 ? items[0].json.dms || 0 : 0;\nconst sales = items.length > 0 ? items[0].json.sales || 0 : 0;\nconst videos = items.length > 0 ? items[0].json.videos || 0 : 0;\nconst target = 28;\n\nlet decision = '';\nlet action = '';\nlet urgency = '';\n\nif (dms < 20) {\n  decision = 'content';\n  action = 'المحتوى ضعيف — شام: أنتجي 3 فيديوهات فوراً';\n  urgency = 'HIGH';\n} else if (dms >= 20 && sales < 5) {\n  decision = 'closing';\n  action = 'وردة: في leads ما انغلقوا — ركزي على الإغلاق';\n  urgency = 'HIGH';\n} else if (videos < 5) {\n  decision = 'production';\n  action = 'الإنتاج بطيء — مسخر: سرّع السكربتات';\n  urgency = 'MEDIUM';\n} else {\n  decision = 'scale';\n  action = 'الأداء ممتاز — ضاعف المحتوى الناجح';\n  urgency = 'LOW';\n}\n\nconst remaining = target - sales;\n\nreturn {\n  json: {\n    decision,\n    action,\n    urgency,\n    stats: { dms, sales, videos },\n    remaining,\n    target\n  }\n};"
+      },
+      "name": "Decision Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        600,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "rules": [
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.urgency }}",
+                    "rightValue": "HIGH",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": "HIGH"
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.urgency }}",
+                    "rightValue": "MEDIUM",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": "MEDIUM"
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.urgency }}",
+                    "rightValue": "LOW",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": "SCALE"
+            }
+          ]
+        }
+      },
+      "name": "Priority Router",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        800,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🚨 *برهان — قرار عاجل*\n\n📊 الحالة: {{ $json.urgency }}\n🎯 القرار: {{ $json.decision }}\n\n👉 {{ $json.action }}\n\n📈 DMs: {{ $json.stats.dms }}\n💰 Sales: {{ $json.stats.sales }}\n🎬 Videos: {{ $json.stats.videos }}\n\n🔥 باقي: {{ $json.remaining }} / {{ $json.target }} عميل",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Alert HIGH",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1000,
+        200
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=⚠️ *برهان — تنبيه*\n\n{{ $json.action }}\n\n📈 DMs: {{ $json.stats.dms }} | 💰 Sales: {{ $json.stats.sales }}\n🔥 باقي: {{ $json.remaining }} / {{ $json.target }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Alert MEDIUM",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1000,
+        350
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=✅ *برهان — وضع Scale*\n\n{{ $json.action }}\n\n💰 Sales: {{ $json.stats.sales }} / {{ $json.target }}\n🔥 باقي: {{ $json.remaining }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Alert SCALE",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1000,
+        500
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Every 30 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Read Lead Flow",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Content Engine",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Lead Flow": {
+      "main": [
+        [
+          {
+            "node": "Decision Logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Content Engine": {
+      "main": [
+        [
+          {
+            "node": "Decision Logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Decision Logic": {
+      "main": [
+        [
+          {
+            "node": "Priority Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Priority Router": {
+      "main": [
+        [
+          {
+            "node": "Alert HIGH",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alert MEDIUM",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Alert SCALE",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "1002"
+}

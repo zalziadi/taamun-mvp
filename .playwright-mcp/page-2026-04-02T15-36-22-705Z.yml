@@ -1,0 +1,108 @@
+- generic [ref=e9]:
+  - generic [ref=e12]:
+    - link "Instagram" [ref=e17] [cursor=pointer]:
+      - /url: /
+      - img "Instagram" [ref=e22]
+    - generic [ref=e25]:
+      - link "الصفحة الرئيسية" [ref=e30] [cursor=pointer]:
+        - /url: /
+        - img "الصفحة الرئيسية" [ref=e35]
+      - link "ريلز" [ref=e40] [cursor=pointer]:
+        - /url: /reels/
+        - img "ريلز" [ref=e45]
+      - link "الرسائل" [ref=e52] [cursor=pointer]:
+        - /url: /direct/inbox/
+        - img "الرسائل" [ref=e57]
+      - link "بحث" [ref=e62] [cursor=pointer]:
+        - /url: "#"
+        - img "بحث" [ref=e67]
+      - link "استكشاف" [ref=e73] [cursor=pointer]:
+        - /url: /explore/
+        - img "استكشاف" [ref=e78]
+      - link "الإشعارات" [ref=e86] [cursor=pointer]:
+        - /url: "#"
+        - img "الإشعارات" [ref=e91]
+      - link "منشور جديد" [ref=e97] [cursor=pointer]:
+        - /url: "#"
+        - img "منشور جديد" [ref=e102]
+      - link "لوحة المعلومات الاحترافية" [ref=e107] [cursor=pointer]:
+        - /url: "#"
+        - img "لوحة المعلومات الاحترافية" [ref=e112]
+      - link "صورة ملف zalziadi الشخصي" [ref=e119] [cursor=pointer]:
+        - /url: /zalziadi/
+        - link "صورة ملف zalziadi الشخصي" [ref=e124]:
+          - img "صورة ملف zalziadi الشخصي" [ref=e125]
+    - generic [ref=e126]:
+      - link "الإعدادات" [ref=e129] [cursor=pointer]:
+        - /url: "#"
+        - img "الإعدادات" [ref=e134]
+      - link "أيضًا من Meta" [ref=e137] [cursor=pointer]:
+        - /url: "#"
+        - img "أيضًا من Meta" [ref=e142]
+  - main [ref=e146]:
+    - generic [ref=e148]:
+      - navigation "قائمة سلاسل الرسائل" [ref=e149]:
+        - generic [ref=e150]:
+          - generic [ref=e151]:
+            - status "جارٍ التحميل..." [ref=e152]
+            - status "جارٍ التحميل..." [ref=e154]
+          - generic [ref=e155]:
+            - status "جارٍ التحميل..." [ref=e157]
+            - generic [ref=e158]:
+              - status "جارٍ التحميل..." [ref=e159]
+              - status "جارٍ التحميل..." [ref=e160]
+          - generic [ref=e161]:
+            - status "جارٍ التحميل..." [ref=e163]
+            - generic [ref=e164]:
+              - status "جارٍ التحميل..." [ref=e165]
+              - status "جارٍ التحميل..." [ref=e166]
+          - generic [ref=e167]:
+            - status "جارٍ التحميل..." [ref=e169]
+            - generic [ref=e170]:
+              - status "جارٍ التحميل..." [ref=e171]
+              - status "جارٍ التحميل..." [ref=e172]
+          - generic [ref=e173]:
+            - status "جارٍ التحميل..." [ref=e175]
+            - generic [ref=e176]:
+              - status "جارٍ التحميل..." [ref=e177]
+              - status "جارٍ التحميل..." [ref=e178]
+          - generic [ref=e179]:
+            - status "جارٍ التحميل..." [ref=e181]
+            - generic [ref=e182]:
+              - status "جارٍ التحميل..." [ref=e183]
+              - status "جارٍ التحميل..." [ref=e184]
+          - generic [ref=e185]:
+            - status "جارٍ التحميل..." [ref=e187]
+            - generic [ref=e188]:
+              - status "جارٍ التحميل..." [ref=e189]
+              - status "جارٍ التحميل..." [ref=e190]
+          - generic [ref=e191]:
+            - status "جارٍ التحميل..." [ref=e193]
+            - generic [ref=e194]:
+              - status "جارٍ التحميل..." [ref=e195]
+              - status "جارٍ التحميل..." [ref=e196]
+          - generic [ref=e197]:
+            - status "جارٍ التحميل..." [ref=e199]
+            - generic [ref=e200]:
+              - status "جارٍ التحميل..." [ref=e201]
+              - status "جارٍ التحميل..." [ref=e202]
+          - generic [ref=e203]:
+            - status "جارٍ التحميل..." [ref=e205]
+            - generic [ref=e206]:
+              - status "جارٍ التحميل..." [ref=e207]
+              - status "جارٍ التحميل..." [ref=e208]
+          - generic [ref=e209]:
+            - status "جارٍ التحميل..." [ref=e211]
+            - generic [ref=e212]:
+              - status "جارٍ التحميل..." [ref=e213]
+              - status "جارٍ التحميل..." [ref=e214]
+          - generic [ref=e215]:
+            - status "جارٍ التحميل..." [ref=e217]
+            - generic [ref=e218]:
+              - status "جارٍ التحميل..." [ref=e219]
+              - status "جارٍ التحميل..." [ref=e220]
+      - generic [ref=e223]:
+        - status "جارٍ التحميل..." [ref=e224]
+        - status "جارٍ التحميل..." [ref=e225]
+        - status "جارٍ التحميل..." [ref=e226]
+        - status "جارٍ التحميل..." [ref=e227]

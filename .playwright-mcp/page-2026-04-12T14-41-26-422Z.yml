@@ -1,0 +1,27 @@
+- generic [active] [ref=e1]:
+  - generic [ref=e2]:
+    - banner [ref=e3]:
+      - generic [ref=e4]:
+        - generic [ref=e5]: 🧠
+        - generic [ref=e6]:
+          - generic [ref=e7]: العقل الرقمي · DIGITAL BRAIN OS
+          - generic [ref=e8]: غرفة التحكم المعرفي — زياد الزيادي
+      - generic [ref=e11]: مباشر · LIVE
+    - main [ref=e12]:
+      - generic [ref=e13]:
+        - generic [ref=e14]:
+          - generic [ref=e15]:
+            - heading "نظرة معرفية · Cognitive Overview" [level=1] [ref=e16]
+            - paragraph [ref=e17]: "تحديث تلقائي كل 30 ثانية · آخر تحديث: 17:41:26"
+          - link "Mind OS" [ref=e18] [cursor=pointer]:
+            - /url: /mindos
+          - link "شبكة المعنى" [ref=e19] [cursor=pointer]:
+            - /url: /graph
+          - button "↺ تحديث" [ref=e20] [cursor=pointer]
+        - generic [ref=e21]:
+          - generic [ref=e22]: ⟳
+          - generic [ref=e23]: جاري مسح العقل... BRAIN SCAN
+        - generic [ref=e24]: العقل الرقمي · DIGITAL BRAIN OS · بث مباشر · 2026-04-12
+  - button "Open Next.js Dev Tools" [ref=e30] [cursor=pointer]:
+    - img [ref=e31]
+  - alert [ref=e34]

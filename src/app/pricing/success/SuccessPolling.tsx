@@ -118,7 +118,7 @@ export function SuccessPolling() {
             />
           </svg>
         </div>
-        <h1 className="text-3xl font-bold mb-3">تم تفعيل اشتراكك</h1>
+        <h1 className="text-xl sm:text-3xl font-bold mb-3">تم تفعيل اشتراكك</h1>
         <p className="text-zinc-400 leading-7 mb-2">
           مرحباً بك في رحلة تمعّن.
         </p>
@@ -158,7 +158,7 @@ export function SuccessPolling() {
             />
           </svg>
         </div>
-        <h1 className="text-3xl font-bold mb-3">شكراً لك!</h1>
+        <h1 className="text-xl sm:text-3xl font-bold mb-3">شكراً لك!</h1>
         <p className="text-zinc-400 leading-7 mb-4">
           تم استلام طلبك بنجاح.
           <br />

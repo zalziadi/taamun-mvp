@@ -178,7 +178,7 @@ export default function DayPageClient({ day }: Props) {
               ابدأ يوم {day} ←
             </button>
           </div>
-          <p className="text-center text-[11px] text-[#8c7851]/70">
+          <p className="text-center text-xs text-[#8c7851]/70">
             هذه اللحظة لك. خذها حين تكون مستعدّاً.
           </p>
         </div>

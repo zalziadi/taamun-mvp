@@ -1,0 +1,287 @@
+{
+  "name": "Auto A/B Testing - Kill or Scale",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 2
+            }
+          ]
+        }
+      },
+      "name": "Every 2 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_CONTENT_DB }}",
+        "returnAll": true
+      },
+      "name": "Read All Videos",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        300
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// A/B Testing Logic\nconst items = $input.all();\nconst killThreshold = 30;\nconst scaleThreshold = 70;\n\nconst results = items.map(item => {\n  const video = item.json;\n  const score = video.performance_score || 0;\n  const age_hours = video.hours_since_publish || 0;\n  const dms = video.dms_generated || 0;\n  const ab_tag = video.ab_tag || 'unknown';\n  \n  let decision = 'monitor';\n  let action = '';\n  \n  // Only evaluate videos older than 1 hour\n  if (age_hours >= 1) {\n    if (score >= scaleThreshold || dms >= 5) {\n      decision = 'SCALE';\n      action = `🔥 Scale x3 — Score: ${score}, DMs: ${dms}`;\n    } else if (score <= killThreshold && age_hours >= 2) {\n      decision = 'KILL';\n      action = `❌ Kill — Score: ${score}, DMs: ${dms}`;\n    } else {\n      decision = 'MONITOR';\n      action = `👀 Monitor — Score: ${score}, DMs: ${dms}`;\n    }\n  }\n  \n  return {\n    json: {\n      title: video.title || 'unknown',\n      ab_tag,\n      score,\n      dms,\n      age_hours,\n      decision,\n      action\n    }\n  };\n});\n\nreturn results;"
+      },
+      "name": "A/B Decision Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        600,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "rules": [
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.decision }}",
+                    "rightValue": "SCALE",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": "SCALE"
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.decision }}",
+                    "rightValue": "KILL",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": "KILL"
+            },
+            {
+              "conditions": {
+                "conditions": [
+                  {
+                    "leftValue": "={{ $json.decision }}",
+                    "rightValue": "MONITOR",
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    }
+                  }
+                ]
+              },
+              "renameOutput": "MONITOR"
+            }
+          ]
+        }
+      },
+      "name": "Route Decision",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        800,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🔥 *A/B TEST — SCALE*\n\n🎬 {{ $json.title }}\n🏷 Tag: {{ $json.ab_tag }}\n📊 Score: {{ $json.score }}\n📩 DMs: {{ $json.dms }}\n\n👉 إعادة إنتاج x3 + نشر على 3 منصات",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Scale Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1000,
+        200
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=❌ *A/B TEST — KILL*\n\n🎬 {{ $json.title }}\n🏷 Tag: {{ $json.ab_tag }}\n📊 Score: {{ $json.score }}\n📩 DMs: {{ $json.dms }}\n\n👉 أوقف هذا الفيديو فوراً",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Kill Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1000,
+        350
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": "={{ $json.page_id }}",
+        "properties": {
+          "status": "={{ $json.decision === 'SCALE' ? 'scaling' : $json.decision === 'KILL' ? 'killed' : 'monitoring' }}"
+        }
+      },
+      "name": "Update Notion Status",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        300
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "create",
+        "databaseId": "={{ $env.NOTION_PATTERNS_DB }}",
+        "properties": {
+          "pattern": "={{ $json.title }}",
+          "hook_type": "={{ $json.ab_tag }}",
+          "score": "={{ $json.score }}",
+          "dms": "={{ $json.dms }}",
+          "result": "={{ $json.decision }}"
+        }
+      },
+      "name": "Save to Winning Patterns",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1200,
+        150
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      },
+      "notes": "Saves winning patterns for future reference"
+    }
+  ],
+  "connections": {
+    "Every 2 Hours": {
+      "main": [
+        [
+          {
+            "node": "Read All Videos",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read All Videos": {
+      "main": [
+        [
+          {
+            "node": "A/B Decision Logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "A/B Decision Logic": {
+      "main": [
+        [
+          {
+            "node": "Route Decision",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route Decision": {
+      "main": [
+        [
+          {
+            "node": "Scale Alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Save to Winning Patterns",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Kill Alert",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Update Notion Status",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Update Notion Status",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "1001"
+}

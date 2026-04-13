@@ -104,7 +104,7 @@ export function Paywall({ reason = "locked", title, message, type, profile }: Pa
           <a
             href="/pricing"
             onClick={() => track("pricing_clicked", { from: "trial_ended_paywall" })}
-            className="rounded-lg bg-amber-500 px-6 py-3 font-medium text-black hover:bg-amber-400"
+            className="rounded-lg bg-amber-500 px-6 py-3.5 font-medium text-black hover:bg-amber-400"
           >
             أكمل رحلتك — ١٩٩ ر.س
           </a>
@@ -113,7 +113,7 @@ export function Paywall({ reason = "locked", title, message, type, profile }: Pa
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => track("whatsapp_clicked", { from: "trial_ended_paywall" })}
-            className="rounded-lg bg-[#25D366] px-6 py-3 font-medium text-white hover:bg-[#20BD5A]"
+            className="rounded-lg bg-[#25D366] px-6 py-3.5 font-medium text-white hover:bg-[#20BD5A]"
           >
             تواصل عبر واتساب
           </a>
@@ -136,7 +136,7 @@ export function Paywall({ reason = "locked", title, message, type, profile }: Pa
           <a
             href="/pricing"
             onClick={() => track("pricing_clicked", { from: "guide_limit_paywall" })}
-            className="rounded-lg bg-amber-500 px-6 py-3 font-medium text-black hover:bg-amber-400"
+            className="rounded-lg bg-amber-500 px-6 py-3.5 font-medium text-black hover:bg-amber-400"
           >
             افتح المرشد بلا حدود — اشترك الآن
           </a>
@@ -169,7 +169,7 @@ export function Paywall({ reason = "locked", title, message, type, profile }: Pa
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => track("whatsapp_clicked", { from: "paywall", reason })}
-          className="rounded-lg bg-[#25D366] px-6 py-3 font-medium text-white hover:bg-[#20BD5A]"
+          className="rounded-lg bg-[#25D366] px-6 py-3.5 font-medium text-white hover:bg-[#20BD5A]"
         >
           فتح واتساب للاشتراك
         </a>

@@ -187,7 +187,7 @@ export default function JourneyPage() {
       <section className="relative overflow-hidden rounded-3xl border border-[#2c313c] bg-[#0b0f17] p-7 text-[#fdf3df] shadow-[0_16px_40px_rgba(8,8,12,0.55)]">
         <div className="pointer-events-none absolute -right-24 -top-20 h-64 w-64 rounded-full bg-[#d4a853]/10 blur-[90px]" />
         <p className="text-xs tracking-[0.3em] text-[#d4a853]">المرحلة الأولى</p>
-        <h1 className="mt-3 font-['Amiri'] text-5xl leading-tight">الظل</h1>
+        <h1 className="mt-3 font-['Amiri'] text-3xl sm:text-5xl leading-tight">الظل</h1>
         <p className="mt-3 max-w-[780px] text-sm leading-relaxed text-[#d2c5b2]">
           تبدأ الرحلة من الداخل. لا نبحث عن إجابة سريعة، بل نمنح المساحة للأسئلة كي تنضج في الصمت.
         </p>
@@ -238,14 +238,14 @@ export default function JourneyPage() {
               <div className="flex items-center justify-between">
                 <h3 className="text-xs tracking-[0.2em] text-[#d4a853]">تجربتك الآن</h3>
                 {prism.orchestratorHint?.lockFlow && (
-                  <span className="rounded-full border border-[#d4a853]/40 bg-[#d4a853]/10 px-2 py-0.5 text-[10px] text-[#d4a853]">
+                  <span className="rounded-full border border-[#d4a853]/40 bg-[#d4a853]/10 px-2 py-0.5 text-xs text-[#d4a853]">
                     🔒 تركيز
                   </span>
                 )}
               </div>
               <div className="grid grid-cols-2 gap-2 sm:grid-cols-4">
                 <div className="rounded-lg border border-[#3b4252] bg-[#0b111c]/60 p-2 text-center">
-                  <p className="text-[10px] text-[#9aa4b8]">الوضع</p>
+                  <p className="text-xs text-[#9aa4b8]">الوضع</p>
                   <p className="mt-0.5 text-xs font-semibold text-[#fdf3df]">
                     {prism.experienceProfile.mode === "decide" ? "قرار" :
                      prism.experienceProfile.mode === "focus" ? "تركيز" :
@@ -254,7 +254,7 @@ export default function JourneyPage() {
                   </p>
                 </div>
                 <div className="rounded-lg border border-[#3b4252] bg-[#0b111c]/60 p-2 text-center">
-                  <p className="text-[10px] text-[#9aa4b8]">النبرة</p>
+                  <p className="text-xs text-[#9aa4b8]">النبرة</p>
                   <p className="mt-0.5 text-xs font-semibold text-[#fdf3df]">
                     {prism.experienceProfile.tone === "soft" ? "لطيفة" :
                      prism.experienceProfile.tone === "firm" ? "حازمة" :
@@ -262,14 +262,14 @@ export default function JourneyPage() {
                   </p>
                 </div>
                 <div className="rounded-lg border border-[#3b4252] bg-[#0b111c]/60 p-2 text-center">
-                  <p className="text-[10px] text-[#9aa4b8]">العمق</p>
+                  <p className="text-xs text-[#9aa4b8]">العمق</p>
                   <p className="mt-0.5 text-xs font-semibold text-[#fdf3df]">
                     {prism.experienceProfile.depthMode === "deep" ? "عميق" :
                      prism.experienceProfile.depthMode === "short" ? "قصير" : "متوسط"}
                   </p>
                 </div>
                 <div className="rounded-lg border border-[#3b4252] bg-[#0b111c]/60 p-2 text-center">
-                  <p className="text-[10px] text-[#9aa4b8]">الطاقة</p>
+                  <p className="text-xs text-[#9aa4b8]">الطاقة</p>
                   <p className="mt-0.5 text-xs font-semibold text-[#fdf3df]">
                     {prism.experienceProfile.energyState === "high" ? "↑ عالية" :
                      prism.experienceProfile.energyState === "low" ? "↓ منخفضة" : "↔ متوسطة"}
@@ -302,7 +302,7 @@ export default function JourneyPage() {
           <div className="rounded-2xl border border-[#343947] bg-[#0b111c] p-3">
             <div className="mb-3 flex flex-wrap items-center justify-between gap-3">
               <h2 className="font-['Amiri'] text-2xl">منحنى الوعي</h2>
-              <div className="flex items-center gap-2 text-[11px]">
+              <div className="flex items-center gap-2 text-xs">
                 <span className="rounded-full border border-rose-400/30 bg-rose-500/10 px-2 py-1 text-rose-300">الظل</span>
                 <span className="rounded-full border border-amber-400/30 bg-amber-500/10 px-2 py-1 text-amber-300">الهدية</span>
                 <span className="rounded-full border border-emerald-400/30 bg-emerald-500/10 px-2 py-1 text-emerald-300">أفضل احتمال</span>
@@ -374,7 +374,7 @@ export default function JourneyPage() {
             return (
               <div key={day} className={`rounded-xl border p-3 text-center text-xs ${color}`}>
                 <div>يوم {day}</div>
-                <div className="mt-1 text-[11px]">
+                <div className="mt-1 text-xs">
                   {state
                     ? AWARENESS_STATES.find((item) => item.value === state)?.label
                     : done

@@ -100,11 +100,11 @@ export default function JournalRoutePage() {
       <div className="mt-10 space-y-6">
         <div className="flex flex-wrap items-center justify-between gap-3">
           <div>
-            <span className="block text-[11px] tracking-[0.2em] text-on-surface-variant">مسار التهيئة</span>
+            <span className="block text-xs tracking-[0.2em] text-on-surface-variant">مسار التهيئة</span>
             <p className="mt-1 text-sm text-on-surface/80">تأملاتك المسجّلة عبر الرحلة.</p>
           </div>
           <div className="flex items-center gap-2">
-            <Link href="/" className="rounded-xl border border-outline-variant px-3 py-1.5 text-xs text-on-surface-variant hover:border-primary/40 hover:text-primary">
+            <Link href="/" className="rounded-xl border border-outline-variant px-3 py-2.5 text-xs text-on-surface-variant hover:border-primary/40 hover:text-primary">
               الرئيسية
             </Link>
             <Link href="/city" className="text-sm text-primary transition-colors hover:text-primary-fixed">
@@ -147,13 +147,13 @@ export default function JournalRoutePage() {
               <div className="flex items-center justify-between">
                 <div>
                   <h2 className="font-headline text-[1.35rem] text-on-surface">تأمل يوم {item.day}</h2>
-                  <p className="mt-1 text-[11px] text-on-surface-variant">
+                  <p className="mt-1 text-xs text-on-surface-variant">
                     {item.updated_at ? new Date(item.updated_at).toLocaleDateString("ar-SA") : "بدون تاريخ"}
                   </p>
                 </div>
                 <Link
                   href="/reflection"
-                  className="rounded-full border border-outline-variant px-3 py-1 text-xs text-on-surface-variant hover:border-primary/40 hover:text-primary"
+                  className="rounded-full border border-outline-variant px-3 py-2.5 text-xs text-on-surface-variant hover:border-primary/40 hover:text-primary"
                 >
                   فتح التمعّن
                 </Link>

@@ -1,0 +1,236 @@
+- generic [ref=e9]:
+  - generic [ref=e12]:
+    - link "Instagram" [ref=e17] [cursor=pointer]:
+      - /url: /
+      - img "Instagram" [ref=e22]
+    - generic [ref=e25]:
+      - link "الصفحة الرئيسية" [ref=e30] [cursor=pointer]:
+        - /url: /
+        - img "الصفحة الرئيسية" [ref=e35]
+      - link "ريلز" [ref=e40] [cursor=pointer]:
+        - /url: /reels/
+        - img "ريلز" [ref=e45]
+      - link "الرسائل" [ref=e750] [cursor=pointer]:
+        - /url: /direct/inbox/
+        - img "الرسائل" [ref=e57]
+      - link "بحث" [ref=e62] [cursor=pointer]:
+        - /url: "#"
+        - img "بحث" [ref=e67]
+      - link "استكشاف" [ref=e73] [cursor=pointer]:
+        - /url: /explore/
+        - img "استكشاف" [ref=e78]
+      - link "الإشعارات" [ref=e86] [cursor=pointer]:
+        - /url: "#"
+        - img "الإشعارات" [ref=e91]
+      - link "منشور جديد" [ref=e97] [cursor=pointer]:
+        - /url: "#"
+        - img "منشور جديد" [ref=e102]
+      - link "لوحة المعلومات الاحترافية" [ref=e107] [cursor=pointer]:
+        - /url: "#"
+        - img "لوحة المعلومات الاحترافية" [ref=e112]
+      - link "صورة ملف zalziadi الشخصي" [ref=e119] [cursor=pointer]:
+        - /url: /zalziadi/
+        - link "صورة ملف zalziadi الشخصي" [ref=e124]:
+          - img "صورة ملف zalziadi الشخصي" [ref=e125]
+    - generic [ref=e126]:
+      - link "الإعدادات" [ref=e129] [cursor=pointer]:
+        - /url: "#"
+        - img "الإعدادات" [ref=e134]
+      - link "أيضًا من Meta" [ref=e137] [cursor=pointer]:
+        - /url: "#"
+        - img "أيضًا من Meta" [ref=e142]
+  - main [ref=e146]:
+    - generic [ref=e237]:
+      - navigation "قائمة سلاسل الرسائل" [ref=e238]:
+        - generic [ref=e239]:
+          - generic [ref=e240]:
+            - button "zalziadi أيقونة شارة رتبة عسكرية لأسفل" [ref=e241] [cursor=pointer]:
+              - heading "zalziadi" [level=2] [ref=e243]:
+                - generic [ref=e244]: zalziadi
+              - img "أيقونة شارة رتبة عسكرية لأسفل" [ref=e246]
+            - button "رسالة جديدة" [ref=e250] [cursor=pointer]:
+              - img "رسالة جديدة" [ref=e252]
+          - tablist [ref=e257]:
+            - tab "Primary" [active] [selected] [ref=e258] [cursor=pointer]:
+              - generic [ref=e260]: Primary
+            - tab "General" [ref=e261] [cursor=pointer]:
+              - generic [ref=e263]: General
+            - tab "طلبات" [ref=e265] [cursor=pointer]:
+              - generic [ref=e267]: طلبات
+          - generic [ref=e271]:
+            - img "بحث" [ref=e273]
+            - textbox "بحث" [ref=e276]
+          - generic [ref=e277]:
+            - list [ref=e281]:
+              - listitem [ref=e282]
+              - listitem [ref=e283]
+              - listitem [ref=e284]:
+                - button "عُد للساحة بملاحظة... ملاحظتك" [ref=e286] [cursor=pointer]:
+                  - generic [ref=e287]:
+                    - generic [ref=e293]: عُد للساحة بملاحظة...
+                    - generic [ref=e294]:
+                      - link [ref=e296]
+                      - generic [ref=e298]: ملاحظتك
+              - listitem [ref=e299]:
+                - button "التشخيص الحدسي الاثنين القادم صورة ملف noorkaizen369 الشخصي Noor Faraj - نورفرج" [ref=e302] [cursor=pointer]:
+                  - generic [ref=e303]:
+                    - generic [ref=e310]: التشخيص الحدسي الاثنين القادم
+                    - generic [ref=e311]:
+                      - link "صورة ملف noorkaizen369 الشخصي" [ref=e313]:
+                        - img "صورة ملف noorkaizen369 الشخصي" [ref=e314]
+                      - generic [ref=e317]: Noor Faraj - نورفرج
+            - generic [ref=e321]:
+              - button "user-profile-picture ‏‎Zahra Mahdi‎‏ حازت رسالة على إعجاب منذ يومين" [ref=e1028] [cursor=pointer]:
+                - generic [ref=e1030]:
+                  - img "user-profile-picture" [ref=e1034]
+                  - generic [ref=e1037]:
+                    - generic [ref=e1041]: ‏‎Zahra Mahdi‎‏
+                    - generic [ref=e1043]:
+                      - generic [ref=e1045]: حازت رسالة على إعجاب
+                      - generic [ref=e1046]:
+                        - generic [ref=e1048]: ·
+                        - generic "منذ يومين" [ref=e1052]: 2 ي
+              - button "user-profile-picture ‏Nezar Senan - نزار سنان‏ السلام عليكم منذ يومين" [ref=e1056] [cursor=pointer]:
+                - generic [ref=e1058]:
+                  - img "user-profile-picture" [ref=e1062]
+                  - generic [ref=e1065]:
+                    - generic [ref=e1069]: ‏Nezar Senan - نزار سنان‏
+                    - generic [ref=e1071]:
+                      - generic [ref=e1073]: السلام عليكم
+                      - generic [ref=e1074]:
+                        - generic [ref=e1076]: ·
+                        - generic "منذ يومين" [ref=e1080]: 2 ي
+              - 'button "user-profile-picture ‏‎_1u7‎‏ أنت: وعندي لك عرض خاص ما راح يتكرر 🎁 باقة 820 ريال الكاملة (تأمل + مسح الآيات + كل المحتوى) — بس لك بـ 350 ريال فقط 💗 رديلي \"نعم\" وأرسلك رابط التفعيل مباشرة 🙏 منذ يومين" [ref=e1084] [cursor=pointer]':
+                - generic [ref=e1086]:
+                  - img "user-profile-picture" [ref=e1090]
+                  - generic [ref=e1093]:
+                    - generic [ref=e1097]: ‏‎_1u7‎‏
+                    - generic [ref=e1099]:
+                      - generic [ref=e1101]: "أنت: وعندي لك عرض خاص ما راح يتكرر 🎁 باقة 820 ريال الكاملة (تأمل + مسح الآيات + كل المحتوى) — بس لك بـ 350 ريال فقط 💗 رديلي \"نعم\" وأرسلك رابط التفعيل مباشرة 🙏"
+                      - generic [ref=e1102]:
+                        - generic [ref=e1104]: ·
+                        - generic "منذ يومين" [ref=e1108]: 2 ي
+              - 'button "user-profile-picture ‏‎Safaa‎‏ أنت: وعندي لك عرض خاص ما راح يتكرر 🎁 باقة 820 ريال الكاملة (تأمل + مسح الآيات + كل المحتوى) — بس لك بـ 350 ريال فقط 💗 رديلي \"نعم\" وأرسلك رابط التفعيل مباشرة 🙏 منذ ٣ أيام" [ref=e1112] [cursor=pointer]':
+                - generic [ref=e1114]:
+                  - img "user-profile-picture" [ref=e1118]
+                  - generic [ref=e1121]:
+                    - generic [ref=e1125]: ‏‎Safaa‎‏
+                    - generic [ref=e1127]:
+                      - generic [ref=e1129]: "أنت: وعندي لك عرض خاص ما راح يتكرر 🎁 باقة 820 ريال الكاملة (تأمل + مسح الآيات + كل المحتوى) — بس لك بـ 350 ريال فقط 💗 رديلي \"نعم\" وأرسلك رابط التفعيل مباشرة 🙏"
+                      - generic [ref=e1130]:
+                        - generic [ref=e1132]: ·
+                        - generic "منذ ٣ أيام" [ref=e1136]: 3 ي
+              - button "user-profile-picture ‏‎Greg Isenberg‎‏ مُحقّق تم إرسال مرفق بواسطة ‏‎Greg‎‏. منذ ٣ أيام" [ref=e1140] [cursor=pointer]:
+                - generic [ref=e1142]:
+                  - img "user-profile-picture" [ref=e1146]
+                  - generic [ref=e1149]:
+                    - generic [ref=e1151]:
+                      - generic [ref=e1153]: ‏‎Greg Isenberg‎‏
+                      - img "مُحقّق" [ref=e1155]
+                    - generic [ref=e1158]:
+                      - generic [ref=e1160]: تم إرسال مرفق بواسطة ‏‎Greg‎‏.
+                      - generic [ref=e1161]:
+                        - generic [ref=e1163]: ·
+                        - generic "منذ ٣ أيام" [ref=e1167]: 3 ي
+              - button "user-profile-picture ‏مستخدم Instagram‏ تم إرسال مرفق بواسطة ‏مستخدم Instagram‏. منذ أسبوع" [ref=e1171] [cursor=pointer]:
+                - generic [ref=e1173]:
+                  - img "user-profile-picture" [ref=e1177]
+                  - generic [ref=e1180]:
+                    - generic [ref=e1184]: ‏مستخدم Instagram‏
+                    - generic [ref=e1186]:
+                      - generic [ref=e1188]: تم إرسال مرفق بواسطة ‏مستخدم Instagram‏.
+                      - generic [ref=e1189]:
+                        - generic [ref=e1191]: ·
+                        - generic "منذ أسبوع" [ref=e1195]: 1 أ
+              - button "جارٍ التحميل... جارٍ التحميل... جارٍ التحميل..." [ref=e521] [cursor=pointer]:
+                - generic [ref=e523]:
+                  - status "جارٍ التحميل..." [ref=e526]
+                  - generic [ref=e529]:
+                    - status "جارٍ التحميل..." [ref=e531]
+                    - status "جارٍ التحميل..." [ref=e533]
+      - generic [ref=e536]:
+        - generic "محادثة مع b6o0oh_" [ref=e763]:
+          - generic [ref=e764]:
+            - generic [ref=e768]:
+              - link "Open the profile page of b6o0oh_" [ref=e769] [cursor=pointer]:
+                - /url: /b6o0oh_/
+                - generic [ref=e770]:
+                  - img "user-profile-picture" [ref=e774]
+                  - generic [ref=e775]:
+                    - heading "‏‎b6o0oh_‎‏" [level=2] [ref=e777]:
+                      - generic [ref=e778]: ‏‎b6o0oh_‎‏
+                    - generic [ref=e782]: b6o0oh_
+              - generic [ref=e783]:
+                - button "مكالمة صوتية" [ref=e784] [cursor=pointer]:
+                  - img "مكالمة صوتية" [ref=e786]
+                - button "مكالمة فيديو" [ref=e788] [cursor=pointer]:
+                  - img "مكالمة فيديو" [ref=e790]
+                - button "معلومات المحادثة" [ref=e793] [cursor=pointer]:
+                  - img "معلومات المحادثة" [ref=e795]
+            - generic [ref=e799]:
+              - generic [ref=e804]:
+                - progressbar [ref=e807]:
+                  - img "جارٍ التحميل..." [ref=e808]
+                - generic [ref=e857]:
+                  - generic [ref=e860]: إثنين 6:29 م
+                  - group [ref=e861]:
+                    - generic [ref=e866]:
+                      - generic [ref=e869]:
+                        - text: هلا!
+                        - img "💗" [ref=e871]
+                        - text: معك وردة من فريق تمعّن
+                        - img "🙏" [ref=e873]
+                        - text: "للتسجيل في البرنامج الرابط المباشر: taamun.com تقدرين تختارين الباقة اللي تناسبك من هناك"
+                        - img "😊" [ref=e875]
+                        - text: هل في أي شي ثاني أقدر أساعدك فيه؟
+                      - link "تمَعُّن" [ref=e876] [cursor=pointer]:
+                        - /url: http://taamun.com/
+                        - generic [ref=e881]: تمَعُّن
+                - group [ref=e885]:
+                  - generic [ref=e891]:
+                    - text: وبما إنك تواصلتي معانا
+                    - img "🌙" [ref=e893]
+                    - text: "عندي لك عرض خاص ما راح يتكرر: باقة 820 ريال الكاملة (تأمل + مسح الآيات + كل المحتوى) — بس لك بـ 350 ريال فقط"
+                    - img "💗" [ref=e895]
+                    - text: رديلي "نعم" وأرسلك رابط التفعيل مباشرة
+                    - img "🙏" [ref=e897]
+                - generic [ref=e900]:
+                  - generic [ref=e903]: 5:49 م
+                  - generic [ref=e904]:
+                    - separator [ref=e906]
+                    - generic [ref=e908]: New messages
+                    - separator [ref=e910]
+                  - group [ref=e911]:
+                    - generic [ref=e912]:
+                      - generic [ref=e916]: تم الرد على قصة @‏زياد الزيادي🎩مُسخر التجلي‏
+                      - generic [ref=e917]:
+                        - link "Open the profile page of b6o0oh_" [ref=e920] [cursor=pointer]:
+                          - /url: /b6o0oh_
+                          - img "user-profile-picture" [ref=e923]
+                        - generic [ref=e926]:
+                          - link [ref=e931] [cursor=pointer]:
+                            - /url: /stories/zalziadi/3866476654420118624?reel_id=189511621&reel_owner_id=189511621
+                          - generic [ref=e935]: الله
+                - generic [ref=e988]:
+                  - generic [ref=e991]: 6:37 م
+                  - group [ref=e992]:
+                    - generic [ref=e998]:
+                      - img "💗" [ref=e1000]
+                      - text: يسعدنا إعجابك بالمحتوى! تمعّن رحلة 28 يوماً تكتشفين فيها معاني القرآن بطريقة مختلفة كلياً
+                      - img "🌙" [ref=e1002]
+                      - text: هل عندك سؤال أو تودّين معرفة المزيد عن البرنامج؟
+              - generic [ref=e945]:
+                - button "اختيار رمز تعبيري" [ref=e948] [cursor=pointer]:
+                  - img "اختيار رمز تعبيري" [ref=e950]
+                - generic [ref=e952]:
+                  - textbox [ref=e953]:
+                    - paragraph [ref=e1003]
+                  - generic: مراسلة...
+                - generic [ref=e955]:
+                  - button "مقطع صوتي" [ref=e1004] [cursor=pointer]:
+                    - img "مقطع صوتي" [ref=e1006]
+                  - button "إضافة صورة أو فيديو" [ref=e1009] [cursor=pointer]:
+                    - img "إضافة صورة أو فيديو" [ref=e1011]
+                  - button "اختيار صورة GIF أو ملصق" [ref=e1016] [cursor=pointer]:
+                    - img "اختيار صورة GIF أو ملصق" [ref=e1018]
+        - alert [ref=e1024]: أنت المرسل،💗 يسعدنا إعجابك بالمحتوى! تمعّن رحلة 28 يوماً تكتشفين فيها معاني القرآن بطريقة مختلفة كلياً 🌙 هل عندك سؤال أو تودّين معرفة المزيد عن البرنامج؟

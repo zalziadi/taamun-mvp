@@ -1,0 +1,57 @@
+- generic [ref=e2]:
+  - generic:
+    - generic:
+      - heading "لعرض اختصارات لوحة المفاتيح، اضغط على علامة الاستفهام عرض اختصارات لوحة المفاتيح" [level=2] [ref=e3]:
+        - generic [ref=e4]: لعرض اختصارات لوحة المفاتيح، اضغط على علامة الاستفهام
+        - link "عرض اختصارات لوحة المفاتيح" [ref=e5] [cursor=pointer]:
+          - /url: /i/keyboard_shortcuts
+      - generic [ref=e6]:
+        - banner [ref=e7]:
+          - generic [ref=e9]:
+            - generic [ref=e10]:
+              - heading "X" [level=1] [ref=e12] [cursor=pointer]:
+                - link "X" [ref=e13]:
+                  - /url: /home
+                  - img [ref=e15]
+              - navigation "أساسي" [ref=e19]:
+                - link "الرئيسيّة" [ref=e20] [cursor=pointer]:
+                  - /url: /home
+                  - img [ref=e23]
+                - link "بحث واستكشاف" [ref=e26] [cursor=pointer]:
+                  - /url: /explore
+                  - img [ref=e29]
+                - link "التنبيهات" [ref=e32] [cursor=pointer]:
+                  - /url: /notifications
+                  - img [ref=e35]
+                - link "متابعة" [ref=e38] [cursor=pointer]:
+                  - /url: /i/connect_people
+                  - img [ref=e41]
+                - link "الرسائل الخاصّة" [ref=e44] [cursor=pointer]:
+                  - /url: /i/chat
+                  - img [ref=e47]
+                - link "Grok" [ref=e50] [cursor=pointer]:
+                  - /url: /i/grok
+                  - generic [ref=e52]:
+                    - img [ref=e53]
+                    - generic "undefined من العناصر غير المقروءة" [ref=e56]
+                - link "العلامات المرجعية" [ref=e57] [cursor=pointer]:
+                  - /url: /i/bookmarks
+                  - img [ref=e60]
+                - link "إستوديو منشئ المحتوى" [ref=e63] [cursor=pointer]:
+                  - /url: /i/jf/creators/studio
+                  - img [ref=e66]
+                - link "Premium" [ref=e69] [cursor=pointer]:
+                  - /url: /i/premium_sign_up
+                  - img [ref=e72]
+                - link "الملف الشخصيّ" [ref=e75] [cursor=pointer]:
+                  - /url: /zalziadi
+                  - img [ref=e78]
+                - button "المزيد من عناصر القائمة" [ref=e81] [cursor=pointer]:
+                  - img [ref=e84]
+              - link "نشر" [ref=e88] [cursor=pointer]:
+                - /url: /compose/post
+                - img [ref=e90]
+            - button "قائمة الحساب" [ref=e95] [cursor=pointer]
+        - main [ref=e106]:
+          - progressbar "جاري التحميل" [ref=e109]:
+            - img [ref=e111]

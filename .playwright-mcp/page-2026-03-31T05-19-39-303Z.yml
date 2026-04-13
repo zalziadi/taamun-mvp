@@ -1,0 +1,143 @@
+- generic [ref=e11]:
+  - generic [ref=e1009]:
+    - generic [ref=e1012]:
+      - link "Instagram" [ref=e1017] [cursor=pointer]:
+        - /url: /
+        - img "Instagram" [ref=e1022]
+      - generic [ref=e1025]:
+        - link "الصفحة الرئيسية" [ref=e1030] [cursor=pointer]:
+          - /url: /
+          - img "الصفحة الرئيسية" [ref=e1035]
+        - link "ريلز" [ref=e1040] [cursor=pointer]:
+          - /url: /reels/
+          - img "ريلز" [ref=e1045]
+        - link "الرسائل مراسلة عبر Direct - رابط 2 من الإشعارات الجديدة" [ref=e1052] [cursor=pointer]:
+          - /url: /direct/inbox/
+          - generic [ref=e1055]:
+            - img "الرسائل" [ref=e1057]
+            - generic "مراسلة عبر Direct - رابط 2 من الإشعارات الجديدة" [ref=e1059]:
+              - generic [ref=e1061]: "2"
+        - link "بحث" [ref=e1065] [cursor=pointer]:
+          - /url: "#"
+          - img "بحث" [ref=e1070]
+        - link "استكشاف" [ref=e1076] [cursor=pointer]:
+          - /url: /explore/
+          - img "استكشاف" [ref=e1081]
+        - link "الإشعارات" [ref=e1090] [cursor=pointer]:
+          - /url: "#"
+          - img "الإشعارات" [ref=e1095]
+        - link "منشور جديد" [ref=e1103] [cursor=pointer]:
+          - /url: "#"
+          - img "منشور جديد" [ref=e1108]
+        - link "لوحة المعلومات الاحترافية" [ref=e1113] [cursor=pointer]:
+          - /url: "#"
+          - img "لوحة المعلومات الاحترافية" [ref=e1118]
+        - link "صورة ملف zalziadi الشخصي" [ref=e1125] [cursor=pointer]:
+          - /url: /zalziadi/
+          - link "صورة ملف zalziadi الشخصي" [ref=e1130]:
+            - img "صورة ملف zalziadi الشخصي" [ref=e1131]
+      - generic [ref=e1132]:
+        - link "الإعدادات" [ref=e1135] [cursor=pointer]:
+          - /url: "#"
+          - img "الإعدادات" [ref=e1140]
+        - link "أيضًا من Meta" [ref=e1143] [cursor=pointer]:
+          - /url: "#"
+          - img "أيضًا من Meta" [ref=e1148]
+    - main [ref=e1152]:
+      - generic [ref=e1158]:
+        - navigation "قائمة سلاسل الرسائل" [ref=e1159]:
+          - generic [ref=e1160]:
+            - generic [ref=e1161]:
+              - button "عودة" [ref=e1163] [cursor=pointer]:
+                - img "عودة" [ref=e1166]
+              - generic [ref=e1168]: طلبات المراسلة
+            - generic [ref=e1170]:
+              - generic [ref=e1171]: افتح دردشة للتعرف على مزيد من المعلومات عمن يراسلك. ولن يعرف مرسل الرسالة أنك رأيت الرسالة إلا بعد قبول طلب المراسلة.
+              - link "حدد الأشخاص الذين يمكنهم مراسلتك" [ref=e1172] [cursor=pointer]:
+                - /url: "#"
+                - generic [ref=e1173]: حدد الأشخاص الذين يمكنهم مراسلتك
+            - generic [ref=e1176]:
+              - button "أيقونة العين المغمضة للطلبات المخفية الطلبات المخفية أيقونة شارة رتبة عسكرية تشير إلى الدخول إلى نافذة الطلبات المخفية" [ref=e1177] [cursor=pointer]:
+                - generic [ref=e1179]:
+                  - img "أيقونة العين المغمضة للطلبات المخفية" [ref=e1182]
+                  - generic [ref=e1187]: الطلبات المخفية
+                  - img "أيقونة شارة رتبة عسكرية تشير إلى الدخول إلى نافذة الطلبات المخفية" [ref=e1190]
+              - generic [ref=e1192]:
+                - button "user-profile-picture ‏Nezar Senan - نزار سنان‏ السلام عليكم منذ ١٣ ساعة" [ref=e1196] [cursor=pointer]:
+                  - generic [ref=e1198]:
+                    - img "user-profile-picture" [ref=e1202]
+                    - generic [ref=e1205]:
+                      - generic [ref=e1209]: ‏Nezar Senan - نزار سنان‏
+                      - generic [ref=e1211]:
+                        - generic [ref=e1213]: السلام عليكم
+                        - generic [ref=e1214]:
+                          - generic [ref=e1216]: ·
+                          - generic "منذ ١٣ ساعة" [ref=e1220]: ١٣ س
+                - button "user-profile-picture ‏‎Sabrina Hanifa🎨🌎🏇✈‎‏ 😍 منذ أسبوعين" [ref=e1224] [cursor=pointer]:
+                  - generic [ref=e1226]:
+                    - img "user-profile-picture" [ref=e1230]
+                    - generic [ref=e1233]:
+                      - generic [ref=e1237]: ‏‎Sabrina Hanifa🎨🌎🏇✈‎‏
+                      - generic [ref=e1239]:
+                        - generic [ref=e1241]: 😍
+                        - generic [ref=e1242]:
+                          - generic [ref=e1244]: ·
+                          - generic "منذ أسبوعين" [ref=e1248]: 2 أ
+                - button "user-profile-picture ‏‎Dr. Sam Trabulsi | The Personal Brand & Business Mentor‎‏ مرحبا أستاذ زياد كيف حالك؟ منذ ٣ أسابيع" [ref=e1252] [cursor=pointer]:
+                  - generic [ref=e1254]:
+                    - img "user-profile-picture" [ref=e1258]
+                    - generic [ref=e1261]:
+                      - generic [ref=e1265]: ‏‎Dr. Sam Trabulsi | The Personal Brand & Business Mentor‎‏
+                      - generic [ref=e1267]:
+                        - generic [ref=e1269]: مرحبا أستاذ زياد كيف حالك؟
+                        - generic [ref=e1270]:
+                          - generic [ref=e1272]: ·
+                          - generic "منذ ٣ أسابيع" [ref=e1276]: 3 أ
+            - generic [ref=e1277]:
+              - separator [ref=e1278]
+              - button "Delete all 3" [ref=e1280] [cursor=pointer]:
+                - generic [ref=e1281]: Delete all 3
+        - generic "محادثة مع Nezar Senan - نزار سنان" [ref=e1284]:
+          - generic [ref=e1285]:
+            - generic [ref=e1289]:
+              - link "Open the profile page of sencpb" [ref=e1290] [cursor=pointer]:
+                - /url: /sencpb/
+                - generic [ref=e1291]:
+                  - img "user-profile-picture" [ref=e1295]
+                  - generic [ref=e1296]:
+                    - heading "‏Nezar Senan - نزار سنان‏" [level=2] [ref=e1298]:
+                      - generic [ref=e1299]: ‏Nezar Senan - نزار سنان‏
+                    - generic [ref=e1303]: sencpb
+              - button "معلومات المحادثة" [ref=e1305] [cursor=pointer]:
+                - img "معلومات المحادثة" [ref=e1307]
+            - generic [ref=e1311]:
+              - generic [ref=e1315]:
+                - generic [ref=e1316]:
+                  - img "user-profile-picture" [ref=e1320]
+                  - generic [ref=e1321]:
+                    - heading "‏Nezar Senan - نزار سنان‏" [level=2] [ref=e1324]:
+                      - generic [ref=e1325]: ‏Nezar Senan - نزار سنان‏
+                    - generic [ref=e1327]: sencpb · Instagram
+                    - link "عرض الملف الشخصي" [ref=e1329] [cursor=pointer]:
+                      - /url: /sencpb/
+                - generic [ref=e1333]:
+                  - generic [ref=e1336]: إثنين 7:14 م
+                  - group [ref=e1337]:
+                    - generic [ref=e1339]:
+                      - link "Open the profile page of sencpb" [ref=e1342] [cursor=pointer]:
+                        - /url: /sencpb
+                        - img "user-profile-picture" [ref=e1345]
+                      - generic [ref=e1350]: السلام عليكم
+              - generic [ref=e1352]:
+                - generic [ref=e1353]:
+                  - generic [ref=e1354]: Accept message request from Nezar Senan - نزار سنان (sencpb)?
+                  - generic [ref=e1356]: في حالة قبولك للطلب، يمكنه أيضًا الاتصال بك ورؤية معلومات مثل حالة نشاطك ومعرفة أنك قرأت الرسائل.
+                - generic [ref=e1357]:
+                  - button "حظر" [active] [ref=e1359] [cursor=pointer]
+                  - button "حذف" [ref=e1362] [cursor=pointer]
+                  - button "Accept" [ref=e1365] [cursor=pointer]
+  - button "أعجبني 1" [ref=e1367] [cursor=pointer]:
+    - tooltip "أعجبني 1" [ref=e1369]:
+      - generic [ref=e1372]:
+        - generic "أعجبني" [ref=e1373]
+        - generic [ref=e1375]: "1"

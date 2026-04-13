@@ -7,6 +7,7 @@ import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { JourneyGuideRail } from "@/components/JourneyGuideRail";
 import { SearchBox } from "@/components/SearchBox";
 import { APP_NAME } from "@/lib/appConfig";
+import { BrandLogo } from "@/components/BrandLogo";
 import {
   CITY_ROUTE,
   GUIDE_ROUTE,
@@ -45,9 +46,12 @@ export function AppChrome({
             <div className="flex items-center gap-3 text-[#8c7851]">
               <Link
                 href="/"
-                className="tm-heading rounded-md text-2xl font-bold text-[#7b694a] outline-none transition-colors duration-200 hover:text-[#6d5e44] focus-visible:ring-2 focus-visible:ring-[#8c7851]/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f4f1ea]"
+                className="flex items-center gap-2 rounded-md outline-none transition-opacity duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-[#8c7851]/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f4f1ea]"
               >
-                {APP_NAME}
+                <BrandLogo variant="mark" size={36} />
+                <span className="tm-heading text-2xl font-bold text-[#7b694a]">
+                  {APP_NAME}
+                </span>
               </Link>
             </div>
 

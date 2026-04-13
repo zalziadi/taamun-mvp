@@ -1,0 +1,165 @@
+- generic [ref=e11]:
+  - generic [ref=e13]:
+    - generic [ref=e16]:
+      - link "Instagram" [ref=e21] [cursor=pointer]:
+        - /url: /
+        - img "Instagram" [ref=e26]
+      - generic [ref=e29]:
+        - link "الصفحة الرئيسية" [ref=e34] [cursor=pointer]:
+          - /url: /
+          - img "الصفحة الرئيسية" [ref=e39]
+        - link "ريلز" [ref=e44] [cursor=pointer]:
+          - /url: /reels/
+          - img "ريلز" [ref=e49]
+        - link "الرسائل مراسلة عبر Direct - رابط 3 من الإشعارات الجديدة" [ref=e56] [cursor=pointer]:
+          - /url: /direct/inbox/
+          - generic [ref=e59]:
+            - img "الرسائل" [ref=e61]
+            - generic "مراسلة عبر Direct - رابط 3 من الإشعارات الجديدة" [ref=e63]:
+              - generic [ref=e65]: "3"
+        - link "بحث" [ref=e69] [cursor=pointer]:
+          - /url: "#"
+          - img "بحث" [ref=e74]
+        - link "استكشاف" [ref=e80] [cursor=pointer]:
+          - /url: /explore/
+          - img "استكشاف" [ref=e85]
+        - link "الإشعارات" [ref=e94] [cursor=pointer]:
+          - /url: "#"
+          - img "الإشعارات" [ref=e99]
+        - link "منشور جديد" [ref=e107] [cursor=pointer]:
+          - /url: "#"
+          - img "منشور جديد" [ref=e112]
+        - link "لوحة المعلومات الاحترافية" [ref=e117] [cursor=pointer]:
+          - /url: "#"
+          - img "لوحة المعلومات الاحترافية" [ref=e122]
+        - link "صورة ملف zalziadi الشخصي" [ref=e129] [cursor=pointer]:
+          - /url: /zalziadi/
+          - link "صورة ملف zalziadi الشخصي" [ref=e134]:
+            - img "صورة ملف zalziadi الشخصي" [ref=e135]
+      - generic [ref=e136]:
+        - link "الإعدادات" [ref=e139] [cursor=pointer]:
+          - /url: "#"
+          - img "الإعدادات" [ref=e144]
+        - link "أيضًا من Meta" [ref=e147] [cursor=pointer]:
+          - /url: "#"
+          - img "أيضًا من Meta" [ref=e152]
+    - main [ref=e156]:
+      - generic [ref=e162]:
+        - navigation "قائمة سلاسل الرسائل" [ref=e163]:
+          - generic [ref=e164]:
+            - generic [ref=e165]:
+              - button "zalziadi أيقونة شارة رتبة عسكرية لأسفل" [ref=e166] [cursor=pointer]:
+                - heading "zalziadi" [level=2] [ref=e168]:
+                  - generic [ref=e169]: zalziadi
+                - img "أيقونة شارة رتبة عسكرية لأسفل" [ref=e171]
+              - button "رسالة جديدة" [ref=e175] [cursor=pointer]:
+                - img "رسالة جديدة" [ref=e177]
+            - tablist [ref=e182]:
+              - tab "Primary" [selected] [ref=e183] [cursor=pointer]:
+                - generic [ref=e185]: Primary
+              - tab "General" [ref=e186] [cursor=pointer]:
+                - generic [ref=e188]: General
+              - tab "Request (1)" [ref=e190] [cursor=pointer]:
+                - generic [ref=e192]: Request (1)
+            - generic [ref=e196]:
+              - img "بحث" [ref=e198]
+              - textbox "بحث" [ref=e201]
+            - generic [ref=e202]:
+              - list [ref=e206]:
+                - listitem [ref=e207]
+                - listitem [ref=e208]
+                - listitem [ref=e209]:
+                  - button "تابع نشر الموسيقى... ملاحظتك" [ref=e211] [cursor=pointer]:
+                    - generic [ref=e212]:
+                      - generic [ref=e218]: تابع نشر الموسيقى...
+                      - generic [ref=e219]:
+                        - link [ref=e221]
+                        - generic [ref=e223]: ملاحظتك
+                - listitem [ref=e224]:
+                  - button "💗💗💗💗💗 صورة ملف bothina_fadhel الشخصي Bothina💗" [ref=e227] [cursor=pointer]:
+                    - generic [ref=e228]:
+                      - generic [ref=e235]: 💗💗💗💗💗
+                      - generic [ref=e236]:
+                        - link "صورة ملف bothina_fadhel الشخصي" [ref=e238]:
+                          - img "صورة ملف bothina_fadhel الشخصي" [ref=e239]
+                        - generic [ref=e242]: Bothina💗
+              - generic [ref=e246]:
+                - button "user-profile-picture ‏‎Zahra Mahdi‎‏ حازت رسالة على إعجاب منذ ٨ ساعات Unread" [ref=e250] [cursor=pointer]:
+                  - generic [ref=e252]:
+                    - img "user-profile-picture" [ref=e256]
+                    - generic [ref=e259]:
+                      - generic [ref=e263]: ‏‎Zahra Mahdi‎‏
+                      - generic [ref=e265]:
+                        - generic [ref=e267]: حازت رسالة على إعجاب
+                        - generic [ref=e268]:
+                          - generic [ref=e270]: ·
+                          - generic "منذ ٨ ساعات" [ref=e274]: ٨ س
+                    - generic [ref=e278]: Unread
+                - 'button "user-profile-picture ‏‎_1u7‎‏ أنت: وعندي لك عرض خاص ما راح يتكرر 🎁 باقة 820 ريال الكاملة (تأمل + مسح الآيات + كل المحتوى) — بس لك بـ 350 ريال فقط 💗 رديلي \"نعم\" وأرسلك رابط التفعيل مباشرة 🙏 منذ ١٣ ساعة" [ref=e282] [cursor=pointer]':
+                  - generic [ref=e284]:
+                    - img "user-profile-picture" [ref=e288]
+                    - generic [ref=e291]:
+                      - generic [ref=e295]: ‏‎_1u7‎‏
+                      - generic [ref=e297]:
+                        - generic [ref=e299]: "أنت: وعندي لك عرض خاص ما راح يتكرر 🎁 باقة 820 ريال الكاملة (تأمل + مسح الآيات + كل المحتوى) — بس لك بـ 350 ريال فقط 💗 رديلي \"نعم\" وأرسلك رابط التفعيل مباشرة 🙏"
+                        - generic [ref=e300]:
+                          - generic [ref=e302]: ·
+                          - generic "منذ ١٣ ساعة" [ref=e306]: ١٣ س
+                - 'button "user-profile-picture ‏‎Safaa‎‏ أنت: وعندي لك عرض خاص ما راح يتكرر 🎁 باقة 820 ريال الكاملة (تأمل + مسح الآيات + كل المحتوى) — بس لك بـ 350 ريال فقط 💗 رديلي \"نعم\" وأرسلك رابط التفعيل مباشرة 🙏 منذ ١٣ ساعة" [ref=e310] [cursor=pointer]':
+                  - generic [ref=e312]:
+                    - img "user-profile-picture" [ref=e316]
+                    - generic [ref=e319]:
+                      - generic [ref=e323]: ‏‎Safaa‎‏
+                      - generic [ref=e325]:
+                        - generic [ref=e327]: "أنت: وعندي لك عرض خاص ما راح يتكرر 🎁 باقة 820 ريال الكاملة (تأمل + مسح الآيات + كل المحتوى) — بس لك بـ 350 ريال فقط 💗 رديلي \"نعم\" وأرسلك رابط التفعيل مباشرة 🙏"
+                        - generic [ref=e328]:
+                          - generic [ref=e330]: ·
+                          - generic "منذ ١٣ ساعة" [ref=e334]: ١٣ س
+                - button "user-profile-picture ‏‎Greg Isenberg‎‏ مُحقّق تم إرسال مرفق بواسطة ‏‎Greg‎‏. منذ ٢١ ساعة" [ref=e338] [cursor=pointer]:
+                  - generic [ref=e340]:
+                    - img "user-profile-picture" [ref=e344]
+                    - generic [ref=e347]:
+                      - generic [ref=e349]:
+                        - generic [ref=e351]: ‏‎Greg Isenberg‎‏
+                        - img "مُحقّق" [ref=e353]
+                      - generic [ref=e356]:
+                        - generic [ref=e358]: تم إرسال مرفق بواسطة ‏‎Greg‎‏.
+                        - generic [ref=e359]:
+                          - generic [ref=e361]: ·
+                          - generic "منذ ٢١ ساعة" [ref=e365]: ٢١ س
+                - button "user-profile-picture ‏مستخدم Instagram‏ تم إرسال مرفق بواسطة ‏مستخدم Instagram‏. منذ ٥ أيام" [ref=e369] [cursor=pointer]:
+                  - generic [ref=e371]:
+                    - img "user-profile-picture" [ref=e375]
+                    - generic [ref=e378]:
+                      - generic [ref=e382]: ‏مستخدم Instagram‏
+                      - generic [ref=e384]:
+                        - generic [ref=e386]: تم إرسال مرفق بواسطة ‏مستخدم Instagram‏.
+                        - generic [ref=e387]:
+                          - generic [ref=e389]: ·
+                          - generic "منذ ٥ أيام" [ref=e393]: 5 ي
+                - button "user-profile-picture ‏‎Mayada Allamee🇮🇶🙂‎‏ مشاركه منذ ٣ أسابيع" [ref=e397] [cursor=pointer]:
+                  - generic [ref=e399]:
+                    - img "user-profile-picture" [ref=e403]
+                    - generic [ref=e406]:
+                      - generic [ref=e410]: ‏‎Mayada Allamee🇮🇶🙂‎‏
+                      - generic [ref=e412]:
+                        - generic [ref=e414]: مشاركه
+                        - generic [ref=e415]:
+                          - generic [ref=e417]: ·
+                          - generic "منذ ٣ أسابيع" [ref=e421]: 3 أ
+                - button "جارٍ التحميل... جارٍ التحميل... جارٍ التحميل..." [ref=e450] [cursor=pointer]:
+                  - generic [ref=e452]:
+                    - status "جارٍ التحميل..." [ref=e455]
+                    - generic [ref=e458]:
+                      - status "جارٍ التحميل..." [ref=e460]
+                      - status "جارٍ التحميل..." [ref=e462]
+        - generic [ref=e467]:
+          - img [ref=e469]
+          - heading "رسائلك" [level=2] [ref=e474]
+          - generic [ref=e477]: إرسال صور ورسائل خاصة إلى صديق أو مجموعة
+          - button "إرسال رسالة" [ref=e479] [cursor=pointer]
+  - button "أعجبني 1" [ref=e481] [cursor=pointer]:
+    - tooltip "أعجبني 1" [ref=e483]:
+      - generic [ref=e486]:
+        - generic "أعجبني" [ref=e487]
+        - generic [ref=e489]: "1"

@@ -79,8 +79,15 @@ export function buildProgressState(
   now?: Date
 ): ProgressState {
   const calendarDay = computeCalendarDay(subscriptionStartDate, now);
-  const currentDay = Math.max(storedDay, calendarDay);
-  const drift = Math.max(0, calendarDay - storedDay);
+  // Only advance currentDay based on calendar if user has actually started
+  // (has completed at least one day). Otherwise, keep them at storedDay
+  // so new users always start from day 1, not a random future day.
+  const currentDay = completedDays.length > 0
+    ? Math.max(storedDay, calendarDay)
+    : storedDay;
+  const drift = completedDays.length > 0
+    ? Math.max(0, calendarDay - storedDay)
+    : 0;
   const missedDays = computeMissedDays(completedDays, currentDay);
   const streak = computeStreak(completedDays, currentDay);
   const completionRate = currentDay > 0 ? completedDays.length / currentDay : 0;

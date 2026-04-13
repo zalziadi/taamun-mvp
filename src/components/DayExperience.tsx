@@ -24,7 +24,7 @@ const AWARENESS_OPTIONS: { value: AwarenessLevel; label: string; emoji: string }
 // ── SilenceGate ───────────────────────────────────────────────────────────────
 function SilenceGate({ prompt, onStart }: { prompt: string; onStart: () => void }) {
   return (
-    <div className="flex min-h-[70vh] flex-col items-center justify-center gap-8 px-4 text-center">
+    <div className="flex min-h-[60vh] sm:min-h-[70vh] flex-col items-center justify-center gap-6 sm:gap-8 px-4 text-center">
       <div className="rounded-2xl border border-white/10 bg-white/5 p-8 backdrop-blur-sm">
         <p className="mb-2 text-xs uppercase tracking-widest text-white/40">لحظة صمت</p>
         <p className="text-lg leading-loose text-white/80">{prompt}</p>
@@ -157,12 +157,13 @@ function AwarenessMeter({ day }: { day: number }) {
         data: { session },
       } = await supabase.auth.getSession();
       if (!session) return;
-      await supabase.from("awareness_logs").upsert(
+      const { error } = await supabase.from("awareness_logs").upsert(
         { user_id: session.user.id, day, level },
         { onConflict: "user_id,day" }
       );
-    } catch {
-      // save silently fails — selection still shows
+      if (error) console.error("[AwarenessMeter] save failed:", error);
+    } catch (err) {
+      console.error("[AwarenessMeter] unexpected error:", err);
     } finally {
       setSaving(false);
     }

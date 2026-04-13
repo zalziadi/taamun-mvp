@@ -39,8 +39,8 @@ export function WhyYouAreHereCard({
     : "tm-card border-[#c4a265]/40 bg-gradient-to-b from-[#faf4e4] to-[#fcfaf7] p-6 space-y-5";
 
   const labelClass = isDark
-    ? "text-[10px] tracking-[0.18em] text-[#c9b88a]/80"
-    : "text-[10px] tracking-[0.18em] text-[#8c7851]/80";
+    ? "text-xs tracking-[0.18em] text-[#c9b88a]/80"
+    : "text-xs tracking-[0.18em] text-[#8c7851]/80";
 
   const summaryClass = isDark
     ? "text-base leading-[1.9] text-[#e8e1d9] font-semibold whitespace-pre-line"
@@ -70,12 +70,12 @@ export function WhyYouAreHereCard({
     : "tm-gold-btn inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold";
 
   const reasonReasonHintClass = isDark
-    ? "text-[11px] text-[#c9b88a]/60"
-    : "text-[11px] text-[#8c7851]/80";
+    ? "text-xs text-[#c9b88a]/60"
+    : "text-xs text-[#8c7851]/80";
 
   const toggleBtnClass = isDark
-    ? "text-[11px] text-[#c9b88a]/70 hover:text-[#c9b88a] transition-colors"
-    : "text-[11px] text-[#8c7851]/80 hover:text-[#5a4531] transition-colors";
+    ? "text-xs text-[#c9b88a]/70 hover:text-[#c9b88a] transition-colors"
+    : "text-xs text-[#8c7851]/80 hover:text-[#5a4531] transition-colors";
 
   return (
     <section className={containerClass}>

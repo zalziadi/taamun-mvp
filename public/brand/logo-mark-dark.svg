@@ -1,0 +1,22 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 200 220" fill="none" aria-hidden="true">
+  <!-- Taamun Logo Mark — Dark variant (عُّ on dark backgrounds), calligraphic style -->
+
+  <!-- شدّة + ضمّة — floating calligraphic diacritics -->
+  <path d="M94 22 Q94 10 104 10 Q114 10 114 22 Q114 32 104 36 Q100 37 98 34"
+        fill="#F5EFE4" stroke="none"/>
+  <path d="M82 56 Q86 42 94 46 Q100 36 106 46 Q112 42 118 56"
+        fill="none" stroke="#F5EFE4" stroke-width="6" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M98 34 Q96 40 94 46"
+        fill="none" stroke="#F5EFE4" stroke-width="4" stroke-linecap="round"/>
+
+  <!-- عـ — Ain body, calligraphic -->
+  <path d="M84 100 Q84 70 102 68 Q122 66 122 82 Q122 96 112 100"
+        fill="#F5EFE4" stroke="none"/>
+  <rect x="38" y="100" width="124" height="14" rx="3" fill="#F5EFE4"/>
+
+  <!-- Wordmark badge -->
+  <rect x="60" y="132" width="80" height="38" rx="10" fill="#2A1D10"/>
+  <text x="100" y="157" font-size="22" font-weight="700" fill="#F5ECD4"
+        text-anchor="middle" font-family="Amiri, serif"
+        direction="rtl" xml:lang="ar">تمعّن</text>
+</svg>

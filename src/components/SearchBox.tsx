@@ -149,7 +149,7 @@ export function SearchBox() {
           aria-label="ابحث في الموقع"
           className="w-28 sm:w-40 bg-transparent text-sm text-[#2f2619] placeholder:text-[#8c7851]/60 outline-none"
         />
-        <kbd className="hidden sm:inline-block rounded border border-[#d8cdb9] bg-[#f4f1ea] px-1 text-[10px] text-[#8c7851]/70 font-mono">/</kbd>
+        <kbd className="hidden sm:inline-block rounded border border-[#d8cdb9] bg-[#f4f1ea] px-1 text-xs text-[#8c7851]/70 font-mono">/</kbd>
       </div>
 
       {open && results.length > 0 && (
@@ -163,7 +163,7 @@ export function SearchBox() {
             >
               <div className="flex items-center justify-between gap-2 mb-1">
                 <span className="text-[9px] tracking-[0.15em] text-[#8c7851]/80">اقتراح النظام</span>
-                <span className="text-[10px] text-[#c4a265]">✦</span>
+                <span className="text-xs text-[#c4a265]">✦</span>
               </div>
               <p className="text-xs text-[#5f5648] leading-relaxed text-right">{brainDecision.message}</p>
               <p className="mt-1.5 text-[13px] font-semibold text-[#5a4531] text-right">← {brainDecision.primaryAction.label}</p>
@@ -184,7 +184,7 @@ export function SearchBox() {
                   ].join(" ")}
                   onMouseEnter={() => setHighlight(i)}
                 >
-                  <span className="text-[10px] text-[#8c7851]/70">{r.category}</span>
+                  <span className="text-xs text-[#8c7851]/70">{r.category}</span>
                   <span className="flex-1 text-right">{r.label}</span>
                 </Link>
               </li>

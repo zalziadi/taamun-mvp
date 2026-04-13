@@ -17,6 +17,7 @@ function LoginContent() {
   const [sent, setSent] = useState(false);
   const [error, setError] = useState("");
   const [checkingSession, setCheckingSession] = useState(true);
+  const [loggedInUser, setLoggedInUser] = useState<string | null>(null);
 
   useEffect(() => {
     const errorCode = searchParams.get("error");
@@ -30,7 +31,16 @@ function LoginContent() {
     supabase.auth.getUser().then(({ data, error }) => {
       if (!active) return;
       if (!error && data.user) {
-        router.replace(next);
+        // If user explicitly navigated to /login or /auth, show them
+        // a "you're already logged in" state instead of auto-redirecting.
+        // Auto-redirect only when coming from a protected page (next != /program default).
+        const isExplicitVisit = next === "/program";
+        if (isExplicitVisit) {
+          setLoggedInUser(data.user.email ?? null);
+          setCheckingSession(false);
+        } else {
+          router.replace(next);
+        }
       } else {
         setCheckingSession(false);
       }
@@ -71,6 +81,27 @@ function LoginContent() {
     return (
       <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#15130f" }}>
         <p style={{ color: "#c9b88a", fontSize: 18 }}>جاري التحقق...</p>
+      </div>
+    );
+  }
+
+  if (loggedInUser) {
+    return (
+      <div dir="rtl" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#15130f", padding: 16 }}>
+        <div style={{ width: "100%", maxWidth: 400, background: "#2b2824", borderRadius: 16, padding: 32, textAlign: "center" }}>
+          <h1 style={{ color: "#c9b88a", fontSize: 28, marginBottom: 8 }}>تمعّن</h1>
+          <p style={{ color: "#a09882", fontSize: 15, marginBottom: 16 }}>أنت مسجّل الدخول بالفعل</p>
+          <p style={{ color: "#e8e1d9", fontSize: 14, marginBottom: 24, direction: "ltr" }}>{loggedInUser}</p>
+          <button onClick={() => router.push("/program")} style={{ width: "100%", padding: "12px 0", borderRadius: 10, border: "none", background: "#c9b88a", color: "#15130f", fontSize: 16, fontWeight: 600, cursor: "pointer", marginBottom: 12 }}>
+            متابعة البرنامج
+          </button>
+          <button onClick={() => router.push("/account")} style={{ width: "100%", padding: "12px 0", borderRadius: 10, border: "1px solid #c9b88a40", background: "transparent", color: "#c9b88a", fontSize: 14, cursor: "pointer", marginBottom: 12 }}>
+            كهفي (حسابي)
+          </button>
+          <button onClick={async () => { await supabase.auth.signOut(); setLoggedInUser(null); }} style={{ width: "100%", padding: "10px 0", borderRadius: 10, border: "none", background: "transparent", color: "#6b6560", fontSize: 13, cursor: "pointer" }}>
+            تسجيل خروج
+          </button>
+        </div>
       </div>
     );
   }

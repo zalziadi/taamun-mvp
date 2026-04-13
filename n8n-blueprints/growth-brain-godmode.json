@@ -1,0 +1,396 @@
+{
+  "name": "Growth Brain God Mode — Core Intelligence",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 30
+            }
+          ]
+        }
+      },
+      "name": "Every 30 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_REVENUE_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Revenue",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        200
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_CONTENT_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Content",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        400
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_PATTERNS_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Patterns",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        600
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_BRAIN_LOG_DB }}",
+        "returnAll": true,
+        "limit": 10
+      },
+      "name": "Read Past Decisions",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        800
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_COMPETITOR_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Competitor Intel",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        1000
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// MEGA DATA COLLECTOR — All signals in one object\nconst revenue = $('Read Revenue').all();\nconst content = $('Read Content').all();\nconst patterns = $('Read Patterns').all();\nconst pastDecisions = $('Read Past Decisions').all();\nconst competitors = $('Read Competitor Intel').all();\n\n// === REVENUE ===\nconst totalCustomers = revenue.length;\nconst totalRevenue = revenue.reduce((sum, r) => sum + (r.json.amount || 350), 0);\nconst target = 1500;\nconst remaining = target - totalCustomers;\nconst avgTicket = totalCustomers > 0 ? Math.round(totalRevenue / totalCustomers) : 0;\n\n// Revenue by source\nconst sources = {};\nrevenue.forEach(r => {\n  const src = r.json.source || 'organic';\n  sources[src] = (sources[src] || 0) + 1;\n});\n\n// === CONTENT ===\nconst totalVideos = content.length;\nconst publishedLast24h = content.filter(c => {\n  const pub = new Date(c.json.published_at || 0);\n  return (Date.now() - pub) < 24 * 60 * 60 * 1000;\n}).length;\nconst avgScore = content.length > 0\n  ? Math.round(content.reduce((s, c) => s + (c.json.performance_score || 0), 0) / content.length)\n  : 0;\nconst topVideos = content.filter(c => (c.json.performance_score || 0) >= 70);\nconst deadVideos = content.filter(c => (c.json.performance_score || 0) <= 30);\nconst totalDMs = content.reduce((s, c) => s + (c.json.dms_generated || 0), 0);\nconst totalViews = content.reduce((s, c) => s + (c.json.views || 0), 0);\n\n// Best performing hook type\nconst hookScores = {};\ncontent.forEach(c => {\n  const hook = c.json.ab_tag || c.json.hook_type || 'unknown';\n  if (!hookScores[hook]) hookScores[hook] = { total: 0, count: 0 };\n  hookScores[hook].total += (c.json.performance_score || 0);\n  hookScores[hook].count++;\n});\nlet bestHook = { name: 'none', avg: 0 };\nObject.entries(hookScores).forEach(([name, data]) => {\n  const avg = data.total / data.count;\n  if (avg > bestHook.avg) bestHook = { name, avg: Math.round(avg) };\n});\n\n// === CONVERSION ===\nconst conversionRate = totalDMs > 0 ? (totalCustomers / totalDMs * 100) : 0;\nconst viewToConversion = totalViews > 0 ? (totalCustomers / totalViews * 100) : 0;\n\n// === PATTERNS ===\nconst scalePatterns = patterns.filter(p => p.json.result === 'SCALE').length;\nconst killPatterns = patterns.filter(p => p.json.result === 'KILL').length;\nconst winRate = patterns.length > 0 ? (scalePatterns / patterns.length * 100) : 0;\n\n// === TIME ===\nconst deadline = new Date('2026-04-05T23:59:59');\nconst now = new Date();\nconst hoursLeft = Math.max(0, Math.round((deadline - now) / (1000 * 60 * 60)));\nconst daysLeft = Math.round(hoursLeft / 24);\nconst customersPerDay = daysLeft > 0 ? (remaining / daysLeft) : remaining;\n\n// === PAST DECISIONS ===\nconst recentDecisions = pastDecisions.slice(0, 5).map(d => ({\n  action: d.json.action || '',\n  result: d.json.outcome || 'pending',\n  confidence: d.json.confidence || 0\n}));\nconst avgConfidence = recentDecisions.length > 0\n  ? Math.round(recentDecisions.reduce((s, d) => s + d.confidence, 0) / recentDecisions.length)\n  : 0;\nconst successRate = recentDecisions.filter(d => d.result === 'success').length / Math.max(1, recentDecisions.length) * 100;\n\n// === COMPETITORS ===\nconst competitorSummary = competitors.slice(0, 3).map(c => ({\n  name: c.json.name || '',\n  price: c.json.price || 0,\n  followers: c.json.followers || 0,\n  lastMove: c.json.last_move || ''\n}));\n\nreturn {\n  json: {\n    revenue: { totalCustomers, totalRevenue, remaining, target, avgTicket, sources },\n    content: { totalVideos, publishedLast24h, avgScore, topVideos: topVideos.length, deadVideos: deadVideos.length, bestHook, totalViews },\n    dms: { totalDMs, conversionRate: conversionRate.toFixed(1), viewToConversion: viewToConversion.toFixed(2) },\n    patterns: { scalePatterns, killPatterns, winRate: winRate.toFixed(1) },\n    time: { hoursLeft, daysLeft, customersPerDay: customersPerDay.toFixed(1) },\n    learning: { recentDecisions, avgConfidence, successRate: successRate.toFixed(1) },\n    competitors: competitorSummary,\n    timestamp: now.toISOString()\n  }\n};"
+      },
+      "name": "Mega Data Collector",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-20250514\",\n  \"max_tokens\": 2000,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"أنت Growth Brain — العقل الاستراتيجي لحملة تمعّن.\\n\\nالمهمة: حلل البيانات التالية وأعطِ قرارات استراتيجية دقيقة.\\n\\n=== البيانات الحية ===\\n\\n📊 الإيرادات:\\n- العملاء: {{ $json.revenue.totalCustomers }} / {{ $json.revenue.target }}\\n- الإيراد: {{ $json.revenue.totalRevenue }} ريال\\n- متوسط التذكرة: {{ $json.revenue.avgTicket }} ريال\\n- الباقي: {{ $json.revenue.remaining }} عميل\\n\\n🎬 المحتوى:\\n- إجمالي الفيديوهات: {{ $json.content.totalVideos }}\\n- نُشر آخر 24 ساعة: {{ $json.content.publishedLast24h }}\\n- متوسط الأداء: {{ $json.content.avgScore }}/100\\n- أفضل Hook: {{ $json.content.bestHook.name }} ({{ $json.content.bestHook.avg }}/100)\\n- ناجح: {{ $json.content.topVideos }} | فاشل: {{ $json.content.deadVideos }}\\n\\n📩 التحويل:\\n- DMs: {{ $json.dms.totalDMs }}\\n- معدل التحويل: {{ $json.dms.conversionRate }}%\\n- من المشاهدات للشراء: {{ $json.dms.viewToConversion }}%\\n\\n🏆 الأنماط:\\n- ناجحة: {{ $json.patterns.scalePatterns }} | فاشلة: {{ $json.patterns.killPatterns }}\\n- نسبة النجاح: {{ $json.patterns.winRate }}%\\n\\n⏳ الوقت:\\n- باقي: {{ $json.time.daysLeft }} يوم ({{ $json.time.hoursLeft }} ساعة)\\n- المطلوب يومياً: {{ $json.time.customersPerDay }} عميل\\n\\n🧠 التعلم من القرارات السابقة:\\n- متوسط الثقة: {{ $json.learning.avgConfidence }}%\\n- نسبة نجاح القرارات: {{ $json.learning.successRate }}%\\n\\n🕵️ المنافسين: {{ JSON.stringify($json.competitors) }}\\n\\n=== المطلوب ===\\n\\nأجب بـ JSON فقط (بدون أي نص خارج JSON):\\n{\\n  \\\"decisions\\\": [\\n    {\\n      \\\"id\\\": \\\"d1\\\",\\n      \\\"action\\\": \\\"وصف الإجراء المطلوب\\\",\\n      \\\"target_agent\\\": \\\"borhan|warda|wolf|sham|content_engine|pricing\\\",\\n      \\\"priority\\\": \\\"critical|high|medium|low\\\",\\n      \\\"confidence\\\": 0.0-1.0,\\n      \\\"reason\\\": \\\"لماذا هذا القرار؟\\\",\\n      \\\"expected_impact\\\": \\\"التأثير المتوقع\\\",\\n      \\\"risk\\\": \\\"low|medium|high\\\",\\n      \\\"deadline_hours\\\": 1-48\\n    }\\n  ],\\n  \\\"pricing\\\": {\\n    \\\"current\\\": 350,\\n    \\\"recommended\\\": 280-550,\\n    \\\"reason\\\": \\\"سبب التغيير\\\",\\n    \\\"scarcity_message\\\": \\\"رسالة الندرة إن وجدت\\\"\\n  },\\n  \\\"content_strategy\\\": {\\n    \\\"best_hook_type\\\": \\\"أفضل نوع Hook\\\",\\n    \\\"produce_count\\\": 1-10,\\n    \\\"angles\\\": [\\\"زاوية 1\\\", \\\"زاوية 2\\\"],\\n    \\\"kill_list\\\": [\\\"ما يجب إيقافه\\\"]\\n  },\\n  \\\"overall_status\\\": \\\"critical|warning|stable|thriving\\\",\\n  \\\"one_line_summary\\\": \\\"ملخص بسطر واحد\\\"\\n}\"\n    }\n  ]\n}"
+      },
+      "name": "Claude Brain Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        950,
+        500
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ANTHROPIC_CREDENTIAL_ID",
+          "name": "Anthropic API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Parse Claude's response and structure decisions\nconst response = $input.item.json;\nlet brainOutput;\n\ntry {\n  // Extract JSON from Claude's response\n  const content = response.content?.[0]?.text || response.body || '{}';\n  // Try to parse, handle if wrapped in markdown code block\n  let jsonStr = content;\n  if (jsonStr.includes('```json')) {\n    jsonStr = jsonStr.split('```json')[1].split('```')[0].trim();\n  } else if (jsonStr.includes('```')) {\n    jsonStr = jsonStr.split('```')[1].split('```')[0].trim();\n  }\n  brainOutput = JSON.parse(jsonStr);\n} catch (e) {\n  brainOutput = {\n    decisions: [{\n      id: 'd1',\n      action: 'خطأ في تحليل العقل — تحقق يدوياً',\n      target_agent: 'borhan',\n      priority: 'high',\n      confidence: 0,\n      reason: 'فشل parsing: ' + e.message,\n      expected_impact: 'none',\n      risk: 'high',\n      deadline_hours: 1\n    }],\n    pricing: { current: 350, recommended: 350, reason: 'خطأ', scarcity_message: '' },\n    content_strategy: { best_hook_type: 'unknown', produce_count: 3, angles: [], kill_list: [] },\n    overall_status: 'warning',\n    one_line_summary: 'خطأ في التحليل — مراجعة يدوية مطلوبة'\n  };\n}\n\n// Get original data from Mega Data Collector\nconst originalData = $('Mega Data Collector').item.json;\n\n// Add metadata\nbrainOutput.meta = {\n  timestamp: new Date().toISOString(),\n  data_snapshot: {\n    customers: originalData.revenue.totalCustomers,\n    revenue: originalData.revenue.totalRevenue,\n    dms: originalData.dms.totalDMs,\n    days_left: originalData.time.daysLeft\n  },\n  decisions_count: brainOutput.decisions?.length || 0,\n  critical_count: (brainOutput.decisions || []).filter(d => d.priority === 'critical').length\n};\n\nreturn { json: brainOutput };"
+      },
+      "name": "Parse Brain Output",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1150,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🧠 *GROWTH BRAIN — GOD MODE*\n⏰ {{ $json.meta.timestamp }}\n\n━━━━━━━━━━━━━━━━━━\n📍 *الحالة*: {{ $json.overall_status }}\n💡 {{ $json.one_line_summary }}\n\n━━━━━━━━━━━━━━━━━━\n📊 *اللقطة*\n👥 {{ $json.meta.data_snapshot.customers }} عميل\n💰 {{ $json.meta.data_snapshot.revenue }} ريال\n📩 {{ $json.meta.data_snapshot.dms }} DM\n⏳ {{ $json.meta.data_snapshot.days_left }} يوم\n\n━━━━━━━━━━━━━━━━━━\n⚡ *القرارات* ({{ $json.meta.decisions_count }} قرار، {{ $json.meta.critical_count }} حرج)\n{{ $json.decisions.map((d, i) => `${i+1}. [${d.priority.toUpperCase()}] ${d.action}\\n   → ${d.target_agent} | ثقة: ${Math.round(d.confidence * 100)}% | خطر: ${d.risk}`).join('\\n') }}\n\n━━━━━━━━━━━━━━━━━━\n💰 *التسعير*\nالحالي: {{ $json.pricing.current }} → المقترح: {{ $json.pricing.recommended }}\n{{ $json.pricing.reason }}\n{{ $json.pricing.scarcity_message }}\n\n━━━━━━━━━━━━━━━━━━\n🎬 *استراتيجية المحتوى*\nأفضل Hook: {{ $json.content_strategy.best_hook_type }}\nأنتج: {{ $json.content_strategy.produce_count }} فيديوهات\nالزوايا: {{ $json.content_strategy.angles.join(' | ') }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Brain Report to Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1400,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "create",
+        "databaseId": "={{ $env.NOTION_BRAIN_LOG_DB }}",
+        "properties": {
+          "title": "=Brain — {{ new Date().toISOString().slice(0,16) }}",
+          "status": "={{ $json.overall_status }}",
+          "summary": "={{ $json.one_line_summary }}",
+          "decisions_json": "={{ JSON.stringify($json.decisions) }}",
+          "pricing_recommended": "={{ $json.pricing.recommended }}",
+          "confidence_avg": "={{ Math.round($json.decisions.reduce((s,d) => s + d.confidence, 0) / Math.max(1, $json.decisions.length) * 100) }}",
+          "customers_at_time": "={{ $json.meta.data_snapshot.customers }}",
+          "revenue_at_time": "={{ $json.meta.data_snapshot.revenue }}"
+        }
+      },
+      "name": "Log Decision to Notion",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1400,
+        500
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.N8N_WEBHOOK_BASE }}/webhook/control-gate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={{ JSON.stringify($json) }}"
+      },
+      "name": "Send to Control Brain",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1400,
+        700
+      ]
+    }
+  ],
+  "connections": {
+    "Every 30 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Read Revenue",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Content",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Patterns",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Past Decisions",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Competitor Intel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Revenue": {
+      "main": [
+        [
+          {
+            "node": "Mega Data Collector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Content": {
+      "main": [
+        [
+          {
+            "node": "Mega Data Collector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Patterns": {
+      "main": [
+        [
+          {
+            "node": "Mega Data Collector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Past Decisions": {
+      "main": [
+        [
+          {
+            "node": "Mega Data Collector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Competitor Intel": {
+      "main": [
+        [
+          {
+            "node": "Mega Data Collector",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Mega Data Collector": {
+      "main": [
+        [
+          {
+            "node": "Claude Brain Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude Brain Analysis": {
+      "main": [
+        [
+          {
+            "node": "Parse Brain Output",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Brain Output": {
+      "main": [
+        [
+          {
+            "node": "Brain Report to Telegram",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log Decision to Notion",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send to Decision Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "1007"
+}

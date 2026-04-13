@@ -1,0 +1,445 @@
+{
+  "name": "Strategic Brain — Vision & Direction Layer",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 12
+            }
+          ]
+        }
+      },
+      "name": "Every 12 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_REVENUE_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Revenue",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        150
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_CONTENT_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Content",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        300
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_PATTERNS_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Patterns",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        450
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_COMPETITOR_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Competitors",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        600
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_LEARNING_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Learning History",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        750
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_BRAIN_LOG_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Brain Decisions",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        900
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// ==========================================\n// STRATEGIC DATA AGGREGATOR\n// Builds the full picture for strategy\n// ==========================================\nconst revenue = $('Read Revenue').all();\nconst content = $('Read Content').all();\nconst patterns = $('Read Patterns').all();\nconst competitors = $('Read Competitors').all();\nconst learning = $('Read Learning History').all();\nconst brainLogs = $('Read Brain Decisions').all();\n\n// === REVENUE ANALYSIS ===\nconst totalCustomers = revenue.length;\nconst totalRevenue = revenue.reduce((s, r) => s + (r.json.amount || r.json.Amount || 350), 0);\nconst avgTicket = totalCustomers > 0 ? Math.round(totalRevenue / totalCustomers) : 0;\nconst paidCustomers = revenue.filter(r => (r.json.status || r.json.Status) === 'paid').length;\nconst pendingCustomers = revenue.filter(r => (r.json.status || r.json.Status) === 'pending').length;\n\n// Revenue by source\nconst sources = {};\nrevenue.forEach(r => {\n  const src = r.json.source || r.json.Source || 'unknown';\n  sources[src] = (sources[src] || 0) + 1;\n});\nconst topSource = Object.entries(sources).sort((a, b) => b[1] - a[1])[0];\n\n// Revenue by platform\nconst platforms = {};\nrevenue.forEach(r => {\n  const p = r.json.platform || r.json.Platform || 'unknown';\n  platforms[p] = (platforms[p] || 0) + 1;\n});\nconst topPlatform = Object.entries(platforms).sort((a, b) => b[1] - a[1])[0];\n\n// === CONTENT ANALYSIS ===\nconst totalVideos = content.length;\nconst avgScore = content.length > 0\n  ? Math.round(content.reduce((s, c) => s + (c.json.performance_score || c.json['Performance Score'] || 0), 0) / content.length)\n  : 0;\nconst totalDMs = content.reduce((s, c) => s + (c.json.dms_generated || c.json['DMs Generated'] || 0), 0);\nconst totalViews = content.reduce((s, c) => s + (c.json.views || c.json.Views || 0), 0);\nconst scaledVideos = content.filter(c => (c.json.status || c.json.Status) === 'scaling').length;\nconst killedVideos = content.filter(c => (c.json.status || c.json.Status) === 'killed').length;\n\n// Best angle\nconst angleScores = {};\ncontent.forEach(c => {\n  const angle = c.json.angle || c.json.Angle || 'unknown';\n  const score = c.json.performance_score || c.json['Performance Score'] || 0;\n  if (!angleScores[angle]) angleScores[angle] = { total: 0, count: 0, dms: 0 };\n  angleScores[angle].total += score;\n  angleScores[angle].count++;\n  angleScores[angle].dms += (c.json.dms_generated || c.json['DMs Generated'] || 0);\n});\nlet bestAngle = { name: 'none', avgScore: 0, totalDMs: 0 };\nObject.entries(angleScores).forEach(([name, data]) => {\n  const avg = data.total / data.count;\n  if (avg > bestAngle.avgScore) bestAngle = { name, avgScore: Math.round(avg), totalDMs: data.dms };\n});\n\n// === CONVERSION FUNNEL ===\nconst conversionRate = totalDMs > 0 ? (paidCustomers / totalDMs * 100) : 0;\nconst viewToDM = totalViews > 0 ? (totalDMs / totalViews * 100) : 0;\nconst dmToSale = totalDMs > 0 ? (paidCustomers / totalDMs * 100) : 0;\n\n// === PATTERNS ===\nconst scalePatterns = patterns.filter(p => (p.json.result || p.json.Result) === 'SCALE');\nconst killPatterns = patterns.filter(p => (p.json.result || p.json.Result) === 'KILL');\nconst winRate = patterns.length > 0 ? Math.round(scalePatterns.length / patterns.length * 100) : 0;\n\n// === COMPETITORS ===\nconst competitorData = competitors.map(c => ({\n  name: c.json.name || c.json.Name || '',\n  price: c.json.price || c.json.Price || 0,\n  followers: c.json.followers || c.json.Followers || 0,\n  threat: c.json.threat_level || c.json['Threat Level'] || 'low',\n  offer: c.json.offer_type || c.json['Offer Type'] || '',\n  lastMove: c.json.last_move || c.json['Last Move'] || ''\n}));\nconst avgCompPrice = competitorData.length > 0\n  ? Math.round(competitorData.reduce((s, c) => s + c.price, 0) / competitorData.length)\n  : 0;\nconst highThreats = competitorData.filter(c => c.threat === 'high');\n\n// === LEARNING HISTORY ===\nconst latestLearning = learning.length > 0 ? learning[learning.length - 1].json : {};\nconst overallAccuracy = learning.length > 0\n  ? Math.round(learning.reduce((s, l) => s + (l.json.accuracy || l.json.Accuracy || 0), 0) / learning.length)\n  : 0;\n\n// === BRAIN HISTORY ===\nconst totalDecisions = brainLogs.length;\nconst successDecisions = brainLogs.filter(b => (b.json.outcome || b.json.Outcome) === 'success').length;\nconst brainAccuracy = totalDecisions > 0 ? Math.round(successDecisions / totalDecisions * 100) : 0;\n\n// === TIME ===\nconst deadline = new Date('2026-04-05T23:59:59');\nconst now = new Date();\nconst daysLeft = Math.max(0, Math.round((deadline - now) / (1000 * 60 * 60 * 24)));\nconst target = 1500;\nconst remaining = target - totalCustomers;\nconst dailyNeeded = daysLeft > 0 ? Math.round(remaining / daysLeft) : remaining;\n\nreturn {\n  json: {\n    revenue: {\n      total_customers: totalCustomers,\n      paid: paidCustomers,\n      pending: pendingCustomers,\n      total_revenue: totalRevenue,\n      avg_ticket: avgTicket,\n      top_source: topSource ? { name: topSource[0], count: topSource[1] } : null,\n      top_platform: topPlatform ? { name: topPlatform[0], count: topPlatform[1] } : null,\n      sources\n    },\n    content: {\n      total_videos: totalVideos,\n      avg_score: avgScore,\n      total_dms: totalDMs,\n      total_views: totalViews,\n      scaled: scaledVideos,\n      killed: killedVideos,\n      best_angle: bestAngle\n    },\n    funnel: {\n      view_to_dm_pct: viewToDM.toFixed(2),\n      dm_to_sale_pct: dmToSale.toFixed(1),\n      overall_conversion_pct: conversionRate.toFixed(1)\n    },\n    patterns: {\n      total: patterns.length,\n      scale: scalePatterns.length,\n      kill: killPatterns.length,\n      win_rate: winRate\n    },\n    competitors: {\n      total: competitorData.length,\n      avg_price: avgCompPrice,\n      high_threats: highThreats.length,\n      data: competitorData\n    },\n    learning: {\n      overall_accuracy: overallAccuracy,\n      latest_rules: latestLearning['Rules Added'] || latestLearning.rules_added || '',\n      latest_focus: latestLearning['Tomorrow Focus'] || latestLearning.tomorrow_focus || ''\n    },\n    brain: {\n      total_decisions: totalDecisions,\n      success_rate: brainAccuracy\n    },\n    time: {\n      days_left: daysLeft,\n      target,\n      remaining,\n      daily_needed: dailyNeeded\n    },\n    timestamp: now.toISOString()\n  }\n};"
+      },
+      "name": "Strategic Data Aggregator",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-20250514\",\n  \"max_tokens\": 3000,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"أنت Strategic Brain — العقل الأعلى لنظام نجم الجنوب.\\n\\nأنت لا تنفذ. أنت تقرر الاتجاه.\\n\\nمهمتك: انظر للصورة الكاملة وقرر أين يتجه النظام.\\n\\n=== الصورة الكاملة ===\\n\\n💰 الإيرادات:\\n- العملاء: {{ $json.revenue.total_customers }} ({{ $json.revenue.paid }} paid, {{ $json.revenue.pending }} pending)\\n- الإيراد: {{ $json.revenue.total_revenue }} ريال\\n- متوسط التذكرة: {{ $json.revenue.avg_ticket }} ريال\\n- أقوى مصدر: {{ $json.revenue.top_source?.name }} ({{ $json.revenue.top_source?.count }})\\n- أقوى منصة: {{ $json.revenue.top_platform?.name }} ({{ $json.revenue.top_platform?.count }})\\n\\n🎬 المحتوى:\\n- الفيديوهات: {{ $json.content.total_videos }} ({{ $json.content.scaled }} scaling, {{ $json.content.killed }} killed)\\n- متوسط الأداء: {{ $json.content.avg_score }}/100\\n- إجمالي المشاهدات: {{ $json.content.total_views }}\\n- إجمالي DMs: {{ $json.content.total_dms }}\\n- أقوى زاوية: {{ $json.content.best_angle.name }} ({{ $json.content.best_angle.avgScore }}/100, {{ $json.content.best_angle.totalDMs }} DMs)\\n\\n📊 القمع:\\n- مشاهدة → DM: {{ $json.funnel.view_to_dm_pct }}%\\n- DM → بيع: {{ $json.funnel.dm_to_sale_pct }}%\\n- التحويل الكلي: {{ $json.funnel.overall_conversion_pct }}%\\n\\n🏆 الأنماط:\\n- ناجحة: {{ $json.patterns.scale }} | فاشلة: {{ $json.patterns.kill }}\\n- نسبة النجاح: {{ $json.patterns.win_rate }}%\\n\\n🕵️ المنافسون ({{ $json.competitors.total }}):\\n- متوسط سعرهم: {{ $json.competitors.avg_price }} ريال\\n- تهديدات عالية: {{ $json.competitors.high_threats }}\\n- تفاصيلهم: {{ JSON.stringify($json.competitors.data) }}\\n\\n🧠 التعلم:\\n- دقة القرارات: {{ $json.learning.overall_accuracy }}%\\n- آخر قواعد: {{ $json.learning.latest_rules }}\\n- تركيز الغد: {{ $json.learning.latest_focus }}\\n\\n⏳ الوقت:\\n- باقي: {{ $json.time.days_left }} يوم\\n- الهدف: {{ $json.time.target }} عميل\\n- الباقي: {{ $json.time.remaining }} عميل\\n- المطلوب يومياً: {{ $json.time.daily_needed }}\\n\\n=== القرارات الاستراتيجية المطلوبة ===\\n\\nأجب بـ JSON فقط (بدون نص خارجي):\\n{\\n  \\\"strategy\\\": {\\n    \\\"direction\\\": \\\"وصف الاتجاه الاستراتيجي بجملة واحدة\\\",\\n    \\\"primary_bet\\\": \\\"الرهان الرئيسي — أين نركز 80% من الجهد\\\",\\n    \\\"secondary_bet\\\": \\\"رهان ثانوي — 20% من الجهد\\\",\\n    \\\"kill_zone\\\": \\\"ما يجب إيقافه فوراً\\\",\\n    \\\"timeframe\\\": \\\"المدة الزمنية لهذه الاستراتيجية\\\"\\n  },\\n  \\\"positioning\\\": {\\n    \\\"vs_competitors\\\": \\\"كيف نتميز عن المنافسين\\\",\\n    \\\"unique_value\\\": \\\"القيمة الفريدة التي نقدمها\\\",\\n    \\\"messaging_core\\\": \\\"الرسالة الأساسية لكل المحتوى\\\",\\n    \\\"emotion_to_lead_with\\\": \\\"المشاعر الأساسية للمحتوى\\\"\\n  },\\n  \\\"growth_levers\\\": [\\n    {\\n      \\\"lever\\\": \\\"وصف الرافعة\\\",\\n      \\\"expected_impact\\\": \\\"التأثير المتوقع\\\",\\n      \\\"effort\\\": \\\"low|medium|high\\\",\\n      \\\"priority\\\": 1\\n    }\\n  ],\\n  \\\"pricing_strategy\\\": {\\n    \\\"current\\\": 350,\\n    \\\"recommendation\\\": \\\"keep|raise|lower|tiered\\\",\\n    \\\"new_price_or_tiers\\\": \\\"السعر الجديد أو الباقات\\\",\\n    \\\"reason\\\": \\\"السبب\\\"\\n  },\\n  \\\"resource_allocation\\\": {\\n    \\\"content_production_pct\\\": 0,\\n    \\\"sales_closing_pct\\\": 0,\\n    \\\"competitor_intel_pct\\\": 0,\\n    \\\"experimentation_pct\\\": 0,\\n    \\\"reason\\\": \\\"لماذا هذا التوزيع\\\"\\n  },\\n  \\\"offer_recommendation\\\": {\\n    \\\"primary_offer\\\": \\\"العرض الرئيسي\\\",\\n    \\\"upsell\\\": \\\"عرض الترقية إن وجد\\\",\\n    \\\"scarcity_angle\\\": \\\"زاوية الندرة\\\",\\n    \\\"new_offer_idea\\\": \\\"فكرة عرض جديد بناءً على البيانات\\\"\\n  },\\n  \\\"risks\\\": [\\n    {\\n      \\\"risk\\\": \\\"وصف المخاطرة\\\",\\n      \\\"probability\\\": \\\"low|medium|high\\\",\\n      \\\"mitigation\\\": \\\"كيف نتجنبها\\\"\\n    }\\n  ],\\n  \\\"one_line_mandate\\\": \\\"الأمر الواحد الأهم للـ 12 ساعة القادمة\\\"\\n}\"\n    }\n  ]\n}"
+      },
+      "name": "Claude Strategic Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        950,
+        450
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ANTHROPIC_CREDENTIAL_ID",
+          "name": "Anthropic API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const response = $input.item.json;\nconst data = $('Strategic Data Aggregator').item.json;\nlet strategy;\n\ntry {\n  const content = response.content?.[0]?.text || '{}';\n  let jsonStr = content;\n  if (jsonStr.includes('```json')) jsonStr = jsonStr.split('```json')[1].split('```')[0].trim();\n  else if (jsonStr.includes('```')) jsonStr = jsonStr.split('```')[1].split('```')[0].trim();\n  strategy = JSON.parse(jsonStr);\n} catch (e) {\n  strategy = {\n    strategy: { direction: 'خطأ في التحليل', primary_bet: '', secondary_bet: '', kill_zone: '', timeframe: '' },\n    positioning: { vs_competitors: '', unique_value: '', messaging_core: '', emotion_to_lead_with: '' },\n    growth_levers: [],\n    pricing_strategy: { current: 350, recommendation: 'keep', new_price_or_tiers: '350', reason: 'خطأ' },\n    resource_allocation: { content_production_pct: 40, sales_closing_pct: 30, competitor_intel_pct: 10, experimentation_pct: 20, reason: 'default' },\n    offer_recommendation: { primary_offer: '', upsell: '', scarcity_angle: '', new_offer_idea: '' },\n    risks: [],\n    one_line_mandate: 'مراجعة يدوية مطلوبة'\n  };\n}\n\nstrategy.meta = {\n  timestamp: new Date().toISOString(),\n  snapshot: {\n    customers: data.revenue.total_customers,\n    revenue: data.revenue.total_revenue,\n    days_left: data.time.days_left,\n    avg_score: data.content.avg_score,\n    best_angle: data.content.best_angle.name,\n    conversion: data.funnel.overall_conversion_pct\n  }\n};\n\nreturn { json: strategy };"
+      },
+      "name": "Parse Strategy",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1150,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🧭 *STRATEGIC BRAIN — الرؤية الاستراتيجية*\n⏰ {{ $json.meta.timestamp }}\n\n━━━━━━━━━━━━━━━━━━\n📍 *اللقطة*\n👥 {{ $json.meta.snapshot.customers }} عميل | 💰 {{ $json.meta.snapshot.revenue }} ريال\n⏳ {{ $json.meta.snapshot.days_left }} يوم | 🎯 {{ $json.meta.snapshot.conversion }}%\n🎭 أقوى زاوية: {{ $json.meta.snapshot.best_angle }}\n\n━━━━━━━━━━━━━━━━━━\n🧭 *الاتجاه*\n{{ $json.strategy.direction }}\n\n🎯 *الرهان الرئيسي (80%)*\n{{ $json.strategy.primary_bet }}\n\n🔄 *الرهان الثانوي (20%)*\n{{ $json.strategy.secondary_bet }}\n\n🛑 *أوقف فوراً*\n{{ $json.strategy.kill_zone }}\n\n━━━━━━━━━━━━━━━━━━\n⚔️ *التموضع*\nضد المنافسين: {{ $json.positioning.vs_competitors }}\nالقيمة الفريدة: {{ $json.positioning.unique_value }}\nالرسالة الأساسية: {{ $json.positioning.messaging_core }}\nالمشاعر: {{ $json.positioning.emotion_to_lead_with }}\n\n━━━━━━━━━━━━━━━━━━\n📈 *روافع النمو*\n{{ $json.growth_levers.map((l, i) => `${i+1}. ${l.lever} → ${l.expected_impact} [${l.effort}]`).join('\\n') }}\n\n━━━━━━━━━━━━━━━━━━\n💰 *التسعير*\nالحالي: {{ $json.pricing_strategy.current }} → {{ $json.pricing_strategy.recommendation }}\n{{ $json.pricing_strategy.new_price_or_tiers }}\n{{ $json.pricing_strategy.reason }}\n\n━━━━━━━━━━━━━━━━━━\n📊 *توزيع الموارد*\n🎬 إنتاج: {{ $json.resource_allocation.content_production_pct }}%\n🌹 إغلاق: {{ $json.resource_allocation.sales_closing_pct }}%\n🐺 استخبارات: {{ $json.resource_allocation.competitor_intel_pct }}%\n🧪 تجارب: {{ $json.resource_allocation.experimentation_pct }}%\n\n━━━━━━━━━━━━━━━━━━\n🎁 *العروض*\nالرئيسي: {{ $json.offer_recommendation.primary_offer }}\nالترقية: {{ $json.offer_recommendation.upsell }}\nالندرة: {{ $json.offer_recommendation.scarcity_angle }}\n💡 فكرة جديدة: {{ $json.offer_recommendation.new_offer_idea }}\n\n━━━━━━━━━━━━━━━━━━\n⚠️ *المخاطر*\n{{ $json.risks.map(r => `• ${r.risk} [${r.probability}] → ${r.mitigation}`).join('\\n') }}\n\n━━━━━━━━━━━━━━━━━━\n🔥 *الأمر الواحد*\n{{ $json.one_line_mandate }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Strategy Report to Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1400,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "create",
+        "databaseId": "={{ $env.NOTION_STRATEGY_DB }}",
+        "properties": {
+          "title": "=Strategy — {{ new Date().toISOString().slice(0,16) }}",
+          "direction": "={{ $json.strategy.direction }}",
+          "primary_bet": "={{ $json.strategy.primary_bet }}",
+          "secondary_bet": "={{ $json.strategy.secondary_bet || '' }}",
+          "kill_zone": "={{ $json.strategy.kill_zone }}",
+          "positioning": "={{ $json.positioning.messaging_core }}",
+          "emotion": "={{ $json.positioning.emotion_to_lead_with }}",
+          "pricing_rec": "={{ $json.pricing_strategy.recommendation }}",
+          "content_pct": "={{ $json.resource_allocation.content_production_pct }}",
+          "sales_pct": "={{ $json.resource_allocation.sales_closing_pct }}",
+          "offer": "={{ $json.offer_recommendation.primary_offer }}",
+          "mandate": "={{ $json.one_line_mandate }}",
+          "customers_at_time": "={{ $json.meta.snapshot.customers }}",
+          "revenue_at_time": "={{ $json.meta.snapshot.revenue }}",
+          "quarter": "=Q{{ Math.ceil((new Date().getMonth() + 1) / 3) }}-{{ new Date().getFullYear() }}",
+          "status": "={{ $json.meta.snapshot.customers >= ($json.time?.daily_needed || 0) * (30 - ($json.time?.days_left || 0)) ? 'on_track' : 'behind' }}",
+          "kpi_name": "=عدد العملاء",
+          "kpi_target": "={{ $json.time?.target || 1500 }}",
+          "kpi_actual": "={{ $json.meta.snapshot.customers }}",
+          "growth_levers": "={{ $json.growth_levers ? $json.growth_levers.map(l => l.lever + ' → ' + l.expected_impact).join(' | ') : '' }}",
+          "risks": "={{ $json.risks ? $json.risks.map(r => r.risk + ' [' + r.probability + ']').join(' | ') : '' }}"
+        }
+      },
+      "name": "Save Strategy to Notion",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1400,
+        500
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.N8N_WEBHOOK_BASE }}/webhook/offer-generator",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"offer_recommendation\": {{ JSON.stringify($json.offer_recommendation) }},\n  \"pricing_strategy\": {{ JSON.stringify($json.pricing_strategy) }},\n  \"resource_allocation\": {{ JSON.stringify($json.resource_allocation) }},\n  \"positioning\": {{ JSON.stringify($json.positioning) }},\n  \"snapshot\": {{ JSON.stringify($json.meta.snapshot) }}\n}"
+      },
+      "name": "Trigger Offer Generator",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1400,
+        700
+      ]
+    }
+  ],
+  "connections": {
+    "Every 12 Hours": {
+      "main": [
+        [
+          {
+            "node": "Read Revenue",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Content",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Patterns",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Competitors",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Learning History",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Brain Decisions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Revenue": {
+      "main": [
+        [
+          {
+            "node": "Strategic Data Aggregator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Content": {
+      "main": [
+        [
+          {
+            "node": "Strategic Data Aggregator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Patterns": {
+      "main": [
+        [
+          {
+            "node": "Strategic Data Aggregator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Competitors": {
+      "main": [
+        [
+          {
+            "node": "Strategic Data Aggregator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Learning History": {
+      "main": [
+        [
+          {
+            "node": "Strategic Data Aggregator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Brain Decisions": {
+      "main": [
+        [
+          {
+            "node": "Strategic Data Aggregator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Strategic Data Aggregator": {
+      "main": [
+        [
+          {
+            "node": "Claude Strategic Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude Strategic Analysis": {
+      "main": [
+        [
+          {
+            "node": "Parse Strategy",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Strategy": {
+      "main": [
+        [
+          {
+            "node": "Strategy Report to Telegram",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Save Strategy to Notion",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Trigger Offer Generator",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "1016"
+}

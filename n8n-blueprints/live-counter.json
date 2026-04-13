@@ -1,0 +1,119 @@
+{
+  "name": "Live Counter - Target Tracker",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "minutes",
+              "minutesInterval": 15
+            }
+          ]
+        }
+      },
+      "name": "Every 15 Minutes",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_REVENUE_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Revenue DB",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        300
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Count paid customers from Notion data\nconst items = $input.all();\nconst current = items.length; // Each row = 1 customer\nconst target = 28;\nconst remaining = target - current;\nconst revenue = current * 350; // Average price\nconst targetRevenue = target * 350;\n\n// Deadline\nconst deadline = new Date('2026-04-05T23:59:59');\nconst now = new Date();\nconst hoursLeft = Math.max(0, Math.round((deadline - now) / (1000 * 60 * 60)));\nconst daysLeft = Math.max(0, Math.round(hoursLeft / 24));\n\n// Status\nconst pace = current / Math.max(1, (28 - daysLeft)); // customers per day\nconst needed = remaining / Math.max(1, daysLeft);\nlet status = '';\nif (pace >= needed) status = '🟢 AHEAD';\nelse if (pace >= needed * 0.7) status = '🟡 ON TRACK';\nelse status = '🔴 BEHIND';\n\nreturn {\n  json: {\n    current,\n    target,\n    remaining,\n    revenue,\n    targetRevenue,\n    daysLeft,\n    hoursLeft,\n    status,\n    pace: Math.round(pace * 10) / 10,\n    needed: Math.round(needed * 10) / 10\n  }\n};"
+      },
+      "name": "Calculate Stats",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        600,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🔥 *LIVE COUNTER*\n\n👥 العملاء: *{{ $json.current }} / {{ $json.target }}*\n⚠️ ناقصنا: *{{ $json.remaining }} عميل*\n\n💰 الإيراد: {{ $json.revenue }} ريال\n🎯 الهدف: {{ $json.targetRevenue }} ريال\n\n⏳ باقي: {{ $json.daysLeft }} يوم ({{ $json.hoursLeft }} ساعة)\n📊 الحالة: {{ $json.status }}\n\n📈 المعدل الحالي: {{ $json.pace }} عميل/يوم\n📉 المطلوب: {{ $json.needed }} عميل/يوم",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Send Counter",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        800,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Every 15 Minutes": {
+      "main": [
+        [
+          {
+            "node": "Read Revenue DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Revenue DB": {
+      "main": [
+        [
+          {
+            "node": "Calculate Stats",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Calculate Stats": {
+      "main": [
+        [
+          {
+            "node": "Send Counter",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "1012"
+}

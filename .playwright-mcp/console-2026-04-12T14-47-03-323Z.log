@@ -1,0 +1,112 @@
+[      33ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3002/:0
+[     105ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ webpack-internal:///./node_modules/react-dom/cjs/react-dom.development.js:29889
+[     113ms] ModuleBuildError: Module build failed (from ./node_modules/next/dist/build/webpack/loaders/next-swc-loader.js):
+Error: 
+  x Merge conflict marker encountered.
+    ,-[/Users/ziyadalziyadi/Projects/taamun-mvp/src/app/api/journey/timeline/route.ts:47:1]
+ 47 |       .then((r) => r, () => ({ data: null, error: { message: "memory_catch" } })),
+ 48 |   ]);
+ 49 | 
+ 50 | <<<<<<< Updated upstream
+    : ^^^^^^^
+ 51 |   // Degrade gracefully — use empty data instead of 500 for non-critical failures
+ 52 |   const reflections = reflectionsRes.error ? [] : (reflectionsRes.data ?? []);
+ 53 |   const progressOk = progress.ok !== false;
+    `----
+
+  x Merge conflict marker encountered.
+    ,-[/Users/ziyadalziyadi/Projects/taamun-mvp/src/app/api/journey/timeline/route.ts:53:1]
+ 53 |   const progressOk = progress.ok !== false;
+ 54 |   const completedDays = progressOk ? (progress as { completedDays: number[] }).completedDays : [];
+ 55 |   const currentDay = progressOk ? (progress as { currentDay: number }).currentDay : 1;
+ 56 | =======
+    : ^^^^^^^
+ 57 |   // If reflections query failed, continue with empty reflections
+ 58 |   // instead of returning 500 — so /progress still renders
+ 59 |   const reflections = reflectionsRes.error ? [] : (reflectionsRes.data ?? []);
+    `----
+
+  x Merge conflict marker encountered.
+    ,-[/Users/ziyadalziyadi/Projects/taamun-mvp/src/app/api/journey/timeline/route.ts:78:1]
+ 78 |       narrative: emptyNarrative,
+ 79 |     });
+ 80 |   }
+ 81 | >>>>>>> Stashed changes
+    : ^^^^^^^
+ 82 | 
+ 83 |   // Pull V9 completedSteps from user_memory.identity.journey_state (optional)
+ 84 |   const stored = (memRes.data?.identity as { journey_state?: Partial<UserJourneyState> } | null)
+    `----
+
+
+Caused by:
+    Syntax Error
+    at processResult (file:///Users/ziyadalziyadi/Projects/taamun-mvp/node_modules/next/dist/compiled/webpack/bundle5.js:28:400590)
+    at <unknown> (file:///Users/ziyadalziyadi/Projects/taamun-mvp/node_modules/next/dist/compiled/webpack/bundle5.js:28:402302)
+    at <unknown> (file:///Users/ziyadalziyadi/Projects/taamun-mvp/node_modules/next/dist/compiled/loader-runner/LoaderRunner.js:1:8645)
+    at <unknown> (file:///Users/ziyadalziyadi/Projects/taamun-mvp/node_modules/next/dist/compiled/loader-runner/LoaderRunner.js:1:5019)
+    at r.callback (file:///Users/ziyadalziyadi/Projects/taamun-mvp/node_modules/next/dist/compiled/loader-runner/LoaderRunner.js:1:4039)
+[     111ms] [LOG] [HMR] connected @ webpack-internal:///./node_modules/next/dist/client/components/react-dev-overlay/pages/websocket.js:38
+[     112ms] [ERROR] ./src/app/api/journey/timeline/route.ts
+Error: 
+  x Merge conflict marker encountered.
+    ,-[/Users/ziyadalziyadi/Projects/taamun-mvp/src/app/api/journey/timeline/route.ts:47:1]
+ 47 |       .then((r) => r, () => ({ data: null, error: { message: "memory_catch" } })),
+ 48 |   ]);
+ 49 | 
+ 50 | <<<<<<< Updated upstream
+    : ^^^^^^^
+ 51 |   // Degrade gracefully — use empty data instead of 500 for non-critical failures
+ 52 |   const reflections = reflectionsRes.error ? [] : (reflectionsRes.data ?? []);
+ 53 |   const progressOk = progress.ok !== false;
+    `----
+
+  x Merge conflict marker encountered.
+    ,-[/Users/ziyadalziyadi/Projects/taamun-mvp/src/app/api/journey/timeline/route.ts:53:1]
+ 53 |   const progressOk = progress.ok !== false;
+ 54 |   const completedDays = progressOk ? (progress as { completedDays: number[] }).completedDays : [];
+ 55 |   const currentDay = progressOk ? (progress as { currentDay: number }).currentDay : 1;
+ 56 | =======
+    : ^^^^^^^
+ 57 |   // If reflections query failed, continue with empty reflections
+ 58 |   // instead of returning 500 — so /progress still renders
+ 59 |   const reflections = reflectionsRes.error ? [] : (reflectionsRes.data ?? []);
+    `----
+
+  x Merge conflict marker encountered.
+    ,-[/Users/ziyadalziyadi/Projects/taamun-mvp/src/app/api/journey/timeline/route.ts:78:1]
+ 78 |       narrative: emptyNarrative,
+ 79 |     });
+ 80 |   }
+ 81 | >>>>>>> Stashed changes
+    : ^^^^^^^
+ 82 | 
+ 83 |   // Pull V9 completedSteps from user_memory.identity.journey_state (optional)
+ 84 |   const stored = (memRes.data?.identity as { journey_state?: Partial<UserJourneyState> } | null)
+    `----
+
+Caused by:
+    Syntax Error @ webpack-internal:///./node_modules/next/dist/client/components/react-dev-overlay/internal/helpers/hydration-error-info.js:62
+[   59655ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///./node_modules/next/dist/client/components/react-dev-overlay/pages/hot-reloader-client.js:221
+[   59769ms] [ERROR] Failed to load resource: the server responded with a status of 500 (Internal Server Error) @ http://localhost:3002/_next/static/webpack/4c06cce9c0b6cc6e.webpack.hot-update.json:0
+[   59769ms] [WARNING] [Fast Refresh] performing full reload
+
+Fast Refresh will perform a full reload when you edit a file that's imported by modules outside of the React rendering tree.
+You might have a file which exports a React component but also exports a value that is imported by a non-React component file.
+Consider migrating the non-React component export to a separate file and importing it into both files.
+
+It is also possible the parent component of the component you edited is a class component, which disables Fast Refresh.
+Fast Refresh requires at least one parent function component in your React tree. @ webpack-internal:///./node_modules/next/dist/client/components/react-dev-overlay/pages/hot-reloader-client.js:347
+[   60063ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom.development.js:38559
+[   60289ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:3002/api/program/progress:0
+[   60289ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:3002/api/program/progress:0
+[   60292ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:3002/api/journey/timeline:0
+[   60294ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:3002/api/journey/state:0
+[   63213ms] [LOG] [Fast Refresh] rebuilding @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:186
+[   63331ms] [LOG] [Fast Refresh] done in 119ms @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/client/components/react-dev-overlay/app/hot-reloader-client.js:43
+[   63390ms] [ERROR] Failed to load resource: the server responded with a status of 404 (Not Found) @ http://localhost:3002/_next/static/webpack/e3c81798011190b7.webpack.hot-update.json:0
+[   63591ms] [INFO] %cDownload the React DevTools for a better development experience: https://reactjs.org/link/react-devtools font-weight:bold @ webpack-internal:///(app-pages-browser)/./node_modules/next/dist/compiled/react-dom/cjs/react-dom.development.js:38559
+[   63645ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:3002/api/program/progress:0
+[   63652ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:3002/api/journey/state:0
+[   63654ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:3002/api/program/progress:0
+[   63655ms] [ERROR] Failed to load resource: the server responded with a status of 401 (Unauthorized) @ http://localhost:3002/api/journey/timeline:0

@@ -1,0 +1,2 @@
+[    1389ms] [ERROR] Failed to load resource: the server responded with a status of 503 () @ https://ads-api.x.com/12/measurement/dcm_local_id:0
+[    1610ms] [INFO] Slow network is detected. See https://www.chromestatus.com/feature/5636954674692096 for more details. Fallback font will be used while loading: https://abs.twimg.com/responsive-web/client-web/Chirp-Regular.80fda27a.woff2 @ https://abs.twimg.com/responsive-web/client-web/vendor.f1dc7e4a.js:93

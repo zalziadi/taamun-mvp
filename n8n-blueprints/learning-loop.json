@@ -1,0 +1,355 @@
+{
+  "name": "Learning Loop — Self-Evolution Engine",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 24
+            }
+          ]
+        }
+      },
+      "name": "Daily at Midnight",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_BRAIN_LOG_DB }}",
+        "returnAll": true
+      },
+      "name": "Read All Brain Decisions",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        300
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_REVENUE_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Revenue (Outcomes)",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        500
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_CONTENT_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Content (Outcomes)",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        700
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// ========================================\n// OUTCOME TRACKER — Before vs After\n// ========================================\nconst decisions = $('Read All Brain Decisions').all();\nconst revenue = $('Read Revenue (Outcomes)').all();\nconst content = $('Read Content (Outcomes)').all();\n\nconst now = new Date();\nconst oneDayAgo = new Date(now - 24 * 60 * 60 * 1000);\n\n// Filter last 24h decisions\nconst recentDecisions = decisions.filter(d => {\n  const ts = new Date(d.json.created_time || d.json.timestamp || 0);\n  return ts >= oneDayAgo;\n});\n\n// Current metrics\nconst currentCustomers = revenue.length;\nconst currentRevenue = revenue.reduce((s, r) => s + (r.json.amount || 350), 0);\nconst currentAvgScore = content.length > 0\n  ? Math.round(content.reduce((s, c) => s + (c.json.performance_score || 0), 0) / content.length)\n  : 0;\nconst currentDMs = content.reduce((s, c) => s + (c.json.dms_generated || 0), 0);\n\n// Track each decision's outcome\nconst evaluatedDecisions = recentDecisions.map(d => {\n  const decision = d.json;\n  const customersAtTime = decision.customers_at_time || 0;\n  const revenueAtTime = decision.revenue_at_time || 0;\n\n  const customersDelta = currentCustomers - customersAtTime;\n  const revenueDelta = currentRevenue - revenueAtTime;\n\n  let outcome = 'neutral';\n  if (customersDelta > 2 || revenueDelta > 700) outcome = 'success';\n  else if (customersDelta < 0 || revenueDelta < -500) outcome = 'failure';\n  else if (customersDelta > 0) outcome = 'partial_success';\n\n  return {\n    decision_id: decision.title || 'unknown',\n    status: decision.status || '',\n    summary: decision.summary || '',\n    confidence: decision.confidence_avg || 0,\n    pricing_recommended: decision.pricing_recommended || 350,\n    before: { customers: customersAtTime, revenue: revenueAtTime },\n    after: { customers: currentCustomers, revenue: currentRevenue },\n    delta: { customers: customersDelta, revenue: revenueDelta },\n    outcome,\n    page_id: d.json.id || ''\n  };\n});\n\n// Aggregate learning\nconst successCount = evaluatedDecisions.filter(d => d.outcome === 'success').length;\nconst failureCount = evaluatedDecisions.filter(d => d.outcome === 'failure').length;\nconst totalEvaluated = evaluatedDecisions.length;\nconst overallAccuracy = totalEvaluated > 0\n  ? Math.round(successCount / totalEvaluated * 100)\n  : 0;\n\n// Causal analysis: what decisions led to success?\nconst successDecisions = evaluatedDecisions.filter(d => d.outcome === 'success');\nconst failureDecisions = evaluatedDecisions.filter(d => d.outcome === 'failure');\n\nreturn {\n  json: {\n    period: {\n      from: oneDayAgo.toISOString(),\n      to: now.toISOString()\n    },\n    metrics: {\n      current_customers: currentCustomers,\n      current_revenue: currentRevenue,\n      current_avg_score: currentAvgScore,\n      current_dms: currentDMs\n    },\n    evaluation: {\n      total_decisions: totalEvaluated,\n      success: successCount,\n      failure: failureCount,\n      neutral: totalEvaluated - successCount - failureCount,\n      accuracy: overallAccuracy\n    },\n    decisions: evaluatedDecisions,\n    success_patterns: successDecisions.map(d => d.summary),\n    failure_patterns: failureDecisions.map(d => d.summary)\n  }\n};"
+      },
+      "name": "Outcome Tracker",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        650,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-20250514\",\n  \"max_tokens\": 1500,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"أنت نظام التعلم الذاتي لـ Growth Brain.\\n\\nمهمتك: حلل قرارات آخر 24 ساعة وحدد ما نجح وما فشل ولماذا.\\n\\n=== بيانات اليوم ===\\n\\n📊 الأداء الحالي:\\n- العملاء: {{ $json.metrics.current_customers }}\\n- الإيراد: {{ $json.metrics.current_revenue }} ريال\\n- متوسط أداء المحتوى: {{ $json.metrics.current_avg_score }}/100\\n- DMs: {{ $json.metrics.current_dms }}\\n\\n📋 القرارات ({{ $json.evaluation.total_decisions }}):\\n- ناجحة: {{ $json.evaluation.success }}\\n- فاشلة: {{ $json.evaluation.failure }}\\n- محايدة: {{ $json.evaluation.neutral }}\\n- دقة القرارات: {{ $json.evaluation.accuracy }}%\\n\\n✅ أنماط النجاح:\\n{{ $json.success_patterns.join('\\n') }}\\n\\n❌ أنماط الفشل:\\n{{ $json.failure_patterns.join('\\n') }}\\n\\n=== المطلوب ===\\n\\nأجب بـ JSON فقط:\\n{\\n  \\\"daily_summary\\\": \\\"ملخص أداء اليوم بسطر\\\",\\n  \\\"best_decision\\\": \\\"أفضل قرار ولماذا نجح\\\",\\n  \\\"worst_decision\\\": \\\"أسوأ قرار ولماذا فشل\\\",\\n  \\\"causal_insights\\\": [\\n    {\\\"cause\\\": \\\"السبب\\\", \\\"effect\\\": \\\"النتيجة\\\", \\\"confidence\\\": 0.0-1.0}\\n  ],\\n  \\\"rules_to_add\\\": [\\\"قاعدة جديدة يجب إضافتها\\\"],\\n  \\\"rules_to_remove\\\": [\\\"قاعدة يجب إلغاؤها\\\"],\\n  \\\"confidence_adjustment\\\": {\\n    \\\"direction\\\": \\\"up|down|stable\\\",\\n    \\\"reason\\\": \\\"لماذا نعدل مستوى الثقة\\\"\\n  },\\n  \\\"tomorrow_focus\\\": \\\"أولوية الغد الأساسية\\\"\\n}\"\n    }\n  ]\n}"
+      },
+      "name": "Claude Self-Reflection",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        900,
+        500
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ANTHROPIC_CREDENTIAL_ID",
+          "name": "Anthropic API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const response = $input.item.json;\nconst evaluation = $('Outcome Tracker').item.json;\nlet learning;\n\ntry {\n  const content = response.content?.[0]?.text || '{}';\n  let jsonStr = content;\n  if (jsonStr.includes('```json')) jsonStr = jsonStr.split('```json')[1].split('```')[0].trim();\n  else if (jsonStr.includes('```')) jsonStr = jsonStr.split('```')[1].split('```')[0].trim();\n  learning = JSON.parse(jsonStr);\n} catch (e) {\n  learning = {\n    daily_summary: 'خطأ في التحليل',\n    best_decision: 'غير متاح',\n    worst_decision: 'غير متاح',\n    causal_insights: [],\n    rules_to_add: [],\n    rules_to_remove: [],\n    confidence_adjustment: { direction: 'stable', reason: 'خطأ' },\n    tomorrow_focus: 'مراجعة يدوية'\n  };\n}\n\nreturn {\n  json: {\n    ...evaluation,\n    learning\n  }\n};"
+      },
+      "name": "Parse Learning",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1100,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🧬 *LEARNING LOOP — تقرير التطور اليومي*\n\n━━━━━━━━━━━━━━━━━━\n📍 {{ $json.learning.daily_summary }}\n\n━━━━━━━━━━━━━━━━━━\n📊 *أداء القرارات*\nالإجمالي: {{ $json.evaluation.total_decisions }}\n✅ ناجحة: {{ $json.evaluation.success }}\n❌ فاشلة: {{ $json.evaluation.failure }}\n🎯 الدقة: {{ $json.evaluation.accuracy }}%\n\n━━━━━━━━━━━━━━━━━━\n🏆 *أفضل قرار*\n{{ $json.learning.best_decision }}\n\n💀 *أسوأ قرار*\n{{ $json.learning.worst_decision }}\n\n━━━━━━━━━━━━━━━━━━\n🔬 *تحليل الأسباب*\n{{ $json.learning.causal_insights.map(c => `• ${c.cause} → ${c.effect} (${Math.round(c.confidence * 100)}%)`).join('\\n') }}\n\n━━━━━━━━━━━━━━━━━━\n📝 *قواعد جديدة مقترحة*\n{{ $json.learning.rules_to_add.join('\\n') }}\n\n🗑 *قواعد يجب إلغاؤها*\n{{ $json.learning.rules_to_remove.join('\\n') }}\n\n━━━━━━━━━━━━━━━━━━\n🔮 *الثقة*: {{ $json.learning.confidence_adjustment.direction }}\n{{ $json.learning.confidence_adjustment.reason }}\n\n━━━━━━━━━━━━━━━━━━\n🎯 *أولوية الغد*\n{{ $json.learning.tomorrow_focus }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Daily Learning Report",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1350,
+        350
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "create",
+        "databaseId": "={{ $env.NOTION_LEARNING_DB }}",
+        "properties": {
+          "title": "=Learning — {{ new Date().toISOString().slice(0,10) }}",
+          "accuracy": "={{ $json.evaluation.accuracy }}",
+          "success_count": "={{ $json.evaluation.success }}",
+          "failure_count": "={{ $json.evaluation.failure }}",
+          "best_decision": "={{ $json.learning.best_decision }}",
+          "worst_decision": "={{ $json.learning.worst_decision }}",
+          "rules_added": "={{ $json.learning.rules_to_add.join('; ') }}",
+          "tomorrow_focus": "={{ $json.learning.tomorrow_focus }}",
+          "causal_insights_json": "={{ JSON.stringify($json.learning.causal_insights) }}"
+        }
+      },
+      "name": "Save Learning to Notion",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1350,
+        550
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Update past decision outcomes in Brain Log DB\nconst decisions = $('Outcome Tracker').item.json.decisions || [];\n\n// Return decisions that need outcome updates\nconst toUpdate = decisions.filter(d => d.page_id && d.outcome !== 'neutral');\n\nreturn toUpdate.map(d => ({\n  json: {\n    page_id: d.page_id,\n    outcome: d.outcome,\n    customers_delta: d.delta.customers,\n    revenue_delta: d.delta.revenue\n  }\n}));"
+      },
+      "name": "Prepare Outcome Updates",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1350,
+        750
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "update",
+        "pageId": "={{ $json.page_id }}",
+        "properties": {
+          "outcome": "={{ $json.outcome }}",
+          "customers_delta": "={{ $json.customers_delta }}",
+          "revenue_delta": "={{ $json.revenue_delta }}"
+        }
+      },
+      "name": "Update Decision Outcomes",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1550,
+        750
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Daily at Midnight": {
+      "main": [
+        [
+          {
+            "node": "Read All Brain Decisions",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Revenue (Outcomes)",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Content (Outcomes)",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read All Brain Decisions": {
+      "main": [
+        [
+          {
+            "node": "Outcome Tracker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Revenue (Outcomes)": {
+      "main": [
+        [
+          {
+            "node": "Outcome Tracker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Content (Outcomes)": {
+      "main": [
+        [
+          {
+            "node": "Outcome Tracker",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Outcome Tracker": {
+      "main": [
+        [
+          {
+            "node": "Claude Self-Reflection",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude Self-Reflection": {
+      "main": [
+        [
+          {
+            "node": "Parse Learning",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Learning": {
+      "main": [
+        [
+          {
+            "node": "Daily Learning Report",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Save Learning to Notion",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Prepare Outcome Updates",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Outcome Updates": {
+      "main": [
+        [
+          {
+            "node": "Update Decision Outcomes",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "1011"
+}

@@ -45,7 +45,7 @@ export async function POST(req: Request) {
 
   // حفظ الشحنة المعلّقة
   const admin = getSupabaseAdmin();
-  await admin.from("customer_subscriptions").upsert(
+  const { error: upsertErr } = await admin.from("customer_subscriptions").upsert(
     {
       user_id:           auth.user.id,
       stripe_customer_id: `tap_${auth.user.id}`,
@@ -56,6 +56,9 @@ export async function POST(req: Request) {
     },
     { onConflict: "user_id" }
   );
+  if (upsertErr) {
+    console.error("[tap/checkout] pending subscription save failed:", upsertErr);
+  }
 
   return NextResponse.json({ url: charge.transaction?.url });
 }

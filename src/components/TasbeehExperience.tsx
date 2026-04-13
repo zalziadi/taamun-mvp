@@ -83,7 +83,7 @@ export function TasbeehExperience() {
     >
       <header className="w-full px-6 pt-8 text-center">
         <p className="text-xs tracking-[0.2em] text-[#c9b88a]">مسبحة تمعّن</p>
-        <p className="mt-1 text-[10px] text-[#e8e1d9]/40">أسماء الله الحسنى</p>
+        <p className="mt-1 text-xs text-[#e8e1d9]/40">أسماء الله الحسنى</p>
       </header>
 
       <main className="flex flex-1 flex-col items-center justify-center px-6">
@@ -137,7 +137,7 @@ export function TasbeehExperience() {
           </motion.span>
         </div>
 
-        <p className="mt-4 text-[10px] text-[#e8e1d9]/30">اضغط أو مسافة للتسبيح</p>
+        <p className="mt-4 text-xs text-[#e8e1d9]/30">اضغط أو مسافة للتسبيح</p>
       </main>
 
       <footer className="flex w-full items-center justify-center gap-4 px-6 pb-10">

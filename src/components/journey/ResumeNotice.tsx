@@ -31,8 +31,8 @@ export function ResumeNotice({ reconciliation, variant = "parchment" }: Props) {
     : `tm-card ${blocking ? "border-[#c4a265]/50 bg-gradient-to-b from-[#faf4e4] to-[#fcfaf7]" : "border-[#c4a265]/30 bg-[#faf6ee]"} p-6 space-y-3`;
 
   const labelClass = isDark
-    ? "text-[10px] tracking-[0.18em] text-[#c9b88a]/80"
-    : "text-[10px] tracking-[0.18em] text-[#8c7851]/80";
+    ? "text-xs tracking-[0.18em] text-[#c9b88a]/80"
+    : "text-xs tracking-[0.18em] text-[#8c7851]/80";
 
   const messageClass = isDark
     ? "text-base leading-[1.9] text-[#e8e1d9] font-semibold"

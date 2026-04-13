@@ -1,0 +1,226 @@
+{
+  "name": "Execution Control Brain — Strategy Alignment Gate",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "control-gate",
+        "responseMode": "lastNode"
+      },
+      "name": "Control Gate Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        400
+      ],
+      "notes": "يستقبل قرارات من Decision Router قبل التنفيذ"
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_STRATEGY_DB }}",
+        "returnAll": false,
+        "limit": 1
+      },
+      "name": "Read Current Strategy",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        300
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_BRAIN_LOG_DB }}",
+        "returnAll": false,
+        "limit": 5
+      },
+      "name": "Read Recent Decisions",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        420,
+        500
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// ==========================================\n// EXECUTION CONTROL BRAIN\n// Strategy Alignment + Conflict Detection\n// + Risk Assessment before execution\n// ==========================================\nconst incoming = $('Control Gate Webhook').first()?.json?.body || $('Control Gate Webhook').first()?.json || {};\nconst decisions = incoming.decisions || [];\nconst strategy = $('Read Current Strategy').first()?.json || {};\nconst recentDecisions = $('Read Recent Decisions').all().map(d => d.json);\n\n// === EXTRACT STRATEGY CONTEXT ===\nconst primaryFocus = strategy['Primary Focus'] || strategy.primary_focus || 'revenue';\nconst primaryBet = strategy['Primary Bet'] || strategy.primary_bet || '';\nconst killZone = strategy['Kill Zone'] || strategy.kill_zone || '';\nconst priorityScore = strategy['Priority Score'] || strategy.priority_score || 5;\nconst kpiTarget = strategy['KPI Target'] || strategy.kpi_target || 1500;\nconst kpiActual = strategy['KPI Actual'] || strategy.kpi_actual || 0;\nconst contentPct = strategy['Content Pct'] || strategy.content_pct || 40;\nconst salesPct = strategy['Sales Pct'] || strategy.sales_pct || 30;\nconst direction = strategy['Direction'] || strategy.direction || '';\nconst mandate = strategy['Mandate'] || strategy.mandate || '';\n\n// === FOCUS-TO-KEYWORD MAP ===\nconst focusKeywords = {\n  conversion: ['close', 'convert', 'sale', 'إغلاق', 'تحويل', 'بيع', 'وردة', 'warda', 'pricing'],\n  revenue: ['revenue', 'price', 'upsell', 'إيراد', 'سعر', 'دفع', 'عرض', 'pricing'],\n  audience_growth: ['content', 'video', 'reach', 'scale', 'محتوى', 'فيديو', 'إنتاج', 'نشر', 'hook'],\n  retention: ['quality', 'retain', 'experience', 'جودة', 'تجربة', 'متابعة'],\n  brand_awareness: ['brand', 'awareness', 'reach', 'براند', 'وعي', 'وصول'],\n  product_quality: ['bug', 'fix', 'improve', 'إصلاح', 'تحسين', 'جودة', 'أمان', 'security']\n};\n\nconst focusWords = focusKeywords[primaryFocus] || [];\n\n// === CONFLICT DETECTION ===\n// Check if any recent decisions conflict with incoming ones\nconst recentActions = recentDecisions.flatMap(d => {\n  try { return JSON.parse(d['Decisions JSON'] || '[]'); } catch { return []; }\n});\n\n// === EVALUATE EACH DECISION ===\nconst evaluated = decisions.map((decision, i) => {\n  const actionLower = (decision.action || '').toLowerCase();\n  const agentLower = (decision.target_agent || '').toLowerCase();\n  \n  // 1. Strategy Alignment Score (0-100)\n  let alignmentScore = 50; // neutral\n  let alignmentReason = '';\n  \n  // Check if action matches primary focus keywords\n  const matchesKeywords = focusWords.some(kw => actionLower.includes(kw) || agentLower.includes(kw));\n  if (matchesKeywords) {\n    alignmentScore += 30;\n    alignmentReason = `يتوافق مع التركيز: ${primaryFocus}`;\n  }\n  \n  // Check if action is in kill zone\n  const killZoneLower = killZone.toLowerCase();\n  if (killZoneLower && (actionLower.includes(killZoneLower) || killZoneLower.split(/[,،]/).some(k => actionLower.includes(k.trim())))) {\n    alignmentScore -= 40;\n    alignmentReason = `⚠️ في Kill Zone: ${killZone}`;\n  }\n  \n  // Check if action matches primary bet\n  if (primaryBet && actionLower.includes(primaryBet.toLowerCase().substring(0, 20))) {\n    alignmentScore += 20;\n    alignmentReason += ` | يخدم الرهان الرئيسي`;\n  }\n  \n  // Resource allocation check\n  if (agentLower.includes('content') && contentPct < 20) {\n    alignmentScore -= 15;\n    alignmentReason += ` | الاستراتيجية تقلل المحتوى (${contentPct}%)`;\n  }\n  if ((agentLower.includes('warda') || agentLower.includes('sales')) && salesPct < 15) {\n    alignmentScore -= 15;\n    alignmentReason += ` | الاستراتيجية تقلل المبيعات (${salesPct}%)`;\n  }\n  \n  // 2. KPI Impact Check\n  let kpiImpact = 'neutral';\n  if (primaryFocus === 'conversion' && (agentLower.includes('warda') || actionLower.includes('close'))) {\n    kpiImpact = 'positive';\n    alignmentScore += 10;\n  } else if (primaryFocus === 'audience_growth' && agentLower.includes('content')) {\n    kpiImpact = 'positive';\n    alignmentScore += 10;\n  } else if (primaryFocus === 'revenue' && (actionLower.includes('price') || actionLower.includes('سعر'))) {\n    kpiImpact = 'positive';\n    alignmentScore += 10;\n  }\n  \n  // 3. Conflict Detection\n  let hasConflict = false;\n  let conflictWith = '';\n  recentActions.forEach(recent => {\n    const recentAction = (recent.action || '').toLowerCase();\n    // Same agent, contradicting action\n    if (recent.target_agent === decision.target_agent && recentAction !== actionLower) {\n      // Check for opposite directions\n      if ((actionLower.includes('scale') && recentAction.includes('kill')) ||\n          (actionLower.includes('ارفع') && recentAction.includes('خفض')) ||\n          (actionLower.includes('أوقف') && recentAction.includes('استمر'))) {\n        hasConflict = true;\n        conflictWith = recent.action;\n        alignmentScore -= 20;\n      }\n    }\n  });\n  \n  // 4. Risk Assessment\n  const riskLevel = decision.risk || 'low';\n  if (riskLevel === 'high') alignmentScore -= 10;\n  if (riskLevel === 'critical') alignmentScore -= 20;\n  \n  // Clamp score\n  alignmentScore = Math.max(0, Math.min(100, alignmentScore));\n  \n  // 5. Final Verdict\n  let verdict = 'EXECUTE';\n  let verdictReason = '';\n  \n  if (alignmentScore >= 70) {\n    verdict = 'EXECUTE';\n    verdictReason = 'متوافق مع الاستراتيجية';\n  } else if (alignmentScore >= 40) {\n    verdict = 'MODIFY';\n    verdictReason = 'يحتاج تعديل ليتوافق مع الاستراتيجية';\n  } else {\n    verdict = 'BLOCK';\n    verdictReason = 'يتعارض مع الاستراتيجية الحالية';\n  }\n  \n  // Override: if in kill zone, always block\n  if (alignmentScore <= 20) verdict = 'BLOCK';\n  \n  return {\n    ...decision,\n    control: {\n      alignment_score: alignmentScore,\n      alignment_reason: alignmentReason || 'تقييم عام',\n      kpi_impact: kpiImpact,\n      has_conflict: hasConflict,\n      conflict_with: conflictWith,\n      risk_level: riskLevel,\n      verdict,\n      verdict_reason: verdictReason\n    }\n  };\n});\n\n// Separate by verdict\nconst toExecute = evaluated.filter(d => d.control.verdict === 'EXECUTE');\nconst toModify = evaluated.filter(d => d.control.verdict === 'MODIFY');\nconst toBlock = evaluated.filter(d => d.control.verdict === 'BLOCK');\n\nreturn {\n  json: {\n    timestamp: new Date().toISOString(),\n    strategy_context: {\n      primary_focus: primaryFocus,\n      primary_bet: primaryBet,\n      kill_zone: killZone,\n      direction,\n      mandate,\n      kpi_progress: kpiTarget > 0 ? Math.round(kpiActual / kpiTarget * 100) : 0\n    },\n    summary: {\n      total: evaluated.length,\n      execute: toExecute.length,\n      modify: toModify.length,\n      block: toBlock.length\n    },\n    decisions: {\n      execute: toExecute,\n      modify: toModify,\n      block: toBlock\n    },\n    all_evaluated: evaluated\n  }\n};"
+      },
+      "name": "Control Brain Logic",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        700,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "number": [
+            {
+              "value1": "={{ $json.summary.block }}",
+              "value2": 0,
+              "operation": "larger"
+            }
+          ]
+        }
+      },
+      "name": "Any Blocked?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        950,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🔐 *CONTROL BRAIN — Strategy Gate*\n⏰ {{ $json.timestamp }}\n\n━━━━━━━━━━━━━━━━━━\n🧭 *الاستراتيجية الحالية:*\n🎯 Focus: {{ $json.strategy_context.primary_focus }}\n🏹 Bet: {{ $json.strategy_context.primary_bet }}\n🛑 Kill: {{ $json.strategy_context.kill_zone }}\n📊 KPI: {{ $json.strategy_context.kpi_progress }}%\n\n━━━━━━━━━━━━━━━━━━\n📋 *النتائج:*\n✅ تنفيذ: {{ $json.summary.execute }}\n🔄 تعديل: {{ $json.summary.modify }}\n❌ حظر: {{ $json.summary.block }}\n\n{{ $json.decisions.block.length > 0 ? '🚨 *محظور:*\\n' + $json.decisions.block.map((d, i) => `${i+1}. ❌ ${d.action}\\n   📍 ${d.control.alignment_reason}\\n   📊 Score: ${d.control.alignment_score}/100`).join('\\n\\n') : '' }}\n\n{{ $json.decisions.modify.length > 0 ? '\\n⚠️ *يحتاج تعديل:*\\n' + $json.decisions.modify.map((d, i) => `${i+1}. 🔄 ${d.action}\\n   📍 ${d.control.verdict_reason}\\n   📊 Score: ${d.control.alignment_score}/100`).join('\\n\\n') : '' }}\n\n{{ $json.decisions.execute.length > 0 ? '\\n✅ *ينفذ:*\\n' + $json.decisions.execute.map((d, i) => `${i+1}. ✅ ${d.action} (${d.control.alignment_score}/100)`).join('\\n') : '' }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Control Report Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1200,
+        200
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.N8N_WEBHOOK_BASE }}/webhook/decision-router",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"decisions\": {{ JSON.stringify($json.decisions.execute) }},\n  \"overall_status\": \"{{ $json.summary.block > 0 ? 'warning' : 'stable' }}\",\n  \"meta\": {\n    \"timestamp\": \"{{ $json.timestamp }}\",\n    \"source\": \"control_brain\",\n    \"strategy_aligned\": true,\n    \"blocked_count\": {{ $json.summary.block }},\n    \"modified_count\": {{ $json.summary.modify }}\n  }\n}"
+      },
+      "name": "Forward Approved to Router",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1200,
+        450
+      ],
+      "notes": "فقط القرارات المتوافقة مع الاستراتيجية تمر"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"evaluated\",\n  \"total\": {{ $json.summary.total }},\n  \"execute\": {{ $json.summary.execute }},\n  \"modify\": {{ $json.summary.modify }},\n  \"block\": {{ $json.summary.block }},\n  \"strategy_focus\": \"{{ $json.strategy_context.primary_focus }}\"\n}"
+      },
+      "name": "Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        1200,
+        600
+      ]
+    }
+  ],
+  "connections": {
+    "Control Gate Webhook": {
+      "main": [
+        [
+          {
+            "node": "Read Current Strategy",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Read Recent Decisions",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Current Strategy": {
+      "main": [
+        [
+          {
+            "node": "Control Brain Logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Recent Decisions": {
+      "main": [
+        [
+          {
+            "node": "Control Brain Logic",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Control Brain Logic": {
+      "main": [
+        [
+          {
+            "node": "Any Blocked?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Forward Approved to Router",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Any Blocked?": {
+      "main": [
+        [
+          {
+            "node": "Control Report Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "1006"
+}

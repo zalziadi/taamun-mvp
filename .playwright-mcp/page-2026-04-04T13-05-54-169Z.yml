@@ -1,0 +1,254 @@
+- generic [ref=e1]:
+  - generic [ref=e9]:
+    - generic [ref=e12]:
+      - link [ref=e799] [cursor=pointer]:
+        - /url: /
+        - img [ref=e800]
+      - generic [ref=e25]:
+        - link [ref=e801] [cursor=pointer]:
+          - /url: /
+          - img [ref=e802]
+        - link [ref=e803] [cursor=pointer]:
+          - /url: /reels/
+          - img [ref=e804]
+        - link [ref=e805] [cursor=pointer]:
+          - /url: /direct/inbox/
+          - generic [ref=e55]:
+            - img [ref=e806]
+            - generic [ref=e231]: "3"
+        - link [ref=e808] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e809]
+        - link [ref=e810] [cursor=pointer]:
+          - /url: /explore/
+          - img [ref=e811]
+        - link [ref=e812] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e813]
+        - link [ref=e814] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e815]
+        - link [ref=e816] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e817]
+        - link [ref=e818] [cursor=pointer]:
+          - /url: /zalziadi/
+          - link [ref=e819]:
+            - img [ref=e820]
+      - generic [ref=e126]:
+        - link [ref=e821] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e822]
+        - link [ref=e823] [cursor=pointer]:
+          - /url: "#"
+          - img [ref=e824]
+    - main [ref=e146]:
+      - generic [ref=e237]:
+        - navigation [ref=e825]:
+          - generic [ref=e239]:
+            - generic [ref=e240]:
+              - button [ref=e826] [cursor=pointer]:
+                - heading [level=2] [ref=e827]:
+                  - generic [ref=e244]: zalziadi
+                - img [ref=e828]
+              - button [ref=e829] [cursor=pointer]:
+                - img [ref=e830]
+            - tablist [ref=e257]:
+              - tab [selected] [ref=e831] [cursor=pointer]:
+                - generic [ref=e260]: Primary
+              - tab [ref=e832] [cursor=pointer]:
+                - generic [ref=e263]: General
+              - tab [ref=e833] [cursor=pointer]:
+                - generic [ref=e267]: طلبات
+            - generic [ref=e271]:
+              - img [ref=e834]
+              - textbox [ref=e835]:
+                - /placeholder: بحث
+            - generic [ref=e277]:
+              - list [ref=e281]:
+                - listitem [ref=e282]
+                - listitem [ref=e283]
+                - listitem [ref=e284]:
+                  - button [ref=e836] [cursor=pointer]:
+                    - generic [ref=e287]:
+                      - generic [ref=e293]: لا يمكنني الاختيار...
+                      - generic [ref=e294]:
+                        - link [ref=e296]
+                        - generic [ref=e298]: ملاحظتك
+                - listitem [ref=e299]:
+                  - button [ref=e837] [cursor=pointer]:
+                    - generic [ref=e303]:
+                      - generic [ref=e309]:
+                        - generic [ref=e310]:
+                          - img [ref=e838]
+                          - generic [ref=e316]: Life Is a Gift from God
+                        - generic [ref=e317]: God Is Love
+                        - generic [ref=e318]: الحب هو معراج الروح إلى النعيم 🫂🤍✨
+                      - generic [ref=e319]:
+                        - link [ref=e839]:
+                          - img [ref=e840]
+                        - generic [ref=e325]: Marwa AlKhuzaei
+                - listitem [ref=e326]:
+                  - button [ref=e841] [cursor=pointer]:
+                    - generic [ref=e330]:
+                      - generic [ref=e337]: 💗🤍💗🤍💗
+                      - generic [ref=e338]:
+                        - link [ref=e842]:
+                          - img [ref=e843]
+                        - generic [ref=e344]: Bothina💗
+              - generic [ref=e348]:
+                - button [ref=e844] [cursor=pointer]:
+                  - generic [ref=e354]:
+                    - img [ref=e845]
+                    - generic [ref=e361]:
+                      - generic [ref=e365]: ‏‎The Queen Monawar‎‏
+                      - generic [ref=e367]:
+                        - generic [ref=e369]: حازت رسالة على إعجاب
+                        - generic [ref=e370]:
+                          - generic [ref=e372]: ·
+                          - generic [ref=e846]: ٤ س
+                - button [ref=e847] [cursor=pointer]:
+                  - generic [ref=e382]:
+                    - img [ref=e848]
+                    - generic [ref=e389]:
+                      - generic [ref=e393]: ‏‎Mayada Allamee🇮🇶🙂‎‏
+                      - generic [ref=e395]:
+                        - generic [ref=e397]: افضل احتمال
+                        - generic [ref=e398]:
+                          - generic [ref=e400]: ·
+                          - generic [ref=e849]: ١٦ س
+                - button [ref=e850] [cursor=pointer]:
+                  - generic [ref=e410]:
+                    - img [ref=e851]
+                    - generic [ref=e417]:
+                      - generic [ref=e421]: ‏‎Naïla Guef‎‏
+                      - generic [ref=e423]:
+                        - generic [ref=e425]: "أنت: السلام عليكم 🌿 لفت انتباهي اهتمامك بالتمعّن.. سؤال واحد: ماذا لو كانت رحلتك في الحياة في اتجاه مدينة لا تراها؟ تمعّن — برنامج 28 يوم لاكتشاف المعنى بلغة القرآن. تجربة مجانية 7 أيام، بدون أي التزام. https://www.taamun.com بالتوفيق في رحلتك 🤍"
+                        - generic [ref=e426]:
+                          - generic [ref=e428]: ·
+                          - generic [ref=e852]: ١٦ س
+                - button [pressed] [ref=e853] [cursor=pointer]:
+                  - generic [ref=e438]:
+                    - img [ref=e854]
+                    - generic [ref=e445]:
+                      - generic [ref=e449]: ‏Nezar Senan - نزار سنان‏
+                      - generic [ref=e451]:
+                        - generic [ref=e453]: أرسلت رسالة صوتية.
+                        - generic [ref=e454]:
+                          - generic [ref=e456]: ·
+                          - generic [ref=e855]: ١٦ س
+                - button [ref=e856] [cursor=pointer]:
+                  - generic [ref=e466]:
+                    - img [ref=e857]
+                    - generic [ref=e473]:
+                      - generic [ref=e477]: ‏‎Mahmoud Awad‎‏
+                      - generic [ref=e479]:
+                        - generic [ref=e481]: "أنت: السلام عليكم 🌿 لفت انتباهي اهتمامك بالتمعّن.. سؤال واحد: ماذا لو كانت رحلتك في الحياة في اتجاه مدينة لا تراها؟ تمعّن — برنامج 28 يوم لاكتشاف المعنى بلغة القرآن. تجربة مجانية 7 أيام، بدون أي التزام. https://www.taamun.com بالتوفيق في رحلتك 🤍"
+                        - generic [ref=e482]:
+                          - generic [ref=e484]: ·
+                          - generic [ref=e858]: 1ي
+                - button [ref=e859] [cursor=pointer]:
+                  - generic [ref=e494]:
+                    - img [ref=e860]
+                    - generic [ref=e501]:
+                      - generic [ref=e505]: ‏‎Zahra Mahdi‎‏
+                      - generic [ref=e507]:
+                        - generic [ref=e509]: حازت رسالة على إعجاب
+                        - generic [ref=e510]:
+                          - generic [ref=e512]: ·
+                          - generic [ref=e861]: 4 ي
+                - button [ref=e862] [cursor=pointer]:
+                  - generic [ref=e547]:
+                    - status [ref=e863]
+                    - generic [ref=e553]:
+                      - status [ref=e864]
+                      - status [ref=e865]
+        - generic [ref=e586]:
+          - generic [ref=e590]:
+            - link [ref=e867] [cursor=pointer]:
+              - /url: /sencpb/
+              - generic [ref=e592]:
+                - img [ref=e868]
+                - generic [ref=e597]:
+                  - heading [level=2] [ref=e869]:
+                    - generic [ref=e600]: ‏Nezar Senan - نزار سنان‏
+                  - generic [ref=e604]: sencpb
+            - generic [ref=e605]:
+              - button [ref=e870] [cursor=pointer]:
+                - img [ref=e871]
+              - button [ref=e872] [cursor=pointer]:
+                - img [ref=e873]
+              - button [ref=e874] [cursor=pointer]:
+                - img [ref=e875]
+          - generic [ref=e621]:
+            - generic [ref=e625]:
+              - generic [ref=e626]:
+                - img [ref=e876]
+                - generic [ref=e631]:
+                  - heading [level=2] [ref=e877]:
+                    - generic [ref=e635]: ‏Nezar Senan - نزار سنان‏
+                  - generic [ref=e637]: sencpb · Instagram
+                  - link [ref=e878] [cursor=pointer]:
+                    - /url: /sencpb/
+                    - text: عرض الملف الشخصي
+              - generic [ref=e640]:
+                - generic [ref=e643]:
+                  - generic [ref=e646]: إثنين 7:14 م
+                  - group [ref=e647]:
+                    - generic [ref=e649]:
+                      - link [ref=e879] [cursor=pointer]:
+                        - /url: /sencpb
+                        - img [ref=e880]
+                      - generic [ref=e660]: السلام عليكم
+                - generic [ref=e663]:
+                  - generic [ref=e666]: خميس 6:38 م
+                  - group [ref=e667]:
+                    - generic [ref=e673]:
+                      - text: وعليكم السلام ورحمة الله
+                      - img [ref=e881]
+                      - text: أهلاً نزار! أنا مسخر، مساعدك في رحلة تمعّن
+                      - img [ref=e882]
+                      - text: تمعّن برنامج 28 يوماً لاكتشاف المعنى بلغة القرآن، مستوحى من كتاب "مدينة المعنى"
+                      - img [ref=e883]
+                      - text: كيف أقدر أساعدك؟
+                - generic [ref=e682]:
+                  - generic [ref=e685]: جمعة 10:06 ص
+                  - group [ref=e686]:
+                    - generic [ref=e693]: عندي استفسار بخصوص برنامجك في الاكتشاف و أنا أتابعك من مدة و احب أطور لان حسيت نفسي فقد بعض الإمكانيات و كنت بالاواعي صراحة حسيت الحين اني ثابت كل مرة انقص و بكثرة هل في تعويض او حل لي معني اشتركت معاك قبل ٤ سنوات
+                - group [ref=e697]:
+                  - generic [ref=e699]:
+                    - link [ref=e884] [cursor=pointer]:
+                      - /url: /sencpb
+                      - img [ref=e885]
+                    - generic [ref=e710]: انصحني كيف اسوي و هل عندي خصم إذا اشتركت ثاني او اي مساعدة
+                - generic [ref=e713]:
+                  - generic [ref=e716]: جمعة 11:19 م
+                  - group [ref=e717]:
+                    - generic [ref=e723]:
+                      - generic [ref=e724]:
+                        - button [ref=e886] [cursor=pointer]:
+                          - img [ref=e726]
+                        - slider [ref=e887] [cursor=pointer]
+                        - timer [ref=e733]: 0:41
+                      - button [ref=e888] [cursor=pointer]:
+                        - generic [ref=e735]: عرض الكتابة الصوتية
+            - generic [ref=e745]:
+              - button [ref=e889] [cursor=pointer]:
+                - img [ref=e890]
+              - generic [ref=e752]:
+                - textbox [ref=e753]:
+                  - paragraph [ref=e754]
+                - generic: مراسلة...
+              - generic [ref=e755]:
+                - button [ref=e891] [cursor=pointer]:
+                  - img [ref=e892]
+                - button [ref=e893] [cursor=pointer]:
+                  - img [ref=e894]
+                - button [ref=e895] [cursor=pointer]:
+                  - img [ref=e896]
+  - dialog [ref=e903]:
+    - generic [ref=e908]:
+      - img "صورة التفريغ الصوتي للرسالة الصوتية" [ref=e910]
+      - generic [ref=e912]: تحويل الرسائل الصوتية إلى نص
+      - generic [ref=e914]: من خلال طلب التفريغ الصوتي، أوافق على مشاركة الرسائل الصوتية مع Meta والتي ستستخدم أدوات تلقائية لتوفير التفريغ الصوتي.
+      - button "متابعة" [active] [ref=e915] [cursor=pointer]

@@ -45,7 +45,7 @@ export function CustomQuestion({ cycleDay }: CustomQuestionProps) {
         <div className="flex items-start gap-2">
           <span className="mt-0.5 text-white/40">◈</span>
           <div>
-            <p className="mb-1 text-[10px] uppercase tracking-widest text-white/30">سؤال لك</p>
+            <p className="mb-1 text-xs uppercase tracking-widest text-white/30">سؤال لك</p>
             <p className="text-sm leading-relaxed text-white/70">{question}</p>
           </div>
         </div>

@@ -206,7 +206,7 @@ export default function GuidePage() {
 
       <section className="grid gap-4 lg:grid-cols-[1.65fr_1fr]">
         <div className="tm-card p-4 sm:p-5">
-          <div className="custom-scrollbar max-h-[58vh] space-y-4 overflow-y-auto p-1 sm:p-2">
+          <div className="custom-scrollbar max-h-[50vh] space-y-4 overflow-y-auto p-1 sm:max-h-[58vh] sm:p-2">
             {messages.map((message, index) => (
               <div key={`${message.role}-${index}`} className="space-y-1.5">
                 <div
@@ -219,7 +219,7 @@ export default function GuidePage() {
                 >
                   {message.text}
                 </div>
-                <p className="px-1 text-[11px] text-[#7d7362]">{message.time}</p>
+                <p className="px-1 text-xs text-[#7d7362]">{message.time}</p>
               </div>
             ))}
             {loading ? (

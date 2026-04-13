@@ -1,0 +1,133 @@
+- generic [ref=e2]:
+  - generic:
+    - generic:
+      - heading "لعرض اختصارات لوحة المفاتيح، اضغط على علامة الاستفهام عرض اختصارات لوحة المفاتيح" [level=2] [ref=e3]:
+        - generic [ref=e4]: لعرض اختصارات لوحة المفاتيح، اضغط على علامة الاستفهام
+        - link "عرض اختصارات لوحة المفاتيح" [ref=e5] [cursor=pointer]:
+          - /url: /i/keyboard_shortcuts
+      - generic:
+        - generic:
+          - button [ref=e8] [cursor=pointer]:
+            - img [ref=e9]
+          - img [ref=e16] [cursor=pointer]
+      - generic [ref=e18]:
+        - button "التخطي إلى يوميات الصفحة الرئيسيّة" [ref=e19] [cursor=pointer]
+        - button "التخطي إلى الموضوعات المتداوَلة" [ref=e21] [cursor=pointer]
+        - banner [ref=e23]:
+          - generic [ref=e25]:
+            - generic [ref=e26]:
+              - heading "X" [level=1] [ref=e28] [cursor=pointer]:
+                - link "X" [ref=e29]:
+                  - /url: /home
+                  - img [ref=e31]
+              - navigation "أساسي" [ref=e35]:
+                - link "الرئيسيّة" [ref=e36] [cursor=pointer]:
+                  - /url: /home
+                  - img [ref=e39]
+                - link "بحث واستكشاف" [ref=e42] [cursor=pointer]:
+                  - /url: /explore
+                  - img [ref=e45]
+                - link "التنبيهات" [ref=e48] [cursor=pointer]:
+                  - /url: /notifications
+                  - img [ref=e51]
+                - link "متابعة" [ref=e54] [cursor=pointer]:
+                  - /url: /i/connect_people
+                  - img [ref=e57]
+                - link "الرسائل الخاصّة" [ref=e60] [cursor=pointer]:
+                  - /url: /i/chat
+                  - img [ref=e63]
+                - link "Grok" [ref=e66] [cursor=pointer]:
+                  - /url: /i/grok
+                  - generic [ref=e68]:
+                    - img [ref=e69]
+                    - generic "undefined من العناصر غير المقروءة" [ref=e72]
+                - link "Premium" [ref=e73] [cursor=pointer]:
+                  - /url: /i/premium_sign_up
+                  - img [ref=e76]
+                - link "الملف الشخصيّ" [ref=e79] [cursor=pointer]:
+                  - /url: /zalziadi
+                  - img [ref=e82]
+                - button "المزيد من عناصر القائمة" [ref=e85] [cursor=pointer]:
+                  - img [ref=e88]
+              - link "نشر" [ref=e92] [cursor=pointer]:
+                - /url: /compose/post
+                - img [ref=e94]
+            - button "قائمة الحساب" [ref=e99] [cursor=pointer]:
+              - generic [ref=e107]:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic "زياد الزيادي 🎩":
+                        - img "زياد الزيادي 🎩"
+        - main [ref=e110]:
+          - generic [ref=e113]:
+            - generic "الخطّ الزمنيّ الرئيسيّ" [ref=e115]:
+              - generic [ref=e116]:
+                - generic [ref=e117]:
+                  - generic [ref=e122] [cursor=pointer]:
+                    - heading "التنبيهات" [level=2] [ref=e125]
+                    - link "الإعدادات" [ref=e127]:
+                      - /url: /settings/notifications
+                      - img [ref=e129]
+                  - navigation "الخطوط الزمنية للتنبيهات" [ref=e133]:
+                    - generic [ref=e134]:
+                      - generic:
+                        - button "السابق" [disabled]:
+                          - generic:
+                            - img
+                      - tablist [ref=e136]:
+                        - tab "الكل" [selected] [ref=e137] [cursor=pointer]:
+                          - generic [ref=e140]: الكل
+                        - tab "الأولوية" [ref=e142] [cursor=pointer]:
+                          - generic [ref=e145]: الأولوية
+                        - tab "الإشارات" [ref=e146] [cursor=pointer]:
+                          - generic [ref=e149]: الإشارات
+                      - generic:
+                        - button "التالي" [disabled]:
+                          - generic:
+                            - img
+                - generic:
+                  - generic:
+                    - status:
+                      - button:
+                        - generic:
+                          - img
+                          - generic: رؤية منشورات جديدة
+              - progressbar "تحميل الخطّ الزمنيّ" [ref=e152]:
+                - img [ref=e154]
+            - generic "الموضوعات المتداوَلة" [ref=e161]:
+              - generic [ref=e162]:
+                - search "بحث" [ref=e167]:
+                  - generic [ref=e172]:
+                    - img [ref=e174]
+                    - combobox "استعلام البحث" [ref=e179]
+                - progressbar "تحميل الخطّ الزمنيّ" [ref=e183]:
+                  - img [ref=e185]
+                - progressbar "تحميل المستخدمين الموصى بمتابعتهم" [ref=e191]:
+                  - img [ref=e193]
+                - navigation "الشريط السُفلي" [ref=e197]:
+                  - generic [ref=e198]:
+                    - link "شروط الخدمة" [ref=e199] [cursor=pointer]:
+                      - /url: https://x.com/tos
+                    - generic [ref=e200]: "|"
+                  - generic [ref=e201]:
+                    - link "سياسية الخصوصيّة" [ref=e202] [cursor=pointer]:
+                      - /url: https://x.com/privacy
+                    - generic [ref=e203]: "|"
+                  - generic [ref=e204]:
+                    - link "سياسة الكوكيز" [ref=e205] [cursor=pointer]:
+                      - /url: https://support.x.com/articles/20170514
+                    - generic [ref=e206]: "|"
+                  - generic [ref=e207]:
+                    - link "إمكانية الوصول" [ref=e208] [cursor=pointer]:
+                      - /url: https://help.x.com/resources/accessibility
+                    - generic [ref=e209]: "|"
+                  - generic [ref=e210]:
+                    - link "معلومات الإعلان" [ref=e211] [cursor=pointer]:
+                      - /url: https://business.x.com/en/help/troubleshooting/how-twitter-ads-work.html?ref=web-twc-ao-gbl-adsinfo&utm_source=twc&utm_medium=web&utm_campaign=ao&utm_content=adsinfo
+                    - generic [ref=e212]: "|"
+                  - button "المزيد" [ref=e213] [cursor=pointer]:
+                    - generic [ref=e214]:
+                      - text: المزيد
+                      - img [ref=e215]
+                  - generic [ref=e218]: © 2026 X Corp.

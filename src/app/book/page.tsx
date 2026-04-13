@@ -9,7 +9,7 @@ export default async function BookPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#15130f] p-6 max-w-xl mx-auto">
+      <div className="min-h-screen bg-[#15130f] p-4 sm:p-6 max-w-xl mx-auto">
         <h1 className="mb-2 text-2xl font-bold text-[#e8e1d9]">مدينة المعنى</h1>
         <p className="mb-6 text-[#c9b88a] text-sm">رحلة في الوعي بلغة القرآن</p>
         <Paywall reason="book" title="الكتاب للمشتركين" message="اشترك في عيدية تمعّن بـ ٢٨ ريال وتحصل على الكتاب كاملاً + برنامج ٢٨ يوم" />
@@ -36,7 +36,7 @@ export default async function BookPage() {
 
   if (!hasAccess) {
     return (
-      <div className="min-h-screen bg-[#15130f] p-6 max-w-xl mx-auto">
+      <div className="min-h-screen bg-[#15130f] p-4 sm:p-6 max-w-xl mx-auto">
         <h1 className="mb-2 text-2xl font-bold text-[#e8e1d9]">مدينة المعنى</h1>
         <p className="mb-6 text-[#c9b88a] text-sm">رحلة في الوعي بلغة القرآن</p>
         <Paywall reason="book" title="الكتاب للمشتركين" message="اشترك في عيدية تمعّن بـ ٢٨ ريال وتحصل على الكتاب كاملاً + برنامج ٢٨ يوم" />
@@ -45,7 +45,7 @@ export default async function BookPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#15130f] p-6">
+    <div className="min-h-screen bg-[#15130f] p-4 sm:p-6">
       <h1 className="mb-4 text-2xl font-bold text-[#e8e1d9]">مدينة المعنى بلغة القرآن</h1>
       <p className="mb-6 text-[#c9b88a]">الدليل والتطبيق — اقرأ في المتصفح</p>
       <BookViewer />

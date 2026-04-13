@@ -1,0 +1,469 @@
+{
+  "name": "Instagram Engagement — Auto Comment Reply + DM Converter",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "=GET",
+        "path": "ig-webhook",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "IG Verify Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        200
+      ],
+      "notes": "Meta Webhook verification (GET) — returns hub.challenge"
+    },
+    {
+      "parameters": {
+        "respondWith": "text",
+        "responseBody": "={{ $json.query['hub.challenge'] }}"
+      },
+      "name": "Return Challenge",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        420,
+        200
+      ]
+    },
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "ig-webhook",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "name": "IG Event Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        450
+      ],
+      "notes": "Receives comment, mention, story_mention, DM events from Meta"
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"status\": \"received\" }"
+      },
+      "name": "ACK 200",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        420,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// ==========================================\n// INSTAGRAM EVENT CLASSIFIER\n// Parses Meta webhook payload into clean event\n// ==========================================\nconst body = $input.item.json.body || $input.item.json;\nconst entry = body.entry?.[0] || {};\nconst changes = entry.changes?.[0] || {};\nconst field = changes.field || 'unknown';\nconst value = changes.value || {};\n\nlet event_type = 'unknown';\nlet comment_id = '';\nlet comment_text = '';\nlet commenter_id = '';\nlet commenter_username = '';\nlet media_id = '';\nlet parent_id = '';\nlet is_reply = false;\n\n// Comment on post\nif (field === 'comments') {\n  event_type = 'comment';\n  comment_id = value.id || '';\n  comment_text = value.text || '';\n  commenter_id = value.from?.id || '';\n  commenter_username = value.from?.username || '';\n  media_id = value.media?.id || '';\n  parent_id = value.parent_id || '';\n  is_reply = !!parent_id;\n}\n// Mention in caption or comment\nelse if (field === 'mentions') {\n  event_type = 'mention';\n  comment_id = value.comment_id || '';\n  comment_text = value.text || '';\n  commenter_id = value.from?.id || '';\n  commenter_username = value.from?.username || '';\n  media_id = value.media_id || '';\n}\n// Story mention\nelse if (field === 'story_insights' || value.story_id) {\n  event_type = 'story_mention';\n  commenter_id = value.from?.id || '';\n  commenter_username = value.from?.username || '';\n}\n// DM (messaging)\nelse if (field === 'messages' || body.messaging) {\n  const msg = body.messaging?.[0] || value;\n  event_type = 'dm';\n  commenter_id = msg.sender?.id || '';\n  comment_text = msg.message?.text || '';\n}\n\n// Skip our own replies\nconst our_ig_id = $env.INSTAGRAM_PAGE_ID || '';\nif (commenter_id === our_ig_id) {\n  return { json: { skip: true, reason: 'own_reply' } };\n}\n\n// Skip replies to replies (only reply to top-level comments)\nif (is_reply) {\n  return { json: { skip: true, reason: 'is_reply_to_reply' } };\n}\n\nreturn {\n  json: {\n    skip: false,\n    event_type,\n    comment_id,\n    comment_text,\n    commenter_id,\n    commenter_username,\n    media_id,\n    parent_id,\n    timestamp: new Date().toISOString()\n  }\n};"
+      },
+      "name": "Classify Event",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.skip }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "Skip Own?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        640,
+        500
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": false
+          },
+          "combinator": "or",
+          "conditions": [
+            {
+              "leftValue": "={{ $json.event_type }}",
+              "rightValue": "comment",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            },
+            {
+              "leftValue": "={{ $json.event_type }}",
+              "rightValue": "mention",
+              "operator": {
+                "type": "string",
+                "operation": "equals"
+              }
+            }
+          ]
+        }
+      },
+      "name": "Is Comment?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        860,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// ==========================================\n// SMART REPLY GENERATOR\n// Generates engaging reply based on comment intent\n// Goal: Drive commenter to DM for sales conversion\n// ==========================================\nconst text = $json.comment_text || '';\nconst username = $json.commenter_username || '';\nconst textLower = text.toLowerCase();\n\n// === INTENT DETECTION ===\nlet intent = 'general';\nlet reply = '';\nlet should_dm = false;\n\n// Price inquiry\nif (textLower.match(/كم|سعر|تكلف|بكم|الاشتراك|رسوم|مجان/)) {\n  intent = 'price_inquiry';\n  reply = `@${username} أرسلك التفاصيل على الخاص 🔥`;\n  should_dm = true;\n}\n// Interest / want to join\nelse if (textLower.match(/ابغى|أبغى|ابي|أبي|اشترك|سجل|ابدأ|أبدأ|كيف|طريقة/)) {\n  intent = 'interest';\n  reply = `@${username} حياك! أرسلك كل شيء بالخاص الحين 🚀`;\n  should_dm = true;\n}\n// Positive reaction\nelse if (textLower.match(/ماشاء الله|جميل|رائع|حلو|الله|ممتاز|يجنن|❤|🔥|👏|😍|💪/)) {\n  intent = 'positive';\n  const positiveReplies = [\n    `@${username} الله يسعدك! جرّبت تمعّن؟ 28 يوم تغيّر علاقتك بالقرآن ✨`,\n    `@${username} يسلمك ربي 🤍 لو تبغى تجربة مجانية أرسلني خاص`,\n    `@${username} شكراً لك! تمعّن غيّر حياة ناس كثير — تبغى التفاصيل؟ 🌙`\n  ];\n  reply = positiveReplies[Math.floor(Math.random() * positiveReplies.length)];\n  should_dm = false;\n}\n// Question\nelse if (textLower.match(/ايش|وش|شنو|ما هو|ماهو|يعني|معنى|فكرة/)) {\n  intent = 'question';\n  reply = `@${username} تمعّن = رحلة قرآنية 28 يوم مستوحاة من كتاب مدينة المعنى — تبغى أشرحلك أكثر بالخاص؟ 📖`;\n  should_dm = true;\n}\n// Objection / doubt\nelse if (textLower.match(/غالي|مو مقتنع|ما أدري|صعب|ما أقدر/)) {\n  intent = 'objection';\n  reply = `@${username} فيه عرض خاص لأول مرة — أرسلك التفاصيل خاص 🎁`;\n  should_dm = true;\n}\n// General engagement\nelse {\n  intent = 'general';\n  const generalReplies = [\n    `@${username} حياك الله 🤍`,\n    `@${username} شكراً لتعليقك! 🌙`,\n    `@${username} الله يبارك فيك ✨`\n  ];\n  reply = generalReplies[Math.floor(Math.random() * generalReplies.length)];\n  should_dm = false;\n}\n\nreturn {\n  json: {\n    ...$json,\n    intent,\n    reply,\n    should_dm,\n    reply_generated_at: new Date().toISOString()\n  }\n};"
+      },
+      "name": "Generate Smart Reply",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        350
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.instagram.com/v21.0/{{ $json.comment_id }}/replies",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={ \"message\": \"{{ $json.reply }}\" }"
+      },
+      "name": "Reply to Comment",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1300,
+        250
+      ],
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "IG_TOKEN_CREDENTIAL_ID",
+          "name": "Instagram Token"
+        }
+      },
+      "notes": "Instagram Graph API — reply to comment"
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.should_dm }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "Should DM?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1300,
+        450
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "=https://graph.instagram.com/v21.0/{{ $env.INSTAGRAM_PAGE_ID }}/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpQueryAuth",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"recipient\": { \"id\": \"{{ $json.commenter_id }}\" },\n  \"message\": {\n    \"text\": \"أهلاً {{ $json.commenter_username }}! 👋\\n\\nشفت تعليقك وحبيت أرسلك التفاصيل:\\n\\n🌙 تمعّن — رحلة قرآنية 28 يوم\\n📖 مستوحاة من كتاب مدينة المعنى\\n✅ تأملات يومية + تمارين عملية\\n\\n💰 العرض الحالي: 196 ريال بدل 280\\n⏳ ينتهي قريب!\\n\\nتبغى تبدأ؟ رد بـ (نعم) وأرسلك الرابط 🚀\"\n  }\n}"
+      },
+      "name": "Send DM to Commenter",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1520,
+        350
+      ],
+      "credentials": {
+        "httpQueryAuth": {
+          "id": "IG_TOKEN_CREDENTIAL_ID",
+          "name": "Instagram Token"
+        }
+      },
+      "notes": "Instagram Messaging API — send first DM"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Story mention or DM → forward to Warda\nconst event = $json;\n\nif (event.event_type === 'dm') {\n  // Forward DM to Warda Sales workflow\n  return {\n    json: {\n      forward_to: 'warda',\n      message: event.comment_text,\n      sender: event.commenter_id,\n      sender_username: event.commenter_username,\n      source: 'instagram_dm',\n      timestamp: event.timestamp\n    }\n  };\n}\n\nif (event.event_type === 'story_mention') {\n  return {\n    json: {\n      forward_to: 'engagement_log',\n      type: 'story_mention',\n      user_id: event.commenter_id,\n      username: event.commenter_username,\n      action: 'reply_story_with_thanks',\n      timestamp: event.timestamp\n    }\n  };\n}\n\nreturn { json: { forward_to: 'none' } };"
+      },
+      "name": "Handle DM + Story",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1080,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "string": [
+            {
+              "value1": "={{ $json.forward_to }}",
+              "value2": "warda",
+              "operation": "equals"
+            }
+          ]
+        }
+      },
+      "name": "Is DM for Warda?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        1300,
+        600
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.N8N_WEBHOOK_BASE }}/webhook/incoming-dm",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"message\": \"{{ $json.message }}\",\n  \"sender\": \"{{ $json.sender }}\",\n  \"sender_username\": \"{{ $json.sender_username }}\",\n  \"source\": \"instagram\"\n}"
+      },
+      "name": "Forward to Warda",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        1520,
+        550
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=📸 *Instagram Engagement*\n\n{{ $json.event_type === 'comment' ? '💬' : $json.event_type === 'mention' ? '📢' : $json.event_type === 'story_mention' ? '📷' : '📩' }} *{{ $json.event_type }}* من @{{ $json.commenter_username }}\n\n📝 {{ $json.comment_text || '(بدون نص)' }}\n🎯 Intent: {{ $json.intent || 'N/A' }}\n💬 الرد: {{ $json.reply || 'N/A' }}\n{{ $json.should_dm ? '📩 تم إرسال DM تلقائي!' : '' }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Telegram Alert",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1520,
+        150
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": "={{ $env.NOTION_CONTENT_DB }}",
+        "properties": {
+          "property_values": [
+            {
+              "key": "Name",
+              "type": "title",
+              "title": "=IG: @{{ $json.commenter_username }} — {{ $json.intent || $json.event_type }}"
+            },
+            {
+              "key": "Status",
+              "type": "select",
+              "selectValue": "={{ $json.should_dm ? 'dm_sent' : 'replied' }}"
+            }
+          ]
+        }
+      },
+      "name": "Log to Notion",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1520,
+        750
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      },
+      "notes": "Optional: log engagement events"
+    }
+  ],
+  "connections": {
+    "IG Verify Webhook": {
+      "main": [
+        [
+          {
+            "node": "Return Challenge",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "IG Event Webhook": {
+      "main": [
+        [
+          {
+            "node": "ACK 200",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Classify Event",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Classify Event": {
+      "main": [
+        [
+          {
+            "node": "Skip Own?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Skip Own?": {
+      "main": [
+        [],
+        [
+          {
+            "node": "Is Comment?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Comment?": {
+      "main": [
+        [
+          {
+            "node": "Generate Smart Reply",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Handle DM + Story",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Generate Smart Reply": {
+      "main": [
+        [
+          {
+            "node": "Reply to Comment",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Should DM?",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Telegram Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Reply to Comment": {
+      "main": [
+        []
+      ]
+    },
+    "Should DM?": {
+      "main": [
+        [
+          {
+            "node": "Send DM to Commenter",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        []
+      ]
+    },
+    "Send DM to Commenter": {
+      "main": [
+        [
+          {
+            "node": "Log to Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Handle DM + Story": {
+      "main": [
+        [
+          {
+            "node": "Is DM for Warda?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is DM for Warda?": {
+      "main": [
+        [
+          {
+            "node": "Forward to Warda",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Telegram Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "1010"
+}

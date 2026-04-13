@@ -158,7 +158,7 @@ export function EidiyaLanding() {
               <div key={u.label} className="flex items-center gap-4 md:gap-8">
                 <div className="flex flex-col items-center">
                   <span className="text-4xl md:text-6xl font-[family-name:var(--font-amiri)] italic text-[#e9c176]">{toAr(u.val)}</span>
-                  <span className="text-[10px] uppercase tracking-widest text-[#9a8f80]">{u.label}</span>
+                  <span className="text-xs uppercase tracking-widest text-[#9a8f80]">{u.label}</span>
                 </div>
                 {i < 3 && <span className="text-4xl text-[#4e4639]">:</span>}
               </div>
@@ -220,7 +220,7 @@ export function EidiyaLanding() {
         <section className="bg-[#181c21] py-24 px-8">
           <div className="max-w-4xl mx-auto">
             <Reveal>
-              <h2 className="text-4xl md:text-5xl font-[family-name:var(--font-amiri)] italic text-center mb-16">تقرأ القرآن… لكن القلب ما تحرّك</h2>
+              <h2 className="text-2xl sm:text-4xl md:text-5xl font-[family-name:var(--font-amiri)] italic text-center mb-16">تقرأ القرآن… لكن القلب ما تحرّك</h2>
             </Reveal>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-12">
               {[
@@ -247,7 +247,7 @@ export function EidiyaLanding() {
         <section className="py-32 px-8 text-center bg-[#101419]">
           <Reveal className="max-w-2xl mx-auto">
             <span className="material-symbols-outlined text-[#e9c176]/30 text-6xl mb-8">format_quote</span>
-            <blockquote className="text-3xl md:text-5xl font-[family-name:var(--font-amiri)] italic leading-tight mb-8">
+            <blockquote className="text-xl sm:text-3xl md:text-5xl font-[family-name:var(--font-amiri)] italic leading-tight mb-8">
               &ldquo;أَفَلَا يَتَدَبَّرُونَ الْقُرْآنَ أَمْ عَلَىٰ قُلُوبٍ أَقْفَالُهَا&rdquo;
             </blockquote>
             <cite className="text-[#e9c176] tracking-[0.3em] text-sm not-italic">— سورة محمد، آية ٢٤</cite>
@@ -280,9 +280,9 @@ export function EidiyaLanding() {
           <div className="max-w-7xl mx-auto">
             <Reveal className="text-center mb-16 space-y-4">
               <h2 className="text-sm tracking-[0.4em] text-[#c5a059]/60">أدوات الرحلة</h2>
-              <h3 className="text-4xl md:text-5xl font-[family-name:var(--font-amiri)] italic">أربع أدوات في رحلة واحدة</h3>
+              <h3 className="text-2xl sm:text-4xl md:text-5xl font-[family-name:var(--font-amiri)] italic">أربع أدوات في رحلة واحدة</h3>
             </Reveal>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-4 md:gap-8">
               {[
                 { icon: "menu_book", title: "الكتاب", sub: "مدينة المعنى بلغة القرآن", desc: "الأساس الذي بُني عليه البرنامج بالكامل — كتاب يعيد تقديم القرآن كخريطة للوعي والحياة.", featured: false },
                 { icon: "psychology", title: "المرشد الذكي", sub: "", desc: "رفيق تأملي شخصي يرافقك كل يوم — يجيب أسئلتك، يعمّق فهمك، ويربط الآيات بحياتك بأسلوب حواري لا أكاديمي.", featured: true },
@@ -313,7 +313,7 @@ export function EidiyaLanding() {
           <div className="max-w-4xl mx-auto">
             <Reveal className="text-center mb-16 space-y-4">
               <h2 className="text-sm tracking-[0.4em] text-[#c5a059]/60">١٥ دقيقة تغيّر نظرتك</h2>
-              <h3 className="text-4xl font-[family-name:var(--font-amiri)] italic">كل يوم في ٥ خطوات</h3>
+              <h3 className="text-2xl sm:text-4xl font-[family-name:var(--font-amiri)] italic">كل يوم في ٥ خطوات</h3>
             </Reveal>
             <div className="space-y-6">
               {STEPS.map((step, i) => (
@@ -335,10 +335,10 @@ export function EidiyaLanding() {
         <section id="zones" className="py-32 px-8 bg-[#0a0e13] overflow-hidden">
           <div className="max-w-7xl mx-auto">
             <Reveal className="text-right mb-20 space-y-4">
-              <h2 className="text-5xl font-[family-name:var(--font-amiri)] italic">مجالات التدبّر التسعة</h2>
+              <h2 className="text-3xl sm:text-5xl font-[family-name:var(--font-amiri)] italic">مجالات التدبّر التسعة</h2>
               <p className="text-[#9a8f80] max-w-lg">تسع مناطق قرآنية تكتشفها على مدار ٢٨ يوماً</p>
             </Reveal>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 perspective-1200">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 md:gap-6 lg:gap-8 perspective-1200">
               {DOMAINS.map((d, i) => (
                 <Reveal key={d.name} delay={i * 60}>
                   <div className="depth-card glass-card p-12 text-center group cursor-pointer hover:bg-[#c5a059]/5 relative">
@@ -357,8 +357,8 @@ export function EidiyaLanding() {
         {/* ── Testimonials ── */}
         <section className="py-24 px-8 bg-[#101419]">
           <div className="max-w-7xl mx-auto">
-            <Reveal><h2 className="text-3xl font-[family-name:var(--font-amiri)] italic text-center mb-16">أصوات من الرحلة</h2></Reveal>
-            <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+            <Reveal><h2 className="text-xl sm:text-3xl font-[family-name:var(--font-amiri)] italic text-center mb-16">أصوات من الرحلة</h2></Reveal>
+            <div className="grid grid-cols-1 lg:grid-cols-3 gap-4 lg:gap-8">
               {[
                 { text: "أول مرة في حياتي أقرأ آية وأشعر أنها تتكلّم عن موقف أعيشه بالضبط. كنت أختم القرآن في رمضان وأنساه بعد العيد — بعد تمعّن صرت أرجع للآية كل ما واجهت موقف صعب.", name: "محمد العتيبي", meta: "مهندس، الرياض — من المختبرين الأوائل", initial: "م" },
                 { text: "كنت أخشى أن يكون كورساً أكاديمياً جافاً. لكن تمعّن رحلة حية — كل يوم أفتحه بشوق حقيقي. أكملت الـ٢٨ يوم ولم أتخيّل ذلك أبداً.", name: "ريم الشمري", meta: "معلمة، جدة — من المختبرين الأوائل", initial: "ر" },
@@ -385,7 +385,7 @@ export function EidiyaLanding() {
         <section id="pricing" className="py-32 px-8">
           <div className="max-w-5xl mx-auto">
             <Reveal className="text-center mb-12">
-              <h2 className="text-4xl font-[family-name:var(--font-amiri)] italic mb-4">استثمر في وعيك</h2>
+              <h2 className="text-2xl sm:text-4xl font-[family-name:var(--font-amiri)] italic mb-4">استثمر في وعيك</h2>
               <p className="text-[#d1c5b4]">اختر البوابة التي تناسب رحلتك</p>
             </Reveal>
 
@@ -451,7 +451,7 @@ export function EidiyaLanding() {
 
             {/* VIP */}
             <Reveal>
-              <div className="mt-8 glass-card p-8 flex flex-col md:flex-row items-center justify-between gap-8 border border-[#e9c176]/20">
+              <div className="mt-8 glass-card p-5 sm:p-8 flex flex-col md:flex-row items-center justify-between gap-4 md:gap-8 border border-[#e9c176]/20">
                 <div className="text-right flex-grow">
                   <h3 className="text-2xl font-bold text-[#e9c176] mb-2">باقة VIP</h3>
                   <p className="text-[#d1c5b4]">٤ جلسات تدبّر خاصة شهرياً مع المرشد + مجتمع VIP مغلق + تحليل شخصي لرحلتك + أولوية مطلقة في الدعم</p>
@@ -474,7 +474,7 @@ export function EidiyaLanding() {
         {/* ── FAQ ── */}
         <section id="faq" className="py-24 px-8 bg-[#181c21]">
           <div className="max-w-3xl mx-auto">
-            <Reveal><h2 className="text-4xl font-[family-name:var(--font-amiri)] italic mb-16 text-center">أسئلة شائعة</h2></Reveal>
+            <Reveal><h2 className="text-2xl sm:text-4xl font-[family-name:var(--font-amiri)] italic mb-16 text-center">أسئلة شائعة</h2></Reveal>
             <div className="space-y-4">
               {FAQS.map(([q, a], i) => (
                 <Reveal key={i} delay={i * 50}>
@@ -500,7 +500,7 @@ export function EidiyaLanding() {
         <section className="py-40 px-8 text-center relative overflow-hidden">
           <div className="sacred-pattern absolute inset-0 -z-10 opacity-30" />
           <Reveal className="max-w-2xl mx-auto relative z-10">
-            <h2 className="text-5xl md:text-7xl font-[family-name:var(--font-amiri)] italic mb-10 leading-tight">الحقيقة الوحيدة:<br />أنت أقرب مما تتخيّل</h2>
+            <h2 className="text-3xl sm:text-5xl md:text-7xl font-[family-name:var(--font-amiri)] italic mb-10 leading-tight">الحقيقة الوحيدة:<br />أنت أقرب مما تتخيّل</h2>
             <p className="text-xl text-[#d1c5b4] mb-12">لا تدع الفرصة تفوتك. مقعدك بانتظارك.</p>
             <a href={WA_FREE} target="_blank" rel="noopener noreferrer" className="btn-gold px-12 py-6 text-xl font-bold shadow-[0_0_30px_rgba(233,193,118,0.3)]">ابدأ رحلتك الآن</a>
           </Reveal>

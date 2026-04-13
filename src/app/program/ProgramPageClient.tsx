@@ -223,8 +223,21 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
 
   if (loading) {
     return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <p className="text-sm text-[#7d7362]">جارٍ تحميل البرنامج...</p>
+      <div className="tm-shell space-y-6">
+        <div className="tm-card p-6 sm:p-7 space-y-4 animate-pulse">
+          <div className="h-4 w-24 rounded bg-[#e1d7c7]" />
+          <div className="h-8 w-48 rounded bg-[#e1d7c7]" />
+          <div className="h-3 w-32 rounded bg-[#eadfcd]" />
+          <div className="mt-4 h-2.5 w-full rounded-full bg-[#eadfcd]" />
+        </div>
+        <div className="tm-card p-6 sm:p-7 space-y-4 animate-pulse">
+          <div className="h-6 w-20 rounded bg-[#e1d7c7]" />
+          <div className="grid grid-cols-2 gap-3 sm:grid-cols-4 lg:grid-cols-7">
+            {Array.from({ length: 7 }).map((_, i) => (
+              <div key={i} className="h-20 rounded-xl bg-[#eadfcd]" />
+            ))}
+          </div>
+        </div>
       </div>
     );
   }
@@ -254,7 +267,7 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
             <div className="inline-flex items-center rounded-full border border-[#b39b71]/35 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#7b694a]">
               رحلة المعنى
             </div>
-            <h1 className="tm-heading text-4xl leading-tight sm:text-5xl text-[#2f2619]">
+            <h1 className="tm-heading text-2xl leading-tight sm:text-4xl md:text-5xl text-[#2f2619]">
               برنامج الرحلة
             </h1>
             <p className="text-sm text-[#5f5648]/85">
@@ -337,7 +350,7 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
                 {behavioralScore}
               </div>
               <div>
-                <p className="text-[10px] tracking-[0.18em] text-[#8c7851]/80">
+                <p className="text-xs tracking-[0.18em] text-[#8c7851]/80">
                   {engagementLevel === "high"
                     ? "حضورٌ مرتفع"
                     : engagementLevel === "medium"
@@ -361,7 +374,7 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
               purely informational. Does NOT affect routing, CTA, or scoring. */}
           {awarenessLabel && (
             <div className="flex items-center gap-2 pt-2 border-t border-[#d8cdb9]/50">
-              <span className="text-[10px] tracking-[0.15em] text-[#8c7851]/70">
+              <span className="text-xs tracking-[0.15em] text-[#8c7851]/70">
                 وعي الرحلة
               </span>
               <span className="text-xs font-semibold text-[#5a4531]">
@@ -404,7 +417,7 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
 
       <section className="tm-card p-6 sm:p-7 space-y-5">
         <div className="flex items-center justify-between">
-          <h2 className="tm-heading text-3xl text-[#2f2619]">الأيام</h2>
+          <h2 className="tm-heading text-xl sm:text-3xl text-[#2f2619]">الأيام</h2>
           <p className="text-xs text-[#7d7362]">
             مرتبة تلقائيًا من 1 إلى {totalDays}
           </p>
@@ -445,7 +458,7 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
                               : "border-[#ded4c2] bg-[#fcfaf7] text-[#5f5648] hover:border-[#8c7851]/40 hover:bg-[#f9f3e7]",
                       ].join(" ")}
                     >
-                      <div className="text-[11px]">اليوم</div>
+                      <div className="text-xs">اليوم</div>
                       <div className="mt-1 text-lg font-semibold">
                         {day}
                       </div>

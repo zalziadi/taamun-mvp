@@ -139,7 +139,7 @@ export function JourneyGuideRail() {
     <aside className="fixed bottom-20 left-4 z-40 w-[min(92vw,330px)] rounded-2xl border border-[#c9b88a]/35 bg-[#1a1712]/95 p-4 shadow-[0_16px_40px_rgba(0,0,0,0.35)] backdrop-blur md:bottom-6 md:left-6">
       <div className="flex items-start justify-between gap-2">
         <div className="flex-1">
-          <p className="text-[11px] text-[#c9b88a]/90">{state.title}</p>
+          <p className="text-xs text-[#c9b88a]/90">{state.title}</p>
           <p className="mt-1 text-xs leading-relaxed text-[#e8e1d9]/80">{state.hint}</p>
         </div>
         <button

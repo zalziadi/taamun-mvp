@@ -1,0 +1,171 @@
+{
+  "name": "Warda - Sales Auto Reply",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "incoming-dm",
+        "responseMode": "responseNode"
+      },
+      "name": "DM Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const msg = $input.item.json.body?.message || $input.item.json.message || '';\nconst sender = $input.item.json.body?.sender || $input.item.json.sender || 'unknown';\n\n// Guardrails\nconst hasAttachment = $input.item.json.body?.attachment || false;\nconst isTooLong = msg.length > 200;\nconst isOffTemplate = false; // TODO: add template matching\n\nif (hasAttachment || isTooLong) {\n  return {\n    json: {\n      blocked: true,\n      reason: hasAttachment ? 'attachment' : 'too_long',\n      sender,\n      original_message: msg\n    }\n  };\n}\n\n// Sales Logic - 3 stages\nlet reply = '';\nlet stage = '';\n\nconst msgLower = msg.toLowerCase();\n\n// Stage 3: Close\nif (msgLower.includes('ابدأ') || msgLower.includes('ابدا') || msgLower.includes('موافق') || msgLower.includes('نعم')) {\n  reply = 'ممتاز! هذا رابط الدفع:\\nhttps://taamun-mvp.vercel.app/pricing\\n\\n350 بدل 820 — العرض ينتهي 5 أبريل';\n  stage = 'close';\n}\n// Stage 1: Interest\nelse if (msgLower.includes('سعر') || msgLower.includes('كم') || msgLower.includes('عرض')) {\n  reply = 'اليوم 350 بدل 820 ✨\\nتجربة تمعّن 28 يوم كاملة\\n\\nتبغى تبدأ اليوم؟';\n  stage = 'interest';\n}\n// Stage 2: Qualification\nelse {\n  reply = 'أهلاً! 👋\\nتمعّن = رحلة قرآنية 28 يوم تغيّر علاقتك بالقرآن\\n\\nهل ناوي تبدأ اليوم؟';\n  stage = 'qualification';\n}\n\nreturn {\n  json: {\n    blocked: false,\n    reply,\n    stage,\n    sender,\n    original_message: msg\n  }\n};"
+      },
+      "name": "Warda Logic + Guardrails",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        400,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "boolean": [
+            {
+              "value1": "={{ $json.blocked }}",
+              "value2": true
+            }
+          ]
+        }
+      },
+      "name": "Is Blocked?",
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2,
+      "position": [
+        600,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🚨 *وردة — رسالة محظورة*\n\nالسبب: {{ $json.reason }}\nالمرسل: {{ $json.sender }}\nالرسالة: {{ $json.original_message }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Alert Borhan (Blocked)",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        800,
+        200
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $json.sender }}",
+        "text": "={{ $json.reply }}"
+      },
+      "name": "Send Reply to Customer",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        800,
+        400
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🌹 *وردة — رد تم*\n\nالمرحلة: {{ $json.stage }}\nالرد: {{ $json.reply }}\nالعميل: {{ $json.sender }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Log to Borhan",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1000,
+        400
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "DM Webhook": {
+      "main": [
+        [
+          {
+            "node": "Warda Logic + Guardrails",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Warda Logic + Guardrails": {
+      "main": [
+        [
+          {
+            "node": "Is Blocked?",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Is Blocked?": {
+      "main": [
+        [
+          {
+            "node": "Alert Borhan (Blocked)",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Reply to Customer",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Reply to Customer": {
+      "main": [
+        [
+          {
+            "node": "Log to Borhan",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "1017"
+}

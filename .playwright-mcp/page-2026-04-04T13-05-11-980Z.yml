@@ -1,0 +1,67 @@
+- generic [ref=e846]:
+  - generic [ref=e849]:
+    - link "Instagram" [ref=e854] [cursor=pointer]:
+      - /url: /
+      - img "Instagram" [ref=e859]
+    - generic [ref=e862]:
+      - link "الصفحة الرئيسية" [ref=e867] [cursor=pointer]:
+        - /url: /
+        - img "الصفحة الرئيسية" [ref=e872]
+      - link "ريلز" [ref=e877] [cursor=pointer]:
+        - /url: /reels/
+        - img "ريلز" [ref=e882]
+      - link "الرسائل مراسلة عبر Direct - رابط 3 من الإشعارات الجديدة" [ref=e889] [cursor=pointer]:
+        - /url: /direct/inbox/
+        - generic [ref=e892]:
+          - img "الرسائل" [ref=e894]
+          - generic "مراسلة عبر Direct - رابط 3 من الإشعارات الجديدة" [ref=e896]:
+            - generic [ref=e898]: "3"
+      - link "بحث" [ref=e902] [cursor=pointer]:
+        - /url: "#"
+        - img "بحث" [ref=e907]
+      - link "استكشاف" [ref=e913] [cursor=pointer]:
+        - /url: /explore/
+        - img "استكشاف" [ref=e918]
+      - link "الإشعارات" [ref=e926] [cursor=pointer]:
+        - /url: "#"
+        - img "الإشعارات" [ref=e931]
+      - link "منشور جديد" [ref=e937] [cursor=pointer]:
+        - /url: "#"
+        - img "منشور جديد" [ref=e942]
+      - link "لوحة المعلومات الاحترافية" [ref=e947] [cursor=pointer]:
+        - /url: "#"
+        - img "لوحة المعلومات الاحترافية" [ref=e952]
+      - link "صورة ملف zalziadi الشخصي" [ref=e959] [cursor=pointer]:
+        - /url: /zalziadi/
+        - link "صورة ملف zalziadi الشخصي" [ref=e964]:
+          - img "صورة ملف zalziadi الشخصي" [ref=e965]
+    - generic [ref=e966]:
+      - link "الإعدادات" [ref=e969] [cursor=pointer]:
+        - /url: "#"
+        - img "الإعدادات" [ref=e974]
+      - link "أيضًا من Meta" [ref=e977] [cursor=pointer]:
+        - /url: "#"
+        - img "أيضًا من Meta" [ref=e982]
+  - main [ref=e986]:
+    - generic [ref=e992]:
+      - navigation "قائمة سلاسل الرسائل" [ref=e993]:
+        - generic [ref=e994]:
+          - generic [ref=e995]:
+            - button "عودة" [ref=e997] [cursor=pointer]:
+              - img "عودة" [ref=e1000]
+            - generic [ref=e1002]: طلبات المراسلة
+          - generic [ref=e1005]:
+            - button "أيقونة العين المغمضة للطلبات المخفية الطلبات المخفية أيقونة شارة رتبة عسكرية تشير إلى الدخول إلى نافذة الطلبات المخفية" [ref=e1006] [cursor=pointer]:
+              - generic [ref=e1008]:
+                - img "أيقونة العين المغمضة للطلبات المخفية" [ref=e1011]
+                - generic [ref=e1016]: الطلبات المخفية
+                - img "أيقونة شارة رتبة عسكرية تشير إلى الدخول إلى نافذة الطلبات المخفية" [ref=e1019]
+            - generic [ref=e1022]: Chats will appear here after you send or receive a message
+          - generic [ref=e1023]:
+            - separator [ref=e1024]
+            - button "Delete all 0" [ref=e1026] [cursor=pointer]:
+              - generic [ref=e1027]: Delete all 0
+      - generic [ref=e1031]:
+        - img [ref=e1034]
+        - heading "طلبات المراسلة" [active] [level=2] [ref=e1037]
+        - generic [ref=e1040]: هذه الرسائل من أشخاص قمت بتقييدهم أو لا تتابعهم. ولن يعرفوا أنك قد رأيت طلبهم حتى تسمح لهم بمراسلتك.

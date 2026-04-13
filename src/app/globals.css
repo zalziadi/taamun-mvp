@@ -108,11 +108,11 @@
   }
 
   .tm-gold-btn {
-    @apply cursor-pointer rounded-xl bg-[#7b694a] px-5 py-2.5 text-sm font-bold text-[#f4f1ea] shadow-sm transition-[background-color,box-shadow,transform,opacity] duration-200 ease-out hover:bg-[#6d5e44] hover:shadow-md active:translate-y-px disabled:pointer-events-none disabled:opacity-60;
+    @apply cursor-pointer rounded-xl bg-[#7b694a] px-5 py-3.5 text-sm font-bold text-[#f4f1ea] shadow-sm transition-[background-color,box-shadow,transform,opacity] duration-200 ease-out hover:bg-[#6d5e44] hover:shadow-md active:translate-y-px disabled:pointer-events-none disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8c7851]/55 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f4f1ea];
   }
 
   .tm-ghost-btn {
-    @apply cursor-pointer rounded-xl border border-[#c9bda8]/55 bg-[#f6f1e8]/70 px-5 py-2.5 text-sm text-[#4e4637] transition-[border-color,background-color,color,box-shadow] duration-200 ease-out hover:border-[#8c7851]/40 hover:bg-[#f9f4eb] hover:text-[#7b694a] active:translate-y-px disabled:pointer-events-none disabled:opacity-60;
+    @apply cursor-pointer rounded-xl border border-[#c9bda8]/55 bg-[#f6f1e8]/70 px-5 py-3.5 text-sm text-[#4e4637] transition-[border-color,background-color,color,box-shadow] duration-200 ease-out hover:border-[#8c7851]/40 hover:bg-[#f9f4eb] hover:text-[#7b694a] active:translate-y-px disabled:pointer-events-none disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8c7851]/55 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f4f1ea];
   }
 }
 

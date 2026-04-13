@@ -40,7 +40,6 @@ export async function GET() {
     .order("day", { ascending: true });
 
   if (error) {
-    // DEBUG: expose actual error for diagnosis
     return NextResponse.json({ ok: true, total_days: TOTAL_DAYS, entries: [], counts: { shadow: 0, gift: 0, best_possibility: 0 } });
   }
 
@@ -48,7 +47,6 @@ export async function GET() {
     .map((row) => ({
       day: Number(row.day),
       state: toState(String(row.level ?? "")),
-
     }))
     .filter((row) => row.state !== null);
 

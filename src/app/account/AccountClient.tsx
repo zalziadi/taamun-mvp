@@ -163,7 +163,7 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
             <path d="M3 12c0 4.97 4.03 9 9 9s9-4.03 9-9" />
           </svg>
         </div>
-        <h1 className="font-[var(--font-amiri)] text-3xl text-[#e8e1d9]">كهفي</h1>
+        <h1 className="font-[var(--font-amiri)] text-xl sm:text-3xl text-[#e8e1d9]">كهفي</h1>
         <p className="text-xs text-[#c9b88a]/60">مساحتك الخاصة داخل تمعّن</p>
         {userEmail && (
           <p className="text-sm text-[#c9b88a]">{userEmail}</p>
@@ -177,7 +177,7 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
       )}
 
       {/* Progress Overview */}
-      <div className="rounded-2xl border border-[#c9b88a]/15 bg-[#1d1b17] p-6 space-y-4">
+      <div className="rounded-2xl border border-[#c9b88a]/15 bg-[#1d1b17] p-4 sm:p-6 space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="font-[var(--font-amiri)] text-lg text-[#e8e1d9]">رحلة التمعّن</h2>
           <span className="text-xs text-[#c9b88a]">
@@ -192,18 +192,18 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
           />
         </div>
         {/* Stats row */}
-        <div className="grid grid-cols-3 gap-3 pt-2">
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-3 pt-2">
           <div className="text-center">
             <p className="text-2xl font-semibold text-[#c9b88a]">{loading ? "—" : (completedDays ?? 0)}</p>
-            <p className="text-[10px] text-white/40 mt-1">يوم مكتمل</p>
+            <p className="text-xs text-white/40 mt-1">يوم مكتمل</p>
           </div>
           <div className="text-center">
             <p className="text-2xl font-semibold text-[#c9b88a]">{loading ? "—" : currentStreak}</p>
-            <p className="text-[10px] text-white/40 mt-1">أيام متتالية</p>
+            <p className="text-xs text-white/40 mt-1">أيام متتالية</p>
           </div>
           <div className="text-center">
             <p className="text-2xl font-semibold text-[#c9b88a]">{loading ? "—" : (avgAwareness ?? "—")}</p>
-            <p className="text-[10px] text-white/40 mt-1">متوسط الحضور</p>
+            <p className="text-xs text-white/40 mt-1">متوسط الحضور</p>
           </div>
         </div>
       </div>
@@ -318,7 +318,7 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#15130f] p-6">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#15130f] p-4 sm:p-6">
       {content}
     </div>
   );

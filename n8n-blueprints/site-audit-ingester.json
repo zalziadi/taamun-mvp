@@ -1,0 +1,193 @@
+{
+  "name": "Site Audit Ingester — GSD → Brain → Tasks",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "site-audit",
+        "responseMode": "lastNode"
+      },
+      "name": "Audit Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        200,
+        400
+      ],
+      "notes": "يستقبل تقارير GSD/Site Audit بصيغة JSON"
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// ==========================================\n// AUDIT PARSER\n// يحوّل تقرير GSD الخام إلى قرارات منظمة\n// ==========================================\nconst body = $input.item.json.body || $input.item.json;\n\n// Accept flexible input formats\nconst scores = body.scores || {};\nconst critical = body.critical_issues || body.critical || [];\nconst improvements = body.improvements || [];\nconst pages = body.pages_tested || body.pages || [];\nconst rawText = body.raw_report || body.report || '';\n\n// Build structured audit\nconst audit = {\n  timestamp: new Date().toISOString(),\n  source: body.source || 'gsd_site_audit',\n  scores: {\n    design: scores.design || scores.ux_ui || 0,\n    security: scores.security || scores.code_security || 0,\n    rtl: scores.rtl || 0,\n    mobile: scores.mobile || scores.responsive || 0,\n    performance: scores.performance || scores.speed || 0,\n    seo: scores.seo || 0\n  },\n  avg_score: 0,\n  critical_count: critical.length,\n  critical_issues: critical,\n  improvements: improvements,\n  pages_tested: pages\n};\n\n// Calculate average\nconst vals = Object.values(audit.scores).filter(v => v > 0);\naudit.avg_score = vals.length ? Math.round(vals.reduce((a,b) => a+b, 0) / vals.length * 10) / 10 : 0;\n\n// === GENERATE DECISIONS ===\nconst decisions = [];\n\n// Map critical issues to decisions\ncritical.forEach((issue, i) => {\n  const issueLower = (issue.title || issue.name || issue || '').toLowerCase();\n  let agent = 'borhan';\n  let confidence = 0.90;\n\n  // Route to correct agent\n  if (issueLower.match(/xss|injection|security|auth|webhook|rate limit|header/)) {\n    agent = 'borhan';\n    confidence = 0.95;\n  } else if (issueLower.match(/404|broken|link|redirect|subscribe/)) {\n    agent = 'borhan';\n    confidence = 0.98;\n  } else if (issueLower.match(/design|color|font|spacing|ui|ux|visual/)) {\n    agent = 'sham';\n    confidence = 0.82;\n  } else if (issueLower.match(/seo|meta|structured|sitemap|robots/)) {\n    agent = 'content_engine';\n    confidence = 0.75;\n  } else if (issueLower.match(/image|performance|speed|lazy|webp/)) {\n    agent = 'content_engine';\n    confidence = 0.80;\n  }\n\n  decisions.push({\n    id: `audit_${i}`,\n    action: issue.fix || issue.action || `إصلاح: ${issue.title || issue.name || issue}`,\n    target_agent: agent,\n    priority: issue.severity === 'critical' || i < 3 ? 'critical' : 'high',\n    confidence,\n    reason: issue.impact || issue.reason || `من تقرير GSD — ${issue.title || issue}`,\n    file: issue.file || '',\n    category: issue.category || 'site_audit'\n  });\n});\n\n// Add improvement decisions\nimprovements.slice(0, 5).forEach((imp, i) => {\n  decisions.push({\n    id: `imp_${i}`,\n    action: imp.action || imp.title || imp,\n    target_agent: 'sham',\n    priority: 'medium',\n    confidence: 0.70,\n    reason: imp.reason || 'تحسين من تقرير GSD',\n    category: 'improvement'\n  });\n});\n\nreturn {\n  json: {\n    audit,\n    decisions,\n    decisions_count: decisions.length,\n    status: audit.critical_count >= 3 ? 'critical' : audit.critical_count >= 1 ? 'warning' : 'stable'\n  }\n};"
+      },
+      "name": "Parse Audit Report",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        420,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "databaseId": "={{ $env.NOTION_BRAIN_LOG_DB }}",
+        "properties": {
+          "property_values": [
+            {
+              "key": "Title",
+              "type": "title",
+              "title": "=🔍 Site Audit — {{ new Date().toLocaleDateString('ar-SA') }}"
+            },
+            {
+              "key": "Status",
+              "type": "select",
+              "selectValue": "={{ $json.status }}"
+            },
+            {
+              "key": "Outcome",
+              "type": "select",
+              "selectValue": "pending"
+            },
+            {
+              "key": "Confidence Avg",
+              "type": "number",
+              "numberValue": "={{ Math.round($json.decisions.reduce((s,d) => s + d.confidence, 0) / Math.max($json.decisions.length, 1) * 100) / 100 }}"
+            },
+            {
+              "key": "Summary",
+              "type": "richText",
+              "textContent": "=تقرير GSD: {{ $json.audit.critical_count }} مشكلة حرجة | متوسط {{ $json.audit.avg_score }}/10 | {{ $json.decisions_count }} قرار"
+            },
+            {
+              "key": "Decisions JSON",
+              "type": "richText",
+              "textContent": "={{ JSON.stringify($json.decisions) }}"
+            }
+          ]
+        }
+      },
+      "name": "Log to Brain DB",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        680,
+        300
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "={{ $env.N8N_WEBHOOK_BASE }}/webhook/control-gate",
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"decisions\": {{ JSON.stringify($json.decisions) }},\n  \"overall_status\": \"{{ $json.status }}\",\n  \"meta\": {\n    \"timestamp\": \"{{ $json.audit.timestamp }}\",\n    \"source\": \"site_audit_gsd\",\n    \"scores\": {{ JSON.stringify($json.audit.scores) }},\n    \"critical_count\": {{ $json.audit.critical_count }}\n  }\n}"
+      },
+      "name": "Send to Decision Router",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        680,
+        500
+      ],
+      "notes": "القرارات تمر عبر Guardrails قبل التنفيذ"
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🔍 *SITE AUDIT REPORT — GSD*\n⏰ {{ $json.audit.timestamp }}\n\n━━━━━━━━━━━━━━━━━━\n📊 *التقييمات:*\n🎨 التصميم: {{ $json.audit.scores.design }}/10\n🔒 الأمان: {{ $json.audit.scores.security }}/10\n↩️ RTL: {{ $json.audit.scores.rtl }}/10\n📱 الجوال: {{ $json.audit.scores.mobile }}/10\n⚡ الأداء: {{ $json.audit.scores.performance }}/10\n🔍 SEO: {{ $json.audit.scores.seo }}/10\n📈 المتوسط: {{ $json.audit.avg_score }}/10\n\n━━━━━━━━━━━━━━━━━━\n🚨 *مشاكل حرجة:* {{ $json.audit.critical_count }}\n{{ $json.audit.critical_issues.slice(0, 5).map((c, i) => `${i+1}. ${c.title || c.name || c}`).join('\\n') }}\n\n━━━━━━━━━━━━━━━━━━\n⚡ *القرارات ({{ $json.decisions_count }}):*\n{{ $json.decisions.slice(0, 8).map((d, i) => `${i+1}. [${d.priority.toUpperCase()}] → ${d.target_agent}\\n   📋 ${d.action}`).join('\\n\\n') }}\n\n━━━━━━━━━━━━━━━━━━\n📍 *الحالة:* {{ $json.status === 'critical' ? '🔴 حرج' : $json.status === 'warning' ? '🟡 تحذير' : '🟢 مستقر' }}\n✅ تم إرسال {{ $json.decisions_count }} قرار لـ Decision Router",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Audit Alert Telegram",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        950,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={\n  \"status\": \"ingested\",\n  \"decisions_generated\": {{ $json.decisions_count }},\n  \"critical_issues\": {{ $json.audit.critical_count }},\n  \"routed_to\": \"decision_router\",\n  \"brain_log\": \"saved\"\n}"
+      },
+      "name": "Response",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        950,
+        500
+      ]
+    }
+  ],
+  "connections": {
+    "Audit Webhook": {
+      "main": [
+        [
+          {
+            "node": "Parse Audit Report",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Audit Report": {
+      "main": [
+        [
+          {
+            "node": "Log to Brain DB",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Send to Decision Router",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Log to Brain DB": {
+      "main": [
+        [
+          {
+            "node": "Audit Alert Telegram",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send to Decision Router": {
+      "main": [
+        [
+          {
+            "node": "Response",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "1015"
+}

@@ -176,7 +176,7 @@ export default function CityPage() {
       {/* V8: Brain-driven daily focus banner */}
       {brainDecision?.uiHints?.showToast && (
         <section className="tm-card border-[#c4a265] bg-gradient-to-b from-[#faf4e4] to-[#fcfaf7] p-4 sm:p-5 text-center space-y-2">
-          <p className="text-[10px] tracking-[0.18em] text-[#8c7851]/80">توجيه النظام</p>
+          <p className="text-xs tracking-[0.18em] text-[#8c7851]/80">توجيه النظام</p>
           <p className="text-base font-semibold text-[#2f2619]">{brainDecision.message}</p>
           {brainDecision.uiHints.highlightZone && city?.zones?.find((z) => z.id === brainDecision.uiHints.highlightZone) && (
             <p className="text-xs text-[#5f5648]/85">
@@ -191,7 +191,7 @@ export default function CityPage() {
       {/* System Activation: intelligence-driven zone highlight reason */}
       {intelligenceReason && (
         <section className="tm-card border-[#c4a265]/30 bg-gradient-to-b from-[#faf4e4] to-[#fcfaf7] p-4 text-center">
-          <p className="text-[10px] tracking-[0.18em] text-[#8c7851]/80">ما يُضيء الآن</p>
+          <p className="text-xs tracking-[0.18em] text-[#8c7851]/80">ما يُضيء الآن</p>
           <p className="mt-1 text-sm font-semibold text-[#2f2619]">{intelligenceReason}</p>
         </section>
       )}

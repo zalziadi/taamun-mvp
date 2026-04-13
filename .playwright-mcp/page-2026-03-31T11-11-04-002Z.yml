@@ -1,0 +1,354 @@
+- generic [ref=e2]:
+  - generic:
+    - generic:
+      - heading "لعرض اختصارات لوحة المفاتيح، اضغط على علامة الاستفهام عرض اختصارات لوحة المفاتيح" [level=2] [ref=e3]:
+        - generic [ref=e4]: لعرض اختصارات لوحة المفاتيح، اضغط على علامة الاستفهام
+        - link "عرض اختصارات لوحة المفاتيح" [ref=e5] [cursor=pointer]:
+          - /url: /i/keyboard_shortcuts
+      - generic:
+        - generic:
+          - button [ref=e18] [cursor=pointer]:
+            - img [ref=e19]
+          - img [ref=e26] [cursor=pointer]
+        - alert [ref=e2007]:
+          - generic [ref=e2008]: تم إرسال منشورك.
+          - link [ref=e2010] [cursor=pointer]:
+            - /url: /zalziadi/status/2038937106299457940
+            - text: عرض
+      - generic [ref=e6]:
+        - button "التخطي إلى يوميات الصفحة الرئيسيّة" [ref=e2011] [cursor=pointer]
+        - button "التخطي إلى الموضوعات المتداوَلة" [ref=e2012] [cursor=pointer]
+        - banner [ref=e7]:
+          - generic [ref=e33]:
+            - generic [ref=e34]:
+              - heading "X" [level=1] [ref=e2013] [cursor=pointer]:
+                - link "X" [ref=e2014]:
+                  - /url: /home
+                  - img [ref=e39]
+              - navigation "أساسي" [ref=e2015]:
+                - link "الرئيسيّة" [ref=e2016] [cursor=pointer]:
+                  - /url: /home
+                  - img [ref=e47]
+                - link "بحث واستكشاف" [ref=e2017] [cursor=pointer]:
+                  - /url: /explore
+                  - img [ref=e1063]
+                - link "التنبيهات" [ref=e2018] [cursor=pointer]:
+                  - /url: /notifications
+                  - img [ref=e59]
+                - link "متابعة" [ref=e2019] [cursor=pointer]:
+                  - /url: /i/connect_people
+                  - img [ref=e65]
+                - link "الرسائل الخاصّة" [ref=e2020] [cursor=pointer]:
+                  - /url: /i/chat
+                  - img [ref=e71]
+                - link "Grok" [ref=e2021] [cursor=pointer]:
+                  - /url: /i/grok
+                  - generic [ref=e76]:
+                    - img [ref=e77]
+                    - generic "undefined من العناصر غير المقروءة" [ref=e2022]
+                - link "Premium" [ref=e2023] [cursor=pointer]:
+                  - /url: /i/premium_sign_up
+                  - img [ref=e84]
+                - link "الملف الشخصيّ" [ref=e2024] [cursor=pointer]:
+                  - /url: /zalziadi
+                  - img [ref=e90]
+                - button "المزيد من عناصر القائمة" [ref=e2025] [cursor=pointer]:
+                  - img [ref=e96]
+              - link "نشر" [ref=e2026] [cursor=pointer]:
+                - /url: /compose/post
+                - img [ref=e102]
+            - button "قائمة الحساب" [ref=e2027] [cursor=pointer]:
+              - generic [ref=e115]:
+                - generic:
+                  - generic:
+                    - generic:
+                      - generic "زياد الزيادي 🎩":
+                        - img "زياد الزيادي 🎩"
+        - main [ref=e8]:
+          - generic [ref=e1067]:
+            - generic "الخطّ الزمنيّ الرئيسيّ" [ref=e2028]:
+              - generic [ref=e1070]:
+                - generic [ref=e1076] [cursor=pointer]:
+                  - button "رجوع" [ref=e2029]:
+                    - img [ref=e1080]
+                  - heading "منشور" [level=2] [ref=e2030]
+                - generic:
+                  - generic:
+                    - status:
+                      - button:
+                        - generic:
+                          - img
+                          - generic: رؤية منشورات جديدة
+              - region "محادثة" [ref=e2031]:
+                - heading "محادثة" [level=1] [ref=e2032]
+                - 'generic "الخطّ الزمنيّ: محادثة" [ref=e2033]':
+                  - generic [ref=e1090]:
+                    - generic [ref=e1093]:
+                      - 'article "فالح الفضلي @faleh_alfadli قال الله تعالى : { وَهُوَ مَعَكُمۡ أَیۡنَ مَا كُنتُمۡۚ } أحيانًا تعتقد أنّك محتاج شخص يسمعك، أو يطبطب عليك، أو يخفّف عنك وجعك.. لكن الحقيقة إنّ الذي تحتاجه فعلًا هو معيّة اللّه، فهو الذي يراك ويسمعك ويعلم حالك #تدبر_القرآن 1 رد، 1 إعجاب، 47 مشاهدة" [ref=e2034]':
+                        - generic [ref=e1096]:
+                          - generic [ref=e1100]:
+                            - link [ref=e1112] [cursor=pointer]:
+                              - /url: /faleh_alfadli
+                            - generic [ref=e1117]:
+                              - generic [ref=e1120]:
+                                - link "فالح الفضلي" [ref=e2035] [cursor=pointer]:
+                                  - /url: /faleh_alfadli
+                                  - generic [ref=e1126]: فالح الفضلي
+                                - link "@faleh_alfadli" [ref=e2036] [cursor=pointer]:
+                                  - /url: /faleh_alfadli
+                                  - generic [ref=e1131]: "@faleh_alfadli"
+                              - generic [ref=e1133]:
+                                - button "إجراءات Grok" [ref=e2037] [cursor=pointer]:
+                                  - img [ref=e1140]
+                                - button "المزيد" [ref=e2038] [cursor=pointer]:
+                                  - img [ref=e1150]
+                          - generic [ref=e1153]:
+                            - generic [ref=e1155]:
+                              - text: "قال الله تعالى : { وَهُوَ مَعَكُمۡ أَیۡنَ مَا كُنتُمۡۚ } أحيانًا تعتقد أنّك محتاج شخص يسمعك، أو يطبطب عليك، أو يخفّف عنك وجعك.. لكن الحقيقة إنّ الذي تحتاجه فعلًا هو معيّة اللّه، فهو الذي يراك ويسمعك ويعلم حالك"
+                              - link "#تدبر_القرآن" [ref=e2039] [cursor=pointer]:
+                                - /url: /hashtag/تدبر_القرآن?src=hashtag_click
+                            - generic [ref=e1161]:
+                              - link "٥:٠٩ ص · ٣١ مارس ٢٠٢٦" [ref=e2040] [cursor=pointer]:
+                                - /url: /faleh_alfadli/status/2038800699408912861
+                                - time [ref=e1164]: ٥:٠٩ ص · ٣١ مارس ٢٠٢٦
+                              - generic [ref=e1165]: ·
+                              - link "٤٧ مرات مشاهدة" [ref=e2041] [cursor=pointer]:
+                                - /url: /faleh_alfadli/status/2038800699408912861/analytics
+                                - generic [ref=e1169]: ٤٧
+                                - generic [ref=e1170]: مرات مشاهدة
+                            - group "1 رد، 1 إعجاب، 47 مشاهدة" [ref=e2042]:
+                              - button "1 رد. رد" [active] [ref=e2043] [cursor=pointer]:
+                                - generic [ref=e1176]:
+                                  - img [ref=e1179]
+                                  - generic [ref=e1184]: ١
+                              - button "0 إعادة نشر. إعادة النشر" [ref=e2044] [cursor=pointer]:
+                                - img [ref=e1190]
+                              - button "1 إعجاب. إعجاب" [ref=e2045] [cursor=pointer]:
+                                - generic [ref=e1198]:
+                                  - img [ref=e1201]
+                                  - generic [ref=e1206]: ١
+                              - button "0 علامة مرجعية. علامة مرجعية" [ref=e2046] [cursor=pointer]:
+                                - img [ref=e1212]
+                              - button "مشاركة المنشور" [ref=e2047] [cursor=pointer]:
+                                - img [ref=e1224]
+                      - generic [ref=e1230]:
+                        - button "ردًا على @faleh_alfadli" [ref=e2048] [cursor=pointer]:
+                          - text: ردًا على
+                          - generic [ref=e1596]: "@faleh_alfadli"
+                        - generic [ref=e1880]:
+                          - link "زياد الزيادي 🎩" [ref=e2049] [cursor=pointer]:
+                            - /url: /zalziadi
+                            - generic:
+                              - generic:
+                                - generic:
+                                  - generic "زياد الزيادي 🎩":
+                                    - img "زياد الزيادي 🎩"
+                          - generic [ref=e1892]:
+                            - generic [ref=e1910]:
+                              - generic [ref=e1912]: نشر ردّك
+                              - textbox "نص المنشور" [ref=e2050]
+                            - generic [ref=e1921]:
+                              - navigation [ref=e1922]:
+                                - generic [ref=e1923]:
+                                  - generic:
+                                    - button "السابق" [disabled]:
+                                      - generic:
+                                        - img
+                                  - tablist [ref=e1925]:
+                                    - generic [ref=e1926]:
+                                      - button "إضافة صور أو فيديو" [ref=e2051] [cursor=pointer]:
+                                        - img [ref=e1929]
+                                      - button "Choose File" [ref=e2052]
+                                    - button "إضافة ملف GIF" [ref=e2053] [cursor=pointer]:
+                                      - img [ref=e1935]
+                                    - button "إنشاء صورة" [ref=e2054] [cursor=pointer]:
+                                      - img [ref=e1940]
+                                    - button "إضافة رمز تعبيري" [ref=e2055] [cursor=pointer]:
+                                      - img [ref=e1946]
+                                    - button "الإشارة إلى الموقع الجغرافيّ" [ref=e2056] [cursor=pointer]:
+                                      - img [ref=e1951]
+                                    - button "الإفصاح عن المحتوى" [ref=e2057] [cursor=pointer]:
+                                      - img [ref=e1956]
+                                  - generic:
+                                    - button "التالي" [disabled]:
+                                      - generic:
+                                        - img
+                              - button "ردّ" [disabled] [ref=e2058]:
+                                - generic [ref=e1963]: ردّ
+                    - article "زياد الزيادي 🎩 @zalziadi الآن هذه الآية أثقل وأعمق من أن تُقرأ مرة واحدة 🌙 المعيّة الإلهية هي الملاذ الحقيقي حين يغيب كل ملاذ" [ref=e2062] [cursor=pointer]:
+                      - generic [ref=e2068]:
+                        - link [ref=e2080]:
+                          - /url: /zalziadi
+                        - generic [ref=e2083]:
+                          - generic [ref=e2085]:
+                            - generic [ref=e2088]:
+                              - link "زياد الزيادي 🎩" [ref=e2091]:
+                                - /url: /zalziadi
+                                - generic [ref=e2094]:
+                                  - text: زياد الزيادي
+                                  - img "🎩" [ref=e2095]
+                              - generic [ref=e2097]:
+                                - link "@zalziadi" [ref=e2099]:
+                                  - /url: /zalziadi
+                                  - generic [ref=e2100]: "@zalziadi"
+                                - generic [ref=e2101]: ·
+                                - link "الآن" [ref=e2103]:
+                                  - /url: /zalziadi/status/2038937106299457940
+                                  - time [ref=e2104]: الآن
+                            - generic [ref=e2106]:
+                              - button "إجراءات Grok" [ref=e2108]:
+                                - img [ref=e2113]
+                              - button "المزيد" [ref=e2119]:
+                                - img [ref=e2123]
+                          - generic [ref=e2127]:
+                            - text: هذه الآية أثقل وأعمق من أن تُقرأ مرة واحدة
+                            - img "🌙" [ref=e2128]
+                            - text: المعيّة الإلهية هي الملاذ الحقيقي حين يغيب كل ملاذ
+                          - group [ref=e2131]:
+                            - button "0 رد. رد" [ref=e2133]:
+                              - img [ref=e2137]
+                            - button "0 إعادة نشر. إعادة النشر" [ref=e2144]:
+                              - img [ref=e2148]
+                            - button "0 إعجاب. إعجاب" [ref=e2155]:
+                              - img [ref=e2159]
+                            - link "عرض تحليلات المنشورات" [ref=e2166]:
+                              - /url: /zalziadi/status/2038937106299457940/analytics
+                              - img [ref=e2170]
+                            - button "إضافة إلى العلامات المرجعية" [ref=e2174]:
+                              - img [ref=e2178]
+                            - button "مشاركة المنشور" [ref=e2183]:
+                              - img [ref=e2187]
+                    - generic [ref=e1280]:
+                      - heading "اكتشف المزيد" [level=2] [ref=e2190]:
+                        - generic [ref=e1282]: اكتشف المزيد
+                      - generic [ref=e1283]: من كل مكان على X
+                    - 'article "فالح الفضلي @faleh_alfadli ٣٠ مارس قال الله تعالى : ( فَإِنَّ مَعَ الْعُسْرِ يُسْرًا @ إِنَّ مَعَ الْعُسْرِ يُسْرًا ) لا تكنْ قانطًا.. اللهُ يُرسل العونَ في أحلكِ اللّحظات #تدبر_القرآن 1 إعجاب، 45 مشاهدة" [ref=e2191] [cursor=pointer]':
+                      - generic [ref=e1293]:
+                        - link [ref=e1305]:
+                          - /url: /faleh_alfadli
+                        - generic [ref=e1308]:
+                          - generic [ref=e1310]:
+                            - generic [ref=e1313]:
+                              - link "فالح الفضلي" [ref=e2192]:
+                                - /url: /faleh_alfadli
+                                - generic [ref=e1319]: فالح الفضلي
+                              - generic [ref=e1321]:
+                                - link "@faleh_alfadli" [ref=e2193]:
+                                  - /url: /faleh_alfadli
+                                  - generic [ref=e1324]: "@faleh_alfadli"
+                                - generic [ref=e1325]: ·
+                                - link "٣٠ مارس" [ref=e2194]:
+                                  - /url: /faleh_alfadli/status/2038437590890664376
+                                  - time [ref=e1328]: ٣٠ مارس
+                            - generic [ref=e1330]:
+                              - button "إجراءات Grok" [ref=e2195]:
+                                - img [ref=e1337]
+                              - button "المزيد" [ref=e2196]:
+                                - img [ref=e1347]
+                          - generic [ref=e1351]:
+                            - text: "قال الله تعالى : ( فَإِنَّ مَعَ الْعُسْرِ يُسْرًا @ إِنَّ مَعَ الْعُسْرِ يُسْرًا ) لا تكنْ قانطًا.. اللهُ يُرسل العونَ في أحلكِ اللّحظات"
+                            - link "#تدبر_القرآن" [ref=e2197]:
+                              - /url: /hashtag/تدبر_القرآن?src=hashtag_click
+                          - group "1 إعجاب، 45 مشاهدة" [ref=e2198]:
+                            - button "0 رد. رد" [ref=e2199]:
+                              - img [ref=e1362]
+                            - button "0 إعادة نشر. إعادة النشر" [ref=e2200]:
+                              - img [ref=e1373]
+                            - button "1 إعجاب. إعجاب" [ref=e2201]:
+                              - generic [ref=e1381]:
+                                - img [ref=e1384]
+                                - generic [ref=e1389]: ١
+                            - link "45 مشاهدة. عرض تحليلات المنشور" [ref=e2202]:
+                              - /url: /faleh_alfadli/status/2038437590890664376/analytics
+                              - generic [ref=e1392]:
+                                - img [ref=e1395]
+                                - generic [ref=e1400]: ٤٥
+                            - button "إضافة إلى العلامات المرجعية" [ref=e2203]:
+                              - img [ref=e1406]
+                            - button "مشاركة المنشور" [ref=e2204]:
+                              - img [ref=e1415]
+            - generic "الموضوعات المتداوَلة" [ref=e2205]:
+              - generic [ref=e1426]:
+                - search "بحث" [ref=e2206]:
+                  - generic [ref=e1436]:
+                    - img [ref=e1438]
+                    - combobox "استعلام البحث" [ref=e2207]
+                - complementary "الأشخاص ذوو الصلة" [ref=e2208]:
+                  - heading "الأشخاص ذوو الصلة" [level=2] [ref=e2209]:
+                    - generic [ref=e1449]: الأشخاص ذوو الصلة
+                  - list [ref=e1450]:
+                    - listitem [ref=e1451] [cursor=pointer]:
+                      - generic [ref=e1452]:
+                        - link [ref=e1462]:
+                          - /url: /faleh_alfadli
+                        - generic [ref=e1465]:
+                          - generic [ref=e1466]:
+                            - generic [ref=e1468]:
+                              - link "فالح الفضلي" [ref=e2210]:
+                                - /url: /faleh_alfadli
+                                - generic [ref=e1473]: فالح الفضلي
+                              - link "@faleh_alfadli" [ref=e2211]:
+                                - /url: /faleh_alfadli
+                                - generic [ref=e1478]: "@faleh_alfadli"
+                            - button "متابعة @faleh_alfadli" [ref=e2212]:
+                              - generic [ref=e1483]: متابعة
+                          - generic [ref=e1484]: الحمدلله
+                - region "المتداوَل الآن" [ref=e2213]:
+                  - heading "المتداوَل الآن" [level=1] [ref=e2214]
+                  - 'generic "الخطّ الزمنيّ: المتداوَل الآن" [ref=e2215]':
+                    - generic [ref=e1489]:
+                      - heading "ما يحدث" [level=2] [ref=e2219]:
+                        - generic [ref=e2220]: ما يحدث
+                      - 'link "المتداول في المملكة العربية السعودية #وش__غداك المزيد" [ref=e2223] [cursor=pointer]':
+                        - generic [ref=e2224]:
+                          - generic [ref=e2226]: المتداول في المملكة العربية السعودية
+                          - generic [ref=e2228]: "#وش__غداك"
+                          - button "المزيد" [ref=e2231]:
+                            - img [ref=e2235]
+                      - 'link "المتداول في المملكة العربية السعودية #اي_ساعه_فطورك المزيد" [ref=e2240] [cursor=pointer]':
+                        - generic [ref=e2241]:
+                          - generic [ref=e2243]: المتداول في المملكة العربية السعودية
+                          - generic [ref=e2245]: "#اي_ساعه_فطورك"
+                          - button "المزيد" [ref=e2248]:
+                            - img [ref=e2252]
+                      - 'link "المتداول في المملكة العربية السعودية #تري_الطيب المزيد" [ref=e2257] [cursor=pointer]':
+                        - generic [ref=e2258]:
+                          - generic [ref=e2260]: المتداول في المملكة العربية السعودية
+                          - generic [ref=e2262]: "#تري_الطيب"
+                          - button "المزيد" [ref=e2265]:
+                            - img [ref=e2269]
+                      - 'link "المتداول في المملكة العربية السعودية #القابضه_وعطاله_العلاج_التنفسي المزيد" [ref=e2274] [cursor=pointer]':
+                        - generic [ref=e2275]:
+                          - generic [ref=e2277]: المتداول في المملكة العربية السعودية
+                          - generic [ref=e2279]: "#القابضه_وعطاله_العلاج_التنفسي"
+                          - button "المزيد" [ref=e2282]:
+                            - img [ref=e2286]
+                      - link "عرض المزيد" [ref=e2291] [cursor=pointer]:
+                        - /url: /explore/tabs/for-you
+                        - generic [ref=e2292]: عرض المزيد
+                - navigation "الشريط السُفلي" [ref=e2293]:
+                  - generic [ref=e1569]:
+                    - link "شروط الخدمة" [ref=e2294] [cursor=pointer]:
+                      - /url: https://x.com/tos
+                    - generic [ref=e1571]: "|"
+                  - generic [ref=e1572]:
+                    - link "سياسية الخصوصيّة" [ref=e2295] [cursor=pointer]:
+                      - /url: https://x.com/privacy
+                    - generic [ref=e1574]: "|"
+                  - generic [ref=e1575]:
+                    - link "سياسة الكوكيز" [ref=e2296] [cursor=pointer]:
+                      - /url: https://support.x.com/articles/20170514
+                    - generic [ref=e1577]: "|"
+                  - generic [ref=e1578]:
+                    - link "إمكانية الوصول" [ref=e2297] [cursor=pointer]:
+                      - /url: https://help.x.com/resources/accessibility
+                    - generic [ref=e1580]: "|"
+                  - generic [ref=e1581]:
+                    - link "معلومات الإعلان" [ref=e2298] [cursor=pointer]:
+                      - /url: https://business.x.com/en/help/troubleshooting/how-twitter-ads-work.html?ref=web-twc-ao-gbl-adsinfo&utm_source=twc&utm_medium=web&utm_campaign=ao&utm_content=adsinfo
+                    - generic [ref=e1583]: "|"
+                  - button "المزيد" [ref=e2299] [cursor=pointer]:
+                    - generic [ref=e1585]:
+                      - text: المزيد
+                      - img [ref=e1586]
+                  - generic [ref=e1589]: © 2026 X Corp.

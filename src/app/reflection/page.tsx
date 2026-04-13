@@ -236,7 +236,7 @@ export default function ReflectionPage() {
         <div className="inline-flex items-center rounded-full border border-[#b39b71]/35 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#7b694a]">
           نقاء اليقين
         </div>
-        <h1 className="tm-heading mt-3 text-5xl leading-tight">صفحة التمعّن</h1>
+        <h1 className="tm-heading mt-3 text-3xl sm:text-5xl leading-tight">صفحة التمعّن</h1>
         <p className="mx-auto mt-2 max-w-[820px] text-sm leading-relaxed text-[#5f5648]/85">
           لكل آية: ملاحظة، إدراك، تمعّن. اكتب بصدق ثم حوّل الفهم إلى فعل واضح متسق مع أفضل احتمال فيك.
         </p>

@@ -1,0 +1,133 @@
+- generic [ref=e12]:
+  - generic [ref=e14]:
+    - generic [ref=e15]:
+      - img "Instagram" [ref=e19]
+      - generic [ref=e24]: شاهد اللحظات اليومية من أصدقائك المقربين.
+    - generic [ref=e34]:
+      - generic [ref=e41]: تسجيل الدخول إلى Instagram
+      - generic [ref=e46]:
+        - generic [ref=e50]:
+          - textbox "رقم الهاتف المحمول أو اسم المستخدم أو البريد الإلكتروني" [active] [ref=e51]
+          - generic: رقم الهاتف المحمول أو اسم المستخدم أو البريد الإلكتروني
+        - generic [ref=e55]:
+          - textbox "كلمة السر" [ref=e56]
+          - generic: كلمة السر
+        - button "تسجيل الدخول" [disabled] [ref=e59]:
+          - generic [ref=e62]: تسجيل الدخول
+        - link "هل نسيت كلمة السر؟" [ref=e65] [cursor=pointer]:
+          - /url: https://www.instagram.com/accounts/password/reset/?next=https%3A%2F%2Fwww.instagram.com%2Fdirect%2Finbox%2F%3F__coig_login%3D1
+          - generic [ref=e68]: هل نسيت كلمة السر؟
+        - button "تسجيل الدخول بحساب فيسبوك" [ref=e71] [cursor=pointer]:
+          - generic [ref=e72]:
+            - img [ref=e74]
+            - generic [ref=e77]: تسجيل الدخول بحساب فيسبوك
+        - link "إنشاء حساب جديد" [ref=e80] [cursor=pointer]:
+          - /url: /accounts/emailsignup/?next=https%3A%2F%2Fwww.instagram.com%2Fdirect%2Finbox%2F%3F__coig_login%3D1
+          - generic [ref=e83]: إنشاء حساب جديد
+        - img "شعار Meta" [ref=e85]
+  - separator [ref=e93]
+  - contentinfo [ref=e95]:
+    - generic [ref=e96]:
+      - generic [ref=e98]:
+        - link "Meta" [ref=e100] [cursor=pointer]:
+          - /url: https://about.meta.com/
+          - generic [ref=e101]: Meta
+        - link "حول" [ref=e103] [cursor=pointer]:
+          - /url: https://about.instagram.com/
+          - generic [ref=e104]: حول
+        - link "المدونة" [ref=e106] [cursor=pointer]:
+          - /url: https://about.instagram.com/blog/
+          - generic [ref=e107]: المدونة
+        - link "الوظائف" [ref=e109] [cursor=pointer]:
+          - /url: https://about.instagram.com/about-us/careers
+          - generic [ref=e110]: الوظائف
+        - link "مساعدة" [ref=e112] [cursor=pointer]:
+          - /url: https://help.instagram.com/
+          - generic [ref=e113]: مساعدة
+        - link "واجهة API" [ref=e115] [cursor=pointer]:
+          - /url: https://developers.facebook.com/docs/instagram
+          - generic [ref=e116]: واجهة API
+        - link "الخصوصية" [ref=e118] [cursor=pointer]:
+          - /url: /legal/privacy/?next=https%3A%2F%2Fwww.instagram.com%2Fdirect%2Finbox%2F%3F__coig_login%3D1
+          - generic [ref=e119]: الخصوصية
+        - link "الشروط" [ref=e121] [cursor=pointer]:
+          - /url: /legal/terms/?next=https%3A%2F%2Fwww.instagram.com%2Fdirect%2Finbox%2F%3F__coig_login%3D1
+          - generic [ref=e122]: الشروط
+        - link "المواقع" [ref=e124] [cursor=pointer]:
+          - /url: /explore/locations/?next=https%3A%2F%2Fwww.instagram.com%2Fdirect%2Finbox%2F%3F__coig_login%3D1
+          - generic [ref=e125]: المواقع
+        - link "Instagram Lite" [ref=e127] [cursor=pointer]:
+          - /url: /web/lite/?next=https%3A%2F%2Fwww.instagram.com%2Fdirect%2Finbox%2F%3F__coig_login%3D1
+          - generic [ref=e128]: Instagram Lite
+        - link "Meta AI" [ref=e130] [cursor=pointer]:
+          - /url: https://www.meta.ai/?utm_source=foa_web_footer
+          - generic [ref=e131]: Meta AI
+        - link "Threads" [ref=e133] [cursor=pointer]:
+          - /url: https://www.threads.com/
+          - generic [ref=e134]: Threads
+        - link "تحميل جهات الاتصال وغير المستخدمين" [ref=e136] [cursor=pointer]:
+          - /url: https://www.facebook.com/help/instagram/261704639352628?next=https%3A%2F%2Fwww.instagram.com%2Fdirect%2Finbox%2F%3F__coig_login%3D1
+          - generic [ref=e137]: تحميل جهات الاتصال وغير المستخدمين
+        - link "Meta Verified" [ref=e139] [cursor=pointer]:
+          - /url: /accounts/meta_verified/?entrypoint=web_footer&next=https%3A%2F%2Fwww.instagram.com%2Fdirect%2Finbox%2F%3F__coig_login%3D1
+          - generic [ref=e140]: Meta Verified
+      - generic [ref=e141]:
+        - generic [ref=e142] [cursor=pointer]:
+          - generic [ref=e143]:
+            - generic [ref=e144]: العربية
+            - img "أيقونة شارة رتبة عسكرية لأسفل" [ref=e147]
+          - combobox "تبديل لغة العرض" [ref=e149]:
+            - option "Afrikaans"
+            - option "العربية" [selected]
+            - option "Čeština"
+            - option "Dansk"
+            - option "Deutsch"
+            - option "Ελληνικά"
+            - option "English"
+            - option "English (UK)"
+            - option "Español (España)"
+            - option "Español"
+            - option "فارسی"
+            - option "Suomi"
+            - option "Français"
+            - option "עברית"
+            - option "Bahasa Indonesia"
+            - option "Italiano"
+            - option "日本語"
+            - option "한국어"
+            - option "Bahasa Melayu"
+            - option "Norsk"
+            - option "Nederlands"
+            - option "Polski"
+            - option "Português (Brasil)"
+            - option "Português (Portugal)"
+            - option "Русский"
+            - option "Svenska"
+            - option "ภาษาไทย"
+            - option "Filipino"
+            - option "Türkçe"
+            - option "中文(简体)"
+            - option "中文(台灣)"
+            - option "বাংলা"
+            - option "ગુજરાતી"
+            - option "हिन्दी"
+            - option "Hrvatski"
+            - option "Magyar"
+            - option "ಕನ್ನಡ"
+            - option "മലയാളം"
+            - option "मराठी"
+            - option "नेपाली"
+            - option "ਪੰਜਾਬੀ"
+            - option "සිංහල"
+            - option "Slovenčina"
+            - option "தமிழ்"
+            - option "తెలుగు"
+            - option "اردو"
+            - option "Tiếng Việt"
+            - option "中文(香港)"
+            - option "Български"
+            - option "Français (Canada)"
+            - option "Română"
+            - option "Српски"
+            - option "Українська"
+        - generic [ref=e151]: © 2026 Instagram from Meta

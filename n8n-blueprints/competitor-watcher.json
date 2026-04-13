@@ -1,0 +1,222 @@
+{
+  "name": "Competitor Watcher — Intelligence Agent",
+  "nodes": [
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {
+              "field": "hours",
+              "hoursInterval": 6
+            }
+          ]
+        }
+      },
+      "name": "Every 6 Hours",
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.2,
+      "position": [
+        200,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "getAll",
+        "databaseId": "={{ $env.NOTION_COMPETITOR_DB }}",
+        "returnAll": true
+      },
+      "name": "Read Competitor DB",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        400,
+        400
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "// Process competitor data and generate intelligence\nconst competitors = $input.all();\n\nconst intel = competitors.map(c => {\n  const comp = c.json;\n  return {\n    name: comp.name || 'unknown',\n    platform: comp.platform || 'instagram',\n    price: comp.price || 0,\n    followers: comp.followers || 0,\n    last_content_date: comp.last_content_date || '',\n    content_frequency: comp.content_frequency || 'unknown',\n    engagement_rate: comp.engagement_rate || 0,\n    offer_type: comp.offer_type || '',\n    last_move: comp.last_move || '',\n    threat_level: comp.threat_level || 'low'\n  };\n});\n\n// Our positioning\nconst ourPrice = 350;\nconst avgCompPrice = intel.length > 0 \n  ? Math.round(intel.reduce((s, c) => s + c.price, 0) / intel.length) \n  : 0;\nconst priceAdvantage = avgCompPrice > 0 ? Math.round((1 - ourPrice / avgCompPrice) * 100) : 0;\n\n// Threat analysis\nconst highThreats = intel.filter(c => c.threat_level === 'high');\nconst newMoves = intel.filter(c => {\n  if (!c.last_content_date) return false;\n  const lastDate = new Date(c.last_content_date);\n  return (Date.now() - lastDate) < 48 * 60 * 60 * 1000; // last 48 hours\n});\n\nlet alert = '';\nif (highThreats.length > 0) {\n  alert = `🔴 ${highThreats.length} منافسين بتهديد عالي: ${highThreats.map(h => h.name).join(', ')}`;\n} else if (newMoves.length > 0) {\n  alert = `🟡 ${newMoves.length} منافسين نشطين آخر 48 ساعة`;\n} else {\n  alert = '🟢 لا تحركات ملحوظة';\n}\n\nreturn {\n  json: {\n    competitors: intel,\n    analysis: {\n      total_tracked: intel.length,\n      our_price: ourPrice,\n      avg_competitor_price: avgCompPrice,\n      price_advantage_pct: priceAdvantage,\n      high_threats: highThreats.length,\n      recent_moves: newMoves.length,\n      alert\n    }\n  }\n};"
+      },
+      "name": "Analyze Competitors",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        600,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://api.anthropic.com/v1/messages",
+        "authentication": "genericCredentialType",
+        "genericAuthType": "httpHeaderAuth",
+        "sendHeaders": true,
+        "headerParameters": {
+          "parameters": [
+            {
+              "name": "anthropic-version",
+              "value": "2023-06-01"
+            },
+            {
+              "name": "content-type",
+              "value": "application/json"
+            }
+          ]
+        },
+        "sendBody": true,
+        "specifyBody": "json",
+        "jsonBody": "={\n  \"model\": \"claude-sonnet-4-20250514\",\n  \"max_tokens\": 1000,\n  \"messages\": [\n    {\n      \"role\": \"user\",\n      \"content\": \"أنت ذئب الشمال — عميل الاستخبارات.\\n\\nبيانات المنافسين:\\n{{ JSON.stringify($json.competitors, null, 2) }}\\n\\nتحليلنا:\\n- سعرنا: {{ $json.analysis.our_price }} ريال\\n- متوسط سعر المنافسين: {{ $json.analysis.avg_competitor_price }} ريال\\n- ميزة السعر: {{ $json.analysis.price_advantage_pct }}%\\n\\nأعطني JSON فقط:\\n{\\n  \\\"threats\\\": [\\\"تهديد 1\\\", \\\"تهديد 2\\\"],\\n  \\\"opportunities\\\": [\\\"فرصة 1\\\", \\\"فرصة 2\\\"],\\n  \\\"recommended_moves\\\": [\\\"حركة 1\\\", \\\"حركة 2\\\"],\\n  \\\"competitive_edge\\\": \\\"ما يميزنا\\\"\\n}\"\n    }\n  ]\n}"
+      },
+      "name": "Claude Competitor Analysis",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        850,
+        400
+      ],
+      "credentials": {
+        "httpHeaderAuth": {
+          "id": "ANTHROPIC_CREDENTIAL_ID",
+          "name": "Anthropic API Key"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "mode": "runOnceForEachItem",
+        "jsCode": "const response = $input.item.json;\nconst analysis = $('Analyze Competitors').item.json.analysis;\nlet claudeIntel;\n\ntry {\n  const content = response.content?.[0]?.text || '{}';\n  let jsonStr = content;\n  if (jsonStr.includes('```json')) jsonStr = jsonStr.split('```json')[1].split('```')[0].trim();\n  else if (jsonStr.includes('```')) jsonStr = jsonStr.split('```')[1].split('```')[0].trim();\n  claudeIntel = JSON.parse(jsonStr);\n} catch (e) {\n  claudeIntel = {\n    threats: ['خطأ في التحليل'],\n    opportunities: [],\n    recommended_moves: ['مراجعة يدوية'],\n    competitive_edge: 'غير متاح'\n  };\n}\n\nreturn {\n  json: {\n    ...analysis,\n    intel: claudeIntel\n  }\n};"
+      },
+      "name": "Parse Intel",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1050,
+        400
+      ]
+    },
+    {
+      "parameters": {
+        "chatId": "={{ $env.TELEGRAM_CHAT_ID }}",
+        "text": "=🐺 *WOLF INTEL — تقرير المنافسين*\n\n{{ $json.alert }}\n\n━━━━━━━━━━━━━━━━━━\n📊 *الأرقام*\nمنافسين: {{ $json.total_tracked }}\nسعرنا: {{ $json.our_price }} | متوسطهم: {{ $json.avg_competitor_price }}\nميزة السعر: {{ $json.price_advantage_pct }}%\n\n━━━━━━━━━━━━━━━━━━\n⚠️ *التهديدات*\n{{ $json.intel.threats.join('\\n') }}\n\n━━━━━━━━━━━━━━━━━━\n💡 *الفرص*\n{{ $json.intel.opportunities.join('\\n') }}\n\n━━━━━━━━━━━━━━━━━━\n⚡ *الحركات المقترحة*\n{{ $json.intel.recommended_moves.join('\\n') }}\n\n━━━━━━━━━━━━━━━━━━\n🏆 {{ $json.intel.competitive_edge }}",
+        "additionalFields": {
+          "parse_mode": "Markdown"
+        }
+      },
+      "name": "Wolf Report",
+      "type": "n8n-nodes-base.telegram",
+      "typeVersion": 1.2,
+      "position": [
+        1300,
+        300
+      ],
+      "credentials": {
+        "telegramApi": {
+          "id": "IAM08cSCvBTwqFwo",
+          "name": "Telegram account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "resource": "databasePage",
+        "operation": "create",
+        "databaseId": "={{ $env.NOTION_COMPETITOR_DB }}",
+        "properties": {
+          "title": "=Intel — {{ new Date().toISOString().slice(0,10) }}",
+          "threats": "={{ $json.intel.threats.join('; ') }}",
+          "opportunities": "={{ $json.intel.opportunities.join('; ') }}",
+          "moves": "={{ $json.intel.recommended_moves.join('; ') }}"
+        }
+      },
+      "name": "Log Intel to Notion",
+      "type": "n8n-nodes-base.notion",
+      "typeVersion": 2.2,
+      "position": [
+        1300,
+        500
+      ],
+      "credentials": {
+        "notionApi": {
+          "id": "VqfpqEMHpdxeuYvl",
+          "name": "Notion account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Every 6 Hours": {
+      "main": [
+        [
+          {
+            "node": "Read Competitor DB",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Competitor DB": {
+      "main": [
+        [
+          {
+            "node": "Analyze Competitors",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Analyze Competitors": {
+      "main": [
+        [
+          {
+            "node": "Claude Competitor Analysis",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Claude Competitor Analysis": {
+      "main": [
+        [
+          {
+            "node": "Parse Intel",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Parse Intel": {
+      "main": [
+        [
+          {
+            "node": "Wolf Report",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Log Intel to Notion",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "id": "1003"
+}

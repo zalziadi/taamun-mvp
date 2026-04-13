@@ -35,6 +35,10 @@ export const metadata: Metadata = {
   },
   description: APP_DESCRIPTION,
   applicationName: APP_NAME,
+  icons: {
+    icon: "/brand/favicon.svg",
+    apple: "/brand/favicon.svg",
+  },
   metadataBase: new URL(APP_DOMAIN),
   alternates: {
     canonical: "/",
