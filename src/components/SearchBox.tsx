@@ -133,7 +133,7 @@ export function SearchBox() {
 
   return (
     <div ref={containerRef} className="relative">
-      <div className="flex items-center gap-2 rounded-xl border border-[#d8cdb9] bg-[#fcfaf7]/80 px-3 py-1.5 focus-within:border-[#8c7851]/60 focus-within:ring-2 focus-within:ring-[#8c7851]/20 transition-colors">
+      <div className="flex items-center gap-2 rounded-xl border border-[#d8cdb9] bg-[#fcfaf7]/80 px-3 py-2.5 focus-within:border-[#8c7851]/60 focus-within:ring-2 focus-within:ring-[#8c7851]/20 transition-colors">
         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#8c7851]/70" aria-hidden>
           <circle cx="11" cy="11" r="7" />
           <line x1="21" y1="21" x2="16.65" y2="16.65" />

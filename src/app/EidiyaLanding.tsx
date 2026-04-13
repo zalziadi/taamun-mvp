@@ -402,7 +402,7 @@ export function EidiyaLanding() {
               {/* Free Trial */}
               <Reveal><div className="glass-card p-10 text-center flex flex-col h-full bg-[#1c2025]">
                 <h3 className="text-xl mb-2">تجربة مجانية</h3>
-                <div className="my-6"><span className="text-5xl font-[family-name:var(--font-amiri)] italic text-[#e9c176]">مجاناً</span></div>
+                <div className="my-6"><span className="text-3xl sm:text-5xl font-[family-name:var(--font-amiri)] italic text-[#e9c176]">مجاناً</span></div>
                 <p className="text-[#d1c5b4] text-sm mb-4">٧ أيام — بدون بطاقة دفع</p>
                 <ul className="text-right space-y-3 mb-10 flex-grow text-sm">
                   {["تجربة المجالات الأولى", "المرشد الذكي", "مجتمع تمعّن"].map(f => (
@@ -416,7 +416,7 @@ export function EidiyaLanding() {
               <Reveal delay={100}><div className="glass-card p-10 text-center flex flex-col h-full bg-[#1c2025]">
                 <h3 className="text-xl mb-2">ربع سنوي</h3>
                 <div className="my-6">
-                  <span className="text-5xl font-[family-name:var(--font-amiri)] italic">١٩٩</span>
+                  <span className="text-3xl sm:text-5xl font-[family-name:var(--font-amiri)] italic">١٩٩</span>
                   <span className="text-[#9a8f80] mr-2">ر.س</span>
                 </div>
                 <p className="text-[#d1c5b4] text-sm mb-4">كل ٣ شهور — ٦٦ ر.س شهرياً</p>
@@ -433,7 +433,7 @@ export function EidiyaLanding() {
                 <div className="absolute top-0 right-0 bg-[#e9c176] text-[#412d00] px-4 py-1 text-xs font-bold uppercase tracking-widest">وفّر ٤١٪</div>
                 <h3 className="text-xl mb-2 text-[#e9c176]">سنوي</h3>
                 <div className="my-6">
-                  <span className="text-5xl font-[family-name:var(--font-amiri)] italic">٦٩٩</span>
+                  <span className="text-3xl sm:text-5xl font-[family-name:var(--font-amiri)] italic">٦٩٩</span>
                   <span className="text-[#9a8f80] mr-2">ر.س</span>
                 </div>
                 <p className="text-[#d1c5b4] text-sm mb-4">سنوياً — ٥٨ ر.س شهرياً</p>
@@ -457,7 +457,7 @@ export function EidiyaLanding() {
                   <p className="text-[#d1c5b4]">٤ جلسات تدبّر خاصة شهرياً مع المرشد + مجتمع VIP مغلق + تحليل شخصي لرحلتك + أولوية مطلقة في الدعم</p>
                 </div>
                 <div className="flex items-baseline gap-2 shrink-0">
-                  <span className="text-4xl font-[family-name:var(--font-amiri)] italic font-bold">٤,٩٩٩</span>
+                  <span className="text-2xl sm:text-4xl font-[family-name:var(--font-amiri)] italic font-bold">٤,٩٩٩</span>
                   <span className="text-[#9a8f80]">ر.س / سنوياً</span>
                 </div>
                 <a href={WA_VIP} target="_blank" rel="noopener noreferrer" className="btn-gold py-3 px-8 font-bold shrink-0">انضم لـ VIP</a>
@@ -510,7 +510,7 @@ export function EidiyaLanding() {
         <footer className="bg-[#0a0e13] py-16 px-8 border-t border-[#e9c176]/10">
           <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start gap-12">
             <div className="space-y-6 max-w-sm text-right">
-              <div className="text-3xl font-[family-name:var(--font-amiri)] italic text-[#e9c176]">تمعّن</div>
+              <div className="text-2xl sm:text-3xl font-[family-name:var(--font-amiri)] italic text-[#e9c176]">تمعّن</div>
               <p className="text-[#d1c5b4] leading-relaxed">منصة تُقرّب القرآن من حياتك اليومية — تدبّراً لا مجرد تلاوة.</p>
             </div>
             <div className="flex gap-16">

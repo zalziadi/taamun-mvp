@@ -29,7 +29,7 @@ export function NavAuth() {
     return (
       <Link
         href="/account"
-        className="rounded-lg border border-[#d8cdb9] bg-[#fcfaf7]/80 px-4 py-1.5 text-sm font-medium text-[#7b694a] transition-colors hover:bg-[#f4efe7]"
+        className="rounded-lg border border-[#d8cdb9] bg-[#fcfaf7]/80 px-4 py-2.5 text-sm font-medium text-[#7b694a] transition-colors hover:bg-[#f4efe7]"
       >
         كهفي
       </Link>
@@ -39,7 +39,7 @@ export function NavAuth() {
   return (
     <Link
       href="/login"
-      className="rounded-lg border border-[#c9b88a] bg-[#c9b88a]/10 px-4 py-1.5 text-sm font-medium text-[#7b694a] transition-colors hover:bg-[#c9b88a]/20"
+      className="rounded-lg border border-[#c9b88a] bg-[#c9b88a]/10 px-4 py-2.5 text-sm font-medium text-[#7b694a] transition-colors hover:bg-[#c9b88a]/20"
     >
       تسجيل الدخول
     </Link>

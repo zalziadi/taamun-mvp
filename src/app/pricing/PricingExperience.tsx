@@ -230,15 +230,15 @@ export default function PricingExperience() {
             >
               {/* بادج واحد فقط بأولوية: highlight > saving > badge */}
               {tier.highlight ? (
-                <span className="absolute left-4 top-4 rounded-full bg-[#c9b88a] px-2.5 py-0.5 text-[10px] font-bold text-[#15130f]">
+                <span className="absolute left-4 top-4 rounded-full bg-[#c9b88a] px-2.5 py-0.5 text-xs font-bold text-[#15130f]">
                   أفضل قيمة {tier.saving ? `· ${tier.saving}` : ""}
                 </span>
               ) : tier.saving ? (
-                <span className="absolute left-4 top-4 rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-[10px] font-bold text-emerald-400">
+                <span className="absolute left-4 top-4 rounded-full bg-emerald-500/20 px-2.5 py-0.5 text-xs font-bold text-emerald-400">
                   {tier.saving}
                 </span>
               ) : tier.badge ? (
-                <span className="absolute left-4 top-4 rounded-full border border-white/10 bg-[#1c1a15] px-2.5 py-0.5 text-[10px] font-semibold text-[#c9b88a]">
+                <span className="absolute left-4 top-4 rounded-full border border-white/10 bg-[#1c1a15] px-2.5 py-0.5 text-xs font-semibold text-[#c9b88a]">
                   {tier.badge}
                 </span>
               ) : null}
