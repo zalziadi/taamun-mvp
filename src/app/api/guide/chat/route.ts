@@ -75,6 +75,19 @@ type GeneKeyRow = {
   ayah_ref: string | null;
 };
 
+type JourneyRow = {
+  current_stage: string | null;
+  dominant_theme: string | null;
+  last_insight: string | null;
+  session_count: number | null;
+};
+
+type BaziRow = {
+  day_master: string | null;
+  dominant_element: string | null;
+  favorable_elements: string[] | null;
+};
+
 type SessionRow = {
   id: string;
   messages: ChatMessage[];
@@ -135,7 +148,7 @@ function buildFallbackAnswer(message: string): string {
 async function fetchSubscriberContext(userId: string) {
   const admin = getSupabaseAdmin();
 
-  const [profileRes, progressRes, reflectionsRes, awarenessRes, insightRes, memoryRes, geneKeysRes] =
+  const [profileRes, progressRes, reflectionsRes, awarenessRes, insightRes, memoryRes, geneKeysRes, journeyRes, baziRes] =
     await Promise.all([
       admin.from("profiles").select("full_name, subscription_tier, subscription_status").eq("id", userId).maybeSingle(),
       admin.from("progress").select("current_day, completed_days").eq("user_id", userId).maybeSingle(),
@@ -163,6 +176,8 @@ async function fetchSubscriberContext(userId: string) {
         .from("user_gene_keys_profile")
         .select("sphere, gene_key, line, shadow, gift, siddhi, wm, wf, ws, ayah, ayah_ref")
         .eq("user_id", userId),
+      admin.from("user_journey").select("current_stage, dominant_theme, last_insight, session_count").eq("user_id", userId).maybeSingle(),
+      admin.from("user_bazi_profile").select("day_master, dominant_element, favorable_elements").eq("user_id", userId).maybeSingle(),
     ]);
 
   const profile = profileRes.data as ProfileRow | null;
@@ -172,6 +187,8 @@ async function fetchSubscriberContext(userId: string) {
   const insight = insightRes.data as InsightRow | null;
   const memory = memoryRes.data as MemoryRow | null;
   const geneKeys = (geneKeysRes.data ?? []) as GeneKeyRow[];
+  const journey = journeyRes.data as JourneyRow | null;
+  const bazi = baziRes.data as BaziRow | null;
 
   // Fetch today's verse if we know current day
   let todayVerse: string | null = null;
@@ -196,13 +213,13 @@ async function fetchSubscriberContext(userId: string) {
     }
   }
 
-  return { profile, progress, reflections, awareness, insight, memory, todayVerse, geneKeys };
+  return { profile, progress, reflections, awareness, insight, memory, todayVerse, geneKeys, journey, bazi };
 }
 
 /* ── Build dynamic system prompt ─────────────────── */
 
 function buildSystemPrompt(ctx: Awaited<ReturnType<typeof fetchSubscriberContext>>): string {
-  const { profile, progress, reflections, awareness, insight, memory, todayVerse, geneKeys } = ctx;
+  const { profile, progress, reflections, awareness, insight, memory, todayVerse, geneKeys, journey, bazi } = ctx;
 
   const sections: string[] = [];
 
@@ -249,6 +266,20 @@ function buildSystemPrompt(ctx: Awaited<ReturnType<typeof fetchSubscriberContext
 
   if (subscriberParts.length > 0) {
     sections.push(`## سياق المشترك\n\n${subscriberParts.join("\n")}`);
+  }
+
+  if (journey?.current_stage) {
+    const stageMap: Record<string, string> = { shadow: 'الظل', awareness: 'الوعي', gift: 'الهدية', potential: 'أفضل احتمال' };
+    const stageLabel = stageMap[journey.current_stage] ?? journey.current_stage;
+    const journeyParts = [`مرحلة وعيه الحالية: ${stageLabel}`];
+    if (journey.dominant_theme) journeyParts.push(`الموضوع السائد: ${journey.dominant_theme}`);
+    if (journey.last_insight) journeyParts.push(`آخر إدراك: ${journey.last_insight}`);
+    if (journey.session_count) journeyParts.push(`عدد جلساته: ${journey.session_count}`);
+    sections.push(`## مرحلة الرحلة\n\n${journeyParts.join('\n')}`);
+  }
+
+  if (bazi?.day_master) {
+    sections.push(`## BaZi\n- السيد اليومي: ${bazi.day_master}\n- العنصر السائد: ${bazi.dominant_element ?? '—'}\n- العناصر المفيدة: ${bazi.favorable_elements?.join('، ') ?? '—'}`);
   }
 
   /* — Soul / Memory — */
