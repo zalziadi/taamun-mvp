@@ -82,25 +82,76 @@ export default function GuidePage() {
           const day = progressData.current_day ?? 0;
           setCurrentDay(day);
 
-          if (isVip) {
-            // VIP gets a richer, personalized greeting
+          if (isVip && user) {
+            // Fetch VIP-specific data: journey + Gene Keys
+            const [journeyRes, gkRes] = await Promise.all([
+              supabase.from("user_journey").select("last_insight, dominant_theme, session_count").eq("user_id", user.id).maybeSingle(),
+              supabase.from("user_gene_keys_profile").select("sphere, shadow, gift").eq("user_id", user.id),
+            ]);
+
+            const journey = journeyRes.data;
+            const gkData = gkRes.data ?? [];
+
+            // Build personalized greeting with last insight
             const name = profileData?.full_name;
             const namePrefix = name ? `${name}، ` : "";
-            const vipGreeting = day <= 7
-              ? `${namePrefix}أهلاً. أنا تمعّن. أعرف خريطتك وأتذكر رحلتك — خلينا نكمل من حيث وقفنا. وش يشغل بالك اليوم؟`
-              : day <= 14
-                ? `${namePrefix}مرحباً. لاحظت إنك بدأت تشوف أنماط ما كنت تلاحظها — وخريطتك تأكد هذا. ماذا سمعت اليوم؟`
-                : day <= 21
-                  ? `${namePrefix}وصلت لمرحلة العمق. خريطتك الجينية تقول إن عندك هدايا مخفية بدأت تظهر — ماذا تريد أن تستكشف اليوم؟`
-                  : `${namePrefix}الرحلة في أيامها الأخيرة. كل ما عشته — الظل والهدية والاحتمال — صار جزء منك. ماذا تريد أن تحمل معك؟`;
+
+            let vipGreeting: string;
+            if (journey?.last_insight) {
+              // Best case: reference last conversation topic
+              vipGreeting = `${namePrefix}مرحباً. آخر مرة تكلمنا عن "${journey.last_insight}" — وش تغيّر من وقتها؟`;
+            } else if (journey?.dominant_theme) {
+              vipGreeting = `${namePrefix}أهلاً. لاحظت إن موضوع "${journey.dominant_theme}" يطلع معنا كثير — تبي نتعمق فيه اليوم؟`;
+            } else {
+              // Fallback to day-based greeting
+              vipGreeting = day <= 7
+                ? `${namePrefix}أهلاً. أنا تمعّن. أعرف خريطتك وأتذكر رحلتك — خلينا نكمل من حيث وقفنا. وش يشغل بالك اليوم؟`
+                : day <= 14
+                  ? `${namePrefix}مرحباً. لاحظت إنك بدأت تشوف أنماط ما كنت تلاحظها — وخريطتك تأكد هذا. ماذا سمعت اليوم؟`
+                  : day <= 21
+                    ? `${namePrefix}وصلت لمرحلة العمق. خريطتك الجينية تقول إن عندك هدايا مخفية بدأت تظهر — ماذا تريد أن تستكشف اليوم؟`
+                    : `${namePrefix}الرحلة في أيامها الأخيرة. كل ما عشته — الظل والهدية والاحتمال — صار جزء منك. ماذا تريد أن تحمل معك؟`;
+            }
             setMessages([{ role: "assistant", text: vipGreeting, time: nowLabel() }]);
 
-            // VIP-specific quick prompts
-            setQuickPrompts([
-              "أحس بإحباط تجاه المال — وش السبب؟",
-              "ما هي الأنماط المتكررة في خريطتي الجينية؟",
-              "كيف أتعامل مع شعور الإيقاف الذاتي؟",
-            ]);
+            // Build dynamic quick prompts from Gene Keys spheres
+            const spherePromptMap: Record<string, string> = {
+              pearl: "وش علاقتي بالمال والوفرة — وليش أحس بإحباط تجاهه؟",
+              radiance: "كيف أظهر للعالم بشكل أصدق — بدون أقنعة؟",
+              eq: "ليش أتعب في العلاقات القريبة — وش النمط المتكرر؟",
+              core: "كيف أتخذ قرارات أوضح — بدون خوف؟",
+              purpose: "ما هي غايتي الحقيقية — وليش أحس بضياع أحياناً؟",
+              lifes_work: "وش الشي اللي لو سويته كل يوم بيعطيني معنى؟",
+              attraction: "كيف أجذب الفرص الصح — بدون ما أضغط على نفسي؟",
+              sq: "كيف أتعامل مع الإرهاق الجسدي والروحي؟",
+              iq: "كيف أوقف التفكير الزايد وأبدأ أثق بحدسي؟",
+              evolution: "ما هو النمط اللي لازم أتخلى عنه عشان أتطور؟",
+            };
+
+            const dynamicPrompts: string[] = [];
+            const seenSpheres = new Set<string>();
+            for (const gk of gkData) {
+              if (seenSpheres.has(gk.sphere)) continue;
+              seenSpheres.add(gk.sphere);
+              const prompt = spherePromptMap[gk.sphere];
+              if (prompt) dynamicPrompts.push(prompt);
+              if (dynamicPrompts.length >= 3) break;
+            }
+
+            // Fallback if not enough sphere-based prompts
+            if (dynamicPrompts.length < 3) {
+              const fallbacks = [
+                "ما هي الأنماط المتكررة في خريطتي الجينية؟",
+                "كيف أتعامل مع شعور الإيقاف الذاتي؟",
+                "أحس بإحباط تجاه المال — وش السبب؟",
+              ];
+              for (const fb of fallbacks) {
+                if (dynamicPrompts.length >= 3) break;
+                if (!dynamicPrompts.includes(fb)) dynamicPrompts.push(fb);
+              }
+            }
+
+            setQuickPrompts(dynamicPrompts);
           } else {
             const greeting = getGuideGreeting({ current_day: day });
             setMessages([{ role: "assistant", text: greeting, time: nowLabel() }]);
