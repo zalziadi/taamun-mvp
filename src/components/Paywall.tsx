@@ -124,11 +124,23 @@ export function Paywall({ reason = "locked", title, message, type, profile }: Pa
 
   // Handle smart paywall (single paywall after day 3)
   if (type === 'smart_paywall') {
+    // Day-aware emotional message
+    const dayNum = profile?.current_day ?? 4;
+    const smartMessage = message || (
+      dayNum <= 7
+        ? "عشت ٣ أيام كاملة مع تمعّن. بدأت تلاحظ أشياء ما كنت تشوفها — هل تكمل؟"
+        : dayNum <= 14
+          ? "وصلت لمرحلة الهدية — الآيات بدأت تتكلم. الرحلة الكاملة فيها أعمق من هذا بكثير."
+          : dayNum <= 21
+            ? "أنت في مرحلة الاكتشاف — الأنماط بدأت تتضح. هل تكمل حتى التحوّل؟"
+            : "الأيام الأخيرة هي الأقوى — التحوّل الحقيقي يحصل هنا. لا تتوقف الآن."
+    );
+
     return (
       <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-6">
         <h3 className="mb-2 text-lg font-bold text-amber-400/90">الرحلة بدأت تتعمّق</h3>
         <p className="mb-6 text-white/85 whitespace-pre-line">
-          {message || "عشت ٣ أيام كاملة مع تمعّن. الرحلة بدأت تتعمّق — هل تكمل؟"}
+          {smartMessage}
         </p>
         <div className="flex flex-wrap gap-3">
           <a

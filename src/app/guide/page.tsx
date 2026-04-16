@@ -305,9 +305,9 @@ export default function GuidePage() {
         </div>
       </section>
 
-      <section className="grid gap-4 lg:grid-cols-[1.65fr_1fr]">
-        <div className="tm-card p-4 sm:p-5">
-          <div className="custom-scrollbar max-h-[50vh] space-y-4 overflow-y-auto p-1 sm:max-h-[58vh] sm:p-2">
+      <section className="grid gap-4 lg:grid-cols-[1.65fr_1fr]" aria-label="محادثة تمعّن">
+        <div className="tm-card p-4 sm:p-5" role="log" aria-label="محادثة المرشد">
+          <div className="custom-scrollbar max-h-[50vh] space-y-4 overflow-y-auto p-1 sm:max-h-[58vh] sm:p-2" aria-live="polite" aria-relevant="additions">
             {messages.map((message, index) => (
               <div key={`${message.role}-${index}`} className="space-y-1.5">
                 <div
@@ -339,14 +339,15 @@ export default function GuidePage() {
 
           {/* Hide input form when limit reached */}
           {!showLimitPaywall && (
-            <form onSubmit={onSubmit} className="mt-4 flex gap-2">
+            <form onSubmit={onSubmit} className="mt-4 flex gap-2" role="search" aria-label="إرسال رسالة للمرشد">
               <input
                 value={input}
                 onChange={(e: React.ChangeEvent<HTMLInputElement>) => setInput(e.target.value)}
                 placeholder="اسأل سؤالاً عن القرآن أو مدينة المعنى..."
+                aria-label="اكتب رسالتك للمرشد"
                 className="flex-1 rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-3 text-sm text-[#2f2619] placeholder:text-[#7d7362] focus:outline-none focus:ring-2 focus:ring-[#8c7851]/25"
               />
-              <button type="submit" disabled={loading} className="tm-gold-btn px-6 py-3">
+              <button type="submit" disabled={loading} aria-label="أرسل الرسالة" className="tm-gold-btn px-6 py-3">
                 {loading ? "..." : "أرسل"}
               </button>
             </form>

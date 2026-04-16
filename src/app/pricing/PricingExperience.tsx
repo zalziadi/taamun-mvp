@@ -217,6 +217,25 @@ export default function PricingExperience() {
           </p>
         </section>
 
+        {/* ── لماذا تمعّن؟ ── */}
+        <section className="rounded-3xl border border-[#c9b88a]/20 bg-gradient-to-b from-[#2b2824] to-[#1d1b17] p-7 sm:p-8">
+          <h3 className="font-[var(--font-amiri)] text-xl sm:text-2xl text-[#e8e1d9] text-center">ماذا تحصل مع تمعّن؟</h3>
+          <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {[
+              { icon: "◈", title: "٢٨ يوم تأمل", desc: "آية يومية + لحظة صمت + طبقة أعمق + تمرين عملي" },
+              { icon: "✦", title: "مرشد تمعّن الشخصي", desc: "ذكاء اصطناعي يعرف رحلتك ويسألك الأسئلة الصحيحة" },
+              { icon: "◉", title: "كتاب مدينة المعنى", desc: "النص الكامل — اقرأه في المتصفح مع اقتباسات يومية" },
+              { icon: "◎", title: "دفتر التأمل الشخصي", desc: "اكتب تأملاتك وتابع تطور وعيك عبر الأيام" },
+            ].map((item) => (
+              <div key={item.title} className="text-center space-y-2 p-3">
+                <span className="text-2xl text-[#c9b88a]">{item.icon}</span>
+                <h4 className="text-sm font-bold text-[#e8e1d9]">{item.title}</h4>
+                <p className="text-xs leading-relaxed text-white/50">{item.desc}</p>
+              </div>
+            ))}
+          </div>
+        </section>
+
         {/* ── الباقات ── */}
         <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
           {TIERS.map((tier) => (

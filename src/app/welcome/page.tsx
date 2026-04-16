@@ -124,8 +124,8 @@ export default function WelcomePage() {
         </div>
 
         {/* Learn more */}
-        <div className="mt-8">
-          <Link href="/" className="text-xs underline" style={{ color: "#8a7a65" }}>
+        <div className="mt-8 space-y-2">
+          <Link href="/?skip" className="block text-xs underline" style={{ color: "#8a7a65" }}>
             اعرف أكثر عن البرنامج
           </Link>
         </div>
