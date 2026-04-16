@@ -279,6 +279,11 @@ export default function GuidePage() {
           <Link href="/guide/voice" className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-2 text-sm text-[#5f5648]">
             🎙️ جلسة صوتية
           </Link>
+          {isVipTier(profile?.subscription_tier) && (
+            <Link href="/profile/map" className="rounded-xl border border-[#c9b88a]/40 bg-[#c9b88a]/10 px-4 py-2 text-sm font-semibold text-[#7b694a]">
+              خريطتي الجينية
+            </Link>
+          )}
         </div>
       </section>
 

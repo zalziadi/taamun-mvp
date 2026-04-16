@@ -300,7 +300,12 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
               );
             })}
           </div>
-          <p className="text-[10px] text-white/20 text-center">الوعي المسموم → الوعي الفائق → الوعي السامي</p>
+          <Link
+            href="/profile/map"
+            className="block w-full rounded-xl border border-[#c9b88a]/20 bg-[#c9b88a]/10 py-2.5 text-center text-xs font-semibold text-[#c9b88a] transition-colors hover:bg-[#c9b88a]/20"
+          >
+            عرض الخريطة الكاملة
+          </Link>
         </div>
       )}
 
