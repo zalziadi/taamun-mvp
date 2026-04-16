@@ -145,9 +145,17 @@ function ReflectionJournal({ day, question }: { day: number; question: string })
 }
 
 // ── AwarenessMeter ────────────────────────────────────────────────────────────
+
+const AWARENESS_REFLECTIONS: Record<AwarenessLevel, string> = {
+  present: "هذا الحضور هو ما تبنيه الرحلة. لاحظ: ماذا فعلت اليوم بشكل مختلف جعلك أكثر وعياً؟",
+  tried: "المحاولة وعيٌ بحد ذاتها. ما الذي شتّتك — وهل تراه الآن بوضوح أكبر؟",
+  distracted: "التشتت ليس فشلاً — بل إشارة. ما الذي كان يشغل بالك حقاً اليوم؟",
+};
+
 function AwarenessMeter({ day }: { day: number }) {
   const [selected, setSelected] = useState<AwarenessLevel | null>(null);
   const [saving, setSaving] = useState(false);
+  const evolved = day > 10;
 
   const handleSelect = async (level: AwarenessLevel) => {
     setSelected(level);
@@ -171,7 +179,11 @@ function AwarenessMeter({ day }: { day: number }) {
 
   return (
     <div className="space-y-3">
-      <p className="text-sm text-white/60">كيف كان مستوى وعيك اليوم؟</p>
+      <p className="text-sm text-white/60">
+        {evolved
+          ? "بعد كل هذه الأيام — كيف تصف وعيك اليوم؟"
+          : "كيف كان مستوى وعيك اليوم؟"}
+      </p>
       <div className="flex gap-3">
         {AWARENESS_OPTIONS.map((opt) => (
           <button
@@ -192,6 +204,11 @@ function AwarenessMeter({ day }: { day: number }) {
           </button>
         ))}
       </div>
+      {evolved && selected && (
+        <p className="mt-2 text-xs leading-relaxed text-white/40 italic">
+          {AWARENESS_REFLECTIONS[selected]}
+        </p>
+      )}
     </div>
   );
 }
