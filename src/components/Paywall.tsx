@@ -29,7 +29,7 @@ interface PaywallProps {
   reason?: string;
   title?: string;
   message?: string;
-  type?: 'trial_active_locked' | 'trial_ended' | 'guide_limit_reached' | 'default';
+  type?: 'trial_active_locked' | 'trial_ended' | 'guide_limit_reached' | 'smart_paywall' | 'default';
   profile?: any; // Profile type from your auth
 }
 
@@ -113,6 +113,36 @@ export function Paywall({ reason = "locked", title, message, type, profile }: Pa
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => track("whatsapp_clicked", { from: "trial_ended_paywall" })}
+            className="rounded-lg bg-[#25D366] px-6 py-3.5 font-medium text-white hover:bg-[#20BD5A]"
+          >
+            تواصل عبر واتساب
+          </a>
+        </div>
+      </div>
+    );
+  }
+
+  // Handle smart paywall (single paywall after day 3)
+  if (type === 'smart_paywall') {
+    return (
+      <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-6">
+        <h3 className="mb-2 text-lg font-bold text-amber-400/90">الرحلة بدأت تتعمّق</h3>
+        <p className="mb-6 text-white/85 whitespace-pre-line">
+          {message || "عشت ٣ أيام كاملة مع تمعّن. الرحلة بدأت تتعمّق — هل تكمل؟"}
+        </p>
+        <div className="flex flex-wrap gap-3">
+          <a
+            href="/pricing"
+            onClick={() => track("pricing_clicked", { from: "smart_paywall" })}
+            className="rounded-lg bg-amber-500 px-6 py-3.5 font-medium text-black hover:bg-amber-400"
+          >
+            أكمل الرحلة — اشترك الآن
+          </a>
+          <a
+            href={getWhatsAppUrl()}
+            target="_blank"
+            rel="noopener noreferrer"
+            onClick={() => track("whatsapp_clicked", { from: "smart_paywall" })}
             className="rounded-lg bg-[#25D366] px-6 py-3.5 font-medium text-white hover:bg-[#20BD5A]"
           >
             تواصل عبر واتساب

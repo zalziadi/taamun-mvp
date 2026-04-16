@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { checkGuideLimit, incrementGuideUsage } from "@/lib/subscriptionAccess";
 import { Paywall } from "@/components/Paywall";
 import { supabase } from "@/lib/supabaseClient";
+import { getGuideGreeting } from "@/lib/guide-prompt";
 
 type Message = {
   role: "user" | "assistant";
@@ -27,9 +28,9 @@ type PromptsPayload = {
 };
 
 const DEFAULT_PROMPTS = [
-  "ما معنى التمعّن في القرآن؟",
-  "كيف أبدأ رحلة التمعّن؟",
-  "ما هي مدينة المعنى؟",
+  "ماذا أشعر حين أقرأ القرآن؟",
+  "كيف أبدأ أسمع ما تقوله لي الآية؟",
+  "ما الذي يمنعني من التوقف عند الآية؟",
 ];
 
 function nowLabel() {
@@ -45,10 +46,11 @@ export default function GuidePage() {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [quickPrompts, setQuickPrompts] = useState<string[]>(DEFAULT_PROMPTS);
   const [showLimitPaywall, setShowLimitPaywall] = useState(false);
+  const [currentDay, setCurrentDay] = useState(0);
   const [messages, setMessages] = useState<Message[]>([
     {
       role: "assistant",
-      text: "أنا مرشد مدينة المعنى. اسألني عن: الظل، الهدية، أفضل احتمال، أو كيف تطبق الآية على يومك.",
+      text: getGuideGreeting({ current_day: 0, visit_type: "first_visit" }),
       time: nowLabel(),
     },
   ]);
@@ -67,6 +69,20 @@ export default function GuidePage() {
         setProfile(data);
       }
       
+      // Load progress for dynamic greeting
+      try {
+        const progressRes = await fetch("/api/program/progress", { cache: "no-store" });
+        const progressData = await progressRes.json();
+        if (progressData.ok) {
+          const day = progressData.current_day ?? 0;
+          setCurrentDay(day);
+          const greeting = getGuideGreeting({ current_day: day });
+          setMessages([{ role: "assistant", text: greeting, time: nowLabel() }]);
+        }
+      } catch {
+        // Keep default greeting
+      }
+
       // Load prompts
       try {
         const res = await fetch("/api/guide/prompts");
@@ -168,10 +184,10 @@ export default function GuidePage() {
       {/* ── Welcome Section ────────────────────────────────────────────── */}
       <section className="text-center space-y-4">
         <h1 className="tm-heading text-4xl sm:text-5xl leading-tight">
-          المرشد الذكي
+          تمعّن
         </h1>
         <p className="text-sm text-[#5f5648]/85 max-w-2xl mx-auto">
-          اسأل أي سؤال عن القرآن أو كتاب مدينة المعنى وسأجيبك من سياق الكتاب.
+          مرشدك الشخصي في رحلة اكتشاف المعنى بلغة القرآن
         </p>
         <div className="flex flex-wrap items-center justify-center gap-2">
           <Link href="/" className="tm-gold-btn rounded-xl px-4 py-2 text-sm">

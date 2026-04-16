@@ -32,7 +32,7 @@ function SilenceGate({ prompt, onStart }: { prompt: string; onStart: () => void 
       <button
         type="button"
         onClick={onStart}
-        className="rounded-2xl bg-white px-10 py-4 text-base font-semibold text-[#15130f] transition-opacity hover:opacity-90 active:scale-95"
+        className="rounded-2xl bg-white px-10 py-4 text-base font-semibold text-[#15130f] transition-opacity hover:opacity-90 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#15130f]"
       >
         ابدأ التمعّن
       </button>
@@ -58,7 +58,7 @@ function HiddenLayer({ text }: { text: string }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/60 transition-colors hover:bg-white/10 hover:text-white"
+        className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/60 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#15130f]"
       >
         <span className="text-xs">◈</span>
         {open ? "أغلق الطبقة" : "طبقة أعمق"}
@@ -179,13 +179,15 @@ function AwarenessMeter({ day }: { day: number }) {
             type="button"
             onClick={() => handleSelect(opt.value)}
             disabled={saving}
-            className={`flex flex-1 flex-col items-center gap-2 rounded-xl border px-3 py-4 text-xs transition-all ${
+            aria-label={opt.label}
+            aria-pressed={selected === opt.value}
+            className={`flex flex-1 flex-col items-center gap-2 rounded-xl border px-3 py-4 text-xs transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#15130f] ${
               selected === opt.value
                 ? "border-white/40 bg-white/15 text-white"
                 : "border-white/10 bg-white/5 text-white/50 hover:bg-white/10 hover:text-white/80"
             }`}
           >
-            <span className="text-base">{opt.emoji}</span>
+            <span className="text-base" aria-hidden="true">{opt.emoji}</span>
             <span className="text-center leading-tight">{opt.label}</span>
           </button>
         ))}
@@ -217,7 +219,7 @@ function ShareCard({ day, verse, verseRef }: { day: number; verse: string; verse
     <button
       type="button"
       onClick={handleShare}
-      className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-3 text-sm text-white/60 transition-colors hover:bg-white/10 hover:text-white"
+      className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-3 text-sm text-white/60 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#15130f]"
     >
       <span className="text-base">↗</span>
       {copied ? "تم النسخ" : "شارك اليوم"}
@@ -330,45 +332,35 @@ export function DayExperience({ day }: DayExperienceProps) {
       {/* Custom Question */}
       <CustomQuestion cycleDay={day} />
 
-      {/* Hidden Layer - Locked for trial users */}
-      {step4_5_access.allowed ? (
+      {/* Hidden Layer — open for first 3 days or subscribers */}
+      {(day <= 3 || step4_5_access.allowed) ? (
         <HiddenLayer text={content.hiddenLayer} />
-      ) : (
-        <Paywall 
-          type="trial_active_locked" 
-          reason="trial_active_locked"
-          message="الطبقة الأعمق للمشتركين فقط"
-        />
-      )}
+      ) : null}
 
       {/* Book Quote */}
       <BookQuote quote={content.bookQuote} chapter={content.bookChapter} />
 
-      {/* Exercise - Locked for trial users */}
-      {step4_5_access.allowed ? (
+      {/* Exercise — open for first 3 days or subscribers */}
+      {(day <= 3 || step4_5_access.allowed) ? (
         <div className="rounded-xl border border-white/10 bg-white/5 p-5">
           <p className="mb-1 text-xs uppercase tracking-widest text-white/40">تمرين اليوم</p>
           <p className="text-sm leading-loose text-white/80">{content.exercise}</p>
         </div>
-      ) : (
-        <Paywall 
-          type="trial_active_locked" 
-          reason="trial_active_locked"
-          message="سجّل تأملاتك في دفترك الخاص — مع الاشتراك"
-        />
-      )}
+      ) : null}
 
-      {/* Reflection Journal - Locked for trial users */}
-      {step4_5_access.allowed ? (
+      {/* Reflection Journal — open for first 3 days or subscribers */}
+      {(day <= 3 || step4_5_access.allowed) ? (
         <div className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm">
           <p className="mb-4 text-xs uppercase tracking-widest text-white/40">تأمّل يومي</p>
           <ReflectionJournal day={day} question={content.question} />
         </div>
-      ) : (
-        <Paywall 
-          type="trial_active_locked" 
-          reason="journal"
-          message="دفترك الشخصي ينتظر أول تأمل"
+      ) : null}
+
+      {/* Smart Paywall — single paywall after day 3 for trial users */}
+      {day > 3 && !step4_5_access.allowed && (
+        <Paywall
+          type="smart_paywall"
+          message="عشت ٣ أيام كاملة مع تمعّن. الرحلة بدأت تتعمّق — هل تكمل؟"
         />
       )}
 

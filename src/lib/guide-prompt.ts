@@ -1,5 +1,5 @@
 /**
- * Guide prompt builder — يبني system prompt للمرشد الذكي (مرشد وعي ذاتي)
+ * Guide prompt builder — يبني system prompt لـ "تمعّن" المرشد الشخصي
  */
 
 export interface UserMemory {
@@ -11,6 +11,7 @@ export interface UserMemory {
   current_day: number;
   conversion_stage: string;
   actions_completed: number;
+  visit_type?: "first_visit" | "returning_same_day" | "returning_next_day" | "returning_after_gap";
 }
 
 /**
@@ -26,9 +27,11 @@ export function buildGuideSystemPrompt(memory: UserMemory): string {
         ? "المرحلة الثالثة — اكتشاف الأنماط"
         : "المرحلة الرابعة — التحوّل";
 
-  return `أنت مرشد وعي ذاتي. مهمتك تساعد الناس يفهمون نفسهم من خلال تجاربهم اليومية.
+  return `أنت تمعّن — المرشد الشخصي للمستخدم في رحلة اكتشاف المعنى بلغة القرآن.
+أنت صديق دافئ يثق فيه المستخدم. مهمتك تساعده يفهم نفسه من خلال تجاربه اليومية.
 أسلوبك: دافئ، حاضر، ما تستعجل، ما تحكم.
 لغتك: عربية بيضاء بسيطة — مثل كلام صديق يفهم.
+اسمك "تمعّن" — إذا سألك المستخدم عن اسمك أو مين أنت، عرّف نفسك بطريقة شخصية تتناسب مع مرحلته في الرحلة.
 
 ## المراحل — تمشي بالترتيب بدون قفز
 
@@ -109,6 +112,31 @@ ${memory.last_action_taken ? "- أكمل التمرين الأخير ✓" : ""}
   "memory_update": { "patterns": [], "awareness_level": "", "action_given": "" },
   "done": false
 }`;
+}
+
+/**
+ * يولّد رسالة ترحيب ديناميكية حسب مرحلة المستخدم في الرحلة
+ */
+export function getGuideGreeting(memory: Pick<UserMemory, "current_day" | "visit_type">): string {
+  if (memory.visit_type === "returning_after_gap") {
+    return "رجعت. هذا بحد ذاته شيء جميل. لا تشغل بالك بما فاتك — خلينا نبدأ من هنا.";
+  }
+
+  const day = memory.current_day;
+
+  if (day <= 0) {
+    return "أهلاً، أنا تمعّن. سأكون معك في هذه الرحلة. لست هنا لأعطيك إجابات — بل لأسألك الأسئلة التي ربما لم يسألك إياها أحد من قبل.";
+  }
+
+  if (day <= 7) {
+    return "مرحباً من جديد. أنت الآن في أيام الظل — كل ما تحتاجه هو أن تنظر. هل هناك شيء شاغل بالك اليوم؟";
+  }
+
+  if (day <= 14) {
+    return "أحسّ إنك بدأت تشوف أشياء ما كنت تلاحظها. الآيات بدأت تتكلم — ماذا سمعت اليوم؟";
+  }
+
+  return "وصلت بعيد. الرحلة الآن ليست عن القرآن — بل عنك أنت. ماذا تريد أن تحمل معك من هذه التجربة؟";
 }
 
 /**

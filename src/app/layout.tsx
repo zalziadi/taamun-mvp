@@ -101,6 +101,12 @@ export default function RootLayout({
       <body
         className={`${amiri.variable} ${manrope.variable} ${notoSerif.variable} tm-body antialiased`}
       >
+        <a
+          href="#main-content"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:right-2 focus:z-[9999] focus:rounded-lg focus:bg-[#7b694a] focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-[#f4f1ea]"
+        >
+          تخطي إلى المحتوى
+        </a>
         <AnalyticsProvider />
         <AppChrome ramadanClosed={ramadanClosed}>{children}</AppChrome>
       </body>

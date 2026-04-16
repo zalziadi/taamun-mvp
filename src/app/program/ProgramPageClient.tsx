@@ -415,6 +415,49 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
         </section>
       )}
 
+      {/* Journey Phase Indicator */}
+      <section className="tm-card p-5 sm:p-6">
+        <p className="mb-3 text-xs tracking-[0.15em] text-[#8c7851]/80">مراحل الرحلة</p>
+        <div className="flex items-center gap-0" dir="ltr">
+          {[
+            { label: "الظل", days: "١–٧", end: 7 },
+            { label: "الهدية", days: "٨–١٤", end: 14 },
+            { label: "الاكتشاف", days: "١٥–٢١", end: 21 },
+            { label: "التحوّل", days: "٢٢–٢٨", end: 28 },
+          ].map((phase, i) => {
+            const isActive = currentDay >= (phase.end - 6) && currentDay <= phase.end;
+            const isDone = currentDay > phase.end;
+            return (
+              <div key={phase.label} className="flex flex-1 flex-col items-center gap-1.5">
+                <div className="flex w-full items-center">
+                  {i > 0 && (
+                    <div className={`h-0.5 flex-1 ${isDone || isActive ? "bg-[#8c7851]" : "bg-[#e1d7c7]"}`} />
+                  )}
+                  <div
+                    className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-all ${
+                      isActive
+                        ? "bg-[#8c7851] text-[#f4f1ea] shadow-md"
+                        : isDone
+                          ? "bg-[#b39b71] text-[#f4f1ea]"
+                          : "border border-[#d8cdb9] bg-[#f6f1e8] text-[#7d7362]"
+                    }`}
+                  >
+                    {isDone ? "✓" : i + 1}
+                  </div>
+                  {i < 3 && (
+                    <div className={`h-0.5 flex-1 ${isDone ? "bg-[#8c7851]" : "bg-[#e1d7c7]"}`} />
+                  )}
+                </div>
+                <span className={`text-center text-[10px] leading-tight ${isActive ? "font-bold text-[#5a4a35]" : "text-[#7d7362]"}`}>
+                  {phase.label}
+                </span>
+                <span className="text-[9px] text-[#8c7851]/60">{phase.days}</span>
+              </div>
+            );
+          })}
+        </div>
+      </section>
+
       <section className="tm-card p-6 sm:p-7 space-y-5">
         <div className="flex items-center justify-between">
           <h2 className="tm-heading text-xl sm:text-3xl text-[#2f2619]">الأيام</h2>

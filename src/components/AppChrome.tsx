@@ -99,7 +99,7 @@ export function AppChrome({
         </header>
       ) : null}
 
-      <main className={hide ? "flex-1" : "flex-1 pb-24 md:pb-0"}>{children}</main>
+      <main id="main-content" className={hide ? "flex-1" : "flex-1 pb-24 md:pb-0"}>{children}</main>
 
       {!hide ? (
         <footer className="border-t border-[#e5dfd3] bg-[#f4f1ea]/70 py-10">

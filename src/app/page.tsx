@@ -2,6 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
 import { JourneyLanding } from "./JourneyLanding";
 import { useJourneyMemory } from "@/hooks/useJourneyMemory";
@@ -29,6 +30,8 @@ function isActiveSubscription(profile: ProfileLite) {
 }
 
 export default function Home() {
+  const router = useRouter();
+
   // V10 PR-2: Journey memory with live bridge + timeline
   const journey = useJourneyMemory({
     pageName: "/",
@@ -154,6 +157,11 @@ export default function Home() {
   }
 
   if (!user) {
+    const welcomed = typeof window !== "undefined" && localStorage.getItem("taamun.welcomed");
+    if (!welcomed) {
+      router.replace("/welcome");
+      return null;
+    }
     return <JourneyLanding />;
   }
 
