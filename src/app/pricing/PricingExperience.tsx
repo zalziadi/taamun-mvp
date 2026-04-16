@@ -1,7 +1,8 @@
 "use client";
 
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
+import { track } from "@/lib/analytics";
 
 /* ── الباقات ── */
 type TierDef = {
@@ -70,6 +71,7 @@ function CheckoutButton({ tierId, highlight }: { tierId: string; highlight?: boo
   const handleCheckout = useCallback(async () => {
     setError("");
     setLoading(true);
+    track("checkout_started", { tier: tierId });
     try {
       const res = await fetch("/api/checkout", {
         method: "POST",
@@ -203,6 +205,10 @@ function CopyButton({ text, label }: { text: string; label: string }) {
 /* ── الصفحة الرئيسية ── */
 export default function PricingExperience() {
   const router = useRouter();
+
+  useEffect(() => {
+    track("pricing_viewed", { page: "pricing" });
+  }, []);
 
   return (
     <div dir="rtl" className="min-h-screen bg-[#15130f] px-4 pb-16 pt-6 text-[#e8e1d9] overflow-x-hidden">
