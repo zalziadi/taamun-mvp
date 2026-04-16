@@ -7,6 +7,7 @@ import { checkGuideLimit, incrementGuideUsage } from "@/lib/subscriptionAccess";
 import { Paywall } from "@/components/Paywall";
 import { supabase } from "@/lib/supabaseClient";
 import { getGuideGreeting } from "@/lib/guide-prompt";
+import { isVipTier } from "@/lib/guide-prompt-vip";
 
 type Message = {
   role: "user" | "assistant";
@@ -59,6 +60,7 @@ export default function GuidePage() {
   useEffect(() => {
     async function loadData() {
       // Load profile
+      let profileData: any = null;
       const { data: { user } } = await supabase.auth.getUser();
       if (user) {
         const { data } = await supabase
@@ -66,9 +68,12 @@ export default function GuidePage() {
           .select("*")
           .eq("id", user.id)
           .single();
+        profileData = data;
         setProfile(data);
       }
-      
+
+      const isVip = isVipTier(profileData?.subscription_tier);
+
       // Load progress for dynamic greeting
       try {
         const progressRes = await fetch("/api/program/progress", { cache: "no-store" });
@@ -76,23 +81,47 @@ export default function GuidePage() {
         if (progressData.ok) {
           const day = progressData.current_day ?? 0;
           setCurrentDay(day);
-          const greeting = getGuideGreeting({ current_day: day });
-          setMessages([{ role: "assistant", text: greeting, time: nowLabel() }]);
+
+          if (isVip) {
+            // VIP gets a richer, personalized greeting
+            const name = profileData?.full_name;
+            const namePrefix = name ? `${name}، ` : "";
+            const vipGreeting = day <= 7
+              ? `${namePrefix}أهلاً. أنا تمعّن. أعرف خريطتك وأتذكر رحلتك — خلينا نكمل من حيث وقفنا. وش يشغل بالك اليوم؟`
+              : day <= 14
+                ? `${namePrefix}مرحباً. لاحظت إنك بدأت تشوف أنماط ما كنت تلاحظها — وخريطتك تأكد هذا. ماذا سمعت اليوم؟`
+                : day <= 21
+                  ? `${namePrefix}وصلت لمرحلة العمق. خريطتك الجينية تقول إن عندك هدايا مخفية بدأت تظهر — ماذا تريد أن تستكشف اليوم؟`
+                  : `${namePrefix}الرحلة في أيامها الأخيرة. كل ما عشته — الظل والهدية والاحتمال — صار جزء منك. ماذا تريد أن تحمل معك؟`;
+            setMessages([{ role: "assistant", text: vipGreeting, time: nowLabel() }]);
+
+            // VIP-specific quick prompts
+            setQuickPrompts([
+              "أحس بإحباط تجاه المال — وش السبب؟",
+              "ما هي الأنماط المتكررة في خريطتي الجينية؟",
+              "كيف أتعامل مع شعور الإيقاف الذاتي؟",
+            ]);
+          } else {
+            const greeting = getGuideGreeting({ current_day: day });
+            setMessages([{ role: "assistant", text: greeting, time: nowLabel() }]);
+          }
         }
       } catch {
         // Keep default greeting
       }
 
-      // Load prompts
-      try {
-        const res = await fetch("/api/guide/prompts");
-        if (!res.ok) return;
-        const data = (await res.json()) as PromptsPayload;
-        if (data.ok && data.prompts && data.prompts.length > 0) {
-          setQuickPrompts(data.prompts);
+      // Load prompts (only override if not VIP — VIP already set above)
+      if (!isVip) {
+        try {
+          const res = await fetch("/api/guide/prompts");
+          if (!res.ok) return;
+          const promptsData = (await res.json()) as PromptsPayload;
+          if (promptsData.ok && promptsData.prompts && promptsData.prompts.length > 0) {
+            setQuickPrompts(promptsData.prompts);
+          }
+        } catch {
+          // Keep defaults
         }
-      } catch {
-        // Keep defaults
       }
     }
     void loadData();

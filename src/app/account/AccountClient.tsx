@@ -24,6 +24,7 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
   const [planTier, setPlanTier] = useState<string | null>(null);
   const [expiresAt, setExpiresAt] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
+  const [geneKeys, setGeneKeys] = useState<Array<{ sphere: string; gene_key: number; line: number; shadow: string | null; gift: string | null; siddhi: string | null }>>([]);
 
   useEffect(() => {
     const loadAccountData = async () => {
@@ -99,6 +100,17 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
           );
           const avg = total / awarenessData.length;
           setAvgAwareness(Math.round(avg * 10) / 10);
+        }
+
+        // Fetch Gene Keys for VIP users
+        const vipTiers = ["yearly", "vip", "lifetime", "premium"];
+        if (profile?.subscription_tier && vipTiers.includes(profile.subscription_tier)) {
+          const { data: gkData } = await supabase
+            .from("user_gene_keys_profile")
+            .select("sphere, gene_key, line, shadow, gift, siddhi");
+          if (gkData && gkData.length > 0) {
+            setGeneKeys(gkData);
+          }
         }
       } catch (err) {
         console.error("Error loading account data:", err);
@@ -249,6 +261,48 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
           )}
         </div>
       </div>
+
+      {/* Gene Keys Map — VIP only */}
+      {geneKeys.length > 0 && (
+        <div className="rounded-2xl border border-[#c9b88a]/25 bg-gradient-to-b from-[#1d1b17] to-[#15130f] p-5 space-y-4">
+          <div className="flex items-center justify-between">
+            <h2 className="font-[var(--font-amiri)] text-lg text-[#e8e1d9]">خريطتك الجينية</h2>
+            <span className="rounded-full border border-[#c9b88a]/40 bg-[#c9b88a]/15 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-[#c9b88a]">
+              VIP
+            </span>
+          </div>
+          <div className="space-y-2">
+            {geneKeys.map((gk) => {
+              const sphereLabels: Record<string, string> = {
+                lifes_work: "عمل الحياة", evolution: "التطور", radiance: "الإشراق",
+                purpose: "الغاية", attraction: "الجاذبية", iq: "الذكاء العقلي",
+                eq: "الذكاء العاطفي", sq: "الذكاء الروحي", core: "المركز",
+                culture: "الثقافة", pearl: "اللؤلؤة",
+              };
+              const label = sphereLabels[gk.sphere] ?? gk.sphere;
+              return (
+                <div
+                  key={gk.sphere}
+                  className="flex items-center justify-between rounded-xl border border-white/5 bg-white/[0.03] px-3 py-2.5"
+                >
+                  <div>
+                    <p className="text-sm font-medium text-[#e8e1d9]">{label}</p>
+                    <p className="text-xs text-[#c9b88a]/70">المفتاح {gk.gene_key}.{gk.line}</p>
+                  </div>
+                  <div className="text-left text-[10px] leading-relaxed text-white/40">
+                    <span className="text-white/30">{gk.shadow ?? "—"}</span>
+                    <span className="mx-1 text-[#c9b88a]/40">→</span>
+                    <span className="text-[#c9b88a]/80">{gk.gift ?? "—"}</span>
+                    <span className="mx-1 text-[#c9b88a]/40">→</span>
+                    <span className="text-[#c9b88a]">{gk.siddhi ?? "—"}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+          <p className="text-[10px] text-white/20 text-center">الوعي المسموم → الوعي الفائق → الوعي السامي</p>
+        </div>
+      )}
 
       {/* Account Details */}
       <div className="rounded-2xl border border-[#c9b88a]/15 bg-[#1d1b17] p-5 space-y-4">
