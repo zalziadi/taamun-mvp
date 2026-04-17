@@ -148,23 +148,19 @@ export default function Home() {
     }
   }
 
-  if (!ready) {
-    return (
-      <div className="flex min-h-[60vh] items-center justify-center">
-        <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#c9b88a] border-t-transparent" />
-      </div>
-    );
-  }
-
-  if (!user) {
-    const welcomed = typeof window !== "undefined" && localStorage.getItem("taamun.welcomed");
-    const skipWelcome = typeof window !== "undefined" && new URLSearchParams(window.location.search).has("skip");
-    if (!welcomed && !skipWelcome) {
-      router.replace("/welcome");
-      return null;
-    }
-    if (skipWelcome && typeof window !== "undefined") {
-      localStorage.setItem("taamun.welcomed", "true");
+  // Show landing immediately while auth loads — eliminates LCP delay
+  if (!ready || !user) {
+    // Check welcome redirect (only when auth confirmed no user)
+    if (ready && !user) {
+      const welcomed = typeof window !== "undefined" && localStorage.getItem("taamun.welcomed");
+      const skipWelcome = typeof window !== "undefined" && new URLSearchParams(window.location.search).has("skip");
+      if (!welcomed && !skipWelcome) {
+        router.replace("/welcome");
+        return null;
+      }
+      if (skipWelcome && typeof window !== "undefined") {
+        localStorage.setItem("taamun.welcomed", "true");
+      }
     }
     return <JourneyLanding />;
   }

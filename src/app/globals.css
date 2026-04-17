@@ -1,4 +1,5 @@
-@import url("https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap");
+/* Fonts loaded via next/font/google in layout.tsx (Amiri, Manrope, Noto Serif)
+   + non-blocking link in <head> for IBM Plex and Noto Sans Arabic */
 
 @tailwind base;
 @tailwind components;
