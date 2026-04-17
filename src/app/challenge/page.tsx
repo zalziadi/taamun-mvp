@@ -5,6 +5,7 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { supabase } from "@/lib/supabaseClient";
 import { getWeeklyChallenge, getDayInWeek, type WeeklyChallenge } from "@/lib/weekly-challenges";
+import { CommunityJoin } from "@/components/CommunityJoin";
 
 export default function ChallengePage() {
   const router = useRouter();
@@ -157,6 +158,9 @@ export default function ChallengePage() {
           <p className="text-base leading-relaxed text-[#2f2619]">{challenge.reflection}</p>
         </section>
       )}
+
+      {/* Community */}
+      <CommunityJoin variant="inline" />
 
       {/* Navigation */}
       <div className="flex flex-wrap justify-center gap-3">

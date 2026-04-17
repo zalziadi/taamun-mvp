@@ -2,6 +2,7 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { Paywall } from "@/components/Paywall";
 import { BookViewer } from "@/components/BookViewer";
 import { BookProgress } from "@/components/BookProgress";
+import { BookTools } from "@/components/BookTools";
 
 export default async function BookPage() {
   const supabase = await createSupabaseServerClient();
@@ -61,9 +62,15 @@ export default async function BookPage() {
       <p className="mb-6 text-[#c9b88a]">الدليل والتطبيق — اقرأ في المتصفح</p>
       <div className="grid gap-6 lg:grid-cols-[1fr_280px]">
         <BookViewer />
-        <aside className="rounded-2xl border border-[#c9b88a]/15 bg-[#1d1b17] p-5">
-          <h2 className="mb-4 font-[var(--font-amiri)] text-lg text-[#e8e1d9]">تقدمك في الكتاب</h2>
-          <BookProgress />
+        <aside className="space-y-5">
+          <div className="rounded-2xl border border-[#c9b88a]/15 bg-[#1d1b17] p-5">
+            <h2 className="mb-4 font-[var(--font-amiri)] text-lg text-[#e8e1d9]">تقدمك في الكتاب</h2>
+            <BookProgress />
+          </div>
+          <div className="rounded-2xl border border-[#c9b88a]/15 bg-[#1d1b17] p-5">
+            <h2 className="mb-4 font-[var(--font-amiri)] text-lg text-[#e8e1d9]">أدوات القراءة</h2>
+            <BookTools />
+          </div>
         </aside>
       </div>
     </div>

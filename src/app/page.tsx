@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
 import { JourneyLanding } from "./JourneyLanding";
 import { CommunityPulse } from "@/components/CommunityPulse";
+import { CommunityJoin } from "@/components/CommunityJoin";
 import { getTodayVerse } from "@/lib/daily-verse-post28";
 import { useJourneyMemory } from "@/hooks/useJourneyMemory";
 import { WhyYouAreHereCard } from "@/components/journey/WhyYouAreHereCard";
@@ -332,6 +333,7 @@ export default function Home() {
             </section>
 
             <CommunityPulse />
+            <CommunityJoin />
           </>
         );
       })()}
