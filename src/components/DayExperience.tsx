@@ -170,6 +170,11 @@ function AwarenessMeter({ day }: { day: number }) {
         { onConflict: "user_id,day" }
       );
       if (error) console.error("[AwarenessMeter] save failed:", error);
+
+      // Day 28 completion: queue celebration email (fire-and-forget)
+      if (!error && day === 28) {
+        fetch("/api/program/complete-journey", { method: "POST" }).catch(() => {});
+      }
     } catch (err) {
       console.error("[AwarenessMeter] unexpected error:", err);
     } finally {

@@ -1,3 +1,4 @@
+import { cookies } from "next/headers";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { JourneyLanding } from "./JourneyLanding";
 import { HomeClient } from "./HomeClient";
@@ -6,10 +7,8 @@ import { WelcomeGate } from "./WelcomeGate";
 /**
  * Server Component homepage — SSR'd for instant LCP.
  *
- * Unauthenticated users: JourneyLanding rendered from server (no JS wait).
- * Authenticated users: HomeClient island (client hydration for dashboard).
- *
- * Eliminates the 6s LCP from client-side Supabase auth check.
+ * Fast path: check for Supabase auth cookie BEFORE making a full auth call.
+ * No cookie → skip auth entirely → render landing instantly (saves ~500ms TTFB).
  */
 export default async function Home({
   searchParams,
@@ -18,7 +17,22 @@ export default async function Home({
 }) {
   const params = await searchParams;
 
-  // Server-side auth check via cookie
+  // Fast path: if no Supabase auth cookie exists, skip the full auth check
+  const cookieStore = await cookies();
+  const allCookies = cookieStore.getAll();
+  const hasAuthCookie = allCookies.some(
+    (c) => c.name.startsWith("sb-") && c.name.endsWith("-auth-token")
+  );
+
+  // No auth cookie → definitely unauthenticated → skip Supabase call
+  if (!hasAuthCookie) {
+    if (params?.skip !== undefined) {
+      return <JourneyLanding />;
+    }
+    return <WelcomeGate />;
+  }
+
+  // Has cookie → verify with Supabase (may be expired)
   let isAuthenticated = false;
   try {
     const supabase = await createSupabaseServerClient();
@@ -28,16 +42,13 @@ export default async function Home({
     // Auth check failed — treat as unauthenticated
   }
 
-  // Authenticated → client island dashboard
   if (isAuthenticated) {
     return <HomeClient />;
   }
 
-  // Skip param → go directly to landing
+  // Cookie exists but invalid → render landing
   if (params?.skip !== undefined) {
     return <JourneyLanding />;
   }
-
-  // Unauthenticated without skip → WelcomeGate checks localStorage
   return <WelcomeGate />;
 }
