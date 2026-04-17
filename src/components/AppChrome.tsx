@@ -104,7 +104,7 @@ export function AppChrome({
       {!hide ? (
         <footer className="border-t border-[#e5dfd3] bg-[#f4f1ea]/70 py-10">
           <div className="mx-auto flex w-full max-w-[1240px] flex-col items-center gap-3 px-4 text-center sm:px-6 lg:px-8">
-            <p className="text-sm text-[#5f5648]">
+            <p className="text-sm text-[#3d342a]">
               {APP_NAME} &copy; {new Date().getFullYear()} &middot; من مشاريع الدير الرقمي
             </p>
           </div>
