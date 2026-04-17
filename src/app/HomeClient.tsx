@@ -239,6 +239,36 @@ export function HomeClient() {
         </div>
       ) : null}
 
+      {/* Time-aware greeting + retention message */}
+      {subscribed && currentDay > 0 && (() => {
+        const hour = new Date().getHours();
+        const greeting = hour < 12
+          ? "صباح الخير"
+          : hour < 17
+            ? "أهلاً من جديد"
+            : hour < 21
+              ? "مساء الخير"
+              : "هدوء الليل";
+        const showRetention = currentDay >= 3 && currentDay <= 14;
+        return (
+          <section className="tm-card bg-gradient-to-b from-[#faf6ee] to-[#fcfaf7] p-5 sm:p-6 text-center space-y-2">
+            <p className="text-xs tracking-[0.15em] text-[#8c7851]/70">{greeting}</p>
+            <p className="font-[var(--font-amiri)] text-lg sm:text-xl text-[#2f2619]">
+              {currentDay >= 28
+                ? "أتممت الرحلة. ومازلت هنا."
+                : `أنت في يوم ${currentDay} من الرحلة.`}
+            </p>
+            {showRetention && (
+              <p className="text-xs leading-relaxed text-[#5f5648]/75 max-w-md mx-auto">
+                {currentDay <= 7
+                  ? "أغلب من بدأ توقّف في الأيام الأولى. أنت لا تزال هنا — هذا بحد ذاته شيء."
+                  : "عبرت الأسبوع الأول. الأنماط بدأت تظهر — لاحظها."}
+              </p>
+            )}
+          </section>
+        );
+      })()}
+
       <section className="tm-card p-7 text-center">
         <div className="inline-flex items-center rounded-full border border-[#b39b71]/35 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#7b694a]">
           {ritualEntry ? "لحظة البداية" : "تذكير اليوم"}

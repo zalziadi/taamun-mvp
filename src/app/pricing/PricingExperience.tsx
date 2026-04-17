@@ -223,6 +223,21 @@ export default function PricingExperience() {
           </p>
         </section>
 
+        {/* ── شهادة عميل ── */}
+        <section className="rounded-3xl border border-[#c9b88a]/30 bg-gradient-to-b from-[#2b2824] to-[#1d1b17] p-7 sm:p-8">
+          <div className="mx-auto max-w-xl text-center space-y-4">
+            <p className="text-xs tracking-[0.2em] text-[#c9b88a]/70">من عميل في يومه التاسع</p>
+            <blockquote className="font-[var(--font-amiri)] text-xl sm:text-2xl leading-loose text-[#e8e1d9]">
+              &ldquo;مشيت فيه لليوم التاسع. حبيت البرنامج وخليته من روتين الصبح.
+              <br />
+              أعطي ٥ دقائق تأمل — جداً تفرق.
+              <br />
+              أحس <span className="text-[#c9b88a] font-bold">قلبي يتشرب معاني</span>.&rdquo;
+            </blockquote>
+            <p className="text-xs text-[#c9b88a]/60">— مشترك حقيقي · واتساب</p>
+          </div>
+        </section>
+
         {/* ── لماذا تمعّن؟ ── */}
         <section className="rounded-3xl border border-[#c9b88a]/20 bg-gradient-to-b from-[#2b2824] to-[#1d1b17] p-7 sm:p-8">
           <h3 className="font-[var(--font-amiri)] text-xl sm:text-2xl text-[#e8e1d9] text-center">ماذا تحصل مع تمعّن؟</h3>
