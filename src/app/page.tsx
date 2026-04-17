@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
 import { JourneyLanding } from "./JourneyLanding";
+import { CommunityPulse } from "@/components/CommunityPulse";
+import { getTodayVerse } from "@/lib/daily-verse-post28";
 import { useJourneyMemory } from "@/hooks/useJourneyMemory";
 import { WhyYouAreHereCard } from "@/components/journey/WhyYouAreHereCard";
 import { DecisionExplainer } from "@/components/journey/DecisionExplainer";
@@ -52,6 +54,7 @@ export default function Home() {
   const [subscribed, setSubscribed] = useState(false);
   const [showEidPopup, setShowEidPopup] = useState(false);
   const [activationMarker, setActivationMarker] = useState<string | null>(null);
+  const [completedAll, setCompletedAll] = useState(false);
   const [guidanceMessage, setGuidanceMessage] = useState<string | null>(null);
   const [currentDay, setCurrentDay] = useState(1);
   const [streak, setStreak] = useState(0);
@@ -101,6 +104,10 @@ export default function Home() {
               const cd = progressData.current_day ?? 1;
               setCurrentDay(cd);
               setStreak(progressData.streak ?? 0);
+              const completedDays = progressData.completed_days ?? [];
+              if (Array.isArray(completedDays) && completedDays.length >= 28) {
+                setCompletedAll(true);
+              }
               // Now fetch the day with guidance + ritual
               const dRes = await fetch(`/api/program/day/${cd}`, { cache: "no-store" });
               const dData = await dRes.json();
@@ -299,6 +306,35 @@ export default function Home() {
           </Link>
         </div>
       </section>
+
+      {/* Post-28: daily verse + community for users who completed */}
+      {completedAll && subscribed && (() => {
+        const todayVerse = getTodayVerse();
+        return (
+          <>
+            <section className="tm-card border-[#c4a265]/20 bg-gradient-to-b from-[#faf6ee] to-[#fcfaf7] p-6 sm:p-7 text-center space-y-3">
+              <p className="text-xs tracking-[0.15em] text-[#8c7851]/80">آية اليوم — ما بعد الرحلة</p>
+              <h2 className="font-[var(--font-amiri)] text-xl sm:text-2xl leading-loose text-[#2f2619]">
+                {todayVerse.verse}
+              </h2>
+              <p className="text-xs text-[#8c7851]">{todayVerse.ref}</p>
+              <p className="mx-auto max-w-md text-sm leading-relaxed text-[#5f5648]/85 pt-2">
+                {todayVerse.prompt}
+              </p>
+              <div className="flex flex-wrap justify-center gap-2 pt-3">
+                <Link href="/challenge" className="tm-gold-btn rounded-xl px-5 py-2.5 text-sm">
+                  التحدي الأسبوعي
+                </Link>
+                <Link href="/guide" className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-2.5 text-sm text-[#5f5648]">
+                  تحدّث مع تمعّن
+                </Link>
+              </div>
+            </section>
+
+            <CommunityPulse />
+          </>
+        );
+      })()}
 
       {!subscribed ? (
         <section className="tm-card p-5 text-center">

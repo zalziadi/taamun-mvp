@@ -6,6 +6,9 @@ import {
 } from "@/lib/emails/activation-template";
 import { buildExpiryWarningEmail } from "@/lib/emails/expiry-warning-template";
 import { buildExpiredEmail } from "@/lib/emails/expired-template";
+import { buildCompletionEmail } from "@/lib/emails/completion-template";
+import { buildWeeklyChallengeEmail } from "@/lib/emails/weekly-challenge-template";
+import { getWeeklyChallenge, getDayInWeek } from "@/lib/weekly-challenges";
 
 export const dynamic = "force-dynamic";
 
@@ -73,6 +76,29 @@ export async function GET(req: Request) {
           tier: payload.tier ?? "monthly",
           appUrl,
         });
+      } else if (template === "completion") {
+        emailData = buildCompletionEmail({
+          userName: payload.userName ?? row.email.split("@")[0],
+          completedDays: payload.completedDays ?? 28,
+          appUrl,
+        });
+      } else if (template === "weekly_challenge") {
+        const weekNum = payload.weekNum ?? 1;
+        const challenge = getWeeklyChallenge(weekNum);
+        if (challenge) {
+          const dayIdx = getDayInWeek() - 1;
+          emailData = buildWeeklyChallengeEmail({
+            userName: payload.userName ?? row.email.split("@")[0],
+            weekNum,
+            challengeTitle: challenge.title,
+            verse: challenge.verse,
+            verseRef: challenge.verseRef,
+            todayPrompt: challenge.dailyPrompts[dayIdx] ?? challenge.dailyPrompts[0],
+            appUrl,
+          });
+        } else {
+          emailData = { subject: "", html: "", text: "" };
+        }
       } else {
         // Default: activation email
         const activationPayload = payload as Partial<ActivationEmailPayload>;
