@@ -89,15 +89,45 @@
   }
 
   .tm-glass {
-    @apply border border-[#c9bda8]/35 bg-[#fcfaf7]/65 backdrop-blur-xl;
+    @apply border-0 bg-transparent;
   }
 
+  /* Minimal card — no box, no shadow, topped with 3 soft horizontal lines */
   .tm-card {
-    @apply rounded-3xl border border-[#d8cdb9] bg-[#fcfaf7] backdrop-blur-xl shadow-[0_16px_42px_rgba(140,120,81,0.12)] transition-[box-shadow,border-color] duration-300 ease-out;
+    @apply bg-transparent border-0 py-6 relative;
+  }
+  .tm-card::before {
+    content: '';
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 72px;
+    height: 7px;
+    background-image:
+      linear-gradient(to bottom,
+        rgba(140,120,81,0.22) 0, rgba(140,120,81,0.22) 1px,
+        transparent 1px, transparent 3px,
+        rgba(140,120,81,0.18) 3px, rgba(140,120,81,0.18) 4px,
+        transparent 4px, transparent 6px,
+        rgba(140,120,81,0.12) 6px, rgba(140,120,81,0.12) 7px);
+  }
+  /* First card in container: no top lines */
+  .tm-card:first-child::before {
+    display: none;
   }
 
   .tm-card-interactive {
-    @apply tm-card hover:border-[#c4b59a]/90 hover:shadow-[0_20px_50px_rgba(140,120,81,0.16)];
+    @apply tm-card transition-opacity hover:opacity-90;
+  }
+
+  /* Minimal 3-dash divider between sections */
+  .tm-divider {
+    @apply flex items-center justify-center py-6 text-[#8c7851]/40 text-sm tracking-[0.5em];
+  }
+  .tm-divider::before {
+    content: '— — —';
   }
 
   .tm-subtle {
