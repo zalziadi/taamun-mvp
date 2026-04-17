@@ -66,9 +66,10 @@ export function JourneyLanding() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  /* Override body background while this landing is mounted */
+  /* Override body background + mark JS ready for reveal animations */
   useEffect(() => {
     document.body.style.background = "#15130f";
+    rootRef.current?.classList.add("jl-js-ready");
     return () => {
       document.body.style.background = "";
     };
