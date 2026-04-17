@@ -6,7 +6,12 @@ import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
 import dynamic from "next/dynamic";
 import { getTodayVerse } from "@/lib/daily-verse-post28";
+import { getTimeUntilDayEnd, isLateNight } from "@/lib/streak-protection";
 
+const ReflectionEcho = dynamic(
+  () => import("@/components/ReflectionEcho").then((m) => ({ default: m.ReflectionEcho })),
+  { ssr: false }
+);
 const CommunityPulse = dynamic(
   () => import("@/components/CommunityPulse").then((m) => ({ default: m.CommunityPulse })),
   { ssr: false }
@@ -239,17 +244,24 @@ export function HomeClient() {
         </div>
       ) : null}
 
+      {/* Past reflection echo — shows what user wrote 7 days ago */}
+      {subscribed && currentDay > 7 && <ReflectionEcho offset={7} />}
+
       {/* Time-aware greeting + retention message */}
       {subscribed && currentDay > 0 && (() => {
         const hour = new Date().getHours();
-        const greeting = hour < 12
-          ? "صباح الخير"
-          : hour < 17
-            ? "أهلاً من جديد"
-            : hour < 21
-              ? "مساء الخير"
-              : "هدوء الليل";
+        const lateNight = isLateNight();
+        const greeting = lateNight
+          ? "ما زال اليوم معك"
+          : hour < 12
+            ? "صباح الخير"
+            : hour < 17
+              ? "أهلاً من جديد"
+              : hour < 21
+                ? "مساء الخير"
+                : "هدوء الليل";
         const showRetention = currentDay >= 3 && currentDay <= 14;
+        const timeLeft = getTimeUntilDayEnd();
         return (
           <section className="tm-card bg-gradient-to-b from-[#faf6ee] to-[#fcfaf7] p-5 sm:p-6 text-center space-y-2">
             <p className="text-xs tracking-[0.15em] text-[#8c7851]/70">{greeting}</p>
@@ -263,6 +275,14 @@ export function HomeClient() {
                 {currentDay <= 7
                   ? "أغلب من بدأ توقّف في الأيام الأولى. أنت لا تزال هنا — هذا بحد ذاته شيء."
                   : "عبرت الأسبوع الأول. الأنماط بدأت تظهر — لاحظها."}
+              </p>
+            )}
+            {timeLeft && !lateNight && (
+              <p className="text-[11px] text-[#c4a265] italic">{timeLeft}</p>
+            )}
+            {lateNight && (
+              <p className="text-[11px] text-[#c4a265] italic">
+                اليوم عند الله ينتهي بالفجر — ما زال وقتك كامل.
               </p>
             )}
           </section>
