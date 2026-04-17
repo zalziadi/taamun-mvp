@@ -296,10 +296,16 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
             >
               اقرأ الكتاب من جديد
             </Link>
+            <Link
+              href="/challenge"
+              className="rounded-xl border border-[#c4a265]/30 bg-[#faf6ee] px-5 py-2.5 text-sm font-semibold text-[#5a4531]"
+            >
+              التحدي الأسبوعي
+            </Link>
             <button
               type="button"
               onClick={() => router.push(programDayRoute(1))}
-              className="rounded-xl border border-[#c4a265]/30 bg-[#faf6ee] px-5 py-2.5 text-sm font-semibold text-[#5a4531]"
+              className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-5 py-2.5 text-sm text-[#5f5648]"
             >
               أعد الرحلة من يوم ١
             </button>

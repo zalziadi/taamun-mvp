@@ -251,12 +251,20 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
                   ? "٣ أشهر من التحوّل. هل لاحظت كيف تغيّرت طريقة قراءتك للقرآن؟"
                   : "رحلتك مستمرة. كل يوم فرصة للتمعّن — حتى بدون برنامج."}
           </p>
-          <Link
-            href="/guide"
-            className="inline-block rounded-xl border border-[#c9b88a]/20 bg-[#c9b88a]/10 px-4 py-2 text-xs font-semibold text-[#c9b88a] transition-colors hover:bg-[#c9b88a]/20"
-          >
-            تحدّث مع تمعّن
-          </Link>
+          <div className="flex flex-wrap justify-center gap-2">
+            <Link
+              href="/challenge"
+              className="rounded-xl border border-[#c9b88a]/20 bg-[#c9b88a]/10 px-4 py-2 text-xs font-semibold text-[#c9b88a] transition-colors hover:bg-[#c9b88a]/20"
+            >
+              التحدي الأسبوعي
+            </Link>
+            <Link
+              href="/guide"
+              className="rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-xs text-white/50 transition-colors hover:bg-white/10 hover:text-white/80"
+            >
+              تحدّث مع تمعّن
+            </Link>
+          </div>
         </div>
       )}
 
