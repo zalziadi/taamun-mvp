@@ -110,7 +110,9 @@ export default function GuidePage() {
                   ? `${namePrefix}مرحباً. لاحظت إنك بدأت تشوف أنماط ما كنت تلاحظها — وخريطتك تأكد هذا. ماذا سمعت اليوم؟`
                   : day <= 21
                     ? `${namePrefix}وصلت لمرحلة العمق. خريطتك الجينية تقول إن عندك هدايا مخفية بدأت تظهر — ماذا تريد أن تستكشف اليوم؟`
-                    : `${namePrefix}الرحلة في أيامها الأخيرة. كل ما عشته — الظل والهدية والاحتمال — صار جزء منك. ماذا تريد أن تحمل معك؟`;
+                    : day <= 28
+                      ? `${namePrefix}الرحلة في أيامها الأخيرة. كل ما عشته — الظل والهدية والاحتمال — صار جزء منك. ماذا تريد أن تحمل معك؟`
+                      : `${namePrefix}أتممت الرحلة. أنا هنا معك — مش كمرشد برنامج، بل كصديق يعرفك. وش الذي تلاحظه في نفسك هالفترة؟`;
             }
             setMessages([{ role: "assistant", text: vipGreeting, time: nowLabel() }]);
 
@@ -151,10 +153,28 @@ export default function GuidePage() {
               }
             }
 
-            setQuickPrompts(dynamicPrompts);
+            // Post-28 VIP: reflection-focused prompts
+            if (day > 28) {
+              setQuickPrompts([
+                "وش الذي تغيّر فيّ من بداية التمعّن؟",
+                "أحس بنمط متكرر — ساعدني أشوفه بوضوح",
+                "كيف أحافظ على الوعي اللي بنيته في الـ ٢٨ يوم؟",
+              ]);
+            } else {
+              setQuickPrompts(dynamicPrompts);
+            }
           } else {
             const greeting = getGuideGreeting({ current_day: day });
             setMessages([{ role: "assistant", text: greeting, time: nowLabel() }]);
+
+            // Post-28 regular: reflection prompts
+            if (day > 28) {
+              setQuickPrompts([
+                "وش الذي تغيّر فيّ من بداية التمعّن؟",
+                "كيف أحافظ على عادة التمعّن بعد الرحلة؟",
+                "أبي أعيد يوم معيّن — وش تنصحني؟",
+              ]);
+            }
           }
         }
       } catch {

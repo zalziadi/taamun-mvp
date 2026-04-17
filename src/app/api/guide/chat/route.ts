@@ -253,8 +253,9 @@ function buildSystemPrompt(ctx: Awaited<ReturnType<typeof fetchSubscriberContext
     if (day <= 7) phase = "في بداية الرحلة — ركّز على بناء الألفة والثقة.";
     else if (day <= 14) phase = "في منتصف الطريق — ابدأ بالإشارة للأنماط إن لاحظتها.";
     else if (day <= 21) phase = "في مرحلة العمق — يمكنك طرح أسئلة أكثر تحدياً.";
-    else phase = "في المرحلة الأخيرة — ساعده يرى التحول الذي حصل.";
-    subscriberParts.push(`هو الآن في اليوم ${day} من 28. ${phase}`);
+    else if (day <= 28) phase = "في المرحلة الأخيرة — ساعده يرى التحول الذي حصل.";
+    else phase = "أتمّ الرحلة كاملة. أنت الآن مرافق مستمر — ساعده يحافظ على وعيه ويكتشف أنماطاً جديدة. اسأله عن حياته الحالية وكيف تغيّرت علاقته بالقرآن.";
+    subscriberParts.push(day <= 28 ? `هو الآن في اليوم ${day} من 28. ${phase}` : `أتمّ البرنامج كاملاً (${progress.completed_days?.length ?? 28} يوم). ${phase}`);
   }
 
   if (progress?.completed_days && progress.completed_days.length > 0) {

@@ -22,6 +22,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { programDayRoute } from "@/lib/routes";
 import DecisionCTA from "@/components/DecisionCTA";
 import IdentityReflectionCard from "@/components/IdentityReflectionCard";
@@ -261,11 +262,56 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
         />
       )}
 
+      {/* Completion Celebration — shows when all 28 days are done */}
+      {completedCount >= totalDays && (
+        <section className="tm-card border-[#c9b88a]/30 bg-gradient-to-b from-[#faf6ee] to-[#fcfaf7] p-7 sm:p-8 text-center space-y-5">
+          <div className="text-4xl">◈</div>
+          <h2 className="font-[var(--font-amiri)] text-2xl sm:text-3xl text-[#2f2619]">
+            أتممت الرحلة
+          </h2>
+          <p className="mx-auto max-w-md text-sm leading-relaxed text-[#5f5648]/85">
+            ٢٨ يوماً من التمعّن — مررت بالظل، واكتشفت الهدية، ووصلت لأفضل احتمال.
+            هذه ليست نهاية — بل بداية طريقة جديدة في القراءة والحياة.
+          </p>
+          <div className="mx-auto max-w-sm space-y-3 pt-2">
+            <div className="flex items-center justify-between rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-3">
+              <span className="text-xs text-[#7d7362]">أيام مكتملة</span>
+              <span className="text-sm font-bold text-[#5a4a35]">{completedCount} / {totalDays}</span>
+            </div>
+            <div className="flex items-center justify-between rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-3">
+              <span className="text-xs text-[#7d7362]">أعلى استمرارية</span>
+              <span className="text-sm font-bold text-[#5a4a35]">{streak} يوم</span>
+            </div>
+          </div>
+          <div className="flex flex-wrap justify-center gap-3 pt-3">
+            <Link
+              href="/guide"
+              className="tm-gold-btn rounded-xl px-5 py-2.5 text-sm"
+            >
+              تحدّث مع تمعّن عن رحلتك
+            </Link>
+            <Link
+              href="/book"
+              className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-5 py-2.5 text-sm text-[#5f5648]"
+            >
+              اقرأ الكتاب من جديد
+            </Link>
+            <button
+              type="button"
+              onClick={() => router.push(programDayRoute(1))}
+              className="rounded-xl border border-[#c4a265]/30 bg-[#faf6ee] px-5 py-2.5 text-sm font-semibold text-[#5a4531]"
+            >
+              أعد الرحلة من يوم ١
+            </button>
+          </div>
+        </section>
+      )}
+
       <section className="tm-card p-6 sm:p-7">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-2">
             <div className="inline-flex items-center rounded-full border border-[#b39b71]/35 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#7b694a]">
-              رحلة المعنى
+              {completedCount >= totalDays ? "رحلة مكتملة ◈" : "رحلة المعنى"}
             </div>
             <h1 className="tm-heading text-2xl leading-tight sm:text-4xl md:text-5xl text-[#2f2619]">
               برنامج الرحلة
