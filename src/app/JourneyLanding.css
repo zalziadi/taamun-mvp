@@ -835,17 +835,17 @@
 }
 
 /* Reveal: visible by default (SSR-friendly LCP).
-   JS adds .jl-js-ready to root, then individual .visible classes animate in. */
+   Elements start visible. JS marks below-fold items for animation. */
 .jl-reveal {
   opacity: 1;
   transform: translateY(0);
 }
-.jl-js-ready .jl-reveal {
+.jl-reveal.jl-animate {
   opacity: 0;
   transform: translateY(25px);
   transition: opacity 0.7s ease, transform 0.7s ease;
 }
-.jl-js-ready .jl-reveal.visible {
+.jl-reveal.jl-animate.visible {
   opacity: 1;
   transform: translateY(0);
 }

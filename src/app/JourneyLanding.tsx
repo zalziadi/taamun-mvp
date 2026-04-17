@@ -8,9 +8,22 @@ import "./JourneyLanding.css";
 function useReveal() {
   const ref = useRef<HTMLDivElement>(null);
   const [visible, setVisible] = useState(false);
+  const [shouldAnimate, setShouldAnimate] = useState(false);
+
   useEffect(() => {
     const el = ref.current;
     if (!el) return;
+
+    // Only animate elements below the fold — above-fold stays visible (no CLS)
+    const rect = el.getBoundingClientRect();
+    const isAboveFold = rect.top < window.innerHeight;
+    if (isAboveFold) {
+      setVisible(true);
+      return;
+    }
+
+    // Below fold: animate on scroll
+    setShouldAnimate(true);
     const obs = new IntersectionObserver(
       ([e]) => {
         if (e.isIntersecting) {
@@ -23,7 +36,7 @@ function useReveal() {
     obs.observe(el);
     return () => obs.disconnect();
   }, []);
-  return { ref, visible };
+  return { ref, visible, shouldAnimate };
 }
 
 function Reveal({
@@ -35,11 +48,11 @@ function Reveal({
   className?: string;
   style?: React.CSSProperties;
 }) {
-  const { ref, visible } = useReveal();
+  const { ref, visible, shouldAnimate } = useReveal();
   return (
     <div
       ref={ref}
-      className={`jl-reveal ${visible ? "visible" : ""} ${className}`}
+      className={`jl-reveal ${shouldAnimate ? "jl-animate" : ""} ${visible ? "visible" : ""} ${className}`}
       style={style}
     >
       {children}
@@ -66,10 +79,9 @@ export function JourneyLanding() {
     return () => window.removeEventListener("scroll", handleScroll);
   }, [handleScroll]);
 
-  /* Override body background + mark JS ready for reveal animations */
+  /* Override body background while this landing is mounted */
   useEffect(() => {
     document.body.style.background = "#15130f";
-    rootRef.current?.classList.add("jl-js-ready");
     return () => {
       document.body.style.background = "";
     };
