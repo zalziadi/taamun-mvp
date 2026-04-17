@@ -4,9 +4,17 @@ import { useEffect, useMemo, useState } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import { createBrowserClient } from "@supabase/ssr";
-import { CommunityPulse } from "@/components/CommunityPulse";
-import { CommunityJoin } from "@/components/CommunityJoin";
+import dynamic from "next/dynamic";
 import { getTodayVerse } from "@/lib/daily-verse-post28";
+
+const CommunityPulse = dynamic(
+  () => import("@/components/CommunityPulse").then((m) => ({ default: m.CommunityPulse })),
+  { ssr: false }
+);
+const CommunityJoin = dynamic(
+  () => import("@/components/CommunityJoin").then((m) => ({ default: m.CommunityJoin })),
+  { ssr: false }
+);
 import { useJourneyMemory } from "@/hooks/useJourneyMemory";
 import { WhyYouAreHereCard } from "@/components/journey/WhyYouAreHereCard";
 import { DecisionExplainer } from "@/components/journey/DecisionExplainer";
