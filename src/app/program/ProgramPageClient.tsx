@@ -114,6 +114,7 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
   const [behavioralScore, setBehavioralScore] = useState<number | null>(null);
   // Awareness Layer — Gene Keys secondary lens (non-disruptive badge)
   const [awarenessLabel, setAwarenessLabel] = useState<string | null>(null);
+  const [communityCompleted, setCommunityCompleted] = useState<number | null>(null);
 
   useEffect(() => {
     const load = async () => {
@@ -202,6 +203,12 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
     };
 
     void load();
+
+    // Fetch community stats (best-effort)
+    fetch("/api/community/stats")
+      .then((r) => r.json())
+      .then((d) => { if (d.ok && d.totalCompleted) setCommunityCompleted(d.totalCompleted); })
+      .catch(() => {});
   }, [router, serverCurrentDay]);
 
   const completedCount = completedDays.length;
@@ -283,31 +290,36 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
               <span className="text-sm font-bold text-[#5a4a35]">{streak} يوم</span>
             </div>
           </div>
+          {communityCompleted !== null && communityCompleted > 0 && (
+            <p className="text-xs text-[#8c7851]/60">
+              {communityCompleted} شخص أتمّوا الرحلة — أنت واحد منهم ◈
+            </p>
+          )}
           <div className="flex flex-wrap justify-center gap-3 pt-3">
             <Link
-              href="/guide"
+              href="/challenge"
               className="tm-gold-btn rounded-xl px-5 py-2.5 text-sm"
             >
-              تحدّث مع تمعّن عن رحلتك
+              التحدي الأسبوعي
+            </Link>
+            <Link
+              href="/guide"
+              className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-5 py-2.5 text-sm text-[#5f5648]"
+            >
+              تحدّث مع تمعّن
             </Link>
             <Link
               href="/book"
               className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-5 py-2.5 text-sm text-[#5f5648]"
             >
-              اقرأ الكتاب من جديد
-            </Link>
-            <Link
-              href="/challenge"
-              className="rounded-xl border border-[#c4a265]/30 bg-[#faf6ee] px-5 py-2.5 text-sm font-semibold text-[#5a4531]"
-            >
-              التحدي الأسبوعي
+              اقرأ الكتاب
             </Link>
             <button
               type="button"
               onClick={() => router.push(programDayRoute(1))}
-              className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-5 py-2.5 text-sm text-[#5f5648]"
+              className="rounded-xl border border-[#c4a265]/30 bg-[#faf6ee] px-5 py-2.5 text-sm font-semibold text-[#5a4531]"
             >
-              أعد الرحلة من يوم ١
+              ابدأ الدورة الثانية
             </button>
           </div>
         </section>
