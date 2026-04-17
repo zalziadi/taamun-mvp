@@ -6,6 +6,7 @@ import Link from "next/link";
 import { supabase } from "../../lib/supabaseClient";
 import { JOURNEY_ROUTE, PRICING_ROUTE } from "@/lib/routes";
 import { daysRemaining, isSubscriptionExpired } from "@/lib/subscriptionDurations";
+import { CYCLE_MILESTONES, getCycleShortName } from "@/lib/taamun-cycles";
 
 interface AccountClientProps {
   embedded?: boolean;
@@ -236,6 +237,62 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
           </div>
         </div>
       </div>
+
+      {/* Journey Milestones — totalDays from signup */}
+      {userCreatedAt && (() => {
+        const totalDays = Math.floor(
+          (Date.now() - new Date(userCreatedAt).getTime()) / (1000 * 60 * 60 * 24)
+        );
+        const reached = CYCLE_MILESTONES
+          .filter((m) => m.totalDay <= totalDays)
+          .sort((a, b) => b.totalDay - a.totalDay);
+        const next = CYCLE_MILESTONES
+          .filter((m) => m.totalDay > totalDays)
+          .sort((a, b) => a.totalDay - b.totalDay)[0];
+        const currentCycle =
+          typeof window !== "undefined"
+            ? parseInt(localStorage.getItem("taamun.currentCycle") ?? "1", 10)
+            : 1;
+
+        if (reached.length === 0 && !next) return null;
+
+        return (
+          <div className="rounded-2xl border border-[#c9b88a]/15 bg-[#1d1b17] p-5 space-y-4">
+            <div className="flex items-center justify-between">
+              <h2 className="font-[var(--font-amiri)] text-lg text-[#e8e1d9]">معالم الرحلة</h2>
+              <span className="text-[10px] text-[#c9b88a]/50">{totalDays} يوم في تمعّن</span>
+            </div>
+
+            {currentCycle > 1 && (
+              <div className="rounded-xl border border-[#c9b88a]/20 bg-[#c9b88a]/10 px-3 py-2.5">
+                <p className="text-xs text-[#c9b88a]">الدورة الحالية: {getCycleShortName(currentCycle)}</p>
+              </div>
+            )}
+
+            {reached.slice(0, 3).map((m) => (
+              <div key={m.totalDay} className="flex items-start gap-3 rounded-xl border border-[#c9b88a]/10 bg-[#c9b88a]/[0.04] px-3 py-2.5">
+                <span className="mt-0.5 text-sm text-[#c9b88a]">✓</span>
+                <div>
+                  <p className="text-sm font-semibold text-[#e8e1d9]">{m.label}</p>
+                  <p className="text-[11px] text-white/40 mt-0.5">{m.description}</p>
+                </div>
+              </div>
+            ))}
+
+            {next && (
+              <div className="flex items-start gap-3 rounded-xl border border-white/5 bg-white/[0.02] px-3 py-2.5">
+                <span className="mt-0.5 text-sm text-white/25">○</span>
+                <div className="flex-1">
+                  <p className="text-sm font-medium text-white/60">{next.label}</p>
+                  <p className="text-[11px] text-white/30 mt-0.5">
+                    بعد {next.totalDay - totalDays} يوم
+                  </p>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      })()}
 
       {/* Post-Completion Counter */}
       {daysSinceCompletion !== null && daysSinceCompletion >= 0 && (

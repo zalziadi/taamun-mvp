@@ -25,6 +25,7 @@ import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { DailyJourney, type JourneyContent } from "@/components/journey/DailyJourney";
 import { getTaamunDailyByDay } from "@/lib/taamun-daily";
+import { getCycleDay, getClientCycle, getCycleShortName } from "@/lib/taamun-cycles";
 import { PROGRAM_ROUTE } from "@/lib/routes";
 import { useJourneyMemory } from "@/hooks/useJourneyMemory";
 import { WhyYouAreHereCard } from "@/components/journey/WhyYouAreHereCard";
@@ -85,6 +86,7 @@ export default function DayPageClient({ day }: Props) {
   const [loading, setLoading] = useState(true);
   const [content, setContent] = useState<JourneyContent | null>(null);
   const [isFirstTime, setIsFirstTime] = useState(false);
+  const [currentCycle, setCurrentCycle] = useState(1);
   const [ritual, setRitual] = useState<RitualPayload>(null);
   const [microReward, setMicroReward] = useState<{
     message: string;
@@ -114,26 +116,32 @@ export default function DayPageClient({ day }: Props) {
         const reflectionCount = reflectionsData.reflections?.length ?? 0;
         setIsFirstTime(reflectionCount === 0);
 
+        // Cycle-aware content: use cycle selector based on localStorage
+        const cycle = getClientCycle();
+        setCurrentCycle(cycle);
+        const cycleContent = getCycleDay(day, cycle);
         const jsonEntry = getTaamunDailyByDay(day);
-        const verseText = dayData.verse?.text ?? jsonEntry?.verse.arabic ?? "";
-        const surahNum = dayData.verse?.surah_number ?? 0;
-        const ayahNum = dayData.verse?.ayah_number ?? jsonEntry?.verse.ayah ?? 0;
-        const verseRef = jsonEntry?.verse.surah
-          ? `${jsonEntry.verse.surah}: ${ayahNum}`
-          : surahNum
-            ? `سورة ${surahNum}: ${ayahNum}`
-            : "";
+
+        // Prefer cycle content (richer, cycle-specific), fallback to JSON entry
+        const verseText = cycleContent?.verse ?? dayData.verse?.text ?? jsonEntry?.verse.arabic ?? "";
+        const verseRef = cycleContent?.verseRef ?? (jsonEntry?.verse.surah
+          ? `${jsonEntry.verse.surah}: ${jsonEntry.verse.ayah}`
+          : dayData.verse?.surah_number
+            ? `سورة ${dayData.verse.surah_number}: ${dayData.verse.ayah_number}`
+            : "");
 
         const ritualAction = dayData.ritual?.action?.instruction;
-        const exercise = ritualAction ?? jsonEntry?.exercise ?? "";
+        const exercise = cycleContent?.exercise ?? ritualAction ?? jsonEntry?.exercise ?? "";
 
         setContent({
           day,
           verseText,
           verseRef,
-          question: jsonEntry?.question ?? dayData.verse?.title ?? "",
+          question: cycleContent?.question ?? jsonEntry?.question ?? dayData.verse?.title ?? "",
           exercise,
-          whisper: jsonEntry?.whisper ?? null,
+          whisper: cycleContent
+            ? { text: cycleContent.hiddenLayer, source: cycleContent.bookChapter }
+            : jsonEntry?.whisper ?? null,
         });
 
         setRitual(dayData.ritual ?? null);
@@ -167,7 +175,11 @@ export default function DayPageClient({ day }: Props) {
             bridge={journey.whyYouAreHere}
             variant="parchment"
             hideNext
-            headingLabel={`يوم ${day} — لماذا الآن`}
+            headingLabel={
+              currentCycle > 1
+                ? `الدورة ${getCycleShortName(currentCycle)} — يوم ${day}`
+                : `يوم ${day} — لماذا الآن`
+            }
           />
           <div className="flex justify-center">
             <button

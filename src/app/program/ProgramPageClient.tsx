@@ -316,10 +316,32 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
             </Link>
             <button
               type="button"
-              onClick={() => router.push(programDayRoute(1))}
+              onClick={async () => {
+                // Read current cycle + increment
+                const currentCycle = parseInt(localStorage.getItem("taamun.currentCycle") ?? "1", 10);
+                const nextCycle = currentCycle + 1;
+
+                try {
+                  const res = await fetch("/api/program/start-cycle", {
+                    method: "POST",
+                    headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({ cycle: nextCycle }),
+                  });
+                  if (res.ok) {
+                    localStorage.setItem("taamun.currentCycle", String(nextCycle));
+                    // Reset in-memory state and navigate to day 1 fresh
+                    router.push(programDayRoute(1));
+                    router.refresh();
+                  }
+                } catch {
+                  // Fallback: just increment cycle locally and navigate
+                  localStorage.setItem("taamun.currentCycle", String(nextCycle));
+                  router.push(programDayRoute(1));
+                }
+              }}
               className="rounded-xl border border-[#c4a265]/30 bg-[#faf6ee] px-5 py-2.5 text-sm font-semibold text-[#5a4531]"
             >
-              ابدأ الدورة الثانية
+              ابدأ الدورة التالية ◈
             </button>
           </div>
         </section>
