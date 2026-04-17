@@ -56,6 +56,13 @@ export function useSystemBrain(options: UseSystemBrainOptions = {}): UseSystemBr
       setLoading(false);
       return;
     }
+    // Skip for unauthenticated users to avoid 401 console errors
+    const hasAuth = typeof window !== "undefined" &&
+      Object.keys(localStorage).some(k => k.startsWith("sb-") && k.endsWith("-auth-token"));
+    if (!hasAuth) {
+      setLoading(false);
+      return;
+    }
     try {
       const progRes = await fetch("/api/program/progress", { cache: "no-store" });
       if (progRes.ok) {

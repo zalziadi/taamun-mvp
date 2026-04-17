@@ -105,6 +105,13 @@ export function useJourneyMemory(options: UseJourneyMemoryOptions = {}): UseJour
       setLoading(false);
       return;
     }
+    // Skip API calls for unauthenticated users to avoid 401 console errors
+    const hasAuth = typeof window !== "undefined" &&
+      Object.keys(localStorage).some(k => k.startsWith("sb-") && k.endsWith("-auth-token"));
+    if (!hasAuth) {
+      setLoading(false);
+      return;
+    }
     try {
       const res = await fetch("/api/journey/state", { cache: "no-store" });
       if (res.ok) {
@@ -127,6 +134,10 @@ export function useJourneyMemory(options: UseJourneyMemoryOptions = {}): UseJour
   // Background timeline + narrative load (V10 PR-2)
   const refreshTimeline = useCallback(async () => {
     if (!loadTimeline) return;
+    // Skip for unauthenticated users
+    const hasAuth = typeof window !== "undefined" &&
+      Object.keys(localStorage).some(k => k.startsWith("sb-") && k.endsWith("-auth-token"));
+    if (!hasAuth) return;
     try {
       const res = await fetch("/api/journey/timeline", { cache: "no-store" });
       if (!res.ok) return;
@@ -179,6 +190,10 @@ export function useJourneyMemory(options: UseJourneyMemoryOptions = {}): UseJour
   const scheduleServerPush = useCallback(
     (nextState: UserJourneyState) => {
       if (!syncWithServer) return;
+      // Skip for unauthenticated users
+      const hasAuth = typeof window !== "undefined" &&
+        Object.keys(localStorage).some(k => k.startsWith("sb-") && k.endsWith("-auth-token"));
+      if (!hasAuth) return;
       if (serverSyncTimer.current) clearTimeout(serverSyncTimer.current);
       serverSyncTimer.current = setTimeout(() => {
         void fetch("/api/journey/state", {
