@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { HomeClient } from "./HomeClient";
-import { useRouter } from "next/navigation";
 
 /**
  * HomeClientWrapper — thin client island that checks auth.
@@ -13,7 +12,6 @@ import { useRouter } from "next/navigation";
  * showing the dashboard for authenticated users.
  */
 export function HomeClientWrapper() {
-  const router = useRouter();
   const [show, setShow] = useState(false);
 
   useEffect(() => {
@@ -24,17 +22,9 @@ export function HomeClientWrapper() {
 
     if (hasToken) {
       setShow(true);
-    } else {
-      // Check welcome gate
-      const welcomed = localStorage.getItem("taamun.welcomed");
-      const skipWelcome = new URLSearchParams(window.location.search).has("skip");
-      if (skipWelcome) {
-        localStorage.setItem("taamun.welcomed", "true");
-      } else if (!welcomed) {
-        router.replace("/welcome");
-      }
     }
-  }, [router]);
+    // No token → do nothing. Landing page stays visible (no redirect = no CLS).
+  }, []);
 
   if (!show) return null;
 
