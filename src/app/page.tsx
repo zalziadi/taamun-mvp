@@ -1,54 +1,24 @@
-import { cookies } from "next/headers";
-import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { JourneyLanding } from "./JourneyLanding";
-import { HomeClient } from "./HomeClient";
-import { WelcomeGate } from "./WelcomeGate";
+import { HomeClientWrapper } from "./HomeClientWrapper";
 
 /**
- * Server Component homepage — SSR'd for instant LCP.
+ * Homepage — STATIC (cached on CDN).
  *
- * Fast path: check for Supabase auth cookie BEFORE making a full auth call.
- * No cookie → skip auth entirely → render landing instantly (saves ~500ms TTFB).
+ * No cookies(), no server auth, no searchParams → Next.js pre-renders this
+ * as a static page. Vercel serves it from the edge with zero cold start.
+ *
+ * JourneyLanding: Server Component, rendered at build time.
+ * HomeClientWrapper: Client island, checks auth on mount:
+ *   - Has token → overlays with HomeClient dashboard
+ *   - No token → landing stays visible, checks welcome gate
+ *
+ * LCP is instant because the HTML is pre-built and cached.
  */
-export default async function Home({
-  searchParams,
-}: {
-  searchParams: Promise<{ skip?: string }>;
-}) {
-  const params = await searchParams;
-
-  // Fast path: if no Supabase auth cookie exists, skip the full auth check
-  const cookieStore = await cookies();
-  const allCookies = cookieStore.getAll();
-  const hasAuthCookie = allCookies.some(
-    (c) => c.name.startsWith("sb-") && c.name.endsWith("-auth-token")
+export default function Home() {
+  return (
+    <>
+      <JourneyLanding />
+      <HomeClientWrapper />
+    </>
   );
-
-  // No auth cookie → definitely unauthenticated → skip Supabase call
-  if (!hasAuthCookie) {
-    if (params?.skip !== undefined) {
-      return <JourneyLanding />;
-    }
-    return <WelcomeGate />;
-  }
-
-  // Has cookie → verify with Supabase (may be expired)
-  let isAuthenticated = false;
-  try {
-    const supabase = await createSupabaseServerClient();
-    const { data, error } = await supabase.auth.getUser();
-    isAuthenticated = !error && !!data.user;
-  } catch {
-    // Auth check failed — treat as unauthenticated
-  }
-
-  if (isAuthenticated) {
-    return <HomeClient />;
-  }
-
-  // Cookie exists but invalid → render landing
-  if (params?.skip !== undefined) {
-    return <JourneyLanding />;
-  }
-  return <WelcomeGate />;
 }
