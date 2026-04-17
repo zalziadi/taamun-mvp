@@ -24,18 +24,18 @@ export async function POST(req: Request) {
   const userId = auth.user.id;
   const admin = getSupabaseAdmin();
 
-  // Read current progress
+  // Read current progress (including cycle columns if they exist)
   const { data: progress } = await admin
     .from("progress")
-    .select("completed_days, current_day, completed_cycles")
+    .select("*")
     .eq("user_id", userId)
     .maybeSingle();
 
   const currentCompleted = Array.isArray(progress?.completed_days)
     ? progress!.completed_days
     : [];
-  const currentCycles = Array.isArray((progress as any)?.completed_cycles)
-    ? ((progress as any).completed_cycles as number[])
+  const currentCycles = Array.isArray(progress?.completed_cycles)
+    ? (progress.completed_cycles as number[])
     : [];
 
   // Archive the cycle the user just finished (targetCycle - 1)
@@ -44,34 +44,36 @@ export async function POST(req: Request) {
     ? currentCycles
     : [...currentCycles, finishedCycle];
 
-  // Reset progress for the new cycle
-  // Note: completed_cycles column may not exist — update gracefully
-  const updatePayload: Record<string, unknown> = {
+  // Build upsert payload — include cycle columns optimistically
+  const fullPayload: Record<string, unknown> = {
     user_id: userId,
     completed_days: [],
     current_day: 1,
+    current_cycle: targetCycle,
+    completed_cycles: newArchive,
     updated_at: new Date().toISOString(),
   };
 
-  // Try to include completed_cycles if the column exists
-  try {
-    updatePayload.completed_cycles = newArchive;
-  } catch {
-    // Column doesn't exist — skip
-  }
-
   const { error: upsertErr } = await admin
     .from("progress")
-    .upsert(updatePayload, { onConflict: "user_id" });
+    .upsert(fullPayload, { onConflict: "user_id" });
 
+  // Fallback: if cycle columns don't exist yet, retry without them
   if (upsertErr) {
-    // If completed_cycles column doesn't exist, retry without it
-    delete updatePayload.completed_cycles;
+    const minimalPayload = {
+      user_id: userId,
+      completed_days: [],
+      current_day: 1,
+      updated_at: new Date().toISOString(),
+    };
     const { error: retryErr } = await admin
       .from("progress")
-      .upsert(updatePayload, { onConflict: "user_id" });
+      .upsert(minimalPayload, { onConflict: "user_id" });
     if (retryErr) {
-      return NextResponse.json({ error: "db_error", details: retryErr.message }, { status: 500 });
+      return NextResponse.json(
+        { error: "db_error", details: retryErr.message },
+        { status: 500 }
+      );
     }
   }
 

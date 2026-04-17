@@ -116,8 +116,16 @@ export default function DayPageClient({ day }: Props) {
         const reflectionCount = reflectionsData.reflections?.length ?? 0;
         setIsFirstTime(reflectionCount === 0);
 
-        // Cycle-aware content: use cycle selector based on localStorage
-        const cycle = getClientCycle();
+        // Cycle-aware content: prefer server cycle, fallback to localStorage
+        const serverCycle = (dayData as any).current_cycle
+          ?? (reflectionsData as any).current_cycle;
+        const cycle = typeof serverCycle === "number" && serverCycle >= 1
+          ? serverCycle
+          : getClientCycle();
+        // Sync localStorage to server value
+        if (cycle !== getClientCycle() && typeof window !== "undefined") {
+          localStorage.setItem("taamun.currentCycle", String(cycle));
+        }
         setCurrentCycle(cycle);
         const cycleContent = getCycleDay(day, cycle);
         const jsonEntry = getTaamunDailyByDay(day);

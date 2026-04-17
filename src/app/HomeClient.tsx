@@ -116,6 +116,10 @@ export function HomeClient() {
               if (Array.isArray(completedDays) && completedDays.length >= 28) {
                 setCompletedAll(true);
               }
+              // Sync cycle from server → localStorage
+              if (typeof progressData.current_cycle === "number" && progressData.current_cycle >= 1) {
+                localStorage.setItem("taamun.currentCycle", String(progressData.current_cycle));
+              }
               // Now fetch the day with guidance + ritual
               const dRes = await fetch(`/api/program/day/${cd}`, { cache: "no-store" });
               const dData = await dRes.json();

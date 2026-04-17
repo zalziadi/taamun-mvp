@@ -111,6 +111,21 @@ export async function GET() {
   const catchUp = buildCatchUpData(state);
   const percent = Math.round((progress.completedDays.length / TOTAL_DAYS) * 100);
 
+  // Fetch cycle columns (graceful fallback if schema not yet migrated)
+  let currentCycle = 1;
+  let completedCycles: number[] = [];
+  try {
+    const { data: cycleRow } = await auth.supabase
+      .from("progress")
+      .select("current_cycle, completed_cycles")
+      .eq("user_id", auth.user.id)
+      .maybeSingle();
+    if (cycleRow?.current_cycle) currentCycle = cycleRow.current_cycle;
+    if (Array.isArray(cycleRow?.completed_cycles)) completedCycles = cycleRow.completed_cycles;
+  } catch {
+    // Schema doesn't have cycle columns yet — default to cycle 1
+  }
+
   return NextResponse.json({
     ok: true,
     total_days: TOTAL_DAYS,
@@ -118,6 +133,9 @@ export async function GET() {
     completed_days: state.completedDays,
     completed_count: state.completedDays.length,
     percent,
+    // Cycle fields
+    current_cycle: currentCycle,
+    completed_cycles: completedCycles,
     // Cognitive fields
     drift: state.drift,
     mode: state.mode,
