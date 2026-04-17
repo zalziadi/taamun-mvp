@@ -25,6 +25,7 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
   const [expiresAt, setExpiresAt] = useState<string | null>(null);
   const [loading, setLoading] = useState(true);
   const [geneKeys, setGeneKeys] = useState<Array<{ sphere: string; gene_key: number; line: number; shadow: string | null; gift: string | null; siddhi: string | null }>>([]);
+  const [daysSinceCompletion, setDaysSinceCompletion] = useState<number | null>(null);
 
   useEffect(() => {
     const loadAccountData = async () => {
@@ -71,6 +72,22 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
                   }
                 }
                 setCurrentStreak(streak);
+              }
+              // Check if user completed all 28 days — calculate days since
+              if (days.length >= 28) {
+                const { data: lastLog } = await supabase
+                  .from("awareness_logs")
+                  .select("created_at")
+                  .eq("day", 28)
+                  .order("created_at", { ascending: false })
+                  .limit(1)
+                  .maybeSingle();
+                if (lastLog?.created_at) {
+                  const completionDate = new Date(lastLog.created_at);
+                  const now = new Date();
+                  const diffDays = Math.floor((now.getTime() - completionDate.getTime()) / (1000 * 60 * 60 * 24));
+                  setDaysSinceCompletion(diffDays);
+                }
               }
             } else {
               setCompletedDays(0);
@@ -219,6 +236,29 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
           </div>
         </div>
       </div>
+
+      {/* Post-Completion Counter */}
+      {daysSinceCompletion !== null && daysSinceCompletion >= 0 && (
+        <div className="rounded-2xl border border-[#c9b88a]/25 bg-gradient-to-b from-[#1d1b17] to-[#15130f] p-5 text-center space-y-3">
+          <div className="text-3xl font-bold text-[#c9b88a]">{daysSinceCompletion}</div>
+          <p className="text-xs text-white/50">يوم منذ إتمام الرحلة</p>
+          <p className="mx-auto max-w-xs text-xs leading-relaxed text-white/30">
+            {daysSinceCompletion <= 7
+              ? "أتممت الرحلة مؤخراً — خذ وقتك تتأمل ما تغيّر فيك."
+              : daysSinceCompletion <= 30
+                ? "شهر من النمو. الوعي الذي بنيته لا زال ينضج — تحدّث مع تمعّن."
+                : daysSinceCompletion <= 90
+                  ? "٣ أشهر من التحوّل. هل لاحظت كيف تغيّرت طريقة قراءتك للقرآن؟"
+                  : "رحلتك مستمرة. كل يوم فرصة للتمعّن — حتى بدون برنامج."}
+          </p>
+          <Link
+            href="/guide"
+            className="inline-block rounded-xl border border-[#c9b88a]/20 bg-[#c9b88a]/10 px-4 py-2 text-xs font-semibold text-[#c9b88a] transition-colors hover:bg-[#c9b88a]/20"
+          >
+            تحدّث مع تمعّن
+          </Link>
+        </div>
+      )}
 
       {/* Subscription Card */}
       <div className="rounded-2xl border border-[#c9b88a]/15 bg-[#1d1b17] p-5">
