@@ -81,11 +81,11 @@
   }
 
   .tm-mono {
-    font-family: "IBM Plex Mono", monospace;
+    font-family: var(--font-ibm-plex-mono), "IBM Plex Mono", monospace;
   }
 
   .tm-body {
-    font-family: "IBM Plex Sans Arabic", "Noto Sans Arabic", sans-serif;
+    font-family: var(--font-ibm-plex-sans-arabic), var(--font-noto-sans-arabic), "IBM Plex Sans Arabic", "Noto Sans Arabic", sans-serif;
   }
 
   .tm-glass {
@@ -155,7 +155,7 @@
    Daily Journey — full-screen parchment shell
    ============================================= */
 .journey-shell {
-  font-family: "Noto Sans Arabic", Tahoma, system-ui, sans-serif;
+  font-family: var(--font-noto-sans-arabic), "Noto Sans Arabic", Tahoma, system-ui, sans-serif;
   color: #2A1D10;
   background: #F5EFE4;
 }

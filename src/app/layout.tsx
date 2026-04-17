@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Amiri, Manrope, Noto_Serif } from "next/font/google";
+import { Amiri, IBM_Plex_Mono, IBM_Plex_Sans_Arabic, Manrope, Noto_Sans_Arabic, Noto_Serif } from "next/font/google";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { AppChrome } from "@/components/AppChrome";
 import { APP_DESCRIPTION, APP_DOMAIN, APP_NAME } from "@/lib/appConfig";
@@ -25,6 +25,27 @@ const manrope = Manrope({
 const notoSerif = Noto_Serif({
   subsets: ["latin"],
   variable: "--font-noto-serif",
+  display: "swap",
+});
+
+const ibmPlexMono = IBM_Plex_Mono({
+  subsets: ["latin"],
+  weight: ["400", "500"],
+  variable: "--font-ibm-plex-mono",
+  display: "swap",
+});
+
+const ibmPlexSansArabic = IBM_Plex_Sans_Arabic({
+  subsets: ["arabic"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-ibm-plex-sans-arabic",
+  display: "swap",
+});
+
+const notoSansArabic = Noto_Sans_Arabic({
+  subsets: ["arabic"],
+  weight: ["400", "500", "600", "700"],
+  variable: "--font-noto-sans-arabic",
   display: "swap",
 });
 
@@ -81,15 +102,6 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <head>
-        {/* Non-blocking font load for IBM Plex + Noto Sans Arabic */}
-        <Script id="load-fonts" strategy="afterInteractive">
-          {`
-            var l = document.createElement('link');
-            l.rel = 'stylesheet';
-            l.href = 'https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=Noto+Sans+Arabic:wght@400;500;600;700&display=swap';
-            document.head.appendChild(l);
-          `}
-        </Script>
         {META_PIXEL_ID && (
           <Script id="meta-pixel" strategy="lazyOnload">
             {`
@@ -108,7 +120,7 @@ export default function RootLayout({
         )}
       </head>
       <body
-        className={`${amiri.variable} ${manrope.variable} ${notoSerif.variable} tm-body antialiased`}
+        className={`${amiri.variable} ${manrope.variable} ${notoSerif.variable} ${ibmPlexMono.variable} ${ibmPlexSansArabic.variable} ${notoSansArabic.variable} tm-body antialiased`}
       >
         <a
           href="#main-content"
