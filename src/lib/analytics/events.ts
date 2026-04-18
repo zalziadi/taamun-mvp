@@ -32,6 +32,14 @@
  */
 
 export type TypedEvent =
+  /**
+   * إكمال يوم — يُطلق بعد حفظ ذكر/تأمل اليوم بنجاح.
+   * Fires after a successful day-reflection save.
+   * @event-name day_complete
+   * @req-id ANALYTICS-03
+   * @owning-phase Phase 6 (proof-of-pipeline, Plan 06.04)
+   * @future-call-site src/app/api/program/progress/route.ts — POST success
+   */
   | {
       name: "day_complete";
       properties: {
@@ -40,6 +48,14 @@ export type TypedEvent =
         tier: string;
       };
     }
+  /**
+   * بدء حلقة جديدة — يُطلق عند الانتقال إلى الحلقة التالية بعد اليوم ٢٨.
+   * Fires when a user transitions into the next 28-day cycle.
+   * @event-name cycle_start
+   * @req-id ANALYTICS-04
+   * @owning-phase Phase 7 (Cycle 2 Transition)
+   * @future-call-site src/app/api/program/start-cycle/route.ts — POST success
+   */
   | {
       name: "cycle_start";
       properties: {
@@ -48,6 +64,14 @@ export type TypedEvent =
         tier: string;
       };
     }
+  /**
+   * منح شارة — يُطلق عند تجاوز عتبة (يوم ١، ٣، ٧، ١٤، ٢١، ٢٨).
+   * Fires when a milestone badge threshold is crossed.
+   * @event-name badge_unlock
+   * @req-id ANALYTICS-05
+   * @owning-phase Phase 8 (Milestone Badges)
+   * @future-call-site src/app/api/badges/unlock/route.ts — POST success (route does not exist yet)
+   */
   | {
       name: "badge_unlock";
       properties: {
@@ -56,6 +80,14 @@ export type TypedEvent =
         cycle_number: number;
       };
     }
+  /**
+   * عرض لافتة التجديد — يُطلق عند أول ظهور للافتة في جلسة.
+   * Fires on first render of the renewal banner within a session.
+   * @event-name renewal_prompted
+   * @req-id ANALYTICS-06
+   * @owning-phase Phase 9 (Renewal Prompts In-App)
+   * @future-call-site src/components/RenewalBanner.tsx — first render (client-side exception, still typed)
+   */
   | {
       name: "renewal_prompted";
       properties: {
@@ -64,18 +96,42 @@ export type TypedEvent =
         tier: string;
       };
     }
+  /**
+   * توليد رمز دعوة — يُطلق عند إنشاء رمز FRIEND-*.
+   * Fires when a FRIEND-* referral code is created.
+   * @event-name referral_code_generated
+   * @req-id ANALYTICS-07
+   * @owning-phase Phase 10 (Referral Program)
+   * @future-call-site src/app/api/referral/create/route.ts — POST success
+   */
   | {
       name: "referral_code_generated";
       properties: {
         referral_code_prefix: string;
       };
     }
+  /**
+   * استخدام رمز دعوة — يُطلق عند تفعيل رمز FRIEND-*.
+   * Fires when a FRIEND-* referral code is redeemed.
+   * @event-name referral_code_redeemed
+   * @req-id ANALYTICS-07
+   * @owning-phase Phase 10 (Referral Program)
+   * @future-call-site src/app/api/activate/route.ts — on FRIEND-* success
+   */
   | {
       name: "referral_code_redeemed";
       properties: {
         referral_code_prefix: string;
       };
     }
+  /**
+   * فتح الحصيلة السنوية — يُطلق عند تحميل /year-in-review.
+   * Fires when the year-in-review page is loaded.
+   * @event-name year_review_opened
+   * @req-id ANALYTICS-08
+   * @owning-phase Phase 11 (Year-in-Review Archive)
+   * @future-call-site src/app/year-in-review/page.tsx — server component load
+   */
   | {
       name: "year_review_opened";
       properties: {
@@ -83,6 +139,14 @@ export type TypedEvent =
         reflections_count: number;
       };
     }
+  /**
+   * مشاركة الحصيلة السنوية — يُطلق عند تصدير بطاقة المشاركة.
+   * Fires when the year-in-review share card is exported.
+   * @event-name year_review_shared
+   * @req-id ANALYTICS-08
+   * @owning-phase Phase 11 (Year-in-Review Archive)
+   * @future-call-site src/app/api/year-in-review/share/route.ts — POST success
+   */
   | {
       name: "year_review_shared";
       properties: {
