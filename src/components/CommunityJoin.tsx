@@ -8,7 +8,9 @@ import { track } from "@/lib/analytics";
  * يظهر للمشتركين فقط — مع إمكانية الإخفاء
  */
 
-const WA_COMMUNITY_LINK = "https://chat.whatsapp.com/taamun-community";
+const WA_COMMUNITY_LINK =
+  process.env.NEXT_PUBLIC_WA_COMMUNITY_LINK ||
+  "https://chat.whatsapp.com/taamun-community";
 const DISMISS_KEY = "taamun.community.dismissed";
 
 export function CommunityJoin({ variant = "card" }: { variant?: "card" | "inline" }) {

@@ -289,6 +289,11 @@ export function HomeClient() {
         );
       })()}
 
+      {/* Day 3+ community invite (inline, compact) — only before cycle completion */}
+      {subscribed && currentDay >= 3 && currentDay < 28 && !completedAll && (
+        <CommunityJoin variant="inline" />
+      )}
+
       <section className="tm-card p-7 text-center">
         <div className="inline-flex items-center rounded-full border border-[#b39b71]/35 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#7b694a]">
           {ritualEntry ? "لحظة البداية" : "تذكير اليوم"}
