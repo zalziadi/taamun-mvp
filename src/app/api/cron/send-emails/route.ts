@@ -8,6 +8,8 @@ import { buildExpiryWarningEmail } from "@/lib/emails/expiry-warning-template";
 import { buildExpiredEmail } from "@/lib/emails/expired-template";
 import { buildCompletionEmail } from "@/lib/emails/completion-template";
 import { buildWeeklyChallengeEmail } from "@/lib/emails/weekly-challenge-template";
+import { buildWeeklyDigestEmail } from "@/lib/emails/weekly-digest-template";
+import { buildReengagementEmail } from "@/lib/emails/reengagement-template";
 import { getWeeklyChallenge, getDayInWeek } from "@/lib/weekly-challenges";
 
 export const dynamic = "force-dynamic";
@@ -99,6 +101,19 @@ export async function GET(req: Request) {
         } else {
           emailData = { subject: "", html: "", text: "" };
         }
+      } else if (template === "weekly_digest") {
+        emailData = buildWeeklyDigestEmail({
+          userName: payload.userName ?? row.email.split("@")[0],
+          reflectionCount: payload.reflectionCount ?? 0,
+          awarenessCount: payload.awarenessCount ?? 0,
+          appUrl,
+        });
+      } else if (template === "reengagement") {
+        emailData = buildReengagementEmail({
+          userName: payload.userName ?? row.email.split("@")[0],
+          daysSinceLastReflection: payload.daysSinceLastReflection ?? 3,
+          appUrl,
+        });
       } else {
         // Default: activation email
         const activationPayload = payload as Partial<ActivationEmailPayload>;

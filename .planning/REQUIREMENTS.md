@@ -47,11 +47,11 @@ Fresh requirements for the next milestone. Previous v1.0 requirements archived a
 
 ---
 
-## Open questions
+## Decisions (resolved 2026-04-18)
 
-1. **Push notification timing:** default to 6 AM local or let user pick?
-2. **WhatsApp community:** admin = founder, co-admins, or auto-moderated?
-3. **AI content generation:** per-user personalized or shared pool?
-4. **Weekly digest:** Sunday (start of Arabic week) or Saturday?
+1. **Push notification timing:** ✅ Default 6 AM local + user can customize in `/account`
+2. **WhatsApp community:** ✅ Founder admin + 2-3 co-admins + auto-moderation bot (for spam)
+3. **AI content generation:** ✅ Hybrid — shared pool baseline + per-user personalization on top
+4. **Weekly digest:** ✅ Saturday (Arabic week start)
 
-Resolve these before phase planning.
+All 4 answered. Phase planning can proceed.
