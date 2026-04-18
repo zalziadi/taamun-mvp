@@ -12,6 +12,10 @@ const ReflectionEcho = dynamic(
   () => import("@/components/ReflectionEcho").then((m) => ({ default: m.ReflectionEcho })),
   { ssr: false }
 );
+const ThemesInsight = dynamic(
+  () => import("@/components/ThemesInsight").then((m) => ({ default: m.ThemesInsight })),
+  { ssr: false }
+);
 const CommunityPulse = dynamic(
   () => import("@/components/CommunityPulse").then((m) => ({ default: m.CommunityPulse })),
   { ssr: false }
@@ -246,6 +250,9 @@ export function HomeClient() {
 
       {/* Past reflection echo — shows what user wrote 7 days ago */}
       {subscribed && currentDay > 7 && <ReflectionEcho offset={7} />}
+
+      {/* Themes extracted from user's reflections (monthly refresh) */}
+      {subscribed && currentDay > 14 && <ThemesInsight compact />}
 
       {/* Time-aware greeting + retention message */}
       {subscribed && currentDay > 0 && (() => {
