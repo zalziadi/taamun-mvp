@@ -74,7 +74,7 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
   4. The Day-28 badge appears on `/progress` after the transition with no separate "🏆 Achievement Unlocked!" modal having interrupted the user
   5. A user activated at 23:00 Asia/Riyadh on day 27 who returns at 06:00 the next morning correctly sees Day 28 (not Day 27 stuck due to UTC drift)
 **Plans** (6 plans):
-  - [ ] 07.01-PLAN.md — Migration: badges table + progress.cycle_paused_at column (additive, two-step per NFR-09)
+  - [x] 07.01-PLAN.md — Migration: badges table + progress.cycle_paused_at column (additive, two-step per NFR-09)
   - [ ] 07.02-PLAN.md — /api/program/start-cycle: optimistic-concurrency guard + cycle_start emission (narrowed fallback)
   - [ ] 07.03-PLAN.md — DayExperience.tsx: inline 'واصل الرحلة' CTA with framer-motion (no confetti, no modal)
   - [ ] 07.04-PLAN.md — Day-28 badge: MilestoneBadge SVG + /api/badges/unlock + silent unlock inside cycle transition
