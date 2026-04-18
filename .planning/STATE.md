@@ -1,12 +1,12 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: — Core Experience
+milestone: v1.2
+milestone_name: إغلاق الحلقة (Retention Loop)
 status: executing
-last_updated: "2026-04-18T22:56:26.727Z"
-last_activity: 2026-04-18
+last_updated: "2026-04-19T01:30:00.000Z"
+last_activity: 2026-04-19
 progress:
-  total_phases: 1
+  total_phases: 6
   completed_phases: 1
   total_plans: 6
   completed_plans: 6
