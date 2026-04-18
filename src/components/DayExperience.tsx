@@ -1,6 +1,8 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useRouter } from "next/navigation";
 import { supabase } from "../lib/supabaseClient";
 import { getDay, PROGRESSION_MILESTONES } from "../lib/taamun-content";
 import { DailyHint } from "./DailyHint";
@@ -275,8 +277,14 @@ function ProgressionBadge({ day }: { day: number }) {
 export function DayExperience({ day }: DayExperienceProps) {
   const [started, setStarted] = useState(false);
   const [profile, setProfile] = useState<any>(null);
+  const [progress, setProgress] = useState<{
+    completed_days?: number[];
+    current_cycle?: number;
+  } | null>(null);
+  const [ctaState, setCtaState] = useState<"idle" | "submitting" | "raced" | "error">("idle");
+  const router = useRouter();
   const content = getDay(day);
-  
+
   // Load profile on mount
   useEffect(() => {
     async function loadProfile() {
@@ -292,6 +300,67 @@ export function DayExperience({ day }: DayExperienceProps) {
     }
     loadProfile();
   }, []);
+
+  // Load progress (canonical client-facing endpoint — returns completed_days + current_cycle)
+  useEffect(() => {
+    let cancelled = false;
+    async function loadProgress() {
+      try {
+        const res = await fetch("/api/program/progress", { cache: "no-store" });
+        if (!res.ok) return;
+        const data = await res.json();
+        if (cancelled) return;
+        setProgress({
+          completed_days: Array.isArray(data.completed_days) ? data.completed_days : [],
+          current_cycle: typeof data.current_cycle === "number" ? data.current_cycle : 1,
+        });
+      } catch {
+        // leave progress null — CTA simply won't render
+      }
+    }
+    loadProgress();
+    return () => {
+      cancelled = true;
+    };
+  }, [day]);
+
+  // Canonical Day-28 completion derivation (plan-checker gap #5)
+  const isCompleted = progress?.completed_days?.includes(28) ?? false;
+
+  const handleStartCycle2 = useCallback(async () => {
+    if (ctaState !== "idle") return;
+    setCtaState("submitting");
+    const currentCycle = progress?.current_cycle ?? 1;
+    try {
+      const res = await fetch("/api/program/start-cycle", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          cycle: currentCycle + 1,
+          expected_current_cycle: currentCycle,
+        }),
+      });
+      if (res.ok) {
+        // Server is authoritative — refresh re-reads /program server component,
+        // which redirects to day 1 of the new cycle.
+        router.refresh();
+        return;
+      }
+      if (res.status === 409) {
+        setCtaState("raced");
+        return;
+      }
+      setCtaState("error");
+      setTimeout(() => {
+        setCtaState((s) => (s === "error" ? "idle" : s));
+      }, 3000);
+    } catch {
+      setCtaState("error");
+      setTimeout(() => {
+        setCtaState((s) => (s === "error" ? "idle" : s));
+      }, 3000);
+    }
+  }, [ctaState, progress, router]);
 
   if (!content) {
     return (
@@ -393,6 +462,68 @@ export function DayExperience({ day }: DayExperienceProps) {
 
       {/* Share */}
       <ShareCard day={day} verse={content.verse} verseRef={content.verseRef} />
+
+      {/* Day-28 Cycle 2 CTA — inline, no modal, Arabic-native (RETURN-01/03/04) */}
+      <AnimatePresence>
+        {day === 28 && isCompleted && (
+          <motion.section
+            key="cycle-2-cta"
+            initial={{ opacity: 0, y: 8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6, ease: "easeOut" }}
+            className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm"
+          >
+            <p className="mb-2 text-xs uppercase tracking-widest text-white/40">
+              الحلقة الثانية — نفس الآيات، تعمّق أعمق
+            </p>
+            <p className="mb-5 text-sm leading-loose text-white/80">
+              بعد هذه المرحلة، تعود الآيات كما هي، ويتغيّر قلبك. حين تكون مستعدًا، واصل.
+            </p>
+
+            {ctaState === "raced" ? (
+              <div className="space-y-3">
+                <p className="text-sm leading-relaxed text-white/70">
+                  تم بدء الحلقة من جهاز آخر. حدّث الصفحة لمتابعة رحلتك.
+                </p>
+                <button
+                  type="button"
+                  onClick={() => router.refresh()}
+                  className="rounded-xl border border-white/20 bg-white/10 px-5 py-2 text-sm text-white transition-colors hover:bg-white/15 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0908]"
+                >
+                  تحديث
+                </button>
+              </div>
+            ) : (
+              <div className="space-y-2">
+                <button
+                  type="button"
+                  onClick={handleStartCycle2}
+                  aria-busy={ctaState === "submitting"}
+                  aria-disabled={ctaState !== "idle"}
+                  disabled={ctaState !== "idle"}
+                  className={`w-full rounded-2xl bg-white px-8 py-4 text-base font-semibold text-[#0A0908] transition-opacity focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0908] ${
+                    ctaState === "idle"
+                      ? "hover:opacity-90 active:scale-[0.99]"
+                      : "cursor-not-allowed opacity-60"
+                  }`}
+                >
+                  {ctaState === "submitting" ? "جارٍ البدء..." : "واصل الرحلة"}
+                </button>
+                {ctaState === "idle" && (
+                  <p className="text-center text-xs text-white/40">
+                    (ستبقى تأمّلاتك السابقة محفوظة)
+                  </p>
+                )}
+                {ctaState === "error" && (
+                  <p className="text-center text-xs leading-relaxed text-white/60">
+                    تعذّر بدء الحلقة. جرّب مرة أخرى بعد لحظات.
+                  </p>
+                )}
+              </div>
+            )}
+          </motion.section>
+        )}
+      </AnimatePresence>
     </div>
   );
 }
