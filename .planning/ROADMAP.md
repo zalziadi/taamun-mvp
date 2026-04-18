@@ -10,42 +10,13 @@ Complete 28-day program, AI guide, VIP tier, post-28 retention system, minimal U
 
 ---
 
-## v1.1 — Growth & Retention (planning)
+## v1.1 — Growth & Retention (shipped 2026-04-18)
 
-**Goal:** convert existing users to long-term subscribers + activate dormant accounts.
+**Archived:** [v1.1-ROADMAP.md](./milestones/v1.1-ROADMAP.md)
 
-### Candidate phases (to be scoped):
+Email re-engagement automation, web push notifications, AI-generated infinite cycles (hybrid), book highlights + notes (DB-backed), WhatsApp community infrastructure.
 
-#### Phase 1: WhatsApp Community Integration
-- Create real WhatsApp community group
-- Auto-post daily verse from server (webhook)
-- Onboard new subscribers into the group
-- **Depends on:** operational decision (group admin, moderation policy)
-
-#### Phase 2: Push Notifications
-- Web Push API setup (VAPID keys)
-- Service worker for notifications
-- Morning reminder ("آية اليوم جاهزة") — opt-in only
-- Streak-at-risk nudge (last 4 hours before day end)
-- **Depends on:** service worker + HTTPS (already available)
-
-#### Phase 3: Infinite Content via AI
-- Generate cycle 4+ content dynamically using Claude API
-- User-specific verse selection based on reflection history
-- Cost control: cap at 1 cycle per user per month
-- **Depends on:** Anthropic API budget allocation
-
-#### Phase 4: Book Enhancements
-- Highlight text in book viewer
-- Private user comments per chapter
-- "Recommended sections" based on current reflection themes
-- **Depends on:** DB migration for book_highlights table
-
-#### Phase 5: Email Re-engagement Automation
-- Cron: detect 3+ days inactive → send "we miss you" email
-- Cron: detect day 28 completion → auto-send celebration email (already coded, needs activation)
-- Weekly digest email: "your week in Taamun" (reflection count, streak, insights)
-- **Depends on:** Resend quota
+> Shipped directly via focused commits same-day — no full GSD discuss→plan→execute cycle was produced. WhatsApp community remains pending operational activation (group admin, moderation policy).
 
 ---
 

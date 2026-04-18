@@ -62,12 +62,52 @@ Hosting     Vercel (static + Fluid Compute)
 
 ---
 
-## Next Milestone Goals
+## Current Milestone: v1.2 إغلاق الحلقة (Retention Loop)
 
-See `ROADMAP.md` for v1.1 priorities. Top candidates:
+**Goal:** Transform the 28-day experience from a program that ends into a year-long relationship — by closing six retention gaps between Day 28 and Day 365.
 
-1. Real WhatsApp community (operational)
-2. Push notifications (web push API)
-3. Cycle 4+ infinite content via AI generation
-4. Book comments/highlights
-5. Email re-engagement automation (cron-driven)
+**Target features:**
+- Cycle 2 Transition UX — in-app CTA on Day 28 instead of a silent wall
+- Milestone Badges — activate trigger logic on days 1 / 3 / 7 / 14 / 21 / 28
+- Year-in-Review — annual retrospective page aggregating 365 reflections + awareness trajectory + insights
+- Renewal Prompts In-App — 7-day-before-expiry reminder surfaced inside the product
+- Referral Program — "ادع صديق، خذ شهر مجاني" to convert "قلبي يتشرب معاني" advocacy into growth
+- PostHog Event Instrumentation — day_complete, cycle_start, badge_unlock, renewal_prompted (foundation for data-driven v1.3)
+
+**Key context / constraints:**
+- Budget: <10K SAR, solo founder, Instagram-focused organic distribution, target 1,500 customers
+- No feature ships without real user validation (north star: "قلبي يتشرب معاني")
+- Performance budget: LCP < 6s on 3G mobile — every feature respects it
+- Arabic-first, RTL throughout, no tracking pixels on prayer/reflection pages
+- v1.1 Phase 5 (WhatsApp community) is operationally-blocked and will NOT be unblocked in v1.2 — that's an independent operational decision
+- v1.2 phase numbering continues from v1.1 → starts at Phase 6
+
+---
+
+## Shipped Milestones
+
+- **v1.0** (shipped 2026-04-18) — Core 28-day program, AI guide, VIP, post-28 retention, minimal UI
+- **v1.1** (shipped 2026-04-18) — Email automation · Web push · AI-generated cycles · Book highlights · WhatsApp infra (code)
+
+---
+
+## Evolution
+
+This document evolves at phase transitions and milestone boundaries.
+
+**After each phase transition** (via `/gsd:transition`):
+1. Requirements invalidated? → Move to Out of Scope with reason
+2. Requirements validated? → Move to Validated with phase reference
+3. New requirements emerged? → Add to Active
+4. Decisions to log? → Add to Key Decisions
+5. "What This Is" still accurate? → Update if drifted
+
+**After each milestone** (via `/gsd:complete-milestone`):
+1. Full review of all sections
+2. Core Value check — still the right priority?
+3. Audit Out of Scope — reasons still valid?
+4. Update Context with current state
+
+---
+
+**Last updated:** 2026-04-18 — v1.2 milestone started
