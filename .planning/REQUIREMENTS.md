@@ -44,7 +44,7 @@
 - [ ] **RETURN-04**: Celebration animation uses `framer-motion` (already installed) — no confetti, no fireworks, no "unlocked!" language
 - [x] **RETURN-05**: Day-28 badge unlocks silently as part of cycle transition, not as separate achievement modal
 - [x] **RETURN-06**: Day boundary respects `Asia/Riyadh` timezone — user's "Day 28" is server's same-day
-- [ ] **RETURN-07**: Day 28 completion fires exactly one `cycle_start` analytics event even if user reloads or triggers CTA on two devices
+- [x] **RETURN-07**: Day 28 completion fires exactly one `cycle_start` analytics event even if user reloads or triggers CTA on two devices
 
 ### BADGE — Milestone Badges (Phase 8)
 
@@ -111,9 +111,9 @@
 - [ ] **NFR-05**: Cost — v1.2 feature work < 2000 SAR total (no paid SaaS, no new infrastructure)
 - [ ] **NFR-06**: RTL — all new UI renders correctly right-to-left
 - [ ] **NFR-07**: Arabic-first — all copy written in Arabic natively, never machine-translated
-- [ ] **NFR-08**: No new runtime dependencies added (CLAUDE.md rule #6)
+- [x] **NFR-08**: No new runtime dependencies added (CLAUDE.md rule #6)
 - [ ] **NFR-09**: Every schema migration is two-step (additive, then enforce) to avoid prod outages
-- [ ] **NFR-10**: Pre-merge checks: `npx tsc --noEmit && npm run build` must pass (CLAUDE.md mandatory)
+- [x] **NFR-10**: Pre-merge checks: `npx tsc --noEmit && npm run build` must pass (CLAUDE.md mandatory)
 
 ---
 
