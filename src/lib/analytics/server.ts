@@ -24,7 +24,7 @@
  * without PostHog configured doesn't crash `/api/program/*` handlers.
  */
 
-import type { TypedEvent } from "./events";
+import { assertAllowedProperties, type TypedEvent } from "./events";
 
 /**
  * Emit a typed analytics event to PostHog server-side.
@@ -45,6 +45,26 @@ export async function emitEvent(
   event: TypedEvent,
   distinctId: string
 ): Promise<void> {
+  // ANALYTICS-12 runtime defense (Plan 06.02):
+  // Reject banned property-name patterns BEFORE any network I/O. TypeScript's
+  // `TypedEvent` narrowing is bypassable via `as any`; this guard is not.
+  // In dev/CI the error propagates so violations are caught loudly; in prod
+  // we swallow + warn so analytics failures never break a user-facing route.
+  try {
+    assertAllowedProperties(
+      event.properties as Record<string, unknown>
+    );
+  } catch (err) {
+    if (process.env.NODE_ENV !== "production") {
+      throw err;
+    }
+    console.warn(
+      "[analytics] emitEvent rejected:",
+      (err as Error).message
+    );
+    return;
+  }
+
   const key = process.env.NEXT_PUBLIC_POSTHOG_KEY;
   const host = process.env.NEXT_PUBLIC_POSTHOG_HOST;
 
