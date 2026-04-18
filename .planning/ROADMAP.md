@@ -77,7 +77,7 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
   - [x] 07.01-PLAN.md — Migration: badges table + progress.cycle_paused_at column (additive, two-step per NFR-09)
   - [x] 07.02-PLAN.md — /api/program/start-cycle: optimistic-concurrency guard + cycle_start emission (narrowed fallback)
   - [x] 07.03-PLAN.md — DayExperience.tsx: inline 'واصل الرحلة' CTA with framer-motion (no confetti, no modal)
-  - [ ] 07.04-PLAN.md — Day-28 badge: MilestoneBadge SVG + /api/badges/unlock + silent unlock inside cycle transition
+  - [x] 07.04-PLAN.md — Day-28 badge: MilestoneBadge SVG + /api/badges/unlock + silent unlock inside cycle transition
   - [x] 07.05-PLAN.md — Asia/Riyadh timezone helper audit + refactor of src/lib/calendarDay.ts
   - [ ] 07.06-PLAN.md — Integration tests + anti-pattern grep guard + human Day-28 flow verification
 **UI hint**: yes
