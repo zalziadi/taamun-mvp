@@ -34,7 +34,7 @@
 - [ ] **ANALYTICS-09**: Zero `track()` calls exist inside `src/app/day/**`, `src/app/reflection/**`, `src/app/book/**`, `src/app/program/day/**`, `/api/guide/**` (enforced by CI grep)
 - [ ] **ANALYTICS-10**: Zero `track()` calls exist inside `DayExperience.tsx`, `ReflectionJournal.tsx`, `AwarenessMeter.tsx`, `BookQuote.tsx`, `VerseBlock.tsx`, `HiddenLayer.tsx`, `SilenceGate.tsx` (enforced by CI grep)
 - [x] **ANALYTICS-11**: `person_profiles: "never"` setting in `src/lib/analytics.ts` is preserved
-- [ ] **ANALYTICS-12**: Property name whitelist enforced — banned patterns: `*_email`, `*_phone`, `reflection_*`, `verse_*`, `journal_*`, `message_*`, `prayer_*`
+- [x] **ANALYTICS-12**: Property name whitelist enforced — banned patterns: `*_email`, `*_phone`, `reflection_*`, `verse_*`, `journal_*`, `message_*`, `prayer_*`
 
 ### RETURN — Cycle 2 Transition + Day-28 Badge (Phase 7, merged)
 
