@@ -5,8 +5,14 @@ import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { supabase } from "../../lib/supabaseClient";
 import { JOURNEY_ROUTE, PRICING_ROUTE } from "@/lib/routes";
+import dynamic from "next/dynamic";
 import { daysRemaining, isSubscriptionExpired } from "@/lib/subscriptionDurations";
 import { CYCLE_MILESTONES, getCycleShortName } from "@/lib/taamun-cycles";
+
+const PushSetup = dynamic(
+  () => import("@/components/PushSetup").then((m) => ({ default: m.PushSetup })),
+  { ssr: false }
+);
 
 interface AccountClientProps {
   embedded?: boolean;
@@ -324,6 +330,9 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
           </div>
         </div>
       )}
+
+      {/* Push Notifications */}
+      <PushSetup />
 
       {/* Subscription Card */}
       <div className="border-t border-[#c9b88a]/20 p-5">
