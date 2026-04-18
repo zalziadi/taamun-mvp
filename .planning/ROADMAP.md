@@ -73,7 +73,13 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
   3. A user who taps the CTA on phone AND laptop within 5 seconds ends up with `current_cycle = 2` and exactly one `cycle_start` PostHog event — never duplicates, never a "Day 1 of cycle 2 already partly complete" artifact
   4. The Day-28 badge appears on `/progress` after the transition with no separate "🏆 Achievement Unlocked!" modal having interrupted the user
   5. A user activated at 23:00 Asia/Riyadh on day 27 who returns at 06:00 the next morning correctly sees Day 28 (not Day 27 stuck due to UTC drift)
-**Plans**: TBD
+**Plans** (6 plans):
+  - [ ] 07.01-PLAN.md — Migration: badges table + progress.cycle_paused_at column (additive, two-step per NFR-09)
+  - [ ] 07.02-PLAN.md — /api/program/start-cycle: optimistic-concurrency guard + cycle_start emission (narrowed fallback)
+  - [ ] 07.03-PLAN.md — DayExperience.tsx: inline 'واصل الرحلة' CTA with framer-motion (no confetti, no modal)
+  - [ ] 07.04-PLAN.md — Day-28 badge: MilestoneBadge SVG + /api/badges/unlock + silent unlock inside cycle transition
+  - [ ] 07.05-PLAN.md — Asia/Riyadh timezone helper audit + refactor of src/lib/calendarDay.ts
+  - [ ] 07.06-PLAN.md — Integration tests + anti-pattern grep guard + human Day-28 flow verification
 **UI hint**: yes
 **Risks & Mitigations** (from PITFALLS.md):
   - **Pitfall 1 — Multi-device cycle race:** Optimistic-concurrency guard (`progress.cycle_paused_at` column + `.eq("current_cycle", expected)` in update) returns 409 on race; client disables CTA after first tap.
@@ -184,7 +190,7 @@ NFRs apply to ALL phases (Phase 6 through Phase 11):
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 6. PostHog Event Instrumentation | 0/6 | Planned | - |
-| 7. Cycle 2 Transition + Day-28 Badge | 0/0 | Not started | - |
+| 7. Cycle 2 Transition + Day-28 Badge | 0/6 | Planned | - |
 | 8. Milestone Badges | 0/0 | Not started | - |
 | 9. Renewal Prompts In-App | 0/0 | Not started | - |
 | 10. Referral Program | 0/0 | Not started | - |
