@@ -4,57 +4,65 @@
 
 ## v1.0 — Core Experience (shipped 2026-04-18)
 
-**Archived:** [v1.0-ROADMAP.md](./milestones/v1.0-ROADMAP.md)
+**Archived:** [v1.0-ROADMAP.md](./milestones/v1.0-ROADMAP.md) · [v1.0-REQUIREMENTS.md](./milestones/v1.0-REQUIREMENTS.md)
 
 Complete 28-day program, AI guide, VIP tier, post-28 retention system, minimal UI.
 
 ---
 
-## v1.1 — Growth & Retention (planning)
+## v1.1 — Growth & Retention (shipped 2026-04-18)
 
-**Goal:** convert existing users to long-term subscribers + activate dormant accounts.
+**Archived:** [v1.1-ROADMAP.md](./milestones/v1.1-ROADMAP.md) · [v1.1-REQUIREMENTS.md](./milestones/v1.1-REQUIREMENTS.md)
 
-### Candidate phases (to be scoped):
-
-#### Phase 1: WhatsApp Community Integration
-- Create real WhatsApp community group
-- Auto-post daily verse from server (webhook)
-- Onboard new subscribers into the group
-- **Depends on:** operational decision (group admin, moderation policy)
-
-#### Phase 2: Push Notifications
-- Web Push API setup (VAPID keys)
-- Service worker for notifications
-- Morning reminder ("آية اليوم جاهزة") — opt-in only
-- Streak-at-risk nudge (last 4 hours before day end)
-- **Depends on:** service worker + HTTPS (already available)
-
-#### Phase 3: Infinite Content via AI
-- Generate cycle 4+ content dynamically using Claude API
-- User-specific verse selection based on reflection history
-- Cost control: cap at 1 cycle per user per month
-- **Depends on:** Anthropic API budget allocation
-
-#### Phase 4: Book Enhancements
-- Highlight text in book viewer
-- Private user comments per chapter
-- "Recommended sections" based on current reflection themes
-- **Depends on:** DB migration for book_highlights table
-
-#### Phase 5: Email Re-engagement Automation
-- Cron: detect 3+ days inactive → send "we miss you" email
-- Cron: detect day 28 completion → auto-send celebration email (already coded, needs activation)
-- Weekly digest email: "your week in Taamun" (reflection count, streak, insights)
-- **Depends on:** Resend quota
+Email automation, web push, AI infinite cycles, DB-backed book notes, WhatsApp broadcast infrastructure.
 
 ---
 
-## v1.2 — Depth & Personalization (backlog)
+## v1.2 — Depth & Personalization (planning)
 
-- Reflection themes analysis (ML clustering on user reflections)
-- Guide remembers user across sessions (long-term memory beyond session scope)
-- Voice journaling (Munsit integration for dhikr/reflection)
-- Arabic screen reader quality audit
+**Goal:** transform retention machinery into personal, insightful companionship.
+
+### Candidate phases
+
+#### Phase 1: Reflection Theme Clustering
+- Monthly ML analysis of user reflection text (no external AI — use embeddings)
+- Surface top 3 recurring themes to the user ("laughter · solitude · gratitude")
+- Guide references these themes in conversations
+- **Depends on:** reflection text ≥ 20 entries per user (meaningful sample size)
+
+#### Phase 2: Guide Long-term Memory
+- Currently: guide uses recent context only (last 10 messages)
+- Add: soul_summary that evolves over weeks (compressed narrative of user's journey)
+- Stored in user_memory table, updated weekly by AI summarization
+- Result: guide references events from months ago naturally
+- **Depends on:** user reflection history (3+ months ideal)
+
+#### Phase 3: Voice Journaling
+- Extend Munsit integration (already wired for /guide/voice)
+- Voice-recorded reflections → transcribed → stored alongside typed ones
+- Tasbeeh counter via voice detection (count dhikr hands-free)
+- **Depends on:** Munsit API quota allocation
+
+#### Phase 4: Accessibility Audit (Arabic Screen Reader)
+- Full VoiceOver/TalkBack audit in Arabic/RTL
+- Fix any announced text that's misaligned or cut off
+- Ensure all interactive elements have proper aria-labels in Arabic
+- Validate with real blind user testing (if possible)
+- **Depends on:** testing partner or audit service
+
+#### Phase 5: Personal Insight Feed
+- New `/insights` page — timeline of user's discoveries
+- AI extracts key insights from reflections + surfaces them periodically
+- "Looking back: on day 12 you wrote X. Today's verse echoes it."
+- **Depends on:** Phase 1 (theme clustering) foundation
+
+---
+
+## v1.3+ — Backlog (unplanned)
+
+- Community features inside app (not just WhatsApp)
+- Sharing insights publicly (opt-in)
+- Mobile app wrapper (PWA polish or native shell)
 
 ---
 
@@ -68,7 +76,8 @@ Complete 28-day program, AI guide, VIP tier, post-28 retention system, minimal U
 
 ## Principles
 
-1. **No feature ships without real user validation.** The "قلبي يتشرب معاني" feedback is the north star.
+1. **No feature ships without real user validation.** "قلبي يتشرب معاني" is the north star.
 2. **Performance budget:** every new feature must maintain LCP < 6s on 3G mobile.
 3. **Arabic-first:** no English-only flows. RTL throughout.
 4. **Privacy:** no tracking pixels on prayer/reflection pages.
+5. **Cost ceiling:** each milestone's operational cost must stay under $20/month total for first 1000 users.

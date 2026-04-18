@@ -1,57 +1,72 @@
-# Requirements — v1.1
+# Requirements — v1.2
 
-Fresh requirements for the next milestone. Previous v1.0 requirements archived at [milestones/v1.0-REQUIREMENTS.md](./milestones/v1.0-REQUIREMENTS.md).
+Fresh requirements for the next milestone.
+v1.1 archived at [milestones/v1.1-REQUIREMENTS.md](./milestones/v1.1-REQUIREMENTS.md).
 
 ---
 
-## User personas for v1.1
+## Mission
 
-1. **New user (day 1-7)** — needs habit building, low friction
-2. **Engaged user (day 8-28)** — needs depth, continuation
-3. **Post-completion user (day 29+)** — needs reasons to return
-4. **Dormant user (3+ days inactive)** — needs re-engagement
-5. **VIP user** — needs exclusive depth, community access
+Transform Taamun from "retention machine" into "personal companion" — the user should feel the app *knows* them, not just remembers them.
+
+---
+
+## User personas for v1.2
+
+1. **Long-term user (3+ months)** — has 60+ reflections, wants depth
+2. **Returning VIP** — expects the guide to remember past conversations
+3. **Heavy journaler** — writes long reflections, wants themes surfaced
+4. **Accessibility-dependent user** — uses screen reader, needs Arabic RTL audit
+5. **Voice-first user** — prefers speaking to typing (morning dhikr, voice reflections)
 
 ---
 
 ## Must-have requirements
 
-- [ ] Daily push notification (opt-in) sent at user's chosen morning time
-- [ ] Auto-triggered completion email when user marks day 28 complete
-- [ ] Auto-triggered re-engagement email after 3 days inactive
-- [ ] Weekly digest email for all active subscribers
-- [ ] Real WhatsApp community group (operational) — active admin
-- [ ] Book highlights persist per-user in DB (not localStorage)
+- [ ] Monthly reflection theme extraction (top 3 recurring themes per user)
+- [ ] Guide long-term memory: `soul_summary` that evolves weekly
+- [ ] Voice reflection recording (in addition to typed)
+- [ ] Arabic screen reader audit with fixes (VoiceOver + TalkBack)
 
 ## Should-have
 
-- [ ] AI-generated verse content for cycle 4+ (with cost cap)
-- [ ] Private per-chapter book comments
-- [ ] Reflection theme clustering (monthly insight)
+- [ ] Personal insight feed (`/insights` page)
+- [ ] Guide references insights in conversations ("على ذكر الصبر — كتبت قبل شهر...")
+- [ ] Voice tasbeeh counter (hands-free dhikr)
 
 ## Nice-to-have
 
-- [ ] Voice-based dhikr counter (tasbeeh via voice)
-- [ ] Arabic screen reader audit (VoiceOver RTL)
-- [ ] Family plan (multi-user subscription)
+- [ ] Insight sharing (opt-in, anonymous)
+- [ ] "Year in Taamun" end-of-year recap email
+- [ ] PWA install prompt after day 7
 
 ---
 
 ## Non-functional requirements (carried forward)
 
 - Performance: LCP < 6s on 3G mobile
-- Accessibility: Lighthouse A11y ≥ 95
+- Accessibility: Lighthouse A11y ≥ 95 + validated with real Arabic SR testing
 - SEO: Lighthouse SEO = 100
-- Cost: v1.1 feature work < 2000 SAR total (API calls, services)
-- Privacy: zero tracking on prayer/reflection pages
+- Cost: v1.2 feature work < 3000 SAR total (includes theme ML + voice transcription)
+- Privacy: zero tracking on prayer/reflection pages · insight extraction is user-only
 
 ---
 
-## Decisions (resolved 2026-04-18)
+## Open questions
 
-1. **Push notification timing:** ✅ Default 6 AM local + user can customize in `/account`
-2. **WhatsApp community:** ✅ Founder admin + 2-3 co-admins + auto-moderation bot (for spam)
-3. **AI content generation:** ✅ Hybrid — shared pool baseline + per-user personalization on top
-4. **Weekly digest:** ✅ Saturday (Arabic week start)
+1. **Theme clustering approach:** OpenAI embeddings vs local (ollama / sentence-transformers)? Cost vs latency tradeoff.
+2. **soul_summary update cadence:** weekly or triggered at milestones (day 14, 28, 60)?
+3. **Voice reflection storage:** keep audio or transcribe-and-discard? Privacy vs re-listening UX.
+4. **Insights visibility:** inline on home, dedicated `/insights` page, or both?
+5. **Accessibility partner:** hire auditor, volunteer beta, or rely on automated tools?
 
-All 4 answered. Phase planning can proceed.
+Resolve these before phase planning.
+
+---
+
+## Success criteria
+
+- At least 3 users with 60+ reflections each provide explicit positive feedback on "the guide remembered me"
+- Arabic screen reader audit identifies ≤ 5 issues (the product should mostly work already)
+- Voice reflection adoption ≥ 20% of active users who try it
+- Theme clustering surfaces non-obvious connections in ≥ 80% of eligible users

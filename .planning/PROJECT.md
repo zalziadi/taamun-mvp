@@ -29,24 +29,30 @@ Hosting     Vercel (static + Fluid Compute)
 
 ---
 
-## Current State (v1.0 — Shipped 2026-04-18)
+## Current State (v1.1 — Shipped 2026-04-18)
 
 **Scale:**
-- 354+ commits over 2 months
-- 398 TypeScript files · 52K LOC
-- 54 pages · 77 API endpoints · 30 DB tables
+- 376+ commits over 2 months
+- 413+ TypeScript files · 53K+ LOC
+- 57+ pages · 86+ API endpoints · 34 DB tables
 
-**Shipped features:**
+**v1.0 shipped features (core):**
 - ✅ 28-day program with 3 rotating cycles (الظل · النفس · السور)
 - ✅ AI guide "تمعّن" with 6-stage conversation framework
 - ✅ VIP experience: Gene Keys + BaZi + dynamic prompts
 - ✅ Weekly challenges + daily verse rotation (post-28)
-- ✅ Community pulse + WhatsApp integration
 - ✅ Book reader with progress + bookmarks
 - ✅ Streak protection (3 AM grace period)
-- ✅ Minimal flat UI (user-requested, 2026-04-18)
+- ✅ Minimal flat UI (user-requested)
 - ✅ Lighthouse A11y: 100/100, SEO: 100/100
 - ✅ First real customer validated: "قلبي يتشرب معاني" (day 9)
+
+**v1.1 shipped features (retention):**
+- ✅ Email automation: weekly digest + re-engagement emails via Saturday cron
+- ✅ Web push notifications: service worker + VAPID + user-customizable time
+- ✅ AI infinite cycles: cycles 4+ via Claude API (~$0.08/cycle shared pool)
+- ✅ DB-backed book notes: bookmarks + quotes + reflective notes
+- ✅ WhatsApp community infrastructure: broadcast endpoint + day-3 invite
 
 **Current subscription tiers:**
 - Free 7-day trial
@@ -64,10 +70,10 @@ Hosting     Vercel (static + Fluid Compute)
 
 ## Next Milestone Goals
 
-See `ROADMAP.md` for v1.1 priorities. Top candidates:
+See `ROADMAP.md` for v1.2 priorities. Focus shifts from retention to **depth**:
 
-1. Real WhatsApp community (operational)
-2. Push notifications (web push API)
-3. Cycle 4+ infinite content via AI generation
-4. Book comments/highlights
-5. Email re-engagement automation (cron-driven)
+1. Reflection theme clustering (monthly ML analysis per user)
+2. Guide long-term memory (soul_summary evolving weekly)
+3. Voice journaling (extend Munsit beyond /guide/voice)
+4. Arabic screen reader audit (VoiceOver + TalkBack)
+5. Personal insight feed (/insights page)
