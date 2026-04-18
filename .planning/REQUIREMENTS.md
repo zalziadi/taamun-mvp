@@ -29,11 +29,11 @@
 - [ ] **ANALYTICS-04**: `cycle_start` event fires from `/api/program/start-cycle` success with props `{new_cycle_number, prior_cycle_days_completed}`
 - [ ] **ANALYTICS-05**: `badge_unlock` event fires from `/api/badges/unlock` with props `{badge_code, day_number, cycle_number}`
 - [ ] **ANALYTICS-06**: `renewal_prompted` event fires when banner first renders with props `{days_remaining, gateway, tier}`
-- [ ] **ANALYTICS-07**: `referral_code_generated` and `referral_code_redeemed` events fire with prefix-only props (never full code)
-- [ ] **ANALYTICS-08**: `year_review_opened` and `year_review_shared` events fire with props `{year_key, reflections_count}`
+- [x] **ANALYTICS-07**: `referral_code_generated` and `referral_code_redeemed` events fire with prefix-only props (never full code)
+- [x] **ANALYTICS-08**: `year_review_opened` and `year_review_shared` events fire with props `{year_key, reflections_count}`
 - [ ] **ANALYTICS-09**: Zero `track()` calls exist inside `src/app/day/**`, `src/app/reflection/**`, `src/app/book/**`, `src/app/program/day/**`, `/api/guide/**` (enforced by CI grep)
 - [ ] **ANALYTICS-10**: Zero `track()` calls exist inside `DayExperience.tsx`, `ReflectionJournal.tsx`, `AwarenessMeter.tsx`, `BookQuote.tsx`, `VerseBlock.tsx`, `HiddenLayer.tsx`, `SilenceGate.tsx` (enforced by CI grep)
-- [ ] **ANALYTICS-11**: `person_profiles: "never"` setting in `src/lib/analytics.ts` is preserved
+- [x] **ANALYTICS-11**: `person_profiles: "never"` setting in `src/lib/analytics.ts` is preserved
 - [ ] **ANALYTICS-12**: Property name whitelist enforced — banned patterns: `*_email`, `*_phone`, `reflection_*`, `verse_*`, `journal_*`, `message_*`, `prayer_*`
 
 ### RETURN — Cycle 2 Transition + Day-28 Badge (Phase 7, merged)

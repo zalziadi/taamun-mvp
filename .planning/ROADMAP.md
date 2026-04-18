@@ -50,7 +50,7 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
   4. CI pipeline fails the build if a developer adds `track()` or `posthog.capture(` inside `src/app/day/**`, `src/app/reflection/**`, `src/app/book/**`, `src/app/program/day/**`, `/api/guide/**`, or any of the 7 banned components
   5. Property whitelist enforced: a PR that adds an event with prop name `user_email` or `reflection_text` fails CI grep
 **Plans** (6 plans):
-  - [ ] 06.01-PLAN.md — Typed event catalog + server-side emitEvent() helper
+  - [x] 06.01-PLAN.md — Typed event catalog + server-side emitEvent() helper
   - [ ] 06.02-PLAN.md — Runtime property whitelist guard (assertAllowedProperties)
   - [ ] 06.03-PLAN.md — Suspense-wrapped PageviewTracker + sacred-path exclusion list
   - [ ] 06.04-PLAN.md — Wire day_complete emission in /api/program/progress POST (proof-of-pipeline)

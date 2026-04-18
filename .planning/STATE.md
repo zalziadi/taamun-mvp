@@ -1,3 +1,17 @@
+---
+gsd_state_version: 1.0
+milestone: v1.0
+milestone_name: — Core Experience
+status: executing
+last_updated: "2026-04-18T22:33:26.895Z"
+last_activity: 2026-04-18
+progress:
+  total_phases: 1
+  completed_phases: 0
+  total_plans: 6
+  completed_plans: 1
+---
+
 # Current State
 
 **Last updated:** 2026-04-18
@@ -6,11 +20,14 @@
 
 ## Current Position
 
+Phase: 06 (PostHog Event Instrumentation) — EXECUTING
+Plan: 2 of 6
+
 - **Milestone:** v1.2 — إغلاق الحلقة (Retention Loop)
 - **Active phase:** Phase 6 — PostHog Event Instrumentation (planning)
 - **Active plan:** —
-- **Status:** Roadmap approved; ready to plan Phase 6
-- **Last activity:** 2026-04-18 — v1.2 roadmap drafted (6 phases: 6 → 11)
+- **Status:** Ready to execute
+- **Last activity:** 2026-04-18
 - **Git branch:** claude/awesome-shaw (worktree)
 - **Last commit:** `694b0de feat(v1.1): Phase 5 — WhatsApp community infrastructure (code side)`
 
@@ -19,20 +36,25 @@
 ## Accumulated Context
 
 ### v1.0 — shipped 2026-04-18
+
 Core 28-day program with 3 cycles · AI guide "تمعّن" · VIP (Gene Keys + BaZi) · Post-28 retention · WhatsApp CTA · Minimal flat UI redesign · First validation "قلبي يتشرب معاني" (day-9 user).
 
 ### v1.1 — shipped 2026-04-18 (same day, direct commits, no GSD cycle)
+
 - Phase 1: email automation — weekly digest + re-engagement (`ae27e28`)
 - Phase 2: web push notifications (`b48ff76`)
 - Phase 3: AI-generated infinite cycles — hybrid approach (`cf8ec65`)
 - Phase 4: book highlights + notes — DB-backed (`2cba126`)
 - Phase 5: WhatsApp community infrastructure — code side (`694b0de`)
+
 GSD state was drift-corrected 2026-04-18.
 
 ### v1.2 — started 2026-04-18
+
 **Goal:** Transform 28-day experience into year-long relationship. Close 6 retention gaps between Day 28 and Day 365.
 
 **Roadmap (6 phases, 81 REQs total — 71 functional + 10 NFR):**
+
 1. **Phase 6** — PostHog Event Instrumentation (ANALYTICS-01..12)
 2. **Phase 7** — Cycle 2 Transition + Day-28 Badge merged (RETURN-01..07)
 3. **Phase 8** — Milestone Badges (BADGE-01..09)
@@ -43,12 +65,14 @@ GSD state was drift-corrected 2026-04-18.
 Phase 12 (YIR Ramadan moment) explicitly deferred to v1.3.
 
 **Research-phase routing flags** (from SUMMARY.md):
+
 - Phases 6, 8, 11 → SKIP `/gsd:research-phase` (covered by existing research)
 - Phases 7, 9, 10 → RUN `/gsd:research-phase` (need phase-specific spikes)
 
 **CX audit score before v1.2:** 60/100 (strong early, collapses after Day 28; biggest wound = silent cycle-2 wall + no year-long loop).
 
 **Key product decisions locked 2026-04-18:**
+
 1. Cycle 2 = same 28 verses, deeper practice (Headspace model)
 2. Referral reward: invitee immediate, referrer after invitee day 14
 3. Badges: 7 per cycle (6 milestones + cycle-completion), cap at cycle 3
