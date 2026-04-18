@@ -26,9 +26,9 @@
 - [x] **ANALYTICS-01**: Page views are tracked on all non-sacred paths via App Router navigation hook
 - [x] **ANALYTICS-02**: Pageview tracking is wrapped in `<Suspense>` to avoid React 18 CSR bailout
 - [x] **ANALYTICS-03**: `day_complete` event fires server-side from `/api/program/progress/*` success handlers with props `{day_number, cycle_number, tier}`
-- [ ] **ANALYTICS-04**: `cycle_start` event fires from `/api/program/start-cycle` success with props `{new_cycle_number, prior_cycle_days_completed}`
-- [ ] **ANALYTICS-05**: `badge_unlock` event fires from `/api/badges/unlock` with props `{badge_code, day_number, cycle_number}`
-- [ ] **ANALYTICS-06**: `renewal_prompted` event fires when banner first renders with props `{days_remaining, gateway, tier}`
+- [x] **ANALYTICS-04**: `cycle_start` event fires from `/api/program/start-cycle` success with props `{new_cycle_number, prior_cycle_days_completed}`
+- [x] **ANALYTICS-05**: `badge_unlock` event fires from `/api/badges/unlock` with props `{badge_code, day_number, cycle_number}`
+- [x] **ANALYTICS-06**: `renewal_prompted` event fires when banner first renders with props `{days_remaining, gateway, tier}`
 - [x] **ANALYTICS-07**: `referral_code_generated` and `referral_code_redeemed` events fire with prefix-only props (never full code)
 - [x] **ANALYTICS-08**: `year_review_opened` and `year_review_shared` events fire with props `{year_key, reflections_count}`
 - [x] **ANALYTICS-09**: Zero `track()` calls exist inside `src/app/day/**`, `src/app/reflection/**`, `src/app/book/**`, `src/app/program/day/**`, `/api/guide/**` (enforced by CI grep)
