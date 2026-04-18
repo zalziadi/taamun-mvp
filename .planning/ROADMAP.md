@@ -49,7 +49,13 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
   3. Opening DevTools Network tab on `/day/7`, `/reflection/*`, `/book/*` shows ZERO requests to `posthog.com` or `app.posthog.com` — even on long sessions
   4. CI pipeline fails the build if a developer adds `track()` or `posthog.capture(` inside `src/app/day/**`, `src/app/reflection/**`, `src/app/book/**`, `src/app/program/day/**`, `/api/guide/**`, or any of the 7 banned components
   5. Property whitelist enforced: a PR that adds an event with prop name `user_email` or `reflection_text` fails CI grep
-**Plans**: TBD
+**Plans** (6 plans):
+  - [ ] 06.01-PLAN.md — Typed event catalog + server-side emitEvent() helper
+  - [ ] 06.02-PLAN.md — Runtime property whitelist guard (assertAllowedProperties)
+  - [ ] 06.03-PLAN.md — Suspense-wrapped PageviewTracker + sacred-path exclusion list
+  - [ ] 06.04-PLAN.md — Wire day_complete emission in /api/program/progress POST (proof-of-pipeline)
+  - [ ] 06.05-PLAN.md — Typed stubs + JSDoc + docs/analytics-event-catalog.md for the other 7 events
+  - [ ] 06.06-PLAN.md — Build-breaking CI grep guard (scripts/guards/analytics-privacy.js)
 **Risks & Mitigations** (from PITFALLS.md):
   - **Pitfall 25 — Pixels on sacred pages:** Enforced via CI grep, not documentation. `capture_pageview: false` already set; preserve it.
   - **Pitfall 24 — PII leakage in event properties:** Strict-typed `track()` wrapper + property-name lint; emails/reflection text never reach PostHog.
@@ -177,7 +183,7 @@ NFRs apply to ALL phases (Phase 6 through Phase 11):
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 6. PostHog Event Instrumentation | 0/0 | Not started | - |
+| 6. PostHog Event Instrumentation | 0/6 | Planned | - |
 | 7. Cycle 2 Transition + Day-28 Badge | 0/0 | Not started | - |
 | 8. Milestone Badges | 0/0 | Not started | - |
 | 9. Renewal Prompts In-App | 0/0 | Not started | - |
