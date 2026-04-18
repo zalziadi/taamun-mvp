@@ -1,0 +1,42 @@
+{
+  "name": "تمعّن — رحلة اكتشاف المعنى",
+  "short_name": "تمعّن",
+  "description": "رحلة تأمل قرآنية ٢٨ يوماً — من القراءة إلى التجربة.",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "orientation": "portrait",
+  "background_color": "#f4f1ea",
+  "theme_color": "#5a4a35",
+  "categories": ["lifestyle", "education", "books"],
+  "icons": [
+    {
+      "src": "/brand/favicon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/brand/logo-mark.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    }
+  ],
+  "shortcuts": [
+    {
+      "name": "يوم التمعّن",
+      "short_name": "اليوم",
+      "url": "/program",
+      "description": "افتح اليوم الحالي من البرنامج"
+    },
+    {
+      "name": "المرشد تمعّن",
+      "short_name": "المرشد",
+      "url": "/guide",
+      "description": "محادثة مع المرشد الشخصي"
+    }
+  ]
+}

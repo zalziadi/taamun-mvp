@@ -13,6 +13,10 @@ const PushSetup = dynamic(
   () => import("@/components/PushSetup").then((m) => ({ default: m.PushSetup })),
   { ssr: false }
 );
+const InviteShare = dynamic(
+  () => import("@/components/InviteShare").then((m) => ({ default: m.InviteShare })),
+  { ssr: false }
+);
 
 interface AccountClientProps {
   embedded?: boolean;
@@ -333,6 +337,9 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
 
       {/* Push Notifications */}
       <PushSetup />
+
+      {/* Invite a friend — free month for both on successful subscription */}
+      {subscriptionStatus === "subscribed" && <InviteShare />}
 
       {/* Subscription Card */}
       <div className="border-t border-[#c9b88a]/20 p-5">

@@ -16,6 +16,10 @@ const ThemesInsight = dynamic(
   () => import("@/components/ThemesInsight").then((m) => ({ default: m.ThemesInsight })),
   { ssr: false }
 );
+const InstallPrompt = dynamic(
+  () => import("@/components/InstallPrompt").then((m) => ({ default: m.InstallPrompt })),
+  { ssr: false }
+);
 const CommunityPulse = dynamic(
   () => import("@/components/CommunityPulse").then((m) => ({ default: m.CommunityPulse })),
   { ssr: false }
@@ -400,6 +404,9 @@ export function HomeClient() {
           </Link>
         </section>
       ) : null}
+
+      {/* PWA install prompt — appears day 7+, re-prompts at day 28 if dismissed */}
+      {subscribed && <InstallPrompt currentDay={currentDay} />}
     </div>
   );
 }

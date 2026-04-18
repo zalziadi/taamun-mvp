@@ -53,15 +53,15 @@ v1.2 made Taamun personal. v1.3 makes it **spreadable**. A user in their 90th da
 
 ---
 
-## Open questions
+## Decisions (resolved 2026-04-18, "yes all")
 
-1. **Invite reward type:** free month for both, VIP trial, or % discount?
-2. **Recap trigger:** at day 365, at Hijri new year, or at calendar year-end?
-3. **PWA install prompt timing:** day 7, day 14, or on milestone day 28?
-4. **Share moderation:** instant (auto-approve) or queued for founder review?
-5. **Voice tasbeeh acoustic model:** Munsit streaming, Web Speech API, or lightweight custom VAD?
+1. **Invite reward:** ✅ Free month for both parties (simplest + most generous)
+2. **Recap trigger:** ✅ Rolling per-user day 365 + optional calendar year-end batch
+3. **PWA install prompt:** ✅ Day 7, dismissable; re-prompt at day 28 if dismissed
+4. **Share moderation:** ✅ Instant auto-approve for ≤200 chars, no links; flag-to-review for anything else
+5. **Voice tasbeeh tech:** ✅ Web Speech API first (free, offline, built-in) → Munsit fallback
 
-Resolve before phase planning.
+All 5 answered. Phase planning can proceed.
 
 ---
 

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Script from "next/script";
 import { Amiri, IBM_Plex_Mono, IBM_Plex_Sans_Arabic, Manrope, Noto_Sans_Arabic, Noto_Serif } from "next/font/google";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
+import { ServiceWorkerRegistrar } from "@/components/ServiceWorkerRegistrar";
 import { AppChrome } from "@/components/AppChrome";
 import { APP_DESCRIPTION, APP_DOMAIN, APP_NAME } from "@/lib/appConfig";
 import { isRamadanProgramClosed } from "@/lib/season";
@@ -56,9 +57,16 @@ export const metadata: Metadata = {
   },
   description: APP_DESCRIPTION,
   applicationName: APP_NAME,
+  manifest: "/manifest.json",
   icons: {
     icon: "/brand/favicon.svg",
     apple: "/brand/favicon.svg",
+  },
+  themeColor: "#5a4a35",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: APP_NAME,
   },
   metadataBase: new URL(APP_DOMAIN),
   alternates: {
@@ -129,6 +137,7 @@ export default function RootLayout({
           تخطي إلى المحتوى
         </a>
         <AnalyticsProvider />
+        <ServiceWorkerRegistrar />
         <AppChrome ramadanClosed={ramadanClosed}>{children}</AppChrome>
       </body>
     </html>
