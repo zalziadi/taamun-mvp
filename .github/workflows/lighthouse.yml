@@ -1,0 +1,35 @@
+name: Lighthouse A11y Audit
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "src/**"
+      - "public/**"
+      - ".lighthouserc.json"
+  workflow_dispatch:
+
+jobs:
+  lighthouse:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+
+      # Give Vercel a moment to deploy after push to main
+      - name: Wait for Vercel deployment propagation
+        run: sleep 60
+
+      - name: Install Lighthouse CI
+        run: npm install -g @lhci/cli@0.14.x
+
+      - name: Run Lighthouse CI
+        run: lhci autorun --config=./.lighthouserc.json
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
+      - name: Summary
+        if: always()
+        run: echo "::notice::Lighthouse audit complete. Check artifacts for the full report."
