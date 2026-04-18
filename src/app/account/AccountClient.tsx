@@ -207,7 +207,7 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
       )}
 
       {/* Progress Overview */}
-      <div className="rounded-2xl border border-[#c9b88a]/15 bg-[#1d1b17] p-4 sm:p-6 space-y-4">
+      <div className="border-t border-[#c9b88a]/20 p-4 sm:p-6 space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="font-[var(--font-amiri)] text-lg text-[#e8e1d9]">رحلة التمعّن</h2>
           <span className="text-xs text-[#c9b88a]">
@@ -257,7 +257,7 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
         if (reached.length === 0 && !next) return null;
 
         return (
-          <div className="rounded-2xl border border-[#c9b88a]/15 bg-[#1d1b17] p-5 space-y-4">
+          <div className="border-t border-[#c9b88a]/20 p-5 space-y-4">
             <div className="flex items-center justify-between">
               <h2 className="font-[var(--font-amiri)] text-lg text-[#e8e1d9]">معالم الرحلة</h2>
               <span className="text-[10px] text-[#c9b88a]/50">{totalDays} يوم في تمعّن</span>
@@ -296,7 +296,7 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
 
       {/* Post-Completion Counter */}
       {daysSinceCompletion !== null && daysSinceCompletion >= 0 && (
-        <div className="rounded-2xl border border-[#c9b88a]/25 bg-gradient-to-b from-[#1d1b17] to-[#15130f] p-5 text-center space-y-3">
+        <div className="border-t border-[#c9b88a]/25 p-5 text-center space-y-3">
           <div className="text-3xl font-bold text-[#c9b88a]">{daysSinceCompletion}</div>
           <p className="text-xs text-white/50">يوم منذ إتمام الرحلة</p>
           <p className="mx-auto max-w-xs text-xs leading-relaxed text-white/30">
@@ -326,7 +326,7 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
       )}
 
       {/* Subscription Card */}
-      <div className="rounded-2xl border border-[#c9b88a]/15 bg-[#1d1b17] p-5">
+      <div className="border-t border-[#c9b88a]/20 p-5">
         <div className="flex items-center justify-between">
           <div>
             <p className="text-xs text-white/40 mb-1">حالة الاشتراك</p>
@@ -369,7 +369,7 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
 
       {/* Gene Keys Map — VIP only */}
       {geneKeys.length > 0 && (
-        <div className="rounded-2xl border border-[#c9b88a]/25 bg-gradient-to-b from-[#1d1b17] to-[#15130f] p-5 space-y-4">
+        <div className="border-t border-[#c9b88a]/25 p-5 space-y-4">
           <div className="flex items-center justify-between">
             <h2 className="font-[var(--font-amiri)] text-lg text-[#e8e1d9]">خريطتك الجينية</h2>
             <span className="rounded-full border border-[#c9b88a]/40 bg-[#c9b88a]/15 px-2.5 py-0.5 text-[10px] font-bold tracking-wider text-[#c9b88a]">
@@ -415,7 +415,7 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
       )}
 
       {/* Account Details */}
-      <div className="rounded-2xl border border-[#c9b88a]/15 bg-[#1d1b17] p-5 space-y-4">
+      <div className="border-t border-[#c9b88a]/20 p-5 space-y-4">
         <h2 className="font-[var(--font-amiri)] text-lg text-[#e8e1d9]">تفاصيل الحساب</h2>
         <div className="space-y-3">
           <div className="flex items-center justify-between py-2 border-b border-white/5">

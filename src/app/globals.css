@@ -120,6 +120,16 @@
     @apply tm-card transition-opacity hover:opacity-90;
   }
 
+  /* Minimal input — single line under text, no box */
+  .tm-input {
+    @apply w-full bg-transparent border-0 border-b border-[#c9bda8]/50 px-0 py-2 text-[#2f2619] placeholder:text-[#8c7851]/50 focus:outline-none focus:border-[#8c7851] transition-colors;
+  }
+
+  /* Minimal textarea — same treatment */
+  .tm-textarea {
+    @apply w-full bg-transparent border-0 border-b border-[#c9bda8]/50 px-0 py-2 text-[#2f2619] placeholder:text-[#8c7851]/50 focus:outline-none focus:border-[#8c7851] resize-none transition-colors;
+  }
+
   /* Minimal 3-dash divider between sections */
   .tm-divider {
     @apply flex items-center justify-center py-6 text-[#8c7851]/40 text-sm tracking-[0.5em];

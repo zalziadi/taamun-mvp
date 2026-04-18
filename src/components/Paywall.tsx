@@ -98,13 +98,13 @@ export function Paywall({ reason = "locked", title, message, type, profile }: Pa
 مقعدك لا يزال محفوظاً.`;
 
     return (
-      <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-6">
+      <div className="border-y border-amber-500/25 py-6">
         <p className="mb-6 text-white/85 whitespace-pre-line">{customMessage}</p>
         <div className="flex flex-wrap gap-3">
           <a
             href="/pricing"
             onClick={() => track("pricing_clicked", { from: "trial_ended_paywall" })}
-            className="rounded-lg bg-amber-500 px-6 py-3.5 font-medium text-black hover:bg-amber-400"
+            className="border border-amber-500/60 px-6 py-3 font-bold text-amber-400 hover:bg-amber-500/10"
           >
             أكمل رحلتك — ١٩٩ ر.س
           </a>
@@ -113,7 +113,7 @@ export function Paywall({ reason = "locked", title, message, type, profile }: Pa
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => track("whatsapp_clicked", { from: "trial_ended_paywall" })}
-            className="rounded-lg bg-[#25D366] px-6 py-3.5 font-medium text-white hover:bg-[#20BD5A]"
+            className="border border-[#25D366]/60 px-6 py-3 font-bold text-[#25D366] hover:bg-[#25D366]/10"
           >
             تواصل عبر واتساب
           </a>
@@ -137,7 +137,7 @@ export function Paywall({ reason = "locked", title, message, type, profile }: Pa
     );
 
     return (
-      <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-6">
+      <div className="border-y border-amber-500/25 py-6">
         <h3 className="mb-2 text-lg font-bold text-amber-400/90">الرحلة بدأت تتعمّق</h3>
         <p className="mb-6 text-white/85 whitespace-pre-line">
           {smartMessage}
@@ -146,7 +146,7 @@ export function Paywall({ reason = "locked", title, message, type, profile }: Pa
           <a
             href="/pricing"
             onClick={() => track("pricing_clicked", { from: "smart_paywall" })}
-            className="rounded-lg bg-amber-500 px-6 py-3.5 font-medium text-black hover:bg-amber-400"
+            className="border border-amber-500/60 px-6 py-3 font-bold text-amber-400 hover:bg-amber-500/10"
           >
             أكمل الرحلة — اشترك الآن
           </a>
@@ -155,7 +155,7 @@ export function Paywall({ reason = "locked", title, message, type, profile }: Pa
             target="_blank"
             rel="noopener noreferrer"
             onClick={() => track("whatsapp_clicked", { from: "smart_paywall" })}
-            className="rounded-lg bg-[#25D366] px-6 py-3.5 font-medium text-white hover:bg-[#20BD5A]"
+            className="border border-[#25D366]/60 px-6 py-3 font-bold text-[#25D366] hover:bg-[#25D366]/10"
           >
             تواصل عبر واتساب
           </a>
@@ -167,7 +167,7 @@ export function Paywall({ reason = "locked", title, message, type, profile }: Pa
   // Handle special paywall type: guide_limit_reached
   if (type === 'guide_limit_reached') {
     return (
-      <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-6">
+      <div className="border-y border-amber-500/25 py-6">
         <h3 className="mb-2 text-lg font-bold text-amber-400/90">وصلت لحد المرشد اليومي (٥ رسائل)</h3>
         <p className="mb-6 text-white/85">
           المرشد يرافقك بلا حدود مع الاشتراك الكامل.
@@ -178,7 +178,7 @@ export function Paywall({ reason = "locked", title, message, type, profile }: Pa
           <a
             href="/pricing"
             onClick={() => track("pricing_clicked", { from: "guide_limit_paywall" })}
-            className="rounded-lg bg-amber-500 px-6 py-3.5 font-medium text-black hover:bg-amber-400"
+            className="border border-amber-500/60 px-6 py-3 font-bold text-amber-400 hover:bg-amber-500/10"
           >
             افتح المرشد بلا حدود — اشترك الآن
           </a>
@@ -195,14 +195,14 @@ export function Paywall({ reason = "locked", title, message, type, profile }: Pa
   // For trial_active_locked, show a simpler lock message
   if (type === 'trial_active_locked' || r.hidePrice) {
     return (
-      <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-4">
+      <div className="border-y border-amber-500/25 py-4">
         <p className="text-amber-400/90 text-center">🔒 {m}</p>
       </div>
     );
   }
 
   return (
-    <div className="rounded-xl border border-amber-500/30 bg-amber-500/10 p-6">
+    <div className="border-y border-amber-500/25 py-6">
       <h2 className="mb-2 text-lg font-bold text-amber-400/90">{t}</h2>
       <p className="mb-6 text-white/85">{m}</p>
       <div className="flex flex-wrap gap-3">
@@ -211,13 +211,13 @@ export function Paywall({ reason = "locked", title, message, type, profile }: Pa
           target="_blank"
           rel="noopener noreferrer"
           onClick={() => track("whatsapp_clicked", { from: "paywall", reason })}
-          className="rounded-lg bg-[#25D366] px-6 py-3.5 font-medium text-white hover:bg-[#20BD5A]"
+          className="border border-[#25D366]/60 px-6 py-3 font-bold text-[#25D366] hover:bg-[#25D366]/10"
         >
           فتح واتساب للاشتراك
         </a>
         <Link
           href="/"
-          className="rounded-lg border border-white/20 bg-white/5 px-6 py-3 text-white hover:bg-white/10"
+          className="border border-white/20 px-6 py-3 text-white hover:text-white/70"
         >
           رجوع
         </Link>

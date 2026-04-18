@@ -46,8 +46,8 @@ export default function WelcomePage() {
         <div className="mt-10 space-y-6 text-right">
           <div className="flex gap-3" style={{ direction: "rtl" }}>
             <div
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-base"
-              style={{ background: "#c9b88a22", border: "1px solid #c9b88a66", color: "#8a6914" }}
+              className="flex h-10 w-10 shrink-0 items-center justify-center text-base font-bold"
+              style={{ color: "#8a6914" }}
             >
               ١
             </div>
@@ -67,8 +67,8 @@ export default function WelcomePage() {
 
           <div className="flex gap-3" style={{ direction: "rtl" }}>
             <div
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-base"
-              style={{ background: "#c9b88a22", border: "1px solid #c9b88a66", color: "#8a6914" }}
+              className="flex h-10 w-10 shrink-0 items-center justify-center text-base font-bold"
+              style={{ color: "#8a6914" }}
             >
               ٢
             </div>
@@ -89,8 +89,8 @@ export default function WelcomePage() {
 
           <div className="flex gap-3" style={{ direction: "rtl" }}>
             <div
-              className="flex h-10 w-10 shrink-0 items-center justify-center rounded-full text-base"
-              style={{ background: "#c9b88a22", border: "1px solid #c9b88a66", color: "#8a6914" }}
+              className="flex h-10 w-10 shrink-0 items-center justify-center text-base font-bold"
+              style={{ color: "#8a6914" }}
             >
               ٣
             </div>
@@ -113,8 +113,8 @@ export default function WelcomePage() {
         <div className="mt-10">
           <Link
             href="/auth"
-            className="inline-block rounded-xl px-12 py-3.5 text-base font-bold"
-            style={{ background: "#5a4a35", color: "#fcfaf7" }}
+            className="inline-block px-12 py-3 text-base font-bold border"
+            style={{ background: "#5a4a35", color: "#fcfaf7", borderColor: "#5a4a35" }}
           >
             ابدأ الرحلة
           </Link>
