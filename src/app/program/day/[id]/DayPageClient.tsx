@@ -127,7 +127,27 @@ export default function DayPageClient({ day }: Props) {
           localStorage.setItem("taamun.currentCycle", String(cycle));
         }
         setCurrentCycle(cycle);
-        const cycleContent = getCycleDay(day, cycle);
+
+        // For cycle 4+, try the AI-generated cache first (shared pool)
+        // Falls back to modulo cycle content (1/2/3) if not cached yet
+        let cycleContent = getCycleDay(day, cycle);
+        if (cycle >= 4) {
+          try {
+            const aiRes = await fetch(
+              `/api/cycle-content?cycle=${cycle}&day=${day}`,
+              { cache: "no-store" }
+            );
+            if (aiRes.ok) {
+              const aiData = await aiRes.json();
+              if (aiData.ok && aiData.content) {
+                cycleContent = aiData.content;
+              }
+            }
+          } catch {
+            // Silent fallback — use modulo content
+          }
+        }
+
         const jsonEntry = getTaamunDailyByDay(day);
 
         // Prefer cycle content (richer, cycle-specific), fallback to JSON entry
