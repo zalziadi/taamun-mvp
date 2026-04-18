@@ -115,3 +115,66 @@ export const ALLOWED_PROPERTY_KEYS: readonly string[] = [
   "year_key",
   "reflections_count",
 ] as const;
+
+/**
+ * Banned property-name patterns per ANALYTICS-12.
+ *
+ * Source of truth: `.planning/phases/06-posthog-event-instrumentation/06-CONTEXT.md`
+ * §"Property whitelist". The CI grep rule (Plan 06.06) is the build-time
+ * defense; this regex list is the runtime defense enforced inside
+ * `emitEvent()` (see `./server.ts`).
+ *
+ * Any property key matching ANY of these patterns causes
+ * `assertAllowedProperties()` to throw before the PostHog fetch fires.
+ * This guards against future developers who bypass the `TypedEvent` union
+ * via `as any` casts.
+ *
+ * Patterns (7):
+ *   - `*_email`       → `/_email$/`
+ *   - `*_phone`       → `/_phone$/`
+ *   - `reflection_*`  → `/^reflection_/`
+ *   - `verse_*`       → `/^verse_/`
+ *   - `journal_*`     → `/^journal_/`
+ *   - `message_*`     → `/^message_/`
+ *   - `prayer_*`      → `/^prayer_/`
+ */
+export const BANNED_PROPERTY_PATTERNS: readonly RegExp[] = [
+  /_email$/,
+  /_phone$/,
+  /^reflection_/,
+  /^verse_/,
+  /^journal_/,
+  /^message_/,
+  /^prayer_/,
+] as const;
+
+/**
+ * Runtime guard: throws if any key in `props` matches a banned pattern.
+ *
+ * Called from `emitEvent()` BEFORE the network fetch so PII never leaves the
+ * server. The thrown error names the offending key and the pattern it
+ * matched, so CI logs surface the exact violation.
+ *
+ * This is the last line of defense. TypeScript narrowing via `TypedEvent`
+ * is the first; the CI grep rule (Plan 06.06) is the second; this runtime
+ * guard is the third. All three together satisfy ANALYTICS-12.
+ *
+ * @param props  Plain properties bag (untyped on purpose — callers may have
+ *               widened their event via `as any`, which is exactly the case
+ *               this guard exists to catch).
+ * @throws Error when a key matches any pattern in `BANNED_PROPERTY_PATTERNS`.
+ */
+export function assertAllowedProperties(
+  props: Record<string, unknown>
+): void {
+  for (const key of Object.keys(props)) {
+    for (const pattern of BANNED_PROPERTY_PATTERNS) {
+      if (pattern.test(key)) {
+        throw new Error(
+          `[analytics] Property "${key}" matches banned pattern ${pattern}. ` +
+            `PII is never emitted to PostHog. See ANALYTICS-12 / 06-CONTEXT.md.`
+        );
+      }
+    }
+  }
+}
