@@ -218,7 +218,7 @@ export default function DayPageClient({ day }: Props) {
               ابدأ يوم {day} ←
             </button>
           </div>
-          <p className="text-center text-xs text-[#8c7851]/70">
+          <p className="text-center text-xs text-[#C9A84C]/70">
             هذه اللحظة لك. خذها حين تكون مستعدّاً.
           </p>
         </div>
@@ -259,7 +259,7 @@ export default function DayPageClient({ day }: Props) {
       {ritual?.closing && (
         <div className="fixed bottom-20 left-4 right-4 z-40 mx-auto max-w-md rounded-xl border border-[#d8cdb9] bg-[#fcfaf7]/95 backdrop-blur-sm p-4 text-center">
           <p className="text-sm text-[#5a4531]">{ritual.closing.message}</p>
-          <p className="mt-1 text-xs text-[#8c7851]">
+          <p className="mt-1 text-xs text-[#C9A84C]">
             {ritual.closing.integration}
           </p>
         </div>

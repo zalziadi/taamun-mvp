@@ -122,7 +122,7 @@ export default function ProgressPage() {
 
   if (status === "loading" || !timeline || !narrative) {
     return (
-      <div className="min-h-screen bg-[#15130f] p-4 sm:p-6">
+      <div className="min-h-screen bg-[#0A0908] p-4 sm:p-6">
         <div className="mx-auto max-w-[720px] space-y-6 animate-pulse">
           <div className="flex items-center justify-between">
             <div className="h-7 w-20 rounded bg-white/10" />
@@ -146,7 +146,7 @@ export default function ProgressPage() {
   const isEmpty = timeline.facts.length === 0;
 
   return (
-    <div className="min-h-screen bg-[#15130f] p-4 sm:p-6">
+    <div className="min-h-screen bg-[#0A0908] p-4 sm:p-6">
       <div className="mx-auto max-w-[720px] space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between gap-3">
@@ -207,7 +207,7 @@ export default function ProgressPage() {
             <div className="pt-2">
               <Link
                 href={narrative.nextAction.route}
-                className="inline-block rounded-xl bg-[#c9b88a] px-5 py-2.5 text-sm font-semibold text-[#15130f] hover:opacity-90 transition-opacity"
+                className="inline-block rounded-xl bg-[#c9b88a] px-5 py-2.5 text-sm font-semibold text-[#0A0908] hover:opacity-90 transition-opacity"
               >
                 ← {narrative.nextAction.label}
               </Link>
@@ -252,7 +252,7 @@ export default function ProgressPage() {
                 <>
                   <Link
                     href={brainDecision.primaryAction.target}
-                    className="inline-block rounded-xl bg-[#c9b88a] px-5 py-2.5 text-sm font-semibold text-[#15130f] hover:opacity-90 transition-opacity"
+                    className="inline-block rounded-xl bg-[#c9b88a] px-5 py-2.5 text-sm font-semibold text-[#0A0908] hover:opacity-90 transition-opacity"
                   >
                     ← {brainDecision.primaryAction.label}
                   </Link>
@@ -269,7 +269,7 @@ export default function ProgressPage() {
               ) : (
                 <Link
                   href="/program/day/1"
-                  className="inline-block rounded-xl bg-[#c9b88a] px-5 py-2.5 text-sm font-semibold text-[#15130f] hover:opacity-90 transition-opacity"
+                  className="inline-block rounded-xl bg-[#c9b88a] px-5 py-2.5 text-sm font-semibold text-[#0A0908] hover:opacity-90 transition-opacity"
                 >
                   ابدأ اليوم الأول
                 </Link>
@@ -334,7 +334,7 @@ function PhaseBlock({ section }: { section: PhaseSection }) {
 
 function FactLine({ fact }: { fact: JourneyFact }) {
   return (
-    <li className="flex items-start gap-3 rounded-xl border border-white/5 bg-[#15130f]/50 px-3 py-2.5">
+    <li className="flex items-start gap-3 rounded-xl border border-white/5 bg-[#0A0908]/50 px-3 py-2.5">
       <span
         className={`mt-0.5 flex h-7 w-7 flex-shrink-0 items-center justify-center rounded-full text-xs font-bold ${
           fact.completed

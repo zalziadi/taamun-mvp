@@ -27,7 +27,7 @@ export const TopBar: React.FC<TopBarProps> = ({
   avatarSrc,
 }) => {
   return (
-    <header className="fixed top-0 z-50 flex h-16 w-full flex-row-reverse items-center justify-between border-b border-[#c9b88a]/10 bg-[#15130f]/80 px-6 backdrop-blur-md">
+    <header className="fixed top-0 z-50 flex h-16 w-full flex-row-reverse items-center justify-between border-b border-[#c9b88a]/10 bg-[#0A0908]/80 px-6 backdrop-blur-md">
       <div className="flex items-center gap-4">
         {showMenu && (
           <button

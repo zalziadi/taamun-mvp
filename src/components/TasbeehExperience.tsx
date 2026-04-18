@@ -187,7 +187,7 @@ export function TasbeehExperience() {
                 <button
                   type="button"
                   onClick={reset}
-                  className="flex-1 rounded-xl bg-[#e6d4a4] px-4 py-3 text-sm font-bold text-[#15130f] transition-opacity hover:opacity-95"
+                  className="flex-1 rounded-xl bg-[#e6d4a4] px-4 py-3 text-sm font-bold text-[#0A0908] transition-opacity hover:opacity-95"
                 >
                   من البداية
                 </button>

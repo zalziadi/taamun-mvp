@@ -233,11 +233,11 @@ export default function ReflectionPage() {
   return (
     <div className="tm-shell space-y-6">
       <section className="tm-card p-7 text-center">
-        <div className="inline-flex items-center rounded-full border border-[#b39b71]/35 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#7b694a]">
+        <div className="inline-flex items-center rounded-full border border-[#b39b71]/35 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#D6D1C8]">
           نقاء اليقين
         </div>
         <h1 className="tm-heading mt-3 text-3xl sm:text-5xl leading-tight">صفحة التمعّن</h1>
-        <p className="mx-auto mt-2 max-w-[820px] text-sm leading-relaxed text-[#5f5648]/85">
+        <p className="mx-auto mt-2 max-w-[820px] text-sm leading-relaxed text-[#A8A29A]/85">
           لكل آية: ملاحظة، إدراك، تمعّن. اكتب بصدق ثم حوّل الفهم إلى فعل واضح متسق مع أفضل احتمال فيك.
         </p>
       </section>
@@ -246,15 +246,15 @@ export default function ReflectionPage() {
         <blockquote className="tm-heading text-[2.2rem] leading-[2.1] sm:text-[2.5rem]">
           أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ
         </blockquote>
-        <div className="mx-auto mt-6 h-px w-28 bg-gradient-to-r from-transparent via-[#8c7851]/45 to-transparent" />
-        <p className="tm-mono mt-4 text-xs text-[#8c7851]">الرعد · ٢٨</p>
+        <div className="mx-auto mt-6 h-px w-28 bg-gradient-to-r from-transparent via-[#C9A84C]/45 to-transparent" />
+        <p className="tm-mono mt-4 text-xs text-[#C9A84C]">الرعد · ٢٨</p>
         <div className="my-6 flex items-center justify-center gap-3">
-          <div className="h-px w-12 bg-gradient-to-l from-transparent to-[#8c7851]/40" />
-          <span className="text-xs text-[#8c7851]/70">✦</span>
-          <div className="h-px w-12 bg-gradient-to-r from-transparent to-[#8c7851]/40" />
+          <div className="h-px w-12 bg-gradient-to-l from-transparent to-[#C9A84C]/40" />
+          <span className="text-xs text-[#C9A84C]/70">✦</span>
+          <div className="h-px w-12 bg-gradient-to-r from-transparent to-[#C9A84C]/40" />
         </div>
-        <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full border-2 border-[#8c7851]/20 tm-breathe-gold">
-          <span className="tm-heading text-3xl text-[#8c7851]">۞</span>
+        <div className="mx-auto flex h-24 w-24 items-center justify-center rounded-full border-2 border-[#C9A84C]/20 tm-breathe-gold">
+          <span className="tm-heading text-3xl text-[#C9A84C]">۞</span>
         </div>
         <p className="mt-4 text-sm text-[#7d7362]">أغمض عينيك. تنفّس. ثم عُد للآية.</p>
       </section>
@@ -269,7 +269,7 @@ export default function ReflectionPage() {
               max={28}
               value={day}
               onChange={(e) => setDay(Math.max(1, Math.min(28, Number(e.target.value) || 1)))}
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-[#2f2619]"
+              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-[#14110F]"
             />
           </label>
           <label className="space-y-2">
@@ -278,7 +278,7 @@ export default function ReflectionPage() {
               value={surah}
               onChange={(e) => setSurah(e.target.value)}
               placeholder="مثال: البقرة"
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-[#2f2619]"
+              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-[#14110F]"
             />
           </label>
           <label className="space-y-2">
@@ -288,7 +288,7 @@ export default function ReflectionPage() {
               min={1}
               value={ayah}
               onChange={(e) => setAyah(Math.max(1, Number(e.target.value) || 1))}
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-[#2f2619]"
+              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-[#14110F]"
             />
           </label>
           <label className="space-y-2">
@@ -297,7 +297,7 @@ export default function ReflectionPage() {
               value={emotion}
               onChange={(e) => setEmotion(e.target.value)}
               placeholder="مثال: قلق، امتنان"
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-[#2f2619]"
+              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-[#14110F]"
             />
           </label>
         </div>
@@ -313,8 +313,8 @@ export default function ReflectionPage() {
                 className={[
                   "rounded-xl border px-3 py-2.5 text-sm transition-colors",
                   awarenessState === state.value
-                    ? "border-[#8c7851] bg-[#cdb98f]/18 text-[#7b694a]"
-                    : "border-[#d8cdb9] bg-[#fcfaf7] text-[#7d7362] hover:border-[#8c7851]/40 hover:text-[#2f2619]",
+                    ? "border-[#C9A84C] bg-[#cdb98f]/18 text-[#D6D1C8]"
+                    : "border-[#d8cdb9] bg-[#fcfaf7] text-[#7d7362] hover:border-[#C9A84C]/40 hover:text-[#14110F]",
                 ].join(" ")}
               >
                 {state.label}
@@ -325,36 +325,36 @@ export default function ReflectionPage() {
 
         <div className="grid gap-4 md:grid-cols-3">
           <label className="space-y-2">
-            <span className="text-sm font-semibold text-[#2f2619]">{PRACTICES[0].label}</span>
+            <span className="text-sm font-semibold text-[#14110F]">{PRACTICES[0].label}</span>
             <textarea
               value={observe}
               onChange={(e) => setObserve(e.target.value)}
               rows={8}
-              className="w-full rounded-2xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-3 text-sm leading-relaxed text-[#2f2619] placeholder:text-[#7d7362] focus:outline-none focus:ring-2 focus:ring-[#8c7851]/30"
+              className="w-full rounded-2xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-3 text-sm leading-relaxed text-[#14110F] placeholder:text-[#7d7362] focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
               placeholder="ماذا رأيت في نفسك أو موقفك اليوم؟"
             />
             <p className="text-xs text-[#7d7362]">وصف الواقع كما هو، بلا تبرير ولا إنكار.</p>
           </label>
 
           <label className="space-y-2">
-            <span className="text-sm font-semibold text-[#2f2619]">{PRACTICES[1].label}</span>
+            <span className="text-sm font-semibold text-[#14110F]">{PRACTICES[1].label}</span>
             <textarea
               value={insight}
               onChange={(e) => setInsight(e.target.value)}
               rows={8}
-              className="w-full rounded-2xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-3 text-sm leading-relaxed text-[#2f2619] placeholder:text-[#7d7362] focus:outline-none focus:ring-2 focus:ring-[#8c7851]/30"
+              className="w-full rounded-2xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-3 text-sm leading-relaxed text-[#14110F] placeholder:text-[#7d7362] focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
               placeholder="ما المعنى الذي اتضح لك؟"
             />
             <p className="text-xs text-[#7d7362]">ما الفكرة أو الرسالة التي انكشفت لك من الموقف؟</p>
           </label>
 
           <label className="space-y-2">
-            <span className="text-sm font-semibold text-[#2f2619]">{PRACTICES[2].label}</span>
+            <span className="text-sm font-semibold text-[#14110F]">{PRACTICES[2].label}</span>
             <textarea
               value={contemplate}
               onChange={(e) => setContemplate(e.target.value)}
               rows={8}
-              className="w-full rounded-2xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-3 text-sm leading-relaxed text-[#2f2619] placeholder:text-[#7d7362] focus:outline-none focus:ring-2 focus:ring-[#8c7851]/30"
+              className="w-full rounded-2xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-3 text-sm leading-relaxed text-[#14110F] placeholder:text-[#7d7362] focus:outline-none focus:ring-2 focus:ring-[#C9A84C]/30"
               placeholder="ما الخطوة العملية التي ستأخذها اليوم؟"
             />
             <p className="text-xs text-[#7d7362]">اختر فعلًا صغيرًا واضحًا قابلًا للتنفيذ اليوم.</p>
@@ -407,18 +407,18 @@ export default function ReflectionPage() {
           <h2 className="tm-heading text-xl text-[#5a4531]">ربط التمعّنات</h2>
           <div className="rounded-xl border border-[#c9bda8] bg-[#fcfaf7] px-4 py-3">
             <p className="text-xs text-[#7d7362]">البصيرة</p>
-            <p className="mt-1 text-sm leading-relaxed text-[#2f2619]">{linkedInsight.insight}</p>
+            <p className="mt-1 text-sm leading-relaxed text-[#14110F]">{linkedInsight.insight}</p>
           </div>
           {linkedInsight.patterns.length > 0 && (
             <div className="flex flex-wrap gap-2">
               {linkedInsight.patterns.map((p, i) => (
-                <span key={i} className="rounded-full border border-[#c4a265]/30 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#7b694a]">
+                <span key={i} className="rounded-full border border-[#c4a265]/30 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#D6D1C8]">
                   {p}
                 </span>
               ))}
             </div>
           )}
-          <p className="text-xs text-[#8c7851]">
+          <p className="text-xs text-[#C9A84C]">
             القوس العاطفي: {linkedInsight.emotional_arc === "deepening" ? "يتعمّق" : linkedInsight.emotional_arc === "shifting" ? "يتحوّل" : linkedInsight.emotional_arc === "repeating" ? "يتكرر" : "يبدأ بالظهور"}
           </p>
         </section>
@@ -426,7 +426,7 @@ export default function ReflectionPage() {
 
       {/* Suggested action from Cognitive OS */}
       {suggestedAction ? (
-        <section className="rounded-3xl border border-[#8c7851]/25 bg-[#f9f3e7] p-5 text-center space-y-2">
+        <section className="rounded-3xl border border-[#C9A84C]/25 bg-[#f9f3e7] p-5 text-center space-y-2">
           <p className="text-sm font-semibold text-[#5a4531]">{suggestedAction.label}</p>
           <p className="text-xs text-[#7d7362]">{suggestedAction.description}</p>
         </section>
@@ -434,18 +434,18 @@ export default function ReflectionPage() {
 
       {engineOutput ? (
         <section className="rounded-3xl border border-[#b39b71]/35 bg-gradient-to-b from-[#cdb98f]/20 to-transparent p-6">
-          <h2 className="tm-heading text-xl text-[#7b694a]">Meaning Engine</h2>
+          <h2 className="tm-heading text-xl text-[#D6D1C8]">Meaning Engine</h2>
           <div className="mt-4 rounded-xl border border-[#c9bda8] bg-[#fcfaf7] px-4 py-3">
             <p className="text-xs text-[#7d7362]">البصيرة</p>
-            <p className="mt-1 text-sm leading-relaxed text-[#2f2619]">{engineOutput.insight}</p>
+            <p className="mt-1 text-sm leading-relaxed text-[#14110F]">{engineOutput.insight}</p>
           </div>
           <div className="mt-3 rounded-xl border border-[#c9bda8] bg-[#fcfaf7] px-4 py-3">
             <p className="text-xs text-[#7d7362]">السؤال المقترح</p>
-            <p className="mt-1 text-sm leading-relaxed text-[#2f2619]">{engineOutput.suggested_question}</p>
+            <p className="mt-1 text-sm leading-relaxed text-[#14110F]">{engineOutput.suggested_question}</p>
           </div>
           <div className="mt-3 rounded-xl border border-[#c9bda8] bg-[#fcfaf7] px-4 py-3">
             <p className="text-xs text-[#7d7362]">ممارسة التمعّن المقترحة</p>
-            <p className="mt-1 text-sm leading-relaxed text-[#2f2619]">
+            <p className="mt-1 text-sm leading-relaxed text-[#14110F]">
               {engineOutput.suggested_contemplation_practice}
             </p>
           </div>

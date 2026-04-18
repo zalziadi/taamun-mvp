@@ -26,38 +26,42 @@ export const BRAND_LOGOS = {
 // Derived from the logo's visual language:
 // Black ink on white parchment, cream badge, dark gradient surround
 
+// ─── Remapped to Ta'ammun Design System (ink + gold) 2026-04-19 ───
+// Legacy key names preserved so every importer keeps working.
+// "ink*" now means LIGHT text on dark (inverted). "parchment*" now means
+// raised dark surfaces. "earth*" / "gold*" all collapse to the DS gold ramp.
 export const BRAND_COLORS = {
-  // Ink — the عـ letterform color
-  ink: "#1a1a1a",
-  inkSoft: "#2A1D10",
-  inkWarm: "#2f2619",
-  inkMid: "#4A3520",
-  inkLight: "#5f5648",
+  // Ink — primary text stack (inverted: now LIGHT tones, for use on dark bg)
+  ink: "#D6D1C8",        // ink-100 — primary text
+  inkSoft: "#E8E3D9",    // ink-050 — headline highlight
+  inkWarm: "#D6D1C8",    // ink-100 — warm body text
+  inkMid: "#A8A29A",     // ink-200 — secondary text
+  inkLight: "#807A72",   // ink-300 — tertiary / muted text
 
-  // Parchment — the white card surface
-  white: "#FFFFFF",
-  parchment: "#F5EFE4",
-  parchmentLight: "#FAF8F4",
-  parchmentWarm: "#F5ECD4", // wordmark badge bg
-  parchmentDeep: "#EDE5D5",
+  // Parchment — now DARK raised surfaces (not light cards)
+  white: "#D6D1C8",      // banned: pure white → warm off-white
+  parchment: "#14110F",  // ink-800 — raised surface
+  parchmentLight: "#1C1916", // ink-700 — card
+  parchmentWarm: "#1C1916",  // ink-700 — card variant
+  parchmentDeep: "#0A0908",  // ink-900 — deepest surface
 
-  // Earth — warm neutral midtones
-  earth: "#7b694a",
-  earthLight: "#8c7851",
-  earthMuted: "#7d7362",
-  stone: "#a09480",
-  sand: "#c9bda8",
-  sandLight: "#d8cdb9",
+  // Earth — collapsed onto the gold scale + ink-400 for muted
+  earth: "#C9A84C",      // gold-500 — primary gold (was warm brown)
+  earthLight: "#D9BC6B", // gold-400 — hover gold
+  earthMuted: "#55504A", // ink-400 — disabled / faint
+  stone: "#807A72",      // ink-300
+  sand: "#A8A29A",       // ink-200
+  sandLight: "#D6D1C8",  // ink-100
 
-  // Gold / Breath — accent, CTA, emphasis
-  gold: "#c9b88a",
-  goldBright: "#e6d4a4",
-  goldDim: "#a08850",
-  breath: "#C4A265",
+  // Gold / Breath — the accent ramp (unified)
+  gold: "#C9A84C",       // gold-500 — primary
+  goldBright: "#D9BC6B", // gold-400 — hover
+  goldDim: "#8B7332",    // gold-600 — pressed
+  breath: "#C9A84C",     // collapsed to gold-500
 
-  // Background — the dark gradient surround
-  bgDark: "#15130f",
-  bgDarkGradient: "linear-gradient(135deg, #2a2a25 0%, #1a1a17 50%, #2a2a25 100%)",
+  // Background — the ink canvas (no gradient — DS bans gradients)
+  bgDark: "#0A0908",     // ink-900 — the silence
+  bgDarkGradient: "#0A0908", // flattened per DS rule (no gradients)
 } as const;
 
 // ─── Typography ────────────────────────────────────────────

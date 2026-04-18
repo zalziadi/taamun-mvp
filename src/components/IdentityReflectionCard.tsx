@@ -23,8 +23,8 @@ export default function IdentityReflectionCard({
   if (variant === "inline") {
     return (
       <div className="rounded-xl border border-[#c4a265]/40 bg-[#faf6ee] p-3 text-right">
-        <p className="text-xs text-[#8c7851] tracking-[0.1em]">المرآة</p>
-        <p className="mt-1 text-sm font-semibold text-[#2f2619]">{message}</p>
+        <p className="text-xs text-[#C9A84C] tracking-[0.1em]">المرآة</p>
+        <p className="mt-1 text-sm font-semibold text-[#14110F]">{message}</p>
       </div>
     );
   }
@@ -38,8 +38,8 @@ export default function IdentityReflectionCard({
       </div>
 
       <div>
-        <p className="text-xs text-[#8c7851] tracking-[0.25em]">لحظة تحوّل</p>
-        <p className="mt-2 text-2xl font-semibold leading-snug text-[#2f2619] sm:text-3xl tm-heading">
+        <p className="text-xs text-[#C9A84C] tracking-[0.25em]">لحظة تحوّل</p>
+        <p className="mt-2 text-2xl font-semibold leading-snug text-[#14110F] sm:text-3xl tm-heading">
           {message}
         </p>
       </div>
@@ -51,7 +51,7 @@ export default function IdentityReflectionCard({
               {beforeState}
             </span>
           )}
-          {beforeState && afterState && <span className="text-[#8c7851]">←</span>}
+          {beforeState && afterState && <span className="text-[#C9A84C]">←</span>}
           {afterState && (
             <span className="rounded-full border border-[#c4a265] bg-[#f4ead7] px-3 py-1 font-semibold text-[#5a4531]">
               {afterState}

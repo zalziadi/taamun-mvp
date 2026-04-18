@@ -273,10 +273,10 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
       {completedCount >= totalDays && (
         <section className="tm-card border-[#c9b88a]/30 bg-gradient-to-b from-[#faf6ee] to-[#fcfaf7] p-7 sm:p-8 text-center space-y-5">
           <div className="text-4xl">◈</div>
-          <h2 className="font-[var(--font-amiri)] text-2xl sm:text-3xl text-[#2f2619]">
+          <h2 className="font-[var(--font-amiri)] text-2xl sm:text-3xl text-[#14110F]">
             أتممت الرحلة
           </h2>
-          <p className="mx-auto max-w-md text-sm leading-relaxed text-[#5f5648]/85">
+          <p className="mx-auto max-w-md text-sm leading-relaxed text-[#A8A29A]/85">
             ٢٨ يوماً من التمعّن — مررت بالظل، واكتشفت الهدية، ووصلت لأفضل احتمال.
             هذه ليست نهاية — بل بداية طريقة جديدة في القراءة والحياة.
           </p>
@@ -291,7 +291,7 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
             </div>
           </div>
           {communityCompleted !== null && communityCompleted > 0 && (
-            <p className="text-xs text-[#8c7851]/60">
+            <p className="text-xs text-[#C9A84C]/60">
               {communityCompleted} شخص أتمّوا الرحلة — أنت واحد منهم ◈
             </p>
           )}
@@ -304,13 +304,13 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
             </Link>
             <Link
               href="/guide"
-              className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-5 py-2.5 text-sm text-[#5f5648]"
+              className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-5 py-2.5 text-sm text-[#A8A29A]"
             >
               تحدّث مع تمعّن
             </Link>
             <Link
               href="/book"
-              className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-5 py-2.5 text-sm text-[#5f5648]"
+              className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-5 py-2.5 text-sm text-[#A8A29A]"
             >
               اقرأ الكتاب
             </Link>
@@ -350,17 +350,17 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
       <section className="tm-card p-6 sm:p-7">
         <div className="flex flex-wrap items-start justify-between gap-4">
           <div className="space-y-2">
-            <div className="inline-flex items-center rounded-full border border-[#b39b71]/35 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#7b694a]">
+            <div className="inline-flex items-center rounded-full border border-[#b39b71]/35 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#D6D1C8]">
               {completedCount >= totalDays ? "رحلة مكتملة ◈" : "رحلة المعنى"}
             </div>
-            <h1 className="tm-heading text-2xl leading-tight sm:text-4xl md:text-5xl text-[#2f2619]">
+            <h1 className="tm-heading text-2xl leading-tight sm:text-4xl md:text-5xl text-[#14110F]">
               برنامج الرحلة
             </h1>
-            <p className="text-sm text-[#5f5648]/85">
+            <p className="text-sm text-[#A8A29A]/85">
               {completedCount} من {totalDays} يوم
             </p>
             {streak > 0 && (
-              <p className="text-sm text-[#8c7851]">
+              <p className="text-sm text-[#C9A84C]">
                 استمرارية: {streak} يوم متتالي
               </p>
             )}
@@ -388,7 +388,7 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
           </div>
           <div className="h-2.5 w-full overflow-hidden rounded-full bg-[#eadfcd]">
             <div
-              className="h-full rounded-full bg-gradient-to-r from-[#8c7851] to-[#b39b71] transition-all duration-500"
+              className="h-full rounded-full bg-gradient-to-r from-[#C9A84C] to-[#b39b71] transition-all duration-500"
               style={{ width: `${percent}%` }}
             />
           </div>
@@ -427,16 +427,16 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
               <div
                 className={`flex h-10 w-10 items-center justify-center rounded-full text-sm font-bold ${
                   engagementLevel === "high"
-                    ? "bg-[#c4a265]/20 text-[#8c7851]"
+                    ? "bg-[#c4a265]/20 text-[#C9A84C]"
                     : engagementLevel === "medium"
-                      ? "bg-[#b39b71]/15 text-[#7b694a]"
+                      ? "bg-[#b39b71]/15 text-[#D6D1C8]"
                       : "bg-[#d8cdb9]/20 text-[#7d7362]"
                 }`}
               >
                 {behavioralScore}
               </div>
               <div>
-                <p className="text-xs tracking-[0.18em] text-[#8c7851]/80">
+                <p className="text-xs tracking-[0.18em] text-[#C9A84C]/80">
                   {engagementLevel === "high"
                     ? "حضورٌ مرتفع"
                     : engagementLevel === "medium"
@@ -447,12 +447,12 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
             </div>
           )}
           {feedbackSummary && (
-            <p className="text-sm leading-relaxed text-[#5f5648]/90 italic">
+            <p className="text-sm leading-relaxed text-[#A8A29A]/90 italic">
               {feedbackSummary}
             </p>
           )}
           {intelligenceAction?.reason && (
-            <p className="text-sm leading-relaxed text-[#2f2619]">
+            <p className="text-sm leading-relaxed text-[#14110F]">
               {intelligenceAction.reason}
             </p>
           )}
@@ -460,7 +460,7 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
               purely informational. Does NOT affect routing, CTA, or scoring. */}
           {awarenessLabel && (
             <div className="flex items-center gap-2 pt-2 border-t border-[#d8cdb9]/50">
-              <span className="text-xs tracking-[0.15em] text-[#8c7851]/70">
+              <span className="text-xs tracking-[0.15em] text-[#C9A84C]/70">
                 وعي الرحلة
               </span>
               <span className="text-xs font-semibold text-[#5a4531]">
@@ -490,8 +490,8 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
                 className={[
                   "rounded-lg px-4 py-2 text-sm transition-colors",
                   i === 0
-                    ? "bg-[#8c7851] text-white"
-                    : "border border-[#d8cdb9] bg-white text-[#5f5648] hover:bg-[#f9f3e7]",
+                    ? "bg-[#C9A84C] text-white"
+                    : "border border-[#d8cdb9] bg-white text-[#A8A29A] hover:bg-[#f9f3e7]",
                 ].join(" ")}
               >
                 {opt.label}
@@ -503,7 +503,7 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
 
       {/* Journey Phase Indicator */}
       <section className="tm-card p-5 sm:p-6">
-        <p className="mb-3 text-xs tracking-[0.15em] text-[#8c7851]/80">مراحل الرحلة</p>
+        <p className="mb-3 text-xs tracking-[0.15em] text-[#C9A84C]/80">مراحل الرحلة</p>
         <div className="flex items-center gap-0" dir="ltr">
           {[
             { label: "الظل", days: "١–٧", end: 7 },
@@ -517,27 +517,27 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
               <div key={phase.label} className="flex flex-1 flex-col items-center gap-1.5">
                 <div className="flex w-full items-center">
                   {i > 0 && (
-                    <div className={`h-0.5 flex-1 ${isDone || isActive ? "bg-[#8c7851]" : "bg-[#e1d7c7]"}`} />
+                    <div className={`h-0.5 flex-1 ${isDone || isActive ? "bg-[#C9A84C]" : "bg-[#e1d7c7]"}`} />
                   )}
                   <div
                     className={`flex h-8 w-8 shrink-0 items-center justify-center rounded-full text-xs font-bold transition-all ${
                       isActive
-                        ? "bg-[#8c7851] text-[#f4f1ea] shadow-md"
+                        ? "bg-[#C9A84C] text-[#0A0908] shadow-md"
                         : isDone
-                          ? "bg-[#b39b71] text-[#f4f1ea]"
+                          ? "bg-[#b39b71] text-[#0A0908]"
                           : "border border-[#d8cdb9] bg-[#f6f1e8] text-[#7d7362]"
                     }`}
                   >
                     {isDone ? "✓" : i + 1}
                   </div>
                   {i < 3 && (
-                    <div className={`h-0.5 flex-1 ${isDone ? "bg-[#8c7851]" : "bg-[#e1d7c7]"}`} />
+                    <div className={`h-0.5 flex-1 ${isDone ? "bg-[#C9A84C]" : "bg-[#e1d7c7]"}`} />
                   )}
                 </div>
                 <span className={`text-center text-[10px] leading-tight ${isActive ? "font-bold text-[#5a4a35]" : "text-[#7d7362]"}`}>
                   {phase.label}
                 </span>
-                <span className="text-[9px] text-[#8c7851]/60">{phase.days}</span>
+                <span className="text-[9px] text-[#C9A84C]/60">{phase.days}</span>
               </div>
             );
           })}
@@ -546,7 +546,7 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
 
       <section className="tm-card p-6 sm:p-7 space-y-5">
         <div className="flex items-center justify-between">
-          <h2 className="tm-heading text-xl sm:text-3xl text-[#2f2619]">الأيام</h2>
+          <h2 className="tm-heading text-xl sm:text-3xl text-[#14110F]">الأيام</h2>
           <p className="text-xs text-[#7d7362]">
             مرتبة تلقائيًا من 1 إلى {totalDays}
           </p>
@@ -555,7 +555,7 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
         <div className="space-y-5">
           {weekGroups.map((weekDays, weekIndex) => (
             <div key={`week-${weekIndex + 1}`} className="space-y-3">
-              <p className="text-xs text-[#8c7851]">
+              <p className="text-xs text-[#C9A84C]">
                 الأسبوع {weekIndex + 1}
               </p>
               <div
@@ -579,12 +579,12 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
                       className={[
                         "rounded-xl border p-3 text-center transition-all",
                         isDone
-                          ? "border-[#8c7851]/45 bg-[#e9ddc6] text-[#5a4531]"
+                          ? "border-[#C9A84C]/45 bg-[#e9ddc6] text-[#5a4531]"
                           : isToday
-                            ? "border-[#8c7851] bg-[#f4ead7] text-[#2f2619] shadow-[0_8px_24px_rgba(140,120,81,0.14)]"
+                            ? "border-[#C9A84C] bg-[#f4ead7] text-[#14110F] shadow-[0_8px_24px_rgba(140,120,81,0.14)]"
                             : isLocked
                               ? "cursor-not-allowed border-[#e1d7c7] bg-[#f7f2e8] text-[#a79b88] opacity-70"
-                              : "border-[#ded4c2] bg-[#fcfaf7] text-[#5f5648] hover:border-[#8c7851]/40 hover:bg-[#f9f3e7]",
+                              : "border-[#ded4c2] bg-[#fcfaf7] text-[#A8A29A] hover:border-[#C9A84C]/40 hover:bg-[#f9f3e7]",
                       ].join(" ")}
                     >
                       <div className="text-xs">اليوم</div>
@@ -613,7 +613,7 @@ export default function ProgramPageClient({ serverCurrentDay }: Props) {
         <button
           type="button"
           onClick={() => router.push("/progress")}
-          className="text-sm text-[#7d7362] transition-colors hover:text-[#2f2619]"
+          className="text-sm text-[#7d7362] transition-colors hover:text-[#14110F]"
         >
           عرض سجل التمعّنات →
         </button>

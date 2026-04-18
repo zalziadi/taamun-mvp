@@ -79,7 +79,7 @@ function LoginContent() {
 
   if (checkingSession) {
     return (
-      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#15130f" }}>
+      <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#0A0908" }}>
         <p style={{ color: "#c9b88a", fontSize: 18 }}>جاري التحقق...</p>
       </div>
     );
@@ -87,12 +87,12 @@ function LoginContent() {
 
   if (loggedInUser) {
     return (
-      <div dir="rtl" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#15130f", padding: 16 }}>
+      <div dir="rtl" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#0A0908", padding: 16 }}>
         <div style={{ width: "100%", maxWidth: 400, background: "#2b2824", borderRadius: 16, padding: 32, textAlign: "center" }}>
           <h1 style={{ color: "#c9b88a", fontSize: 28, marginBottom: 8 }}>تمعّن</h1>
           <p style={{ color: "#a09882", fontSize: 15, marginBottom: 16 }}>أنت مسجّل الدخول بالفعل</p>
           <p style={{ color: "#e8e1d9", fontSize: 14, marginBottom: 24, direction: "ltr" }}>{loggedInUser}</p>
-          <button onClick={() => router.push("/program")} style={{ width: "100%", padding: "12px 0", borderRadius: 10, border: "none", background: "#c9b88a", color: "#15130f", fontSize: 16, fontWeight: 600, cursor: "pointer", marginBottom: 12 }}>
+          <button onClick={() => router.push("/program")} style={{ width: "100%", padding: "12px 0", borderRadius: 10, border: "none", background: "#c9b88a", color: "#0A0908", fontSize: 16, fontWeight: 600, cursor: "pointer", marginBottom: 12 }}>
             متابعة البرنامج
           </button>
           <button onClick={() => router.push("/account")} style={{ width: "100%", padding: "12px 0", borderRadius: 10, border: "1px solid #c9b88a40", background: "transparent", color: "#c9b88a", fontSize: 14, cursor: "pointer", marginBottom: 12 }}>
@@ -107,7 +107,7 @@ function LoginContent() {
   }
 
   return (
-    <div dir="rtl" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#15130f", padding: 16 }}>
+    <div dir="rtl" style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#0A0908", padding: 16 }}>
       <div style={{ width: "100%", maxWidth: 400, background: "#2b2824", borderRadius: 16, padding: 32, textAlign: "center" }}>
         <h1 style={{ color: "#c9b88a", fontSize: 28, marginBottom: 8 }}>تمعّن</h1>
         <p style={{ color: "#a09882", fontSize: 15, marginBottom: 32 }}>تسجيل دخول المشتركين</p>
@@ -141,7 +141,7 @@ function LoginContent() {
 
 export default function LoginPage() {
   return (
-    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#15130f" }}><p style={{ color: "#c9b88a", fontSize: 18 }}>جاري التحميل...</p></div>}>
+    <Suspense fallback={<div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "#0A0908" }}><p style={{ color: "#c9b88a", fontSize: 18 }}>جاري التحميل...</p></div>}>
       <LoginContent />
     </Suspense>
   );

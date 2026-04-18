@@ -90,31 +90,31 @@ function parchmentTint(sentiment: ReflectionSentiment | null): Tint {
         mirrorWrapper:
           "rounded-xl border-r-2 border-[#9b7f65]/55 bg-gradient-to-b from-[#f1e3c7]/70 to-[#f4ead7]/30 px-5 py-4",
         mirrorText: "text-[#3a2e1c]",
-        suggestionText: "text-[#5f5648]/80",
+        suggestionText: "text-[#A8A29A]/80",
       };
     case "open":
       // Gentle gold — recognition of flow
       return {
         container:
           "border-[#c4a265]/55 bg-gradient-to-b from-[#faf4e4] to-[#fcfaf7]",
-        labelText: "text-[#8c7851]",
+        labelText: "text-[#C9A84C]",
         accent: "text-[#c4a265]",
         mirrorWrapper:
           "rounded-xl border-r-2 border-[#c4a265]/70 bg-gradient-to-b from-[#f4ead7]/70 to-[#faf4e4]/30 px-5 py-4",
         mirrorText: "text-[#3a2e1c]",
-        suggestionText: "text-[#5f5648]/85",
+        suggestionText: "text-[#A8A29A]/85",
       };
     case "neutral":
     default:
       // Calm parchment baseline
       return {
         container: "border-[#d8cdb9] bg-[#fcfaf7]",
-        labelText: "text-[#8c7851]/85",
+        labelText: "text-[#C9A84C]/85",
         accent: "text-[#b39b71]",
         mirrorWrapper:
           "rounded-xl border-r-2 border-[#b39b71]/50 bg-gradient-to-b from-[#faf6ee]/70 to-[#fcfaf7]/30 px-5 py-4",
         mirrorText: "text-[#3a2e1c]",
-        suggestionText: "text-[#5f5648]/85",
+        suggestionText: "text-[#A8A29A]/85",
       };
   }
 }
@@ -127,7 +127,7 @@ function darkTint(sentiment: ReflectionSentiment | null): Tint {
         labelText: "text-[#c9b88a]/70",
         accent: "text-[#c9b88a]/85",
         mirrorWrapper:
-          "rounded-xl border-r-2 border-[#c9b88a]/40 bg-[#15130f]/60 px-5 py-4",
+          "rounded-xl border-r-2 border-[#c9b88a]/40 bg-[#0A0908]/60 px-5 py-4",
         mirrorText: "text-[#e8e1d9]",
         suggestionText: "text-[#c9b88a]/80",
       };
@@ -137,7 +137,7 @@ function darkTint(sentiment: ReflectionSentiment | null): Tint {
         labelText: "text-[#c9b88a]/85",
         accent: "text-[#c9b88a]",
         mirrorWrapper:
-          "rounded-xl border-r-2 border-[#c9b88a]/60 bg-[#15130f]/70 px-5 py-4",
+          "rounded-xl border-r-2 border-[#c9b88a]/60 bg-[#0A0908]/70 px-5 py-4",
         mirrorText: "text-[#e8e1d9]",
         suggestionText: "text-[#c9b88a]/85",
       };
@@ -148,7 +148,7 @@ function darkTint(sentiment: ReflectionSentiment | null): Tint {
         labelText: "text-[#c9b88a]/75",
         accent: "text-[#c9b88a]/75",
         mirrorWrapper:
-          "rounded-xl border-r-2 border-[#c9b88a]/45 bg-[#15130f]/60 px-5 py-4",
+          "rounded-xl border-r-2 border-[#c9b88a]/45 bg-[#0A0908]/60 px-5 py-4",
         mirrorText: "text-[#e8e1d9]",
         suggestionText: "text-[#c9b88a]/75",
       };

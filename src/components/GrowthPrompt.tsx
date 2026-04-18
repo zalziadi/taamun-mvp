@@ -100,7 +100,7 @@ export function GrowthPrompt({ offer, onDismiss }: GrowthPromptProps) {
           className="block w-full text-center py-2.5 rounded-xl text-sm font-bold transition-all hover:brightness-110"
           style={{
             background: "linear-gradient(135deg, #C9A96E, #A68B4B)",
-            color: "#15130f",
+            color: "#0A0908",
           }}
         >
           {data.cta ?? "أكمل الرحلة"}

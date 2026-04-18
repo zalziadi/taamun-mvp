@@ -11,9 +11,9 @@
 export const designTokens = {
   colors: {
     // Background & Surface
-    background: '#15130f',
-    surface: '#15130f',
-    'surface-dim': '#15130f',
+    background: '#0A0908',
+    surface: '#0A0908',
+    'surface-dim': '#0A0908',
     'surface-container-lowest': '#100e0a',
     'surface-container-low': '#1e1b16',
     'surface-container': '#221f1a',

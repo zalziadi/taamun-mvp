@@ -39,7 +39,7 @@ export const VersePage: React.FC<VersePageProps> = ({
     <div
       dir="rtl"
       lang="ar"
-      className="dark bg-[#15130f] min-h-screen flex flex-col overflow-x-hidden selection:bg-primary/30"
+      className="dark bg-[#0A0908] min-h-screen flex flex-col overflow-x-hidden selection:bg-primary/30"
     >
       <TopBar
         title="ٱلْقُرْآن"

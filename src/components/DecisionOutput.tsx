@@ -20,30 +20,30 @@ export default function DecisionOutput({ decision, onReset }: Props) {
     <div className="space-y-5">
       {/* The Decision — large card */}
       <section className="tm-card border-[#c4a265] bg-gradient-to-b from-[#f4ead7] to-[#faf6ee] p-6 sm:p-8">
-        <div className="flex items-center gap-2 text-xs text-[#8c7851]">
+        <div className="flex items-center gap-2 text-xs text-[#C9A84C]">
           <span>🎯</span>
           <span>القرار</span>
         </div>
-        <h2 className="tm-heading mt-2 text-3xl leading-snug text-[#2f2619] sm:text-4xl">
+        <h2 className="tm-heading mt-2 text-3xl leading-snug text-[#14110F] sm:text-4xl">
           {decision.decision}
         </h2>
-        <div className="mt-4 inline-flex items-center rounded-full border border-[#c4a265]/40 bg-white/60 px-3 py-1 text-xs text-[#7b694a]">
+        <div className="mt-4 inline-flex items-center rounded-full border border-[#c4a265]/40 bg-white/60 px-3 py-1 text-xs text-[#D6D1C8]">
           مستوى الثقة: {Math.round(decision.confidence * 100)}%
         </div>
       </section>
 
       {/* Reasoning */}
       <section className="tm-card p-5 sm:p-6">
-        <div className="flex items-center gap-2 text-xs text-[#8c7851]">
+        <div className="flex items-center gap-2 text-xs text-[#C9A84C]">
           <span>🧠</span>
           <span>لماذا هذا القرار</span>
         </div>
-        <p className="mt-3 text-sm leading-relaxed text-[#2f2619]">{decision.reasoning}</p>
+        <p className="mt-3 text-sm leading-relaxed text-[#14110F]">{decision.reasoning}</p>
       </section>
 
       {/* Action Step */}
-      <section className="tm-card border-[#8c7851]/40 bg-[#f9f3e7] p-5 sm:p-6">
-        <div className="flex items-center gap-2 text-xs text-[#8c7851]">
+      <section className="tm-card border-[#C9A84C]/40 bg-[#f9f3e7] p-5 sm:p-6">
+        <div className="flex items-center gap-2 text-xs text-[#C9A84C]">
           <span>⚡</span>
           <span>الخطوة التنفيذية — اليوم</span>
         </div>
@@ -70,14 +70,14 @@ export default function DecisionOutput({ decision, onReset }: Props) {
 
       {/* Pipeline trace (collapsible by default — show inline for now) */}
       <details className="tm-card p-5 sm:p-6">
-        <summary className="cursor-pointer text-sm font-semibold text-[#2f2619]">
+        <summary className="cursor-pointer text-sm font-semibold text-[#14110F]">
           مسار التفكير (5 مراحل)
         </summary>
         <div className="mt-4 space-y-3">
           {decision.pipeline.map((stage, i) => (
             <div key={i} className="rounded-xl border border-[#e1d7c7] bg-[#fcfaf7] p-3">
-              <p className="text-xs font-semibold text-[#8c7851]">{STAGE_LABELS[stage.stage] ?? stage.stage}</p>
-              <p className="mt-1 text-sm text-[#2f2619]">{stage.output}</p>
+              <p className="text-xs font-semibold text-[#C9A84C]">{STAGE_LABELS[stage.stage] ?? stage.stage}</p>
+              <p className="mt-1 text-sm text-[#14110F]">{stage.output}</p>
             </div>
           ))}
         </div>
@@ -88,7 +88,7 @@ export default function DecisionOutput({ decision, onReset }: Props) {
           <button
             type="button"
             onClick={onReset}
-            className="text-sm text-[#7d7362] hover:text-[#2f2619]"
+            className="text-sm text-[#7d7362] hover:text-[#14110F]"
           >
             ← قرار جديد
           </button>

@@ -74,8 +74,8 @@ export default function DecisionCTA({ visible, reason, variant = "banner", patte
         <div className="flex items-start gap-3">
           <span className="text-2xl">🎯</span>
           <div className="flex-1">
-            <p className="text-sm font-semibold text-[#2f2619]">{copy.title}</p>
-            <p className="mt-1 text-xs text-[#5f5648]/85">{reason ?? copy.subtitle}</p>
+            <p className="text-sm font-semibold text-[#14110F]">{copy.title}</p>
+            <p className="mt-1 text-xs text-[#A8A29A]/85">{reason ?? copy.subtitle}</p>
           </div>
         </div>
         <Link
@@ -99,12 +99,12 @@ export default function DecisionCTA({ visible, reason, variant = "banner", patte
       <div className="text-center space-y-2">
         <p className={isAvoidant ? "text-4xl" : "text-3xl"}>🎯</p>
         <h2 className={isAvoidant
-          ? "tm-heading text-3xl text-[#2f2619] sm:text-4xl"
-          : "tm-heading text-2xl text-[#2f2619] sm:text-3xl"
+          ? "tm-heading text-3xl text-[#14110F] sm:text-4xl"
+          : "tm-heading text-2xl text-[#14110F] sm:text-3xl"
         }>
           {copy.title}
         </h2>
-        <p className="mx-auto max-w-[580px] text-sm leading-relaxed text-[#5f5648]/85">
+        <p className="mx-auto max-w-[580px] text-sm leading-relaxed text-[#A8A29A]/85">
           {reason ?? copy.subtitle}
         </p>
       </div>

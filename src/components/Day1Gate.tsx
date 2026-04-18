@@ -164,7 +164,7 @@ export function Day1Gate() {
       <button
         type="button"
         onClick={handleSave}
-        className="mt-6 rounded-lg bg-white px-6 py-3 font-medium text-[#15130f] hover:bg-white/90"
+        className="mt-6 rounded-lg bg-white px-6 py-3 font-medium text-[#0A0908] hover:bg-white/90"
       >
         حفظ
       </button>
@@ -179,7 +179,7 @@ export function Day1Gate() {
           aria-label="إغلاق"
         >
           <div
-            className="max-w-sm rounded-xl border border-white/20 bg-[#15130f] p-6"
+            className="max-w-sm rounded-xl border border-white/20 bg-[#0A0908] p-6"
             onClick={(e) => e.stopPropagation()}
             role="dialog"
             aria-label="ما هذا؟"

@@ -45,7 +45,7 @@ export default function ScanPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#15130f] p-6">
+    <div className="min-h-screen bg-[#0A0908] p-6">
       <nav className="mb-8 flex gap-4">
         <Link href="/" className="text-[#c9b88a] hover:text-[#e8e1d9]">
           الرئيسية
@@ -105,7 +105,7 @@ export default function ScanPage() {
           type="button"
           onClick={handleStartContemplation}
           disabled={!extractedText.trim()}
-          className="w-full rounded-lg bg-[#c9b88a] px-6 py-3 font-medium text-[#15130f] disabled:cursor-not-allowed disabled:opacity-40"
+          className="w-full rounded-lg bg-[#c9b88a] px-6 py-3 font-medium text-[#0A0908] disabled:cursor-not-allowed disabled:opacity-40"
         >
           {`ابدأ ${APP_NAME}`}
         </button>

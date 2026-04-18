@@ -47,12 +47,12 @@ export function NavAuth() {
         href="/account"
         className={`rounded-lg px-4 py-2.5 text-sm font-medium transition-colors ${
           isVip
-            ? "border border-[#c9b88a]/50 bg-gradient-to-l from-[#c9b88a]/20 to-[#c9b88a]/5 text-[#7b694a] hover:from-[#c9b88a]/30 hover:to-[#c9b88a]/10"
-            : "border border-[#d8cdb9] bg-[#fcfaf7]/80 text-[#7b694a] hover:bg-[#f4efe7]"
+            ? "border border-[#c9b88a]/50 bg-gradient-to-l from-[#c9b88a]/20 to-[#c9b88a]/5 text-[#D6D1C8] hover:from-[#c9b88a]/30 hover:to-[#c9b88a]/10"
+            : "border border-[#d8cdb9] bg-[#fcfaf7]/80 text-[#D6D1C8] hover:bg-[#f4efe7]"
         }`}
       >
         {isVip && (
-          <span className="ml-1.5 inline-block rounded-full bg-[#c9b88a] px-1.5 py-px text-[9px] font-bold text-[#15130f] align-middle">
+          <span className="ml-1.5 inline-block rounded-full bg-[#c9b88a] px-1.5 py-px text-[9px] font-bold text-[#0A0908] align-middle">
             VIP
           </span>
         )}
@@ -64,7 +64,7 @@ export function NavAuth() {
   return (
     <Link
       href="/login"
-      className="rounded-lg border border-[#c9b88a] bg-[#c9b88a]/10 px-4 py-2.5 text-sm font-medium text-[#7b694a] transition-colors hover:bg-[#c9b88a]/20"
+      className="rounded-lg border border-[#c9b88a] bg-[#c9b88a]/10 px-4 py-2.5 text-sm font-medium text-[#D6D1C8] transition-colors hover:bg-[#c9b88a]/20"
     >
       تسجيل الدخول
     </Link>

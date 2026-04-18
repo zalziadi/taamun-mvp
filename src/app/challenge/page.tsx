@@ -78,7 +78,7 @@ export default function ChallengePage() {
     return (
       <div className="tm-shell space-y-6 text-center py-16">
         <h1 className="tm-heading text-2xl sm:text-3xl">التحديات الأسبوعية</h1>
-        <p className="text-sm text-[#5f5648]/85">أكمل الـ ٢٨ يوم أولاً — ثم تنتظرك تحديات جديدة كل أسبوع.</p>
+        <p className="text-sm text-[#A8A29A]/85">أكمل الـ ٢٨ يوم أولاً — ثم تنتظرك تحديات جديدة كل أسبوع.</p>
         <Link href="/program" className="tm-gold-btn inline-block rounded-xl px-6 py-3 text-sm">
           تابع البرنامج
         </Link>
@@ -94,33 +94,33 @@ export default function ChallengePage() {
     <div className="tm-shell space-y-6">
       {/* Header */}
       <section className="tm-card p-6 sm:p-7 text-center space-y-3">
-        <div className="inline-flex items-center rounded-full border border-[#c4a265]/30 bg-[#c4a265]/10 px-3 py-1 text-xs font-semibold text-[#7b694a]">
+        <div className="inline-flex items-center rounded-full border border-[#c4a265]/30 bg-[#c4a265]/10 px-3 py-1 text-xs font-semibold text-[#D6D1C8]">
           الأسبوع {weekNum} بعد الإتمام
         </div>
         <h1 className="tm-heading text-2xl sm:text-3xl leading-tight">{challenge.title}</h1>
-        <p className="text-sm text-[#5f5648]/85">{challenge.theme}</p>
+        <p className="text-sm text-[#A8A29A]/85">{challenge.theme}</p>
       </section>
 
       {/* Verse */}
       <section className="tm-card p-6 sm:p-7 text-center space-y-3">
-        <p className="font-[var(--font-amiri)] text-xl sm:text-2xl leading-loose text-[#2f2619]">
+        <p className="font-[var(--font-amiri)] text-xl sm:text-2xl leading-loose text-[#14110F]">
           {challenge.verse}
         </p>
-        <p className="text-xs text-[#8c7851]">{challenge.verseRef}</p>
+        <p className="text-xs text-[#C9A84C]">{challenge.verseRef}</p>
       </section>
 
       {/* Description */}
       <section className="tm-card p-6 sm:p-7">
-        <p className="text-sm leading-relaxed text-[#5f5648]/85">{challenge.description}</p>
+        <p className="text-sm leading-relaxed text-[#A8A29A]/85">{challenge.description}</p>
       </section>
 
       {/* Today's Prompt */}
       <section className="tm-card border-[#c4a265]/30 bg-gradient-to-b from-[#faf6ee] to-[#fcfaf7] p-6 sm:p-7 space-y-4">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-[#5a4a35]">تأمل اليوم</h2>
-          <span className="text-xs text-[#8c7851]">اليوم {dayInWeek} من ٧</span>
+          <span className="text-xs text-[#C9A84C]">اليوم {dayInWeek} من ٧</span>
         </div>
-        <p className="text-base leading-relaxed text-[#2f2619]">{todayPrompt}</p>
+        <p className="text-base leading-relaxed text-[#14110F]">{todayPrompt}</p>
       </section>
 
       {/* Week Progress */}
@@ -138,10 +138,10 @@ export default function ChallengePage() {
                     ? "border-[#c4a265]/40 bg-[#c4a265]/15"
                     : isPast
                       ? "border-[#d8cdb9] bg-[#f9f3e7]"
-                      : "border-[#e5dfd3] bg-[#fcfaf7]"
+                      : "border-[#2A2621] bg-[#fcfaf7]"
                 }`}
               >
-                <span className={`text-lg ${isPast ? "text-[#8c7851]" : isToday ? "text-[#5a4a35]" : "text-[#d8cdb9]"}`}>
+                <span className={`text-lg ${isPast ? "text-[#C9A84C]" : isToday ? "text-[#5a4a35]" : "text-[#d8cdb9]"}`}>
                   {isPast ? "✓" : isToday ? "◈" : "○"}
                 </span>
                 <span className="text-[10px] text-[#7d7362]">{i + 1}</span>
@@ -155,7 +155,7 @@ export default function ChallengePage() {
       {dayInWeek >= 7 && (
         <section className="tm-card border-[#c4a265]/30 bg-[#faf6ee] p-6 sm:p-7 space-y-3">
           <h2 className="text-sm font-bold text-[#5a4a35]">تأمل نهاية الأسبوع</h2>
-          <p className="text-base leading-relaxed text-[#2f2619]">{challenge.reflection}</p>
+          <p className="text-base leading-relaxed text-[#14110F]">{challenge.reflection}</p>
         </section>
       )}
 
@@ -167,7 +167,7 @@ export default function ChallengePage() {
         <Link href="/guide" className="tm-gold-btn rounded-xl px-5 py-2.5 text-sm">
           تحدّث مع تمعّن عن التحدي
         </Link>
-        <Link href="/program" className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-5 py-2.5 text-sm text-[#5f5648]">
+        <Link href="/program" className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-5 py-2.5 text-sm text-[#A8A29A]">
           أعد يوم من الرحلة
         </Link>
       </div>

@@ -135,11 +135,11 @@ export default function RootLayout({
         )}
       </head>
       <body
-        className={`${amiri.variable} ${manrope.variable} ${notoSerif.variable} ${ibmPlexMono.variable} ${ibmPlexSansArabic.variable} ${notoSansArabic.variable} ${tajawal.variable} ${spaceGrotesk.variable} tm-body antialiased`}
+        className={`theme-taamun ${amiri.variable} ${manrope.variable} ${notoSerif.variable} ${ibmPlexMono.variable} ${ibmPlexSansArabic.variable} ${notoSansArabic.variable} ${tajawal.variable} ${spaceGrotesk.variable} tm-body antialiased`}
       >
         <a
           href="#main-content"
-          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:right-2 focus:z-[9999] focus:rounded-lg focus:bg-[#7b694a] focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-[#f4f1ea]"
+          className="sr-only focus:not-sr-only focus:fixed focus:top-2 focus:right-2 focus:z-[9999] focus:rounded-lg focus:bg-[#D6D1C8] focus:px-4 focus:py-2 focus:text-sm focus:font-bold focus:text-[#0A0908]"
         >
           تخطي إلى المحتوى
         </a>

@@ -113,7 +113,7 @@ export default function InstantActivatePage() {
   const activeCount = users.filter((u) => u.subscription_status === "active").length;
 
   return (
-    <div dir="rtl" className="min-h-screen bg-[#15130f] px-4 pb-16 pt-6 text-[#e8e1d9]">
+    <div dir="rtl" className="min-h-screen bg-[#0A0908] px-4 pb-16 pt-6 text-[#e8e1d9]">
       <div className="mx-auto w-full max-w-5xl space-y-6">
         {/* Header */}
         <div className="flex items-center justify-between">
@@ -265,7 +265,7 @@ export default function InstantActivatePage() {
                           type="button"
                           onClick={() => void handleActivate(u.id, u.full_name || u.email || "")}
                           disabled={activatingId === u.id}
-                          className="rounded-xl bg-[#c9b88a] px-5 py-2.5 text-sm font-bold text-[#15130f] transition-all hover:opacity-90 disabled:opacity-40"
+                          className="rounded-xl bg-[#c9b88a] px-5 py-2.5 text-sm font-bold text-[#0A0908] transition-all hover:opacity-90 disabled:opacity-40"
                         >
                           {activatingId === u.id ? "..." : "فعّل"}
                         </button>

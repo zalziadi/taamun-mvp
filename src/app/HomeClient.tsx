@@ -228,7 +228,7 @@ export function HomeClient() {
             <div className="mt-5 flex flex-wrap justify-center gap-2">
               <Link
                 href="/eid"
-                className="rounded-lg bg-[#c9b88a] px-4 py-2 text-sm font-semibold text-[#15130f]"
+                className="rounded-lg bg-[#c9b88a] px-4 py-2 text-sm font-semibold text-[#0A0908]"
               >
                 عرض العيدية
               </Link>
@@ -264,14 +264,14 @@ export function HomeClient() {
         const timeLeft = getTimeUntilDayEnd();
         return (
           <section className="tm-card bg-gradient-to-b from-[#faf6ee] to-[#fcfaf7] p-5 sm:p-6 text-center space-y-2">
-            <p className="text-xs tracking-[0.15em] text-[#8c7851]/70">{greeting}</p>
-            <p className="font-[var(--font-amiri)] text-lg sm:text-xl text-[#2f2619]">
+            <p className="text-xs tracking-[0.15em] text-[#C9A84C]/70">{greeting}</p>
+            <p className="font-[var(--font-amiri)] text-lg sm:text-xl text-[#14110F]">
               {currentDay >= 28
                 ? "أتممت الرحلة. ومازلت هنا."
                 : `أنت في يوم ${currentDay} من الرحلة.`}
             </p>
             {showRetention && (
-              <p className="text-xs leading-relaxed text-[#5f5648]/75 max-w-md mx-auto">
+              <p className="text-xs leading-relaxed text-[#A8A29A]/75 max-w-md mx-auto">
                 {currentDay <= 7
                   ? "أغلب من بدأ توقّف في الأيام الأولى. أنت لا تزال هنا — هذا بحد ذاته شيء."
                   : "عبرت الأسبوع الأول. الأنماط بدأت تظهر — لاحظها."}
@@ -295,13 +295,13 @@ export function HomeClient() {
       )}
 
       <section className="tm-card p-7 text-center">
-        <div className="inline-flex items-center rounded-full border border-[#b39b71]/35 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#7b694a]">
+        <div className="inline-flex items-center rounded-full border border-[#b39b71]/35 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#D6D1C8]">
           {ritualEntry ? "لحظة البداية" : "تذكير اليوم"}
         </div>
 
         {ritualEntry ? (
           <>
-            <p className="mx-auto mt-4 max-w-[760px] text-lg leading-relaxed text-[#2f2619] font-semibold">
+            <p className="mx-auto mt-4 max-w-[760px] text-lg leading-relaxed text-[#14110F] font-semibold">
               {ritualEntry.message}
             </p>
             {ritualEntry.breathCue && (
@@ -313,28 +313,28 @@ export function HomeClient() {
         ) : (
           <>
             <h1 className="tm-heading mt-3 text-2xl leading-tight sm:text-4xl lg:text-5xl">أَلَا بِذِكْرِ اللَّهِ تَطْمَئِنُّ الْقُلُوبُ</h1>
-            <p className="tm-mono mt-3 text-xs text-[#8c7851]">الرعد · ٢٨</p>
+            <p className="tm-mono mt-3 text-xs text-[#C9A84C]">الرعد · ٢٨</p>
           </>
         )}
 
         {guidanceMessage ? (
-          <p className="mx-auto mt-4 max-w-[760px] text-sm leading-relaxed text-[#5f5648]/85">
+          <p className="mx-auto mt-4 max-w-[760px] text-sm leading-relaxed text-[#A8A29A]/85">
             {guidanceMessage}
           </p>
         ) : (
-          <p className="mx-auto mt-4 max-w-[760px] text-sm leading-relaxed text-[#5f5648]/85">
+          <p className="mx-auto mt-4 max-w-[760px] text-sm leading-relaxed text-[#A8A29A]/85">
             الصفحة ثابتة هنا لك كلما رجعت للرئيسية: آية اليوم، وتمرين التمعّن، ثم الانتقال السريع للخطوة التالية.
           </p>
         )}
 
         {streak > 0 && (
-          <p className="mt-2 text-xs text-[#8c7851]">{streak} يوم متتالي</p>
+          <p className="mt-2 text-xs text-[#C9A84C]">{streak} يوم متتالي</p>
         )}
       </section>
 
       <section className="tm-card p-6 sm:p-7 space-y-4">
-        <h2 className="tm-heading text-xl sm:text-3xl text-[#2f2619]">تمرين التمعّن</h2>
-        <p className="text-sm leading-relaxed text-[#5f5648]/85">
+        <h2 className="tm-heading text-xl sm:text-3xl text-[#14110F]">تمرين التمعّن</h2>
+        <p className="text-sm leading-relaxed text-[#A8A29A]/85">
           خذ 3 دقائق صمت، ثم اكتب سطرًا واحدًا: &quot;ما الذي يحتاج مني حضورًا أصدق اليوم؟&quot;.
           بعد ذلك افتح صفحة التمعّن وسجّل إجابتك.
         </p>
@@ -343,10 +343,10 @@ export function HomeClient() {
           <Link href="/reflection" className="tm-gold-btn rounded-xl px-5 py-2.5 text-sm">
             افتح التمعّن الآن
           </Link>
-          <Link href="/program" className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-5 py-2.5 text-sm text-[#5f5648]">
+          <Link href="/program" className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-5 py-2.5 text-sm text-[#A8A29A]">
             متابعة البرنامج
           </Link>
-          <Link href="/guide" className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-5 py-2.5 text-sm text-[#5f5648]">
+          <Link href="/guide" className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-5 py-2.5 text-sm text-[#A8A29A]">
             المرشد الذكي
           </Link>
           <Link href="/decision" className="rounded-xl border border-[#c4a265] bg-[#f4ead7] px-5 py-2.5 text-sm font-semibold text-[#5a4531]">
@@ -361,19 +361,19 @@ export function HomeClient() {
         return (
           <>
             <section className="tm-card border-[#c4a265]/20 bg-gradient-to-b from-[#faf6ee] to-[#fcfaf7] p-6 sm:p-7 text-center space-y-3">
-              <p className="text-xs tracking-[0.15em] text-[#8c7851]/80">آية اليوم — ما بعد الرحلة</p>
-              <h2 className="font-[var(--font-amiri)] text-xl sm:text-2xl leading-loose text-[#2f2619]">
+              <p className="text-xs tracking-[0.15em] text-[#C9A84C]/80">آية اليوم — ما بعد الرحلة</p>
+              <h2 className="font-[var(--font-amiri)] text-xl sm:text-2xl leading-loose text-[#14110F]">
                 {todayVerse.verse}
               </h2>
-              <p className="text-xs text-[#8c7851]">{todayVerse.ref}</p>
-              <p className="mx-auto max-w-md text-sm leading-relaxed text-[#5f5648]/85 pt-2">
+              <p className="text-xs text-[#C9A84C]">{todayVerse.ref}</p>
+              <p className="mx-auto max-w-md text-sm leading-relaxed text-[#A8A29A]/85 pt-2">
                 {todayVerse.prompt}
               </p>
               <div className="flex flex-wrap justify-center gap-2 pt-3">
                 <Link href="/challenge" className="tm-gold-btn rounded-xl px-5 py-2.5 text-sm">
                   التحدي الأسبوعي
                 </Link>
-                <Link href="/guide" className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-2.5 text-sm text-[#5f5648]">
+                <Link href="/guide" className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-2.5 text-sm text-[#A8A29A]">
                   تحدّث مع تمعّن
                 </Link>
               </div>
@@ -388,7 +388,7 @@ export function HomeClient() {
       {!subscribed ? (
         <section className="tm-card p-5 text-center">
           <p className="text-sm text-[#7d7362]">حسابك مسجل، لكن اشتراكك غير نشط الآن.</p>
-          <Link href="/pricing" className="mt-3 inline-block rounded-xl bg-[#c9b88a] px-4 py-2 text-sm font-semibold text-[#2f2619]">
+          <Link href="/pricing" className="mt-3 inline-block rounded-xl bg-[#c9b88a] px-4 py-2 text-sm font-semibold text-[#14110F]">
             تفعيل الاشتراك
           </Link>
         </section>

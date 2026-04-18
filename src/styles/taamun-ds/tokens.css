@@ -1,11 +1,12 @@
 /* ============================================================
-   تمعّن · Ta'ammun Design Tokens (ADDITIVE — scoped to .theme-taamun)
-   Single source of truth for the new dark monastery system.
-   DOES NOT affect any existing page. Opt in by adding
-   className="theme-taamun" on a container (or on <html>).
+   تمعّن · Ta'ammun Design Tokens (GLOBAL — applied site-wide)
+   Single source of truth for the dark monastery system.
+   Tokens live on :root so Tailwind utilities can consume them
+   via var(--ink-*) etc. Typography + component classes remain
+   scoped to .theme-taamun (applied on <body> in layout.tsx).
    ============================================================ */
 
-.theme-taamun {
+:root {
   /* ---------- Core palette ---------- */
   /* Deep black — the silence of the page. Never pure #000. */
   --ink-900: #0A0908;
@@ -137,7 +138,10 @@
   --z-modal: 1000;
   --z-toast: 1500;
 
-  /* ---------- Apply base surface + text when scope is active ---------- */
+}
+
+/* ---------- Apply base surface + text only under .theme-taamun ---------- */
+.theme-taamun {
   background: var(--bg);
   color: var(--fg);
   font-family: var(--font-body);

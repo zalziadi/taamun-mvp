@@ -36,20 +36,20 @@ export function ReflectionEcho({ offset = 7 }: { offset?: number }) {
   return (
     <section className="tm-card border-[#c4a265]/20 bg-gradient-to-b from-[#faf6ee] to-[#fcfaf7] p-5 sm:p-6 space-y-3">
       <div className="flex items-center justify-between">
-        <p className="text-[10px] tracking-[0.15em] text-[#8c7851]/70">
+        <p className="text-[10px] tracking-[0.15em] text-[#C9A84C]/70">
           من دفترك — قبل {toArabicNumber(echo.daysAgo)} يوم
         </p>
         <Link
           href={programDayRoute(echo.day)}
-          className="text-[10px] text-[#8c7851] hover:text-[#5a4a35]"
+          className="text-[10px] text-[#C9A84C] hover:text-[#5a4a35]"
         >
           يوم {toArabicNumber(echo.day)} →
         </Link>
       </div>
-      <blockquote className="text-sm leading-relaxed text-[#2f2619] font-[var(--font-amiri)]">
+      <blockquote className="text-sm leading-relaxed text-[#14110F] font-[var(--font-amiri)]">
         &ldquo;{echo.snippet}&rdquo;
       </blockquote>
-      <p className="text-[10px] text-[#8c7851]/60">
+      <p className="text-[10px] text-[#C9A84C]/60">
         وش تغيّر منذ ذلك اليوم — لاحظ.
       </p>
     </section>

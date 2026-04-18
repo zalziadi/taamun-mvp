@@ -146,13 +146,13 @@ export default function CityPage() {
     <div className="tm-shell space-y-6">
       {/* ── Header ──────────────────────────────────────────────────────── */}
       <section className="text-center space-y-3">
-        <p className="text-xs tracking-[0.26em] text-[#8c7851] uppercase">
+        <p className="text-xs tracking-[0.26em] text-[#C9A84C] uppercase">
           City of Meaning
         </p>
         <h1 className="tm-heading text-4xl sm:text-5xl leading-tight">
           مدينة المعنى
         </h1>
-        <p className="text-sm text-[#5f5648]/85 max-w-2xl mx-auto">
+        <p className="text-sm text-[#A8A29A]/85 max-w-2xl mx-auto">
           تسع مجالات في حياتك مربوطة بالقرآن — كلما تعمّقت أضأت جزءاً من مدينتك.
         </p>
         {allDomainsLit ? (
@@ -178,21 +178,21 @@ export default function CityPage() {
               <div className="flex justify-center">
                 <div className="w-5 h-5 rounded-full border-2 border-[#5a4a38] bg-[#2a2118]" />
               </div>
-              <p className="text-xs font-semibold text-[#5f5648]">الظل</p>
+              <p className="text-xs font-semibold text-[#A8A29A]">الظل</p>
               <p className="text-xs text-[#7d7362]">لم تبدأ بعد — المجال في ظلام</p>
             </div>
             <div className="space-y-1.5">
               <div className="flex justify-center">
                 <div className="w-5 h-5 rounded-full border-2 border-[#c4a265] bg-[#4a3d2a]" />
               </div>
-              <p className="text-xs font-semibold text-[#5f5648]">الهدية</p>
+              <p className="text-xs font-semibold text-[#A8A29A]">الهدية</p>
               <p className="text-xs text-[#7d7362]">بدأت الرحلة — ضوء يتشكّل</p>
             </div>
             <div className="space-y-1.5">
               <div className="flex justify-center">
                 <div className="w-5 h-5 rounded-full border-2 border-[#e7c468] bg-[#6b5830]" />
               </div>
-              <p className="text-xs font-semibold text-[#5f5648]">أفضل إمكانية</p>
+              <p className="text-xs font-semibold text-[#A8A29A]">أفضل إمكانية</p>
               <p className="text-xs text-[#7d7362]">تمعّنت بعمق — المجال مُشرق</p>
             </div>
           </div>
@@ -228,7 +228,7 @@ export default function CityPage() {
           </span>
         </div>
         <div className="text-right space-y-1">
-          <p className="text-sm font-semibold text-[#2f2619]">
+          <p className="text-sm font-semibold text-[#14110F]">
             {completedDays.length}/28 يوماً من التدبر
           </p>
           <p className="text-xs text-[#7d7362]">
@@ -254,7 +254,7 @@ export default function CityPage() {
           <div className="flex items-start justify-between gap-3">
             <div className="space-y-1">
               <h2 className="tm-heading text-2xl">{activeDomainData.title}</h2>
-              <p className="text-sm text-[#5f5648]/85">
+              <p className="text-sm text-[#A8A29A]/85">
                 {activeDomainData.hint}
               </p>
             </div>
@@ -432,7 +432,7 @@ export default function CityPage() {
       {allDomainsLit && (
         <section className="tm-card p-6 text-center space-y-4 city-card-enter">
           <p className="tm-heading text-xl sm:text-3xl">رحلتك اكتملت بنور</p>
-          <p className="text-sm text-[#5f5648]/85 max-w-md mx-auto">
+          <p className="text-sm text-[#A8A29A]/85 max-w-md mx-auto">
             لقد أتممت 28 يوماً من التمعّن والبناء. مدينتك الآن تشع بالتوازن
             والانسجام بين كافة جوانب الحياة.
           </p>

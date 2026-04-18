@@ -48,13 +48,13 @@ export default function DecisionPage() {
   return (
     <div className="tm-shell space-y-6 pb-10">
       <section className="tm-card p-6 sm:p-7 text-center">
-        <div className="inline-flex items-center rounded-full border border-[#b39b71]/35 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#7b694a]">
+        <div className="inline-flex items-center rounded-full border border-[#b39b71]/35 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#D6D1C8]">
           المرشد الذكي — وضع القرار
         </div>
-        <h1 className="tm-heading mt-3 text-4xl leading-tight sm:text-5xl text-[#2f2619]">
+        <h1 className="tm-heading mt-3 text-4xl leading-tight sm:text-5xl text-[#14110F]">
           من فكرة إلى قرار
         </h1>
-        <p className="mx-auto mt-3 max-w-[640px] text-sm leading-relaxed text-[#5f5648]/85">
+        <p className="mx-auto mt-3 max-w-[640px] text-sm leading-relaxed text-[#A8A29A]/85">
           ليس محادثة. ليس عصف ذهني. هذا محرك قرار منظّم.
           <br />
           أدخل وضعك الحالي + هدفك + قيودك. اخرج بقرار واحد + خطوة واحدة.

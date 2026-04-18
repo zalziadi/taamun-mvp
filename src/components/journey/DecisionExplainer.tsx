@@ -28,19 +28,19 @@ export function DecisionExplainer({
 
   const triggerClass = isDark
     ? "text-xs text-[#c9b88a]/70 hover:text-[#c9b88a] transition-colors underline decoration-dotted underline-offset-4"
-    : "text-xs text-[#8c7851]/80 hover:text-[#5a4531] transition-colors underline decoration-dotted underline-offset-4";
+    : "text-xs text-[#C9A84C]/80 hover:text-[#5a4531] transition-colors underline decoration-dotted underline-offset-4";
 
   const panelClass = isDark
-    ? "mt-2 rounded-xl border border-white/10 bg-[#15130f]/50 p-3 space-y-2"
+    ? "mt-2 rounded-xl border border-white/10 bg-[#0A0908]/50 p-3 space-y-2"
     : "mt-2 rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] p-3 space-y-2";
 
   const humanClass = isDark
     ? "text-xs text-[#e8e1d9] leading-relaxed"
-    : "text-xs text-[#2f2619] leading-relaxed font-semibold";
+    : "text-xs text-[#14110F] leading-relaxed font-semibold";
 
   const listClass = isDark
     ? "text-xs text-[#c9b88a]/80 leading-relaxed"
-    : "text-xs text-[#5f5648]/85 leading-relaxed";
+    : "text-xs text-[#A8A29A]/85 leading-relaxed";
 
   return (
     <div>

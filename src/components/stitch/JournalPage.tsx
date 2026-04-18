@@ -65,7 +65,7 @@ export const JournalPage: React.FC<JournalPageProps> = ({
       className="dark bg-background text-on-surface font-body selection:bg-primary/30 min-h-screen flex flex-col"
     >
       {/* Top Navigation Bar */}
-      <header className="fixed top-0 w-full z-50 bg-[#15130f] border-b border-[#c9b88a]/15 flex flex-row-reverse justify-between items-center px-6 h-16">
+      <header className="fixed top-0 w-full z-50 bg-[#0A0908] border-b border-[#c9b88a]/15 flex flex-row-reverse justify-between items-center px-6 h-16">
         <div className="flex items-center gap-4">
           <button
             onClick={handleSave}

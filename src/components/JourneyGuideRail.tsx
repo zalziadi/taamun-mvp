@@ -158,7 +158,7 @@ export function JourneyGuideRail() {
         <Link
           href={state.primaryHref}
           onClick={handleClose}
-          className="rounded-lg bg-[#c9b88a] px-3 py-2.5 text-xs font-semibold text-[#15130f] transition-opacity hover:opacity-90"
+          className="rounded-lg bg-[#c9b88a] px-3 py-2.5 text-xs font-semibold text-[#0A0908] transition-opacity hover:opacity-90"
         >
           {state.primaryLabel}
         </Link>

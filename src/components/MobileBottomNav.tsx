@@ -79,8 +79,8 @@ function itemClass(active: boolean) {
   return [
     "flex min-w-[56px] flex-col items-center gap-1 rounded-xl px-2 py-1.5 outline-none transition-colors duration-200 ease-out",
     "cursor-pointer [-webkit-tap-highlight-color:transparent]",
-    "focus-visible:ring-2 focus-visible:ring-[#8c7851]/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f4f1ea]",
-    active ? "text-[#7b694a]" : "text-[#8b8172] opacity-70 hover:opacity-100",
+    "focus-visible:ring-2 focus-visible:ring-[#C9A84C]/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0908]",
+    active ? "text-[#D6D1C8]" : "text-[#8b8172] opacity-70 hover:opacity-100",
   ].join(" ");
 }
 
@@ -99,7 +99,7 @@ export function MobileBottomNav({ ramadanClosed: _unused }: { ramadanClosed: boo
   return (
     <nav
       aria-label="التنقل السفلي"
-      className="fixed inset-x-0 bottom-0 z-50 border-t border-[#ddd3c3] bg-[#f4f1ea] px-2 pb-[calc(10px+env(safe-area-inset-bottom))] pt-2 md:hidden"
+      className="fixed inset-x-0 bottom-0 z-50 border-t border-[#ddd3c3] bg-[#0A0908] px-2 pb-[calc(10px+env(safe-area-inset-bottom))] pt-2 md:hidden"
     >
       <div className="mx-auto flex w-full max-w-[440px] items-center justify-between gap-1">
         {items.map((item) => {
@@ -110,7 +110,7 @@ export function MobileBottomNav({ ramadanClosed: _unused }: { ramadanClosed: boo
               <span className="max-w-[4.5rem] truncate text-[10px] font-medium leading-tight">{item.label}</span>
               <span
                 className={
-                  active ? "h-1 w-1 rounded-full bg-[#8c7851]" : "h-1 w-1 rounded-full bg-transparent"
+                  active ? "h-1 w-1 rounded-full bg-[#C9A84C]" : "h-1 w-1 rounded-full bg-transparent"
                 }
               />
             </Link>

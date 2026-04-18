@@ -136,7 +136,7 @@ export default function LivingCityMap({
           cx={CENTER_X}
           cy={CENTER_Y}
           r={32}
-          fill="#1f1a12"
+          fill="#D6D1C8"
           stroke="#4a3d2a"
           strokeWidth={2}
           animate={{

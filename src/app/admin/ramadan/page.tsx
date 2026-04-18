@@ -79,14 +79,14 @@ export default function AdminRamadanPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#15130f] p-6 text-[#e8e1d9]">
+      <div className="min-h-screen bg-[#0A0908] p-6 text-[#e8e1d9]">
         <p>جاري تحميل لوحة رمضان...</p>
       </div>
     );
   }
 
   return (
-    <div className="min-h-screen bg-[#15130f] p-6 text-[#e8e1d9]">
+    <div className="min-h-screen bg-[#0A0908] p-6 text-[#e8e1d9]">
       <nav className="mb-8 flex gap-4">
         <Link href="/" className="text-white/70 hover:text-white">
           الرئيسية

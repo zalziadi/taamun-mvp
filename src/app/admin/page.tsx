@@ -148,7 +148,7 @@ export default function AdminPage() {
   // Loading
   if (allowed === null) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#15130f]">
+      <div className="flex min-h-screen items-center justify-center bg-[#0A0908]">
         <p className="text-lg text-white/50">جارٍ التحقق...</p>
       </div>
     );
@@ -157,7 +157,7 @@ export default function AdminPage() {
   // Not allowed — show login form
   if (!allowed) {
     return (
-      <div dir="rtl" className="flex min-h-screen items-center justify-center bg-[#15130f] p-6">
+      <div dir="rtl" className="flex min-h-screen items-center justify-center bg-[#0A0908] p-6">
         <form onSubmit={handleLogin} className="w-full max-w-sm space-y-4">
           <h1 className="text-2xl font-bold text-white text-center">لوحة الأدمن</h1>
           <p className="text-sm text-white/50 text-center">أدخل كلمة المرور للدخول</p>
@@ -208,7 +208,7 @@ export default function AdminPage() {
   const r = report;
 
   return (
-    <div dir="rtl" className="min-h-screen bg-[#15130f] px-4 pb-16 pt-6 text-[#e8e1d9]">
+    <div dir="rtl" className="min-h-screen bg-[#0A0908] px-4 pb-16 pt-6 text-[#e8e1d9]">
       <div className="mx-auto w-full max-w-5xl space-y-8">
         {/* Header */}
         <div className="flex items-center justify-between">

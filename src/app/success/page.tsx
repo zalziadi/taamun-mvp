@@ -9,7 +9,7 @@ export const metadata: Metadata = {
 export default function SuccessPage() {
   return (
     <div
-      className="min-h-screen bg-[#15130f] text-[#e8e1d9] flex flex-col items-center justify-center px-4"
+      className="min-h-screen bg-[#0A0908] text-[#e8e1d9] flex flex-col items-center justify-center px-4"
       dir="rtl"
     >
       <div className="max-w-lg w-full text-center">

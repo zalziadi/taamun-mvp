@@ -31,7 +31,7 @@ export function StartTodayButton() {
   return (
     <button
       onClick={handleClick}
-      className="rounded-xl bg-white px-10 py-4 font-bold text-[#15130f] transition-colors hover:bg-white/90"
+      className="rounded-xl bg-white px-10 py-4 font-bold text-[#0A0908] transition-colors hover:bg-white/90"
     >
       {hasSession === null ? "جاري..." : "ابدأ اليوم"}
     </button>

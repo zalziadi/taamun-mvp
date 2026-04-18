@@ -153,7 +153,7 @@ export function SmartGuide({ verse, verseRef, day, onComplete }: SmartGuideProps
   return (
     <div
       className="fixed inset-0 z-50 flex flex-col"
-      style={{ background: "#15130f", color: "#e8e1d9" }}
+      style={{ background: "#0A0908", color: "#e8e1d9" }}
       dir="rtl"
     >
       {/* ── Header: Verse ── */}

@@ -12,7 +12,7 @@ const HomeClient = dynamic(
   {
     ssr: false,
     loading: () => (
-      <div className="fixed inset-0 z-30 flex items-center justify-center bg-[#f4f1ea]">
+      <div className="fixed inset-0 z-30 flex items-center justify-center bg-[#0A0908]">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#c9b88a] border-t-transparent" />
       </div>
     ),
@@ -39,7 +39,7 @@ export function HomeClientWrapper() {
   if (!show) return null;
 
   return (
-    <div className="fixed inset-0 z-30 overflow-auto bg-[#f4f1ea]">
+    <div className="fixed inset-0 z-30 overflow-auto bg-[#0A0908]">
       <HomeClient />
     </div>
   );

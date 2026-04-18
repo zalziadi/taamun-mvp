@@ -32,7 +32,7 @@ function SilenceGate({ prompt, onStart }: { prompt: string; onStart: () => void 
       <button
         type="button"
         onClick={onStart}
-        className="rounded-2xl bg-white px-10 py-4 text-base font-semibold text-[#15130f] transition-opacity hover:opacity-90 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#15130f]"
+        className="rounded-2xl bg-white px-10 py-4 text-base font-semibold text-[#0A0908] transition-opacity hover:opacity-90 active:scale-95 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0908]"
       >
         ابدأ التمعّن
       </button>
@@ -58,7 +58,7 @@ function HiddenLayer({ text }: { text: string }) {
       <button
         type="button"
         onClick={() => setOpen((v) => !v)}
-        className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/60 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#15130f]"
+        className="flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-4 py-2 text-sm text-white/60 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0908]"
       >
         <span className="text-xs">◈</span>
         {open ? "أغلق الطبقة" : "طبقة أعمق"}
@@ -198,7 +198,7 @@ function AwarenessMeter({ day }: { day: number }) {
             disabled={saving}
             aria-label={opt.label}
             aria-pressed={selected === opt.value}
-            className={`flex flex-1 flex-col items-center gap-2 rounded-xl border px-3 py-4 text-xs transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#15130f] ${
+            className={`flex flex-1 flex-col items-center gap-2 rounded-xl border px-3 py-4 text-xs transition-all focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0908] ${
               selected === opt.value
                 ? "border-white/40 bg-white/15 text-white"
                 : "border-white/10 bg-white/5 text-white/50 hover:bg-white/10 hover:text-white/80"
@@ -241,7 +241,7 @@ function ShareCard({ day, verse, verseRef }: { day: number; verse: string; verse
     <button
       type="button"
       onClick={handleShare}
-      className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-3 text-sm text-white/60 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#15130f]"
+      className="flex w-full items-center justify-center gap-2 rounded-xl border border-white/10 bg-white/5 py-3 text-sm text-white/60 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0908]"
     >
       <span className="text-base">↗</span>
       {copied ? "تم النسخ" : "شارك اليوم"}

@@ -21,7 +21,7 @@ export default function PaymentSuccessPage() {
 
   return (
     <main className="min-h-screen flex items-center justify-center px-4 py-12"
-      style={{ background: "#15130f" }}>
+      style={{ background: "#0A0908" }}>
 
       <div className="w-full max-w-md text-center space-y-8">
 
@@ -31,7 +31,7 @@ export default function PaymentSuccessPage() {
         }`}>
           <div className="mx-auto w-20 h-20 rounded-full flex items-center justify-center"
             style={{ background: "linear-gradient(135deg, #e6d4a4, #c9b88a)" }}>
-            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="#15130f" strokeWidth={2.5}>
+            <svg className="w-10 h-10" fill="none" viewBox="0 0 24 24" stroke="#0A0908" strokeWidth={2.5}>
               <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
             </svg>
           </div>
@@ -82,7 +82,7 @@ export default function PaymentSuccessPage() {
             className="inline-block rounded-lg px-8 py-3 text-base font-bold transition-transform hover:scale-105"
             style={{
               background: "linear-gradient(135deg, #e6d4a4, #c9b88a)",
-              color: "#15130f",
+              color: "#0A0908",
             }}>
             ادخل البرنامج ←
           </Link>

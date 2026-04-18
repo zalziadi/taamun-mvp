@@ -337,7 +337,7 @@ export function AuthClient({ embedded }: AuthClientProps) {
 
   if (checkingSession) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#15130f] py-12">
+      <div className="flex min-h-screen items-center justify-center bg-[#0A0908] py-12">
         <p className="text-[#c9b88a]">جارٍ التحقق...</p>
       </div>
     );
@@ -428,7 +428,7 @@ export function AuthClient({ embedded }: AuthClientProps) {
       <button
         type="submit"
         disabled={loading || cooldownRemainingSec > 0}
-        className="mt-2 w-full rounded-xl bg-[#c9b88a] px-6 py-3 font-semibold tracking-[0.15em] text-[#15130f] transition hover:bg-[#e6d4a4] disabled:opacity-50"
+        className="mt-2 w-full rounded-xl bg-[#c9b88a] px-6 py-3 font-semibold tracking-[0.15em] text-[#0A0908] transition hover:bg-[#e6d4a4] disabled:opacity-50"
       >
         {loading
           ? "جارٍ الإرسال..."
@@ -474,7 +474,7 @@ export function AuthClient({ embedded }: AuthClientProps) {
       <button
         type="submit"
         disabled={loading || cooldownRemainingSec > 0}
-        className="mt-2 w-full rounded-xl bg-[#c9b88a] px-6 py-3 font-semibold tracking-[0.15em] text-[#15130f] transition hover:bg-[#e6d4a4] disabled:opacity-50"
+        className="mt-2 w-full rounded-xl bg-[#c9b88a] px-6 py-3 font-semibold tracking-[0.15em] text-[#0A0908] transition hover:bg-[#e6d4a4] disabled:opacity-50"
       >
         {loading
           ? "جارٍ الإرسال..."
@@ -525,7 +525,7 @@ export function AuthClient({ embedded }: AuthClientProps) {
         type="button"
         onClick={() => handlePhoneVerify()}
         disabled={loading || otpDigits.join("").length !== OTP_LENGTH}
-        className="w-full rounded-xl bg-[#c9b88a] px-6 py-3 font-semibold tracking-[0.15em] text-[#15130f] transition hover:bg-[#e6d4a4] disabled:opacity-50"
+        className="w-full rounded-xl bg-[#c9b88a] px-6 py-3 font-semibold tracking-[0.15em] text-[#0A0908] transition hover:bg-[#e6d4a4] disabled:opacity-50"
       >
         {loading ? "جارٍ التحقق..." : "تحقق"}
       </button>
@@ -584,7 +584,7 @@ export function AuthClient({ embedded }: AuthClientProps) {
   }
 
   return (
-    <div className="relative flex min-h-screen flex-col overflow-hidden bg-[#15130f] text-[#e8e1d9]">
+    <div className="relative flex min-h-screen flex-col overflow-hidden bg-[#0A0908] text-[#e8e1d9]">
       <div className="pointer-events-none fixed inset-0 z-0">
         <div className="absolute inset-0 bg-[radial-gradient(ellipse_60%_40%_at_50%_30%,rgba(201,184,138,0.06),transparent_70%)]" />
       </div>

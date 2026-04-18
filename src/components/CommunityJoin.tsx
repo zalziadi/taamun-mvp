@@ -36,8 +36,8 @@ export function CommunityJoin({ variant = "card" }: { variant?: "card" | "inline
         <div className="flex items-center gap-3">
           <span className="text-lg">💬</span>
           <div>
-            <p className="text-sm font-semibold text-[#2f2619]">مجتمع المتمعّنين</p>
-            <p className="text-xs text-[#5f5648]/70">انضم لمجموعة واتساب — شارك تأملاتك واسمع غيرك</p>
+            <p className="text-sm font-semibold text-[#14110F]">مجتمع المتمعّنين</p>
+            <p className="text-xs text-[#A8A29A]/70">انضم لمجموعة واتساب — شارك تأملاتك واسمع غيرك</p>
           </div>
         </div>
         <a
@@ -61,21 +61,21 @@ export function CommunityJoin({ variant = "card" }: { variant?: "card" | "inline
             💬
           </div>
           <div>
-            <h3 className="text-sm font-bold text-[#2f2619]">مجتمع المتمعّنين</h3>
-            <p className="text-xs text-[#5f5648]/70">مساحة آمنة لمشاركة التأملات والأسئلة</p>
+            <h3 className="text-sm font-bold text-[#14110F]">مجتمع المتمعّنين</h3>
+            <p className="text-xs text-[#A8A29A]/70">مساحة آمنة لمشاركة التأملات والأسئلة</p>
           </div>
         </div>
         <button
           type="button"
           onClick={handleDismiss}
-          className="text-xs text-[#8c7851]/40 hover:text-[#8c7851]"
+          className="text-xs text-[#C9A84C]/40 hover:text-[#C9A84C]"
           aria-label="إخفاء دعوة المجتمع"
         >
           ✕
         </button>
       </div>
 
-      <div className="space-y-2 text-sm text-[#5f5648]/85">
+      <div className="space-y-2 text-sm text-[#A8A29A]/85">
         <div className="flex items-start gap-2">
           <span className="mt-0.5 text-[#25D366]">◈</span>
           <span>شارك تأملاتك اليومية مع متمعّنين آخرين</span>

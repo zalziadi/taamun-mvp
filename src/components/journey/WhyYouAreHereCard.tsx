@@ -40,15 +40,15 @@ export function WhyYouAreHereCard({
 
   const labelClass = isDark
     ? "text-xs tracking-[0.18em] text-[#c9b88a]/80"
-    : "text-xs tracking-[0.18em] text-[#8c7851]/80";
+    : "text-xs tracking-[0.18em] text-[#C9A84C]/80";
 
   const summaryClass = isDark
     ? "text-base leading-[1.9] text-[#e8e1d9] font-semibold whitespace-pre-line"
-    : "text-base leading-[1.9] text-[#2f2619] font-semibold whitespace-pre-line";
+    : "text-base leading-[1.9] text-[#14110F] font-semibold whitespace-pre-line";
 
   const transitionClass = isDark
     ? "text-sm leading-[1.9] text-[#c9b88a] italic whitespace-pre-line"
-    : "text-sm leading-[1.9] text-[#5f5648]/90 italic whitespace-pre-line";
+    : "text-sm leading-[1.9] text-[#A8A29A]/90 italic whitespace-pre-line";
 
   // The mirror — the direct line. Slightly stronger than the summary, no italic.
   const mirrorWrapperClass = isDark
@@ -60,22 +60,22 @@ export function WhyYouAreHereCard({
     : "text-sm leading-[1.95] text-[#3a2e1c] whitespace-pre-line";
 
   const reasonBoxClass = isDark
-    ? "rounded-xl border border-white/10 bg-[#15130f]/50 p-3 space-y-1.5"
+    ? "rounded-xl border border-white/10 bg-[#0A0908]/50 p-3 space-y-1.5"
     : "rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] p-3 space-y-1.5";
 
-  const reasonItemClass = isDark ? "text-xs text-[#c9b88a]/85" : "text-xs text-[#5f5648]/85";
+  const reasonItemClass = isDark ? "text-xs text-[#c9b88a]/85" : "text-xs text-[#A8A29A]/85";
 
   const ctaClass = isDark
-    ? "inline-block rounded-xl bg-[#c9b88a] px-5 py-2.5 text-sm font-semibold text-[#15130f] hover:opacity-90 transition-opacity"
+    ? "inline-block rounded-xl bg-[#c9b88a] px-5 py-2.5 text-sm font-semibold text-[#0A0908] hover:opacity-90 transition-opacity"
     : "tm-gold-btn inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold";
 
   const reasonReasonHintClass = isDark
     ? "text-xs text-[#c9b88a]/60"
-    : "text-xs text-[#8c7851]/80";
+    : "text-xs text-[#C9A84C]/80";
 
   const toggleBtnClass = isDark
     ? "text-xs text-[#c9b88a]/70 hover:text-[#c9b88a] transition-colors"
-    : "text-xs text-[#8c7851]/80 hover:text-[#5a4531] transition-colors";
+    : "text-xs text-[#C9A84C]/80 hover:text-[#5a4531] transition-colors";
 
   return (
     <section className={containerClass}>

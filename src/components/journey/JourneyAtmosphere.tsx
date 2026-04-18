@@ -10,16 +10,16 @@ export function JourneyAtmosphere() {
     <>
       <motion.div
         aria-hidden
-        className="pointer-events-none absolute inset-0 overflow-hidden bg-[#15130f]"
+        className="pointer-events-none absolute inset-0 overflow-hidden bg-[#0A0908]"
         animate={
           reduce
             ? undefined
             : {
                 background: [
-                  "radial-gradient(ellipse 80% 60% at 20% 25%, rgba(230,212,164,0.12) 0%, transparent 55%), radial-gradient(ellipse 70% 50% at 80% 75%, rgba(200,180,120,0.06) 0%, transparent 50%), #15130f",
-                  "radial-gradient(ellipse 85% 65% at 75% 30%, rgba(230,212,164,0.11) 0%, transparent 58%), radial-gradient(ellipse 65% 45% at 25% 80%, rgba(200,180,120,0.07) 0%, transparent 52%), #15130f",
-                  "radial-gradient(ellipse 75% 55% at 45% 55%, rgba(230,212,164,0.1) 0%, transparent 60%), radial-gradient(ellipse 80% 55% at 90% 20%, rgba(200,180,120,0.05) 0%, transparent 48%), #15130f",
-                  "radial-gradient(ellipse 80% 60% at 20% 25%, rgba(230,212,164,0.12) 0%, transparent 55%), radial-gradient(ellipse 70% 50% at 80% 75%, rgba(200,180,120,0.06) 0%, transparent 50%), #15130f",
+                  "radial-gradient(ellipse 80% 60% at 20% 25%, rgba(230,212,164,0.12) 0%, transparent 55%), radial-gradient(ellipse 70% 50% at 80% 75%, rgba(200,180,120,0.06) 0%, transparent 50%), #0A0908",
+                  "radial-gradient(ellipse 85% 65% at 75% 30%, rgba(230,212,164,0.11) 0%, transparent 58%), radial-gradient(ellipse 65% 45% at 25% 80%, rgba(200,180,120,0.07) 0%, transparent 52%), #0A0908",
+                  "radial-gradient(ellipse 75% 55% at 45% 55%, rgba(230,212,164,0.1) 0%, transparent 60%), radial-gradient(ellipse 80% 55% at 90% 20%, rgba(200,180,120,0.05) 0%, transparent 48%), #0A0908",
+                  "radial-gradient(ellipse 80% 60% at 20% 25%, rgba(230,212,164,0.12) 0%, transparent 55%), radial-gradient(ellipse 70% 50% at 80% 75%, rgba(200,180,120,0.06) 0%, transparent 50%), #0A0908",
                 ],
               }
         }

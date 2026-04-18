@@ -145,7 +145,7 @@ export default function VipGiftsPage() {
   const used = codes.filter((c) => c.used_by);
 
   return (
-    <div dir="rtl" className="min-h-screen bg-[#15130f] px-4 pb-16 pt-6 text-[#e8e1d9]">
+    <div dir="rtl" className="min-h-screen bg-[#0A0908] px-4 pb-16 pt-6 text-[#e8e1d9]">
       <div className="mx-auto w-full max-w-4xl space-y-8">
         {/* العنوان */}
         <div className="flex items-center justify-between">
@@ -271,7 +271,7 @@ export default function VipGiftsPage() {
                       placeholder="اسم العميل (اختياري — للتنظيم)"
                       value={recipientNames[c.id] || ""}
                       onChange={(e) => updateName(c.id, e.target.value)}
-                      className="w-full rounded-lg border border-white/10 bg-[#15130f] px-3 py-2 text-xs text-[#e8e1d9] placeholder:text-white/20 focus:border-pink-500/30 focus:outline-none"
+                      className="w-full rounded-lg border border-white/10 bg-[#0A0908] px-3 py-2 text-xs text-[#e8e1d9] placeholder:text-white/20 focus:border-pink-500/30 focus:outline-none"
                     />
                   </div>
                 </div>

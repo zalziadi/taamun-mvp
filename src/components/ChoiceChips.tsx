@@ -18,7 +18,7 @@ export function ChoiceChips({ value, onChange, labels }: ChoiceChipsProps) {
           onClick={() => onChange(phase)}
           className={`rounded-full px-6 py-2.5 text-sm font-medium transition-colors ${
             value === phase
-              ? "bg-white text-[#15130f]"
+              ? "bg-white text-[#0A0908]"
               : "border border-white/30 bg-transparent text-white hover:border-white/50"
           }`}
         >

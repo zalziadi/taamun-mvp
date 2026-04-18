@@ -40,9 +40,9 @@ export default function NextStepPanel({ actions, title, patternType, onActionCli
       isAvoidant && "border-2 shadow-[0_8px_24px_rgba(196,162,101,0.15)]",
     ].filter(Boolean).join(" ")}>
       <div>
-        <p className="text-xs text-[#8c7851] tracking-[0.2em]">{displayTitle}</p>
+        <p className="text-xs text-[#C9A84C] tracking-[0.2em]">{displayTitle}</p>
         {primary.reason && (
-          <p className="mt-1 text-sm text-[#5f5648]/85">{primary.reason}</p>
+          <p className="mt-1 text-sm text-[#A8A29A]/85">{primary.reason}</p>
         )}
       </div>
 
@@ -66,7 +66,7 @@ export default function NextStepPanel({ actions, title, patternType, onActionCli
               key={`${action.type}-${i}`}
               href={action.route}
               onClick={() => onActionClick?.(action)}
-              className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-2 text-sm text-[#5f5648] transition-colors hover:border-[#8c7851]/40 hover:bg-[#f9f3e7]"
+              className="rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-4 py-2 text-sm text-[#A8A29A] transition-colors hover:border-[#C9A84C]/40 hover:bg-[#f9f3e7]"
             >
               {action.label}
             </Link>

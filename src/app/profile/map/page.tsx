@@ -80,7 +80,7 @@ export default function GeneKeysMapPage() {
 
   if (loading) {
     return (
-      <div className="flex min-h-screen items-center justify-center bg-[#15130f]">
+      <div className="flex min-h-screen items-center justify-center bg-[#0A0908]">
         <div className="h-8 w-8 animate-spin rounded-full border-2 border-[#c9b88a] border-t-transparent" />
       </div>
     );
@@ -88,10 +88,10 @@ export default function GeneKeysMapPage() {
 
   if (geneKeys.length === 0) {
     return (
-      <div className="flex min-h-screen flex-col items-center justify-center bg-[#15130f] p-6 text-center">
+      <div className="flex min-h-screen flex-col items-center justify-center bg-[#0A0908] p-6 text-center">
         <h1 className="font-[var(--font-amiri)] text-2xl text-[#e8e1d9]">خريطتك الجينية</h1>
         <p className="mt-4 text-sm text-white/50">لم يتم حساب خريطتك بعد.</p>
-        <Link href="/profile/setup" className="mt-6 rounded-xl bg-[#c9b88a] px-6 py-3 text-sm font-bold text-[#15130f]">
+        <Link href="/profile/setup" className="mt-6 rounded-xl bg-[#c9b88a] px-6 py-3 text-sm font-bold text-[#0A0908]">
           احسب خريطتك الآن
         </Link>
       </div>
@@ -99,7 +99,7 @@ export default function GeneKeysMapPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#15130f] px-4 py-8 sm:px-6">
+    <div className="min-h-screen bg-[#0A0908] px-4 py-8 sm:px-6">
       <div className="mx-auto max-w-2xl space-y-6">
         {/* Header */}
         <div className="text-center space-y-2">
@@ -194,7 +194,7 @@ export default function GeneKeysMapPage() {
         <div className="flex flex-wrap justify-center gap-3 pt-4">
           <Link
             href="/guide"
-            className="rounded-xl bg-[#c9b88a] px-5 py-3 text-sm font-bold text-[#15130f]"
+            className="rounded-xl bg-[#c9b88a] px-5 py-3 text-sm font-bold text-[#0A0908]"
           >
             تحدّث مع تمعّن عن خريطتك
           </Link>

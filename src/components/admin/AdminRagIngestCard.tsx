@@ -56,7 +56,7 @@ export function AdminRagIngestCard() {
         type="button"
         onClick={runIngest}
         disabled={loading}
-        className="rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-[#15130f] disabled:opacity-60"
+        className="rounded-lg bg-gold px-4 py-2 text-sm font-semibold text-[#0A0908] disabled:opacity-60"
       >
         {loading ? "جارٍ الفهرسة..." : "ابدأ الفهرسة"}
       </button>

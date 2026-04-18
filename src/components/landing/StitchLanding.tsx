@@ -92,7 +92,7 @@ export default function StitchLanding() {
   return (
     <div
       style={{
-        backgroundColor: '#15130f',
+        backgroundColor: '#0A0908',
         color: '#e8e1da',
         overflowX: 'hidden',
         cursor: 'none',
@@ -208,9 +208,9 @@ export default function StitchLanding() {
               <div
                 key={i}
                 className="group flex flex-col items-center text-center transition-colors duration-700"
-                style={{ background: '#15130f', padding: '3rem 2.5rem', cursor: 'none' }}
+                style={{ background: '#0A0908', padding: '3rem 2.5rem', cursor: 'none' }}
                 onMouseEnter={e => (e.currentTarget.style.background = '#1d1b17')}
-                onMouseLeave={e => (e.currentTarget.style.background = '#15130f')}
+                onMouseLeave={e => (e.currentTarget.style.background = '#0A0908')}
               >
                 <span
                   className="material-symbols-outlined text-4xl mb-6 transition-colors"
@@ -275,7 +275,7 @@ export default function StitchLanding() {
       </main>
 
       {/* ── Footer ── */}
-      <footer className="w-full py-20" style={{ borderTop: '1px solid rgba(77,70,60,0.15)', background: '#15130f' }}>
+      <footer className="w-full py-20" style={{ borderTop: '1px solid rgba(77,70,60,0.15)', background: '#0A0908' }}>
         <div className="flex flex-col items-center justify-center gap-8 px-4 text-center">
           <div className="text-3xl font-bold tracking-widest" style={{ fontFamily: 'var(--font-amiri, "Amiri", serif)', color: '#d5c6a7' }}>تمعّن</div>
           <div className="flex flex-wrap justify-center gap-8 md:gap-16">

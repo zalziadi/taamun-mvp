@@ -46,7 +46,7 @@ export default function DecisionInputForm({ onSubmit, loading = false }: Props) 
       {/* Current State Card */}
       <section className="tm-card p-5 sm:p-6 space-y-4">
         <div>
-          <h2 className="tm-heading text-2xl text-[#2f2619]">١. الوضع الحالي</h2>
+          <h2 className="tm-heading text-2xl text-[#14110F]">١. الوضع الحالي</h2>
           <p className="text-xs text-[#7d7362] mt-1">صف ما عندك الآن — بصدق، بلا تجميل</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
@@ -56,7 +56,7 @@ export default function DecisionInputForm({ onSubmit, loading = false }: Props) 
               value={financial}
               onChange={(e) => setFinancial(e.target.value)}
               placeholder="مثل: محدود، بدون مدخرات"
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#2f2619]"
+              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#14110F]"
             />
           </label>
           <label className="space-y-1.5">
@@ -65,7 +65,7 @@ export default function DecisionInputForm({ onSubmit, loading = false }: Props) 
               value={emotional}
               onChange={(e) => setEmotional(e.target.value)}
               placeholder="مثل: قلق، متحمّس، عالق"
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#2f2619]"
+              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#14110F]"
             />
           </label>
           <label className="space-y-1.5">
@@ -74,7 +74,7 @@ export default function DecisionInputForm({ onSubmit, loading = false }: Props) 
               value={practical}
               onChange={(e) => setPractical(e.target.value)}
               placeholder="مثل: وحدي، فريق صغير"
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#2f2619]"
+              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#14110F]"
             />
           </label>
         </div>
@@ -83,7 +83,7 @@ export default function DecisionInputForm({ onSubmit, loading = false }: Props) 
       {/* Goal Card */}
       <section className="tm-card p-5 sm:p-6 space-y-4">
         <div>
-          <h2 className="tm-heading text-2xl text-[#2f2619]">٢. الهدف</h2>
+          <h2 className="tm-heading text-2xl text-[#14110F]">٢. الهدف</h2>
           <p className="text-xs text-[#7d7362] mt-1">جملة واحدة واضحة عن الذي تريد تحقيقه</p>
         </div>
         <div className="space-y-3">
@@ -94,7 +94,7 @@ export default function DecisionInputForm({ onSubmit, loading = false }: Props) 
               onChange={(e) => setShortTerm(e.target.value)}
               placeholder="مثل: أطلق منتجي الأول"
               required
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#2f2619]"
+              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#14110F]"
             />
           </label>
           <label className="block space-y-1.5">
@@ -103,7 +103,7 @@ export default function DecisionInputForm({ onSubmit, loading = false }: Props) 
               value={longTerm}
               onChange={(e) => setLongTerm(e.target.value)}
               placeholder="مثل: مشروع مستقل خلال سنة"
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#2f2619]"
+              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#14110F]"
             />
           </label>
         </div>
@@ -112,7 +112,7 @@ export default function DecisionInputForm({ onSubmit, loading = false }: Props) 
       {/* Constraints Card */}
       <section className="tm-card p-5 sm:p-6 space-y-4">
         <div>
-          <h2 className="tm-heading text-2xl text-[#2f2619]">٣. القيود</h2>
+          <h2 className="tm-heading text-2xl text-[#14110F]">٣. القيود</h2>
           <p className="text-xs text-[#7d7362] mt-1">ما الحدود الحقيقية التي تتعامل معها؟</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
@@ -122,7 +122,7 @@ export default function DecisionInputForm({ onSubmit, loading = false }: Props) 
               value={money}
               onChange={(e) => setMoney(e.target.value)}
               placeholder="مثل: ميزانية صفر"
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#2f2619]"
+              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#14110F]"
             />
           </label>
           <label className="space-y-1.5">
@@ -131,7 +131,7 @@ export default function DecisionInputForm({ onSubmit, loading = false }: Props) 
               value={time}
               onChange={(e) => setTime(e.target.value)}
               placeholder="مثل: ساعة يومياً"
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#2f2619]"
+              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#14110F]"
             />
           </label>
           <label className="space-y-1.5">
@@ -140,7 +140,7 @@ export default function DecisionInputForm({ onSubmit, loading = false }: Props) 
               value={obligations}
               onChange={(e) => setObligations(e.target.value)}
               placeholder="مثل: عمل بدوام كامل"
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#2f2619]"
+              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#14110F]"
             />
           </label>
           <label className="space-y-1.5">
@@ -149,7 +149,7 @@ export default function DecisionInputForm({ onSubmit, loading = false }: Props) 
               value={risks}
               onChange={(e) => setRisks(e.target.value)}
               placeholder="مثل: خوف من الفشل"
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#2f2619]"
+              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#14110F]"
             />
           </label>
         </div>

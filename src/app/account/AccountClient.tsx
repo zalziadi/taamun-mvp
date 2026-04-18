@@ -368,7 +368,7 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
           {subscriptionStatus !== "subscribed" && (
             <Link
               href={PRICING_ROUTE}
-              className="rounded-lg bg-[#c9b88a] px-4 py-2 text-sm font-semibold text-[#15130f] transition-colors hover:bg-[#dcc9a0]"
+              className="rounded-lg bg-[#c9b88a] px-4 py-2 text-sm font-semibold text-[#0A0908] transition-colors hover:bg-[#dcc9a0]"
             >
               {expiresAt && isSubscriptionExpired(expiresAt) ? "جدّد اشتراكك" : "اشترك الآن"}
             </Link>
@@ -491,7 +491,7 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
   }
 
   return (
-    <div className="flex min-h-screen flex-col items-center justify-center bg-[#15130f] p-4 sm:p-6">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-[#0A0908] p-4 sm:p-6">
       {content}
     </div>
   );

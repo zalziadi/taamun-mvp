@@ -133,8 +133,8 @@ export function SearchBox() {
 
   return (
     <div ref={containerRef} className="relative">
-      <div className="flex items-center gap-2 rounded-xl border border-[#d8cdb9] bg-[#fcfaf7]/80 px-3 py-2.5 focus-within:border-[#8c7851]/60 focus-within:ring-2 focus-within:ring-[#8c7851]/20 transition-colors">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#8c7851]/70" aria-hidden>
+      <div className="flex items-center gap-2 rounded-xl border border-[#d8cdb9] bg-[#fcfaf7]/80 px-3 py-2.5 focus-within:border-[#C9A84C]/60 focus-within:ring-2 focus-within:ring-[#C9A84C]/20 transition-colors">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-[#C9A84C]/70" aria-hidden>
           <circle cx="11" cy="11" r="7" />
           <line x1="21" y1="21" x2="16.65" y2="16.65" />
         </svg>
@@ -147,9 +147,9 @@ export function SearchBox() {
           onKeyDown={handleKey}
           placeholder="ابحث..."
           aria-label="ابحث في الموقع"
-          className="w-28 sm:w-40 bg-transparent text-sm text-[#2f2619] placeholder:text-[#8c7851]/60 outline-none"
+          className="w-28 sm:w-40 bg-transparent text-sm text-[#14110F] placeholder:text-[#C9A84C]/60 outline-none"
         />
-        <kbd className="hidden sm:inline-block rounded border border-[#d8cdb9] bg-[#f4f1ea] px-1 text-xs text-[#8c7851]/70 font-mono">/</kbd>
+        <kbd className="hidden sm:inline-block rounded border border-[#d8cdb9] bg-[#0A0908] px-1 text-xs text-[#C9A84C]/70 font-mono">/</kbd>
       </div>
 
       {open && results.length > 0 && (
@@ -162,10 +162,10 @@ export function SearchBox() {
               className="block border-b border-[#e8dfc9] bg-gradient-to-b from-[#faf4e4] to-[#fcfaf7] px-3 py-3 transition-colors hover:bg-[#f4ead7]"
             >
               <div className="flex items-center justify-between gap-2 mb-1">
-                <span className="text-[9px] tracking-[0.15em] text-[#8c7851]/80">اقتراح النظام</span>
+                <span className="text-[9px] tracking-[0.15em] text-[#C9A84C]/80">اقتراح النظام</span>
                 <span className="text-xs text-[#c4a265]">✦</span>
               </div>
-              <p className="text-xs text-[#5f5648] leading-relaxed text-right">{brainDecision.message}</p>
+              <p className="text-xs text-[#A8A29A] leading-relaxed text-right">{brainDecision.message}</p>
               <p className="mt-1.5 text-[13px] font-semibold text-[#5a4531] text-right">← {brainDecision.primaryAction.label}</p>
             </Link>
           )}
@@ -179,12 +179,12 @@ export function SearchBox() {
                   className={[
                     "flex items-center justify-between gap-3 px-3 py-2.5 text-sm transition-colors",
                     i === highlight
-                      ? "bg-[#f4ead7] text-[#2f2619]"
-                      : "text-[#5f5648] hover:bg-[#f9f3e7]",
+                      ? "bg-[#f4ead7] text-[#14110F]"
+                      : "text-[#A8A29A] hover:bg-[#f9f3e7]",
                   ].join(" ")}
                   onMouseEnter={() => setHighlight(i)}
                 >
-                  <span className="text-xs text-[#8c7851]/70">{r.category}</span>
+                  <span className="text-xs text-[#C9A84C]/70">{r.category}</span>
                   <span className="flex-1 text-right">{r.label}</span>
                 </Link>
               </li>

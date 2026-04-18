@@ -103,7 +103,7 @@ function CheckoutButton({ tierId, highlight }: { tierId: string; highlight?: boo
         onClick={handleCheckout}
         className={`w-full rounded-xl px-4 py-3.5 text-sm font-bold transition-opacity hover:opacity-90 disabled:opacity-40 ${
           highlight
-            ? "bg-[#c9b88a] text-[#15130f]"
+            ? "bg-[#c9b88a] text-[#0A0908]"
             : "border border-[#c9b88a]/30 bg-[#c9b88a]/10 text-[#c9b88a]"
         }`}
       >
@@ -165,7 +165,7 @@ function ActivateCode() {
           type="button"
           disabled={loading || !code.trim()}
           onClick={handleActivate}
-          className="rounded-xl bg-[#c9b88a] px-6 py-3.5 text-sm font-bold text-[#15130f] transition-opacity hover:opacity-90 disabled:opacity-40"
+          className="rounded-xl bg-[#c9b88a] px-6 py-3.5 text-sm font-bold text-[#0A0908] transition-opacity hover:opacity-90 disabled:opacity-40"
         >
           {loading ? "جاري..." : "تفعيل"}
         </button>
@@ -211,7 +211,7 @@ export default function PricingExperience() {
   }, []);
 
   return (
-    <div dir="rtl" className="min-h-screen bg-[#15130f] px-4 pb-16 pt-6 text-[#e8e1d9] overflow-x-hidden">
+    <div dir="rtl" className="min-h-screen bg-[#0A0908] px-4 pb-16 pt-6 text-[#e8e1d9] overflow-x-hidden">
       <div className="mx-auto w-full max-w-6xl space-y-8 overflow-hidden">
 
         {/* ── العنوان ── */}
@@ -270,7 +270,7 @@ export default function PricingExperience() {
             >
               {/* بادج واحد فقط بأولوية: highlight > saving > badge */}
               {tier.highlight ? (
-                <span className="absolute left-4 top-4 rounded-full bg-[#c9b88a] px-2.5 py-0.5 text-xs font-bold text-[#15130f]">
+                <span className="absolute left-4 top-4 rounded-full bg-[#c9b88a] px-2.5 py-0.5 text-xs font-bold text-[#0A0908]">
                   أفضل قيمة {tier.saving ? `· ${tier.saving}` : ""}
                 </span>
               ) : tier.saving ? (

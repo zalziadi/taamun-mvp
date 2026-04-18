@@ -115,7 +115,7 @@ export default function ActivationsPage() {
   const used = codes.filter((c) => c.used_by);
 
   return (
-    <div dir="rtl" className="min-h-screen bg-[#15130f] px-4 pb-16 pt-6 text-[#e8e1d9]">
+    <div dir="rtl" className="min-h-screen bg-[#0A0908] px-4 pb-16 pt-6 text-[#e8e1d9]">
       <div className="mx-auto w-full max-w-4xl space-y-8">
         {/* العنوان */}
         <div className="flex items-center justify-between">
@@ -156,7 +156,7 @@ export default function ActivationsPage() {
                 type="button"
                 onClick={() => void handleCreate()}
                 disabled={creating}
-                className="w-full rounded-xl bg-[#c9b88a] px-6 py-3 text-sm font-bold text-[#15130f] transition-opacity hover:opacity-90 disabled:opacity-40"
+                className="w-full rounded-xl bg-[#c9b88a] px-6 py-3 text-sm font-bold text-[#0A0908] transition-opacity hover:opacity-90 disabled:opacity-40"
               >
                 {creating ? "جاري الإنشاء..." : "أنشئ كود"}
               </button>

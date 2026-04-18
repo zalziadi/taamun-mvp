@@ -162,13 +162,13 @@ export default function CityPage() {
       />
 
       <section className="tm-card p-6 sm:p-7 text-center">
-        <div className="inline-flex items-center rounded-full border border-[#b39b71]/35 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#7b694a]">
+        <div className="inline-flex items-center rounded-full border border-[#b39b71]/35 bg-[#cdb98f]/15 px-3 py-1 text-xs text-[#D6D1C8]">
           مدينة الوعي الحيّة
         </div>
-        <h1 className="tm-heading mt-3 text-4xl leading-tight sm:text-5xl text-[#2f2619]">
+        <h1 className="tm-heading mt-3 text-4xl leading-tight sm:text-5xl text-[#14110F]">
           ٩ مناطق من حياتك
         </h1>
-        <p className="mx-auto mt-3 max-w-[640px] text-sm leading-relaxed text-[#5f5648]/85">
+        <p className="mx-auto mt-3 max-w-[640px] text-sm leading-relaxed text-[#A8A29A]/85">
           كل منطقة تمثل بُعداً من حياتك. توهّجها يعكس وعيك الحالي. اضغط على أي منطقة لترى رسالتها.
         </p>
       </section>
@@ -176,10 +176,10 @@ export default function CityPage() {
       {/* V8: Brain-driven daily focus banner */}
       {brainDecision?.uiHints?.showToast && (
         <section className="tm-card border-[#c4a265] bg-gradient-to-b from-[#faf4e4] to-[#fcfaf7] p-4 sm:p-5 text-center space-y-2">
-          <p className="text-xs tracking-[0.18em] text-[#8c7851]/80">توجيه النظام</p>
-          <p className="text-base font-semibold text-[#2f2619]">{brainDecision.message}</p>
+          <p className="text-xs tracking-[0.18em] text-[#C9A84C]/80">توجيه النظام</p>
+          <p className="text-base font-semibold text-[#14110F]">{brainDecision.message}</p>
           {brainDecision.uiHints.highlightZone && city?.zones?.find((z) => z.id === brainDecision.uiHints.highlightZone) && (
-            <p className="text-xs text-[#5f5648]/85">
+            <p className="text-xs text-[#A8A29A]/85">
               منطقة اليوم: <span className="font-semibold text-[#5a4531]">
                 {city.zones.find((z) => z.id === brainDecision.uiHints.highlightZone)?.name}
               </span>
@@ -191,13 +191,13 @@ export default function CityPage() {
       {/* System Activation: intelligence-driven zone highlight reason */}
       {intelligenceReason && (
         <section className="tm-card border-[#c4a265]/30 bg-gradient-to-b from-[#faf4e4] to-[#fcfaf7] p-4 text-center">
-          <p className="text-xs tracking-[0.18em] text-[#8c7851]/80">ما يُضيء الآن</p>
-          <p className="mt-1 text-sm font-semibold text-[#2f2619]">{intelligenceReason}</p>
+          <p className="text-xs tracking-[0.18em] text-[#C9A84C]/80">ما يُضيء الآن</p>
+          <p className="mt-1 text-sm font-semibold text-[#14110F]">{intelligenceReason}</p>
         </section>
       )}
 
       {city ? (
-        <section className="tm-card relative bg-[#15130f] p-6 sm:p-8 overflow-hidden">
+        <section className="tm-card relative bg-[#0A0908] p-6 sm:p-8 overflow-hidden">
           <LivingCityMap
             city={city}
             emotionalState={emotionalState}
@@ -213,7 +213,7 @@ export default function CityPage() {
 
       {city && (
         <section className="tm-card p-5 space-y-3">
-          <h2 className="tm-heading text-2xl text-[#2f2619]">حالة المناطق</h2>
+          <h2 className="tm-heading text-2xl text-[#14110F]">حالة المناطق</h2>
           <div className="grid gap-2 sm:grid-cols-2">
             {city.zones.map((zone) => (
               <div
@@ -230,7 +230,7 @@ export default function CityPage() {
                 ].join(" ")}
               >
                 <div className="flex items-center justify-between mb-1">
-                  <span className="text-xs text-[#8c7851]">
+                  <span className="text-xs text-[#C9A84C]">
                     {zone.state === "weak"
                       ? "ضعيف"
                       : zone.state === "growing"
@@ -265,7 +265,7 @@ export default function CityPage() {
       )}
 
       <div className="text-center">
-        <Link href="/city/classic" className="text-sm text-[#7d7362] hover:text-[#2f2619]">
+        <Link href="/city/classic" className="text-sm text-[#7d7362] hover:text-[#14110F]">
           ← المدينة الكلاسيكية (الإصدار القديم)
         </Link>
       </div>

@@ -329,7 +329,7 @@ export default function InteractiveCityMap({
           cx={CENTER_X}
           cy={CENTER_Y}
           r={allComplete ? 42 : 36}
-          fill={allComplete ? "#6b5830" : "#1f1a12"}
+          fill={allComplete ? "#6b5830" : "#D6D1C8"}
           stroke={allComplete ? "#e7c468" : "#4a3d2a"}
           strokeWidth={allComplete ? 3 : 2}
           className={allComplete ? "city-core-pulse" : ""}

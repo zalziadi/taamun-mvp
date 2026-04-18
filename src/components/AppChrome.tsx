@@ -41,15 +41,15 @@ export function AppChrome({
   return (
     <div className="flex min-h-screen flex-col bg-transparent">
       {!hide ? (
-        <header className="sticky top-0 z-40 border-b border-[#e5dfd3] bg-[#f4f1ea]">
+        <header className="sticky top-0 z-40 border-b border-[#2A2621] bg-[#0A0908]">
           <div className="mx-auto flex h-16 w-full max-w-[1240px] items-center justify-between px-4 sm:px-6 lg:px-8">
-            <div className="flex items-center gap-3 text-[#8c7851]">
+            <div className="flex items-center gap-3 text-[#C9A84C]">
               <Link
                 href="/"
-                className="flex items-center gap-2 rounded-md outline-none transition-opacity duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-[#8c7851]/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f4f1ea]"
+                className="flex items-center gap-2 rounded-md outline-none transition-opacity duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-[#C9A84C]/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0908]"
               >
                 <BrandLogo variant="mark" size={36} />
-                <span className="tm-heading text-2xl font-bold text-[#7b694a]">
+                <span className="tm-heading text-2xl font-bold text-[#D6D1C8]">
                   {APP_NAME}
                 </span>
               </Link>
@@ -102,9 +102,9 @@ export function AppChrome({
       <main id="main-content" className={hide ? "flex-1" : "flex-1 pb-24 md:pb-0"}>{children}</main>
 
       {!hide ? (
-        <footer className="border-t border-[#e5dfd3] py-10">
+        <footer className="border-t border-[#2A2621] py-10">
           <div className="mx-auto flex w-full max-w-[1240px] flex-col items-center gap-3 px-4 text-center sm:px-6 lg:px-8">
-            <p className="text-sm text-[#3d342a]">
+            <p className="text-sm text-[#807A72]">
               {APP_NAME} &copy; {new Date().getFullYear()} &middot; من مشاريع الدير الرقمي
             </p>
           </div>

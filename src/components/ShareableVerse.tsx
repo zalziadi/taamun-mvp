@@ -44,7 +44,7 @@ export function ShareableVerse({ verse, verseRef, day, question }: ShareableVers
       {/* Shareable card — styled to look good as screenshot */}
       <div
         id="shareable-verse"
-        className="mx-auto max-w-sm rounded-3xl border-2 border-[#c9b88a]/30 bg-gradient-to-b from-[#1d1b17] to-[#15130f] p-8 text-center shadow-2xl"
+        className="mx-auto max-w-sm rounded-3xl border-2 border-[#c9b88a]/30 bg-gradient-to-b from-[#1d1b17] to-[#0A0908] p-8 text-center shadow-2xl"
       >
         <div className="mb-6">
           <p className="text-[10px] tracking-[0.3em] text-[#c9b88a]/60">تمعّن</p>
@@ -77,7 +77,7 @@ export function ShareableVerse({ verse, verseRef, day, question }: ShareableVers
       <button
         type="button"
         onClick={handleShare}
-        className="mt-4 mx-auto flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-2.5 text-sm text-white/70 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#15130f]"
+        className="mt-4 mx-auto flex items-center gap-2 rounded-xl border border-white/10 bg-white/5 px-6 py-2.5 text-sm text-white/70 transition-colors hover:bg-white/10 hover:text-white focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0908]"
         aria-label="شارك آية اليوم"
       >
         <span aria-hidden="true">↗</span>

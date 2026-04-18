@@ -27,23 +27,23 @@ export function ResumeNotice({ reconciliation, variant = "parchment" }: Props) {
   const { message, sublabel, cta, blocking } = reconciliation;
 
   const containerClass = isDark
-    ? `rounded-2xl border border-[#c9b88a]/30 ${blocking ? "bg-[#15130f]" : "bg-white/5"} p-6 space-y-3`
+    ? `rounded-2xl border border-[#c9b88a]/30 ${blocking ? "bg-[#0A0908]" : "bg-white/5"} p-6 space-y-3`
     : `tm-card ${blocking ? "border-[#c4a265]/50 bg-gradient-to-b from-[#faf4e4] to-[#fcfaf7]" : "border-[#c4a265]/30 bg-[#faf6ee]"} p-6 space-y-3`;
 
   const labelClass = isDark
     ? "text-xs tracking-[0.18em] text-[#c9b88a]/80"
-    : "text-xs tracking-[0.18em] text-[#8c7851]/80";
+    : "text-xs tracking-[0.18em] text-[#C9A84C]/80";
 
   const messageClass = isDark
     ? "text-base leading-[1.9] text-[#e8e1d9] font-semibold"
-    : "text-base leading-[1.9] text-[#2f2619] font-semibold";
+    : "text-base leading-[1.9] text-[#14110F] font-semibold";
 
   const sublabelClass = isDark
     ? "text-sm leading-[1.9] text-[#c9b88a]/85 italic"
-    : "text-sm leading-[1.9] text-[#5f5648]/85 italic";
+    : "text-sm leading-[1.9] text-[#A8A29A]/85 italic";
 
   const ctaClass = isDark
-    ? "inline-block rounded-xl bg-[#c9b88a] px-5 py-2.5 text-sm font-semibold text-[#15130f] hover:opacity-90 transition-opacity"
+    ? "inline-block rounded-xl bg-[#c9b88a] px-5 py-2.5 text-sm font-semibold text-[#0A0908] hover:opacity-90 transition-opacity"
     : "tm-gold-btn inline-flex items-center justify-center rounded-xl px-5 py-2.5 text-sm font-semibold";
 
   return (

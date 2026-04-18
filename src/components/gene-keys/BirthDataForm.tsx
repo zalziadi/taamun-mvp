@@ -218,7 +218,7 @@ export default function BirthDataForm() {
         <button
           type="submit"
           disabled={loading}
-          className="w-full rounded-lg bg-[#c9a96e] py-4 text-[#15130f] font-bold text-lg transition-all hover:bg-[#e6d4a4] disabled:opacity-50 disabled:cursor-not-allowed"
+          className="w-full rounded-lg bg-[#c9a96e] py-4 text-[#0A0908] font-bold text-lg transition-all hover:bg-[#e6d4a4] disabled:opacity-50 disabled:cursor-not-allowed"
         >
           {loading ? "جاري رسم خريطتك..." : "اكشف خريطتك الجينية"}
         </button>
@@ -264,7 +264,7 @@ export default function BirthDataForm() {
               <p className="text-sm text-[#cdc6b7] mb-3">سجّل دخولك لحفظ خريطتك والبدء مع المرشد</p>
               <button
                 onClick={() => router.push("/login?next=/profile/setup")}
-                className="rounded-lg bg-[#c9a96e] px-8 py-3 text-[#15130f] font-bold transition-all hover:bg-[#e6d4a4]"
+                className="rounded-lg bg-[#c9a96e] px-8 py-3 text-[#0A0908] font-bold transition-all hover:bg-[#e6d4a4]"
               >
                 تسجيل الدخول
               </button>

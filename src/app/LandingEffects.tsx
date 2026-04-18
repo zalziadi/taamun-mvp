@@ -20,7 +20,7 @@ export function LandingEffects() {
 
   useEffect(() => {
     // Body background override
-    document.body.style.background = "#15130f";
+    document.body.style.background = "#0A0908";
 
     // Scroll listener
     window.addEventListener("scroll", handleScroll, { passive: true });

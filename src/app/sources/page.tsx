@@ -43,16 +43,16 @@ export default async function SourcesPage() {
   return (
     <div className="tm-shell space-y-6">
       <section className="tm-card p-7">
-        <p className="text-xs tracking-[0.22em] text-[#8c7851]">SOURCES</p>
+        <p className="text-xs tracking-[0.22em] text-[#C9A84C]">SOURCES</p>
         <h1 className="tm-heading mt-2 text-2xl sm:text-4xl leading-tight">مصادر</h1>
-        <p className="mt-3 max-w-[780px] text-sm leading-relaxed text-[#5f5648]/85">
+        <p className="mt-3 max-w-[780px] text-sm leading-relaxed text-[#A8A29A]/85">
           مرجعان أساسيان في المنصة: القرآن الكريم، وكتاب مدينة المعنى. اختر المصدر الذي تريد البدء منه.
         </p>
       </section>
 
       <section className="grid gap-4 md:grid-cols-2">
         <article className="tm-card p-6">
-          <div className="mb-3 inline-flex rounded-full border border-[#cdb98f] bg-[#f1e7d4] px-3 py-1 text-xs text-[#7b694a]">
+          <div className="mb-3 inline-flex rounded-full border border-[#cdb98f] bg-[#f1e7d4] px-3 py-1 text-xs text-[#D6D1C8]">
             المصدر الأول
           </div>
           <h2 className="tm-heading text-xl sm:text-3xl text-[#5a4531]">القرآن الكريم</h2>
@@ -63,14 +63,14 @@ export default async function SourcesPage() {
             href="https://quran.com/ar"
             target="_blank"
             rel="noreferrer"
-            className="mt-5 inline-block rounded-xl bg-[#7b694a] px-5 py-2.5 text-sm font-semibold text-[#fff8f0] transition hover:bg-[#6d5e44]"
+            className="mt-5 inline-block rounded-xl bg-[#D6D1C8] px-5 py-2.5 text-sm font-semibold text-[#fff8f0] transition hover:bg-[#6d5e44]"
           >
             فتح القرآن الكريم
           </a>
         </article>
 
         <article className="tm-card p-6">
-          <div className="mb-3 inline-flex rounded-full border border-[#cdb98f] bg-[#f1e7d4] px-3 py-1 text-xs text-[#7b694a]">
+          <div className="mb-3 inline-flex rounded-full border border-[#cdb98f] bg-[#f1e7d4] px-3 py-1 text-xs text-[#D6D1C8]">
             المصدر الثاني
           </div>
           <h2 className="tm-heading text-xl sm:text-3xl text-[#5a4531]">كتاب مدينة المعنى</h2>
@@ -82,7 +82,7 @@ export default async function SourcesPage() {
             <div className="mt-5 flex flex-wrap gap-2">
               <Link
                 href="/book"
-                className="inline-block rounded-xl bg-[#7b694a] px-5 py-2.5 text-sm font-semibold text-[#fff8f0] transition hover:bg-[#6d5e44]"
+                className="inline-block rounded-xl bg-[#D6D1C8] px-5 py-2.5 text-sm font-semibold text-[#fff8f0] transition hover:bg-[#6d5e44]"
               >
                 فتح الكتاب داخل المنصة
               </Link>
@@ -100,7 +100,7 @@ export default async function SourcesPage() {
               </div>
               <Link
                 href="/pricing"
-                className="inline-block rounded-xl bg-[#c9b88a] px-4 py-2 text-sm font-semibold text-[#2f2619] transition hover:opacity-90"
+                className="inline-block rounded-xl bg-[#c9b88a] px-4 py-2 text-sm font-semibold text-[#14110F] transition hover:opacity-90"
               >
                 تفعيل الاشتراك
               </Link>

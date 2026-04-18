@@ -57,7 +57,7 @@ export function OnboardingOverlay() {
     <div className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8">
       {/* Backdrop */}
       <div
-        className="absolute inset-0 bg-[#15130f]/70 backdrop-blur-sm"
+        className="absolute inset-0 bg-[#0A0908]/70 backdrop-blur-sm"
         onClick={() => handleComplete()}
       />
 
@@ -75,7 +75,7 @@ export function OnboardingOverlay() {
         {/* Content */}
         <div className="space-y-4 text-center">
           <h2 className="tm-heading text-3xl leading-tight">{step.title}</h2>
-          <p className="text-base text-[#5f5648] leading-7">{step.description}</p>
+          <p className="text-base text-[#A8A29A] leading-7">{step.description}</p>
         </div>
 
         {/* Progress */}
@@ -85,7 +85,7 @@ export function OnboardingOverlay() {
               <div
                 key={i}
                 className={`h-1.5 rounded-full transition-all ${
-                  i <= currentStep ? "bg-[#8c7851]" : "bg-[#e1d7c7]"
+                  i <= currentStep ? "bg-[#C9A84C]" : "bg-[#e1d7c7]"
                 }`}
                 style={{
                   width: i <= currentStep ? "24px" : "8px",
@@ -103,14 +103,14 @@ export function OnboardingOverlay() {
           {currentStep > 1 && (
             <button
               onClick={() => setCurrentStep((prev) => (prev - 1) as OnboardingStep)}
-              className="flex-1 px-4 py-3 rounded-xl border border-[#d8cdb9] text-[#5f5648] font-medium text-sm hover:bg-[#f9f3e7] transition-colors active:scale-95"
+              className="flex-1 px-4 py-3 rounded-xl border border-[#d8cdb9] text-[#A8A29A] font-medium text-sm hover:bg-[#f9f3e7] transition-colors active:scale-95"
             >
               السابق
             </button>
           )}
           <button
             onClick={handleNext}
-            className="flex-1 px-4 py-3 rounded-xl bg-[#8c7851] text-white font-medium text-sm hover:bg-[#7a6340] transition-colors active:scale-95"
+            className="flex-1 px-4 py-3 rounded-xl bg-[#C9A84C] text-white font-medium text-sm hover:bg-[#7a6340] transition-colors active:scale-95"
           >
             {isLastStep ? "ابدأ التمعّن" : "التالي"}
           </button>

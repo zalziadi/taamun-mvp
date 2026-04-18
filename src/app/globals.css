@@ -5,29 +5,31 @@
 @tailwind components;
 @tailwind utilities;
 
-/* Ta'ammun Design System — scoped to .theme-taamun, does NOT affect existing pages */
+/* Ta'ammun Design System — applied globally via :root tokens + theme-taamun on <body> */
 @import "../styles/taamun-ds/tokens.css";
 @import "../styles/taamun-ds/typography.css";
 
 @layer base {
   :root {
-    /* Light parchment UI — match browser form controls & scrollbars */
-    color-scheme: light;
+    /* Dark monastery canvas — match browser form controls & scrollbars */
+    color-scheme: dark;
   }
 
   html {
     @apply font-arabic antialiased;
+    background-color: var(--bg);
   }
 
   body {
-    @apply bg-bg text-text min-h-screen;
-    background-color: #f4f1ea;
+    @apply text-text min-h-screen;
+    background-color: var(--bg);
     background-image: none;
+    color: var(--fg);
   }
 
   ::selection {
-    background-color: rgba(140, 120, 81, 0.22);
-    color: #1f1a12;
+    background-color: rgba(201, 168, 76, 0.28);
+    color: var(--fg-display);
   }
 
   .container {
@@ -65,12 +67,12 @@
   }
 
   .focus-ring {
-    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8c7851]/55 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f4f1ea];
+    @apply focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C]/55 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0908];
   }
 
   /* Modern nav / text links — keyboard-visible focus, no layout shift */
   .tm-nav-link {
-    @apply cursor-pointer rounded-md px-1.5 py-1 text-sm text-[#5f5648] outline-none transition-colors duration-200 ease-out hover:text-[#7b694a] focus-visible:ring-2 focus-visible:ring-[#8c7851]/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f4f1ea];
+    @apply cursor-pointer rounded-md px-1.5 py-1 text-sm text-[#A8A29A] outline-none transition-colors duration-200 ease-out hover:text-[#D6D1C8] focus-visible:ring-2 focus-visible:ring-[#C9A84C]/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0908];
   }
 
   .tm-shell {
@@ -79,7 +81,7 @@
 
   .tm-heading {
     font-family: "Amiri", serif;
-    @apply text-[#2f2619];
+    @apply text-[#E8E3D9];
   }
 
   .tm-mono {
@@ -126,38 +128,38 @@
 
   /* Minimal input — single line under text, no box */
   .tm-input {
-    @apply w-full bg-transparent border-0 border-b border-[#c9bda8]/50 px-0 py-2 text-[#2f2619] placeholder:text-[#8c7851]/50 focus:outline-none focus:border-[#8c7851] transition-colors;
+    @apply w-full bg-transparent border-0 border-b border-[#3D3832] px-0 py-2 text-[#D6D1C8] placeholder:text-[#807A72] focus:outline-none focus:border-[#C9A84C] transition-colors;
   }
 
   /* Minimal textarea — same treatment */
   .tm-textarea {
-    @apply w-full bg-transparent border-0 border-b border-[#c9bda8]/50 px-0 py-2 text-[#2f2619] placeholder:text-[#8c7851]/50 focus:outline-none focus:border-[#8c7851] resize-none transition-colors;
+    @apply w-full bg-transparent border-0 border-b border-[#3D3832] px-0 py-2 text-[#D6D1C8] placeholder:text-[#807A72] focus:outline-none focus:border-[#C9A84C] resize-none transition-colors;
   }
 
   /* Minimal 3-dash divider between sections */
   .tm-divider {
-    @apply flex items-center justify-center py-6 text-[#8c7851]/40 text-sm tracking-[0.5em];
+    @apply flex items-center justify-center py-6 text-[#C9A84C]/40 text-sm tracking-[0.5em];
   }
   .tm-divider::before {
     content: '— — —';
   }
 
   .tm-subtle {
-    @apply text-[#5f5648]/85;
+    @apply text-[#A8A29A]/85;
   }
 
   .tm-muted {
     @apply text-[#7d7362];
   }
 
-  /* Flat gold button — no shadow, minimal rounding */
+  /* Flat gold button — DS primary */
   .tm-gold-btn {
-    @apply cursor-pointer rounded-md bg-[#7b694a] px-5 py-3 text-sm font-bold text-[#f4f1ea] transition-[background-color,opacity] duration-200 ease-out hover:bg-[#6d5e44] disabled:pointer-events-none disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8c7851]/55 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f4f1ea];
+    @apply cursor-pointer rounded-md bg-[#C9A84C] px-5 py-3 text-sm font-bold text-[#0A0908] transition-[background-color,opacity] duration-200 ease-out hover:bg-[#D9BC6B] disabled:pointer-events-none disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C]/55 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0908];
   }
 
-  /* Flat ghost button — single thin line, no bg */
+  /* Flat ghost button — DS secondary (gold outline) */
   .tm-ghost-btn {
-    @apply cursor-pointer rounded-md border border-[#c9bda8]/60 bg-transparent px-5 py-3 text-sm text-[#4e4637] transition-[border-color,color] duration-200 ease-out hover:border-[#8c7851]/60 hover:text-[#7b694a] disabled:pointer-events-none disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#8c7851]/55 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f4f1ea];
+    @apply cursor-pointer rounded-md border border-[#C9A84C]/40 bg-transparent px-5 py-3 text-sm text-[#C9A84C] transition-[border-color,color] duration-200 ease-out hover:border-[#C9A84C] hover:text-[#D9BC6B] disabled:pointer-events-none disabled:opacity-60 focus:outline-none focus-visible:ring-2 focus-visible:ring-[#C9A84C]/55 focus-visible:ring-offset-2 focus-visible:ring-offset-[#0A0908];
   }
 }
 
@@ -200,8 +202,8 @@
    ============================================= */
 .journey-shell {
   font-family: var(--font-noto-sans-arabic), "Noto Sans Arabic", Tahoma, system-ui, sans-serif;
-  color: #2A1D10;
-  background: #F5EFE4;
+  color: #D6D1C8;
+  background: #14110F;
 }
 
 .journey-verse {

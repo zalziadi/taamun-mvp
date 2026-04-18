@@ -11,7 +11,7 @@ export default async function BookPage() {
 
   if (!user) {
     return (
-      <div className="min-h-screen bg-[#15130f] p-4 sm:p-6 max-w-xl mx-auto">
+      <div className="min-h-screen bg-[#0A0908] p-4 sm:p-6 max-w-xl mx-auto">
         <h1 className="mb-2 text-2xl font-bold text-[#e8e1d9]">مدينة المعنى</h1>
         <p className="mb-6 text-[#c9b88a] text-sm">رحلة في الوعي بلغة القرآن</p>
         <div className="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5">
@@ -43,7 +43,7 @@ export default async function BookPage() {
 
   if (!hasAccess) {
     return (
-      <div className="min-h-screen bg-[#15130f] p-4 sm:p-6 max-w-xl mx-auto">
+      <div className="min-h-screen bg-[#0A0908] p-4 sm:p-6 max-w-xl mx-auto">
         <h1 className="mb-2 text-2xl font-bold text-[#e8e1d9]">مدينة المعنى</h1>
         <p className="mb-6 text-[#c9b88a] text-sm">رحلة في الوعي بلغة القرآن</p>
         <div className="mb-6 rounded-2xl border border-amber-500/20 bg-amber-500/5 p-5">
@@ -57,7 +57,7 @@ export default async function BookPage() {
   }
 
   return (
-    <div className="min-h-screen bg-[#15130f] p-4 sm:p-6">
+    <div className="min-h-screen bg-[#0A0908] p-4 sm:p-6">
       <h1 className="mb-4 text-2xl font-bold text-[#e8e1d9]">مدينة المعنى بلغة القرآن</h1>
       <p className="mb-6 text-[#c9b88a]">الدليل والتطبيق — اقرأ في المتصفح</p>
       <div className="grid gap-6 lg:grid-cols-[1fr_280px]">
