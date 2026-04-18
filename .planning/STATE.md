@@ -7,10 +7,10 @@
 ## Current Position
 
 - **Milestone:** v1.2 — إغلاق الحلقة (Retention Loop)
-- **Active phase:** Not started (defining requirements)
+- **Active phase:** Phase 6 — PostHog Event Instrumentation (planning)
 - **Active plan:** —
-- **Status:** Defining requirements
-- **Last activity:** 2026-04-18 — v1.2 milestone started
+- **Status:** Roadmap approved; ready to plan Phase 6
+- **Last activity:** 2026-04-18 — v1.2 roadmap drafted (6 phases: 6 → 11)
 - **Git branch:** claude/awesome-shaw (worktree)
 - **Last commit:** `694b0de feat(v1.1): Phase 5 — WhatsApp community infrastructure (code side)`
 
@@ -32,24 +32,39 @@ GSD state was drift-corrected 2026-04-18.
 ### v1.2 — started 2026-04-18
 **Goal:** Transform 28-day experience into year-long relationship. Close 6 retention gaps between Day 28 and Day 365.
 
-**Target features:**
-1. Cycle 2 Transition UX — Day 28 in-app CTA
-2. Milestone Badges — days 1/3/7/14/21/28 trigger logic
-3. Year-in-Review — 365-day retrospective page
-4. Renewal Prompts In-App — 7-day-before-expiry reminder
-5. Referral Program — invite a friend → free month
-6. PostHog Event Instrumentation — day_complete, cycle_start, badge_unlock, renewal_prompted
+**Roadmap (6 phases, 81 REQs total — 71 functional + 10 NFR):**
+1. **Phase 6** — PostHog Event Instrumentation (ANALYTICS-01..12)
+2. **Phase 7** — Cycle 2 Transition + Day-28 Badge merged (RETURN-01..07)
+3. **Phase 8** — Milestone Badges (BADGE-01..09)
+4. **Phase 9** — Renewal Prompts In-App (RENEW-01..09)
+5. **Phase 10** — Referral Program (REFER-01..12)
+6. **Phase 11** — Year-in-Review Archive (YIR-01..12)
+
+Phase 12 (YIR Ramadan moment) explicitly deferred to v1.3.
+
+**Research-phase routing flags** (from SUMMARY.md):
+- Phases 6, 8, 11 → SKIP `/gsd:research-phase` (covered by existing research)
+- Phases 7, 9, 10 → RUN `/gsd:research-phase` (need phase-specific spikes)
 
 **CX audit score before v1.2:** 60/100 (strong early, collapses after Day 28; biggest wound = silent cycle-2 wall + no year-long loop).
+
+**Key product decisions locked 2026-04-18:**
+1. Cycle 2 = same 28 verses, deeper practice (Headspace model)
+2. Referral reward: invitee immediate, referrer after invitee day 14
+3. Badges: 7 per cycle (6 milestones + cycle-completion), cap at cycle 3
+4. YIR: archive-only in v1.2; Ramadan moment in v1.3
+5. YIR numerals: Eastern (٠١٢٣) for page, Western (0123) for share card
+6. Badges private by default — no share button
+7. Referral storage: NEW `referrals` table (not extending `activation_codes`)
+8. PostHog sacred-page exclusions enforced by CI grep
 
 ---
 
 ## Next action
 
-1. Research decision (Step 8 of /gsd:new-milestone workflow)
-2. Define REQUIREMENTS.md with REQ-IDs for v1.2 target features
-3. Spawn gsd-roadmapper to create phased roadmap (continues numbering from Phase 6)
-4. Approve roadmap → start `/gsd:plan-phase 6`
+1. **Run `/gsd:plan-phase 6`** — Plan Phase 6 (PostHog Event Instrumentation)
+   - Routing hint: SKIP `/gsd:research-phase` (research already covers it)
+2. After Phase 6 ships → `/gsd:plan-phase 7` (RUN research-phase first for cycle-2 timezone spike)
 
 ---
 
