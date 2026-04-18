@@ -53,7 +53,7 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
   - [x] 06.01-PLAN.md — Typed event catalog + server-side emitEvent() helper
   - [x] 06.02-PLAN.md — Runtime property whitelist guard (assertAllowedProperties)
   - [x] 06.03-PLAN.md — Suspense-wrapped PageviewTracker + sacred-path exclusion list
-  - [ ] 06.04-PLAN.md — Wire day_complete emission in /api/program/progress POST (proof-of-pipeline)
+  - [x] 06.04-PLAN.md — Wire day_complete emission in /api/program/progress POST (proof-of-pipeline)
   - [ ] 06.05-PLAN.md — Typed stubs + JSDoc + docs/analytics-event-catalog.md for the other 7 events
   - [x] 06.06-PLAN.md — Build-breaking CI grep guard (scripts/guards/analytics-privacy.js)
 **Risks & Mitigations** (from PITFALLS.md):
