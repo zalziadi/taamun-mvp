@@ -1,74 +1,74 @@
-# Requirements — v1.2
+# Requirements — v1.3
 
 Fresh requirements for the next milestone.
-v1.1 archived at [milestones/v1.1-REQUIREMENTS.md](./milestones/v1.1-REQUIREMENTS.md).
+v1.2 archived at [milestones/v1.2-REQUIREMENTS.md](./milestones/v1.2-REQUIREMENTS.md).
 
 ---
 
 ## Mission
 
-Transform Taamun from "retention machine" into "personal companion" — the user should feel the app *knows* them, not just remembers them.
+v1.2 made Taamun personal. v1.3 makes it **spreadable**. A user in their 90th day should generate new users without the founder spending a riyal on paid acquisition.
 
 ---
 
-## User personas for v1.2
+## User personas for v1.3
 
-1. **Long-term user (3+ months)** — has 60+ reflections, wants depth
-2. **Returning VIP** — expects the guide to remember past conversations
-3. **Heavy journaler** — writes long reflections, wants themes surfaced
-4. **Accessibility-dependent user** — uses screen reader, needs Arabic RTL audit
-5. **Voice-first user** — prefers speaking to typing (morning dhikr, voice reflections)
+1. **Grateful user (60+ days)** — would share but has no easy way
+2. **Curious prospect** — receives a shared insight link from a friend
+3. **Annual user (365+ days)** — earned a recap they want to share
+4. **Mobile-first user** — wants install-like experience without the App Store friction
+5. **VIP advocate** — brought 3 friends to the platform, wants recognition
 
 ---
 
 ## Must-have requirements
 
-- [ ] Monthly reflection theme extraction (top 3 recurring themes per user)
-- [ ] Guide long-term memory: `soul_summary` that evolves weekly
-- [ ] Voice reflection recording (in addition to typed)
-- [ ] Arabic screen reader audit with fixes (VoiceOver + TalkBack)
+- [ ] PWA install prompt (opt-in) shown after day 7, once per session, dismissable
+- [ ] Offline reading for today's verse (service worker caches last 3 days)
+- [ ] Invite link system (`/invite/[code]`) with referral tracking
+- [ ] "Year in Taamun" recap page + email (for users with ≥ 90 days history)
 
 ## Should-have
 
-- [ ] Personal insight feed (`/insights` page)
-- [ ] Guide references insights in conversations ("على ذكر الصبر — كتبت قبل شهر...")
-- [ ] Voice tasbeeh counter (hands-free dhikr)
+- [ ] Shareable themes/insights (opt-in, anonymous, static pages)
+- [ ] Voice tasbeeh (hands-free dhikr counter)
+- [ ] Referral reward: 1 free month for both parties on successful subscription
 
 ## Nice-to-have
 
-- [ ] Insight sharing (opt-in, anonymous)
-- [ ] "Year in Taamun" end-of-year recap email
-- [ ] PWA install prompt after day 7
+- [ ] OG image generation for shareable quotes (Arabic calligraphy aesthetic)
+- [ ] Leaderboard-free progress sharing ("I finished day 28 of تمعّن")
+- [ ] Mobile native wrapper (Capacitor) if PWA gaps appear on iOS
 
 ---
 
 ## Non-functional requirements (carried forward)
 
-- Performance: LCP < 6s on 3G mobile
-- Accessibility: Lighthouse A11y ≥ 95 + validated with real Arabic SR testing
-- SEO: Lighthouse SEO = 100
-- Cost: v1.2 feature work < 3000 SAR total (includes theme ML + voice transcription)
-- Privacy: zero tracking on prayer/reflection pages · insight extraction is user-only
+- Performance: LCP < 6s on 3G mobile (keep Lighthouse CI gate passing)
+- Accessibility: Lighthouse A11y ≥ 0.95 (already enforced in CI)
+- SEO: `/shared/*` pages fully indexable + structured data
+- Cost: v1.3 feature work < 3000 SAR total
+- Privacy: sharing is opt-in only; no PII in shared pages
+- Content moderation: one-line text content in shared pages review-able by founder
 
 ---
 
-## Decisions (resolved 2026-04-18)
+## Open questions
 
-User answered "yes to all":
+1. **Invite reward type:** free month for both, VIP trial, or % discount?
+2. **Recap trigger:** at day 365, at Hijri new year, or at calendar year-end?
+3. **PWA install prompt timing:** day 7, day 14, or on milestone day 28?
+4. **Share moderation:** instant (auto-approve) or queued for founder review?
+5. **Voice tasbeeh acoustic model:** Munsit streaming, Web Speech API, or lightweight custom VAD?
 
-1. **Theme clustering:** ✅ OpenAI embeddings (text-embedding-3-small, cheap + project already has `OPENAI_API_KEY`)
-2. **soul_summary cadence:** ✅ Both — weekly updates + milestone-triggered deeper refresh (day 14/28/60)
-3. **Voice storage:** ✅ Keep audio + transcription by default, user can delete (most flexible)
-4. **Insights visibility:** ✅ Both — inline card on home + dedicated `/insights` page
-5. **Accessibility audit:** ✅ Automated tools first (axe-core + Lighthouse CI), beta feedback layered on
-
-All 5 answered. Phase planning can proceed.
+Resolve before phase planning.
 
 ---
 
 ## Success criteria
 
-- At least 3 users with 60+ reflections each provide explicit positive feedback on "the guide remembered me"
-- Arabic screen reader audit identifies ≤ 5 issues (the product should mostly work already)
-- Voice reflection adoption ≥ 20% of active users who try it
-- Theme clustering surfaces non-obvious connections in ≥ 80% of eligible users
+- At least 10% of active users ≥ day 30 install the PWA after the prompt
+- Invite → signup conversion ≥ 5%
+- At least 20 shared insight pages generate ≥ 5 visits each
+- Year-in-Taamun recap opens ≥ 40% of eligible users
+- Zero content moderation incidents in shared pages

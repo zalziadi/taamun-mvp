@@ -29,12 +29,12 @@ Hosting     Vercel (static + Fluid Compute)
 
 ---
 
-## Current State (v1.1 — Shipped 2026-04-18)
+## Current State (v1.2 — Shipped 2026-04-18)
 
 **Scale:**
-- 376+ commits over 2 months
-- 413+ TypeScript files · 53K+ LOC
-- 57+ pages · 86+ API endpoints · 34 DB tables
+- 385+ commits over 2 months
+- 420+ TypeScript files · 54K+ LOC
+- 58+ pages · 90+ API endpoints · 36 DB tables
 
 **v1.0 shipped features (core):**
 - ✅ 28-day program with 3 rotating cycles (الظل · النفس · السور)
@@ -54,6 +54,13 @@ Hosting     Vercel (static + Fluid Compute)
 - ✅ DB-backed book notes: bookmarks + quotes + reflective notes
 - ✅ WhatsApp community infrastructure: broadcast endpoint + day-3 invite
 
+**v1.2 shipped features (personalization):**
+- ✅ Guide long-term memory: soul_summary evolves weekly + milestones
+- ✅ Reflection theme clustering: monthly OpenAI embeddings + Claude labels
+- ✅ /insights page + home widget: "ما يتكرر في داخلك"
+- ✅ Voice journaling component: 90s Munsit-powered reflection
+- ✅ Lighthouse CI gate: A11y ≥ 0.95 enforced on every push
+
 **Current subscription tiers:**
 - Free 7-day trial
 - Quarterly 199 SAR · Yearly 699 SAR · VIP 4,999 SAR
@@ -70,10 +77,10 @@ Hosting     Vercel (static + Fluid Compute)
 
 ## Next Milestone Goals
 
-See `ROADMAP.md` for v1.2 priorities. Focus shifts from retention to **depth**:
+See `ROADMAP.md` for v1.3 priorities. Focus shifts from personal depth to **reach**:
 
-1. Reflection theme clustering (monthly ML analysis per user)
-2. Guide long-term memory (soul_summary evolving weekly)
-3. Voice journaling (extend Munsit beyond /guide/voice)
-4. Arabic screen reader audit (VoiceOver + TalkBack)
-5. Personal insight feed (/insights page)
+1. PWA install prompt + offline reading
+2. Invite flow with referral credits
+3. "Year in Taamun" annual recap
+4. Public shareable insights (opt-in, anonymous)
+5. Voice tasbeeh (hands-free dhikr counter)
