@@ -31,8 +31,8 @@
 - [ ] **ANALYTICS-06**: `renewal_prompted` event fires when banner first renders with props `{days_remaining, gateway, tier}`
 - [x] **ANALYTICS-07**: `referral_code_generated` and `referral_code_redeemed` events fire with prefix-only props (never full code)
 - [x] **ANALYTICS-08**: `year_review_opened` and `year_review_shared` events fire with props `{year_key, reflections_count}`
-- [ ] **ANALYTICS-09**: Zero `track()` calls exist inside `src/app/day/**`, `src/app/reflection/**`, `src/app/book/**`, `src/app/program/day/**`, `/api/guide/**` (enforced by CI grep)
-- [ ] **ANALYTICS-10**: Zero `track()` calls exist inside `DayExperience.tsx`, `ReflectionJournal.tsx`, `AwarenessMeter.tsx`, `BookQuote.tsx`, `VerseBlock.tsx`, `HiddenLayer.tsx`, `SilenceGate.tsx` (enforced by CI grep)
+- [x] **ANALYTICS-09**: Zero `track()` calls exist inside `src/app/day/**`, `src/app/reflection/**`, `src/app/book/**`, `src/app/program/day/**`, `/api/guide/**` (enforced by CI grep)
+- [x] **ANALYTICS-10**: Zero `track()` calls exist inside `DayExperience.tsx`, `ReflectionJournal.tsx`, `AwarenessMeter.tsx`, `BookQuote.tsx`, `VerseBlock.tsx`, `HiddenLayer.tsx`, `SilenceGate.tsx` (enforced by CI grep)
 - [x] **ANALYTICS-11**: `person_profiles: "never"` setting in `src/lib/analytics.ts` is preserved
 - [x] **ANALYTICS-12**: Property name whitelist enforced — banned patterns: `*_email`, `*_phone`, `reflection_*`, `verse_*`, `journal_*`, `message_*`, `prayer_*`
 

@@ -55,7 +55,7 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
   - [x] 06.03-PLAN.md — Suspense-wrapped PageviewTracker + sacred-path exclusion list
   - [ ] 06.04-PLAN.md — Wire day_complete emission in /api/program/progress POST (proof-of-pipeline)
   - [ ] 06.05-PLAN.md — Typed stubs + JSDoc + docs/analytics-event-catalog.md for the other 7 events
-  - [ ] 06.06-PLAN.md — Build-breaking CI grep guard (scripts/guards/analytics-privacy.js)
+  - [x] 06.06-PLAN.md — Build-breaking CI grep guard (scripts/guards/analytics-privacy.js)
 **Risks & Mitigations** (from PITFALLS.md):
   - **Pitfall 25 — Pixels on sacred pages:** Enforced via CI grep, not documentation. `capture_pageview: false` already set; preserve it.
   - **Pitfall 24 — PII leakage in event properties:** Strict-typed `track()` wrapper + property-name lint; emails/reflection text never reach PostHog.
