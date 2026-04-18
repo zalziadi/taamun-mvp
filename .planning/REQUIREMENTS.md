@@ -52,15 +52,17 @@ Transform Taamun from "retention machine" into "personal companion" — the user
 
 ---
 
-## Open questions
+## Decisions (resolved 2026-04-18)
 
-1. **Theme clustering approach:** OpenAI embeddings vs local (ollama / sentence-transformers)? Cost vs latency tradeoff.
-2. **soul_summary update cadence:** weekly or triggered at milestones (day 14, 28, 60)?
-3. **Voice reflection storage:** keep audio or transcribe-and-discard? Privacy vs re-listening UX.
-4. **Insights visibility:** inline on home, dedicated `/insights` page, or both?
-5. **Accessibility partner:** hire auditor, volunteer beta, or rely on automated tools?
+User answered "yes to all":
 
-Resolve these before phase planning.
+1. **Theme clustering:** ✅ OpenAI embeddings (text-embedding-3-small, cheap + project already has `OPENAI_API_KEY`)
+2. **soul_summary cadence:** ✅ Both — weekly updates + milestone-triggered deeper refresh (day 14/28/60)
+3. **Voice storage:** ✅ Keep audio + transcription by default, user can delete (most flexible)
+4. **Insights visibility:** ✅ Both — inline card on home + dedicated `/insights` page
+5. **Accessibility audit:** ✅ Automated tools first (axe-core + Lighthouse CI), beta feedback layered on
+
+All 5 answered. Phase planning can proceed.
 
 ---
 
