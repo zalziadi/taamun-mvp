@@ -22,63 +22,70 @@ Email automation, web push, AI infinite cycles, DB book notes, WhatsApp broadcas
 
 **Archived:** [v1.2-ROADMAP.md](./milestones/v1.2-ROADMAP.md) · [v1.2-REQUIREMENTS.md](./milestones/v1.2-REQUIREMENTS.md)
 
-Guide long-term memory (soul_summary), reflection theme clustering, `/insights` page, voice journaling, A11y CI gate.
+Guide long-term memory, reflection theme clustering, `/insights` page, voice journaling, A11y CI gate.
 
 ---
 
-## v1.3 — Reach & Distribution (planning)
+## v1.3 — Reach & Distribution (shipped 2026-04-18)
 
-**Goal:** v1.2 made it personal. v1.3 makes it **spreadable** — users invite others, the app surfaces publicly, insights turn into artifacts worth sharing.
+**Archived:** [v1.3-ROADMAP.md](./milestones/v1.3-ROADMAP.md) · [v1.3-REQUIREMENTS.md](./milestones/v1.3-REQUIREMENTS.md)
+
+PWA install + offline, invite flow, voice tasbeeh, shareable insights, year recap.
+
+---
+
+## v1.4 — Community & Creators (planning)
+
+**Goal:** v1.3 gave users **channels** to spread Taamun. v1.4 builds **places** where users come back together — community space inside the app + creator tools so trusted voices can publish their own journeys.
 
 ### Candidate phases
 
-#### Phase 1: PWA Polish + Install Prompt
-- Service worker caching for offline verse reading
-- `manifest.json` hardening (icons, splash, theme)
-- Install prompt shown after day 7 (with dismiss logic)
-- iOS Add-to-Homescreen guidance page
-- **Depends on:** existing service worker (already shipped for push)
+#### Phase 1: Reward Credit Application
+- Apply +30 days to `expires_at` for both inviter and invitee on successful subscription
+- Hook into existing Stripe / Salla / Tap webhook paths
+- Idempotent against `invite_redemptions.rewarded` flag
+- **Depends on:** product decision on which payment events trigger the credit
 
-#### Phase 2: Invite Flow
-- Unique invite link per user (`/invite/[code]`)
-- Referrer gets 1 free month if invitee subscribes
-- Landing page variant that shows "referred by {name}" context
-- Tracks conversion in `referral_credits` table
-- **Depends on:** decision on incentive type (month vs discount vs VIP trial)
+#### Phase 2: In-app Threads
+- Public threads attached to a day or verse: `/threads/day/[id]` or `/threads/verse/[ref]`
+- Lightweight: title + body + short replies, anonymized usernames
+- No DMs (avoids moderation complexity)
+- **Depends on:** moderation policy (auto-flag for profanity? URL blocking?)
 
-#### Phase 3: "Year in Taamun" Recap
-- Annual email / `/recap` page summarizing user's year
-- Shows total reflections, top themes, soul_summary evolution
-- Shareable image card (built server-side via OG image API)
-- **Depends on:** v1.2 themes + soul_summary data accumulation (needs ≥ 6 months)
+#### Phase 3: Creator Mode (MVP)
+- VIP-only feature: create a 7- or 14-day mini-journey
+- Schema: `creator_journeys`, `creator_journey_days`
+- Published journeys appear in `/discover` page
+- Subscribers can join any creator's journey as a parallel track
+- **Depends on:** creator onboarding flow + review/approval policy
 
-#### Phase 4: Public Shareable Insights
-- Opt-in: user can share a theme or insight as an anonymous quote
-- Public `/shared/[slug]` pages (static, SEO-indexed)
-- Landing-page-quality design, Arabic typography, breathable
-- **Depends on:** moderation policy + legal review (is anonymous sharing ok?)
+#### Phase 4: OG Image Generation
+- Server-generated Arabic calligraphy image for each shared insight
+- Uses `@vercel/og` or Next.js OG image API
+- Replaces plain text OG preview with beautiful shareable image
+- **Depends on:** Arabic font asset (Amiri already loaded via `next/font`)
 
-#### Phase 5: Voice Tasbeeh (hands-free)
-- Extends v1.2 voice infra
-- Mic listens for "سبحان الله" / "الحمد لله" / "الله أكبر"
-- Counts automatically during dhikr sessions
-- **Depends on:** Munsit streaming mode or alternative lightweight VAD
+#### Phase 5: Calendar Year-end Recap Email
+- Automated batch: every Dec 31 OR Hijri new year, email all 90+ day users
+- Content: link to `/recap` + 3-sentence highlight
+- Cron: once per year (or dispatch manually)
+- **Depends on:** scheduler for annual-cadence crons
 
 ---
 
-## v1.4+ — Backlog
+## v1.5+ — Backlog
 
-- In-app community (threaded discussions, without leaving the app)
-- Creator mode: users publish their own 28-day journeys
-- Arabic teachers/imams can embed Taamun widgets in their sites
-- Mobile native wrapper (Capacitor or Tauri) if PWA hits limits
+- Moderation UI for shared_insights flagged queue
+- Mobile native wrapper (Capacitor) if PWA gaps appear on iOS
+- Arabic + English content (for Muslims in English-speaking countries)
+- Family plan (multi-user subscription)
 
 ---
 
 ## v2.0 — Platform (far future)
 
 - Multi-user accounts (family plans)
-- Creator marketplace (monetized journeys)
+- Creator marketplace (monetized journeys, revenue share)
 - Taamun as a platform for any faith tradition (English + other languages)
 
 ---

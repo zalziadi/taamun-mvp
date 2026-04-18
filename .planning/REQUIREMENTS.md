@@ -1,74 +1,74 @@
-# Requirements — v1.3
+# Requirements — v1.4
 
 Fresh requirements for the next milestone.
-v1.2 archived at [milestones/v1.2-REQUIREMENTS.md](./milestones/v1.2-REQUIREMENTS.md).
+v1.3 archived at [milestones/v1.3-REQUIREMENTS.md](./milestones/v1.3-REQUIREMENTS.md).
 
 ---
 
 ## Mission
 
-v1.2 made Taamun personal. v1.3 makes it **spreadable**. A user in their 90th day should generate new users without the founder spending a riyal on paid acquisition.
+v1.3 gave users channels to spread Taamun. v1.4 builds **places to come back together** — a community space inside the app and tools for trusted voices to publish their own journeys. Close the loop: acquisition (v1.3) → retention (v1.1) → depth (v1.2) → **belonging**.
 
 ---
 
-## User personas for v1.3
+## User personas for v1.4
 
-1. **Grateful user (60+ days)** — would share but has no easy way
-2. **Curious prospect** — receives a shared insight link from a friend
-3. **Annual user (365+ days)** — earned a recap they want to share
-4. **Mobile-first user** — wants install-like experience without the App Store friction
-5. **VIP advocate** — brought 3 friends to the platform, wants recognition
+1. **Invited user who subscribed** — deserves their free-month credit applied
+2. **Engaged user** — wants to discuss today's verse without leaving Taamun
+3. **VIP / teacher / imam** — wants to publish a guided mini-journey
+4. **Prospect clicking a shared insight** — sees a beautifully rendered OG image
+5. **Year-anniversary user** — gets an email with their recap
 
 ---
 
 ## Must-have requirements
 
-- [ ] PWA install prompt (opt-in) shown after day 7, once per session, dismissable
-- [ ] Offline reading for today's verse (service worker caches last 3 days)
-- [ ] Invite link system (`/invite/[code]`) with referral tracking
-- [ ] "Year in Taamun" recap page + email (for users with ≥ 90 days history)
+- [ ] Apply +30-day credit to inviter and invitee on first successful subscription
+- [ ] In-app threads attached to days or verses, moderated via auto-flag + founder review
+- [ ] Creator mode (VIP): publish a 7- or 14-day mini-journey
+- [ ] OG image for shared insights — Arabic calligraphy aesthetic
 
 ## Should-have
 
-- [ ] Shareable themes/insights (opt-in, anonymous, static pages)
-- [ ] Voice tasbeeh (hands-free dhikr counter)
-- [ ] Referral reward: 1 free month for both parties on successful subscription
+- [ ] `/discover` page showing all published creator journeys
+- [ ] Thread reply notifications (via push)
+- [ ] Year-end recap email (Dec 31 or Hijri new year)
 
 ## Nice-to-have
 
-- [ ] OG image generation for shareable quotes (Arabic calligraphy aesthetic)
-- [ ] Leaderboard-free progress sharing ("I finished day 28 of تمعّن")
-- [ ] Mobile native wrapper (Capacitor) if PWA gaps appear on iOS
+- [ ] Moderation dashboard for flagged insights + threads
+- [ ] Creator revenue share (pending monetization model decision)
+- [ ] English translation for creator journeys (opt-in)
 
 ---
 
 ## Non-functional requirements (carried forward)
 
-- Performance: LCP < 6s on 3G mobile (keep Lighthouse CI gate passing)
-- Accessibility: Lighthouse A11y ≥ 0.95 (already enforced in CI)
-- SEO: `/shared/*` pages fully indexable + structured data
-- Cost: v1.3 feature work < 3000 SAR total
-- Privacy: sharing is opt-in only; no PII in shared pages
-- Content moderation: one-line text content in shared pages review-able by founder
+- Performance: LCP < 6s on 3G mobile (Lighthouse CI gate enforced)
+- Accessibility: Lighthouse A11y ≥ 0.95
+- SEO: creator pages + thread pages indexable
+- Cost: v1.4 feature work < 3000 SAR total
+- Privacy: threads are public; user chooses anon or attributed display name
+- Moderation: founder-review queue, no automated bans
 
 ---
 
-## Decisions (resolved 2026-04-18, "yes all")
+## Open questions
 
-1. **Invite reward:** ✅ Free month for both parties (simplest + most generous)
-2. **Recap trigger:** ✅ Rolling per-user day 365 + optional calendar year-end batch
-3. **PWA install prompt:** ✅ Day 7, dismissable; re-prompt at day 28 if dismissed
-4. **Share moderation:** ✅ Instant auto-approve for ≤200 chars, no links; flag-to-review for anything else
-5. **Voice tasbeeh tech:** ✅ Web Speech API first (free, offline, built-in) → Munsit fallback
+1. **Credit event trigger:** apply credit on first successful payment, or after 30 days of active use (to prevent immediate-cancellation fraud)?
+2. **Thread identity:** allow real name, pseudonym only, or both?
+3. **Creator approval:** any VIP can publish, or does founder review first draft?
+4. **OG image fonts:** Amiri only, or offer a few calligraphy variants?
+5. **Year-end recap:** calendar Dec 31 (familiar) or Hijri new year (contextually appropriate)?
 
-All 5 answered. Phase planning can proceed.
+Resolve before phase planning.
 
 ---
 
 ## Success criteria
 
-- At least 10% of active users ≥ day 30 install the PWA after the prompt
-- Invite → signup conversion ≥ 5%
-- At least 20 shared insight pages generate ≥ 5 visits each
-- Year-in-Taamun recap opens ≥ 40% of eligible users
-- Zero content moderation incidents in shared pages
+- ≥ 50% of invited subscribers receive their credit within 48h of subscription
+- ≥ 20% of daily active users visit a thread page at least once per week
+- ≥ 5 published creator journeys with ≥ 3 subscribers each
+- Shared insight OG images generate ≥ 3× click-through vs text-only
+- Zero moderation escalations that require public apology

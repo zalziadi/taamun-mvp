@@ -29,12 +29,12 @@ Hosting     Vercel (static + Fluid Compute)
 
 ---
 
-## Current State (v1.2 — Shipped 2026-04-18)
+## Current State (v1.3 — Shipped 2026-04-18)
 
 **Scale:**
-- 385+ commits over 2 months
-- 420+ TypeScript files · 54K+ LOC
-- 58+ pages · 90+ API endpoints · 36 DB tables
+- 400+ commits over 2 months
+- 435+ TypeScript files · 55K+ LOC
+- 61+ pages · 94+ API endpoints · 38 DB tables
 
 **v1.0 shipped features (core):**
 - ✅ 28-day program with 3 rotating cycles (الظل · النفس · السور)
@@ -61,6 +61,13 @@ Hosting     Vercel (static + Fluid Compute)
 - ✅ Voice journaling component: 90s Munsit-powered reflection
 - ✅ Lighthouse CI gate: A11y ≥ 0.95 enforced on every push
 
+**v1.3 shipped features (reach):**
+- ✅ PWA: manifest + offline cache + install prompt (day 7 / re-prompt day 28)
+- ✅ Invite flow: unique code per user + /invite/[code] + free-month-both model
+- ✅ Voice tasbeeh: Web Speech API + 3 phrases + manual fallback
+- ✅ Shareable insights: /shared/[slug] public pages with OG metadata + auto-moderation
+- ✅ Year recap: /recap page eligible after 90 days, rolling per-user
+
 **Current subscription tiers:**
 - Free 7-day trial
 - Quarterly 199 SAR · Yearly 699 SAR · VIP 4,999 SAR
@@ -77,10 +84,10 @@ Hosting     Vercel (static + Fluid Compute)
 
 ## Next Milestone Goals
 
-See `ROADMAP.md` for v1.3 priorities. Focus shifts from personal depth to **reach**:
+See `ROADMAP.md` for v1.4 priorities. Focus shifts from reach to **belonging**:
 
-1. PWA install prompt + offline reading
-2. Invite flow with referral credits
-3. "Year in Taamun" annual recap
-4. Public shareable insights (opt-in, anonymous)
-5. Voice tasbeeh (hands-free dhikr counter)
+1. Reward credit application (+30 days on successful invite-driven subscription)
+2. In-app threads attached to days/verses
+3. Creator mode (VIP publishes their own 7/14-day mini-journey)
+4. OG image generation for shareable insights
+5. Calendar year-end recap email batch
