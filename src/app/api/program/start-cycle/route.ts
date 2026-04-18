@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { emitEvent } from "@/lib/analytics/server";
+import { unlockBadge } from "@/lib/badges/unlock";
 
 /**
  * POST /api/program/start-cycle
@@ -163,6 +164,20 @@ export async function POST(req: Request) {
         { status: 500 },
       );
     }
+  }
+
+  // --- RETURN-05: Day-28 badge silent reveal (Plan 07.04) ---
+  // Award the `day_28` badge for the cycle the user just FINISHED as part of
+  // this transition — idempotent via UNIQUE (user_id, badge_code, cycle_number)
+  // from Plan 07.01. The helper owns the single `badge_unlock` emitEvent call
+  // site; it never throws, so a DB failure here does NOT fail the cycle
+  // transition (the UNIQUE constraint ensures a later retry still converges).
+  // Awaited so we stay inside the same request lifecycle for Node runtime.
+  try {
+    await unlockBadge(auth.user.id, "day_28", finishedCycle, 28);
+  } catch {
+    // defensive — helper is documented as never-throwing, but we never let
+    // a badge hiccup block the cycle transition response.
   }
 
   // --- RETURN-07: emit `cycle_start` event exactly ONCE on success path ---
