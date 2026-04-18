@@ -43,7 +43,7 @@
 - [ ] **RETURN-03**: Cycle 2 content strategy = **same 28 verses, deeper practice** (Headspace model). Cycle number increments, verse selection unchanged. Decision locked 2026-04-18.
 - [ ] **RETURN-04**: Celebration animation uses `framer-motion` (already installed) — no confetti, no fireworks, no "unlocked!" language
 - [x] **RETURN-05**: Day-28 badge unlocks silently as part of cycle transition, not as separate achievement modal
-- [ ] **RETURN-06**: Day boundary respects `Asia/Riyadh` timezone — user's "Day 28" is server's same-day
+- [x] **RETURN-06**: Day boundary respects `Asia/Riyadh` timezone — user's "Day 28" is server's same-day
 - [ ] **RETURN-07**: Day 28 completion fires exactly one `cycle_start` analytics event even if user reloads or triggers CTA on two devices
 
 ### BADGE — Milestone Badges (Phase 8)
@@ -182,7 +182,7 @@ REQ → Phase mapping (assigned 2026-04-18 by gsd-roadmapper). 100% coverage val
 | RETURN-03 | Phase 7 | RETURN | Pending |
 | RETURN-04 | Phase 7 | RETURN | Pending |
 | RETURN-05 | Phase 7 | RETURN | Pending |
-| RETURN-06 | Phase 7 | RETURN | Pending |
+| RETURN-06 | Phase 7 | RETURN | Complete (07.05) |
 | RETURN-07 | Phase 7 | RETURN | Pending |
 | BADGE-01 | Phase 8 | BADGE | Pending |
 | BADGE-02 | Phase 8 | BADGE | Pending |
