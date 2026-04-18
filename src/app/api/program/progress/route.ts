@@ -5,6 +5,7 @@ import { isRamadanProgramClosed } from "@/lib/season";
 import { computeCalendarDay } from "@/lib/calendarDay";
 import { buildProgressState, buildCatchUpData } from "@/lib/progressEngine";
 import { buildJourneyState, classifyDepth, type JourneyInputs } from "@/lib/journeyState";
+import { emitEvent } from "@/lib/analytics/server";
 
 export const dynamic = "force-dynamic";
 
@@ -193,6 +194,49 @@ export async function POST(request: Request) {
   if (!saved.ok) {
     return NextResponse.json({ ok: false, error: "server_error" }, { status: 500 });
   }
+
+  // --- ANALYTICS-03: day_complete event (Plan 06.04) ---
+  // Fires ONLY on successful upsert. Uses the shared `progress` table's
+  // current_cycle column with graceful fallback (matches the GET handler's
+  // pattern — schema may not yet have the cycle columns in all envs).
+  // Tier is sourced from profiles.subscription_tier (the project's canonical
+  // column; see src/app/auth/callback/route.ts and others).
+  let currentCycle = 1;
+  try {
+    const { data: cycleRow } = await auth.supabase
+      .from("progress")
+      .select("current_cycle")
+      .eq("user_id", auth.user.id)
+      .maybeSingle();
+    if (cycleRow?.current_cycle) currentCycle = cycleRow.current_cycle;
+  } catch {
+    // Schema doesn't have cycle columns yet — default to cycle 1.
+  }
+
+  let tier = "unknown";
+  try {
+    const { data: profileRow } = await auth.supabase
+      .from("profiles")
+      .select("subscription_tier")
+      .eq("id", auth.user.id)
+      .maybeSingle();
+    if (profileRow?.subscription_tier) tier = String(profileRow.subscription_tier);
+  } catch {
+    // Non-fatal — emit event with "unknown" tier.
+  }
+
+  // Fire-and-forget — emitEvent is already best-effort and never throws.
+  void emitEvent(
+    {
+      name: "day_complete",
+      properties: {
+        day_number: day,
+        cycle_number: Number(currentCycle ?? 1),
+        tier,
+      },
+    },
+    auth.user.id,
+  );
 
   return NextResponse.json({
     ok: true,
