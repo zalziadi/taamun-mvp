@@ -1,9 +1,13 @@
-/* Fonts loaded via next/font/google in layout.tsx (Amiri, Manrope, Noto Serif)
+/* Fonts loaded via next/font/google in layout.tsx (Amiri, Manrope, Noto Serif, Tajawal, Space Grotesk)
    + non-blocking link in <head> for IBM Plex and Noto Sans Arabic */
 
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* Ta'ammun Design System — scoped to .theme-taamun, does NOT affect existing pages */
+@import "../styles/taamun-ds/tokens.css";
+@import "../styles/taamun-ds/typography.css";
 
 @layer base {
   :root {

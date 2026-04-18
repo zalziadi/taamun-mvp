@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Script from "next/script";
-import { Amiri, IBM_Plex_Mono, IBM_Plex_Sans_Arabic, Manrope, Noto_Sans_Arabic, Noto_Serif } from "next/font/google";
+import { Amiri, IBM_Plex_Mono, IBM_Plex_Sans_Arabic, Manrope, Noto_Sans_Arabic, Noto_Serif, Space_Grotesk, Tajawal } from "next/font/google";
 import { AnalyticsProvider } from "@/components/AnalyticsProvider";
 import { AppChrome } from "@/components/AppChrome";
 import { APP_DESCRIPTION, APP_DOMAIN, APP_NAME } from "@/lib/appConfig";
@@ -46,6 +46,21 @@ const notoSansArabic = Noto_Sans_Arabic({
   subsets: ["arabic"],
   weight: ["400", "500", "600", "700"],
   variable: "--font-noto-sans-arabic",
+  display: "swap",
+});
+
+// Ta'ammun Design System fonts (additive — used inside .theme-taamun scope)
+const tajawal = Tajawal({
+  subsets: ["arabic"],
+  weight: ["300", "400", "500", "700", "900"],
+  variable: "--font-tajawal",
+  display: "swap",
+});
+
+const spaceGrotesk = Space_Grotesk({
+  subsets: ["latin"],
+  weight: ["300", "400", "500", "600", "700"],
+  variable: "--font-space-grotesk",
   display: "swap",
 });
 
@@ -120,7 +135,7 @@ export default function RootLayout({
         )}
       </head>
       <body
-        className={`${amiri.variable} ${manrope.variable} ${notoSerif.variable} ${ibmPlexMono.variable} ${ibmPlexSansArabic.variable} ${notoSansArabic.variable} tm-body antialiased`}
+        className={`${amiri.variable} ${manrope.variable} ${notoSerif.variable} ${ibmPlexMono.variable} ${ibmPlexSansArabic.variable} ${notoSansArabic.variable} ${tajawal.variable} ${spaceGrotesk.variable} tm-body antialiased`}
       >
         <a
           href="#main-content"

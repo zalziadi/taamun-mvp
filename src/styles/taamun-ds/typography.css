@@ -1,0 +1,265 @@
+/* ============================================================
+   Ta'ammun typography + component primitives (scoped to .theme-taamun)
+   Opt-in: classes only apply inside a .theme-taamun scope.
+   ============================================================ */
+
+/* ---------- Display / headlines — Amiri serif ---------- */
+.theme-taamun .display-1,
+.theme-taamun h1.display {
+  font-family: var(--font-display);
+  font-size: var(--text-6xl);
+  line-height: var(--leading-tight);
+  font-weight: 400;
+  color: var(--fg-display);
+  letter-spacing: var(--tracking-tight);
+  margin: 0;
+}
+
+.theme-taamun .display-2 {
+  font-family: var(--font-display);
+  font-size: var(--text-5xl);
+  line-height: var(--leading-tight);
+  font-weight: 400;
+  color: var(--fg-display);
+  margin: 0;
+}
+
+.theme-taamun h1:not(.unstyled) {
+  font-family: var(--font-display);
+  font-size: var(--text-4xl);
+  line-height: var(--leading-tight);
+  font-weight: 400;
+  color: var(--fg-display);
+  margin: 0 0 var(--s-6);
+}
+
+.theme-taamun h2:not(.unstyled) {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  line-height: var(--leading-snug);
+  font-weight: 400;
+  color: var(--fg-display);
+  margin: 0 0 var(--s-5);
+}
+
+.theme-taamun h3:not(.unstyled) {
+  font-family: var(--font-display);
+  font-size: var(--text-xl);
+  line-height: var(--leading-snug);
+  font-weight: 400;
+  color: var(--fg-display);
+  margin: 0 0 var(--s-4);
+}
+
+.theme-taamun h4:not(.unstyled) {
+  font-family: var(--font-body);
+  font-size: var(--text-lg);
+  line-height: var(--leading-snug);
+  font-weight: 500;
+  color: var(--fg);
+  margin: 0 0 var(--s-3);
+}
+
+.theme-taamun .eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  letter-spacing: var(--tracking-wide);
+  color: var(--fg-accent);
+  font-weight: 500;
+}
+
+/* ---------- Body ---------- */
+.theme-taamun p:not(.unstyled),
+.theme-taamun .body {
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  color: var(--fg);
+  margin: 0 0 var(--s-4);
+  text-wrap: pretty;
+}
+
+.theme-taamun .body-lg {
+  font-size: var(--text-md);
+  line-height: var(--leading-body);
+}
+
+.theme-taamun .body-sm {
+  font-size: var(--text-sm);
+  line-height: var(--leading-snug);
+  color: var(--fg-muted);
+}
+
+.theme-taamun .caption {
+  font-size: var(--text-xs);
+  color: var(--fg-subtle);
+  line-height: var(--leading-snug);
+}
+
+/* ---------- Verse — for Qur'anic quotation ---------- */
+.theme-taamun .verse {
+  font-family: var(--font-display);
+  font-size: var(--text-2xl);
+  line-height: var(--leading-verse);
+  color: var(--fg-display);
+  font-weight: 400;
+  letter-spacing: 0;
+}
+
+.theme-taamun .verse-attribution {
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  color: var(--fg-subtle);
+  margin-top: var(--s-4);
+}
+
+/* ---------- Links ---------- */
+.theme-taamun a:not(.unstyled) {
+  color: var(--fg-accent);
+  text-decoration: none;
+  border-bottom: 1px solid transparent;
+  transition: border-color var(--dur-2) var(--ease-out),
+              color var(--dur-2) var(--ease-out);
+}
+
+.theme-taamun a:not(.unstyled):hover {
+  border-bottom-color: var(--fg-accent);
+}
+
+.theme-taamun a:not(.unstyled):active {
+  color: var(--gold-600);
+}
+
+/* ---------- Utilities ---------- */
+.theme-taamun .u-gold { color: var(--fg-accent); }
+.theme-taamun .u-muted { color: var(--fg-muted); }
+.theme-taamun .u-subtle { color: var(--fg-subtle); }
+.theme-taamun .u-center { text-align: center; }
+.theme-taamun .u-rtl { direction: rtl; }
+.theme-taamun .u-ltr { direction: ltr; }
+
+/* ============================================================
+   Component primitives — buttons, cards, inputs, badges
+   Matches the 3-button / hairline-card / 8px-field / soft-badge rules.
+   ============================================================ */
+
+/* ---------- Buttons — 3 variants only ---------- */
+.theme-taamun .btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-2);
+  min-height: 44px;
+  padding: var(--s-2) var(--s-6);
+  border-radius: var(--radius-btn);
+  font-family: var(--font-body);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1;
+  cursor: pointer;
+  border: 1px solid transparent;
+  transition: background var(--dur-2) var(--ease-out),
+              color var(--dur-2) var(--ease-out),
+              border-color var(--dur-2) var(--ease-out),
+              transform var(--dur-1) var(--ease-out);
+}
+
+.theme-taamun .btn:focus-visible {
+  outline: 1px solid var(--fg-accent);
+  outline-offset: 2px;
+}
+
+.theme-taamun .btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Primary: filled gold */
+.theme-taamun .btn-primary {
+  background: var(--gold-500);
+  color: var(--ink-900);
+  border-color: var(--gold-500);
+}
+.theme-taamun .btn-primary:hover:not(:disabled) { background: var(--gold-400); border-color: var(--gold-400); }
+.theme-taamun .btn-primary:active:not(:disabled) { background: var(--gold-600); border-color: var(--gold-600); transform: scale(0.98); }
+
+/* Secondary: gold outline */
+.theme-taamun .btn-secondary {
+  background: transparent;
+  color: var(--fg-accent);
+  border-color: var(--border-gold);
+}
+.theme-taamun .btn-secondary:hover:not(:disabled) { color: var(--gold-400); border-color: var(--gold-400); }
+.theme-taamun .btn-secondary:active:not(:disabled) { color: var(--gold-600); border-color: var(--gold-600); }
+
+/* Ghost: text only */
+.theme-taamun .btn-ghost {
+  background: transparent;
+  color: var(--fg-muted);
+  border-color: transparent;
+}
+.theme-taamun .btn-ghost:hover:not(:disabled) { color: var(--fg); background: var(--gold-wash); }
+.theme-taamun .btn-ghost:active:not(:disabled) { color: var(--fg-accent); }
+
+/* ---------- Cards ---------- */
+.theme-taamun .card {
+  background: var(--bg-card);
+  border: var(--hairline);
+  border-radius: var(--radius-card);
+  padding: var(--s-6);
+}
+
+.theme-taamun .card-active {
+  box-shadow: var(--shadow-gold-inset);
+}
+
+/* ---------- Inputs ---------- */
+.theme-taamun .input,
+.theme-taamun .textarea,
+.theme-taamun .select {
+  width: 100%;
+  background: var(--bg-raised);
+  color: var(--fg);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-field);
+  padding: var(--s-3) var(--s-4);
+  font-family: var(--font-body);
+  font-size: var(--text-base);
+  line-height: var(--leading-snug);
+  transition: border-color var(--dur-2) var(--ease-out);
+}
+
+.theme-taamun .input::placeholder,
+.theme-taamun .textarea::placeholder { color: var(--ink-300); }
+
+.theme-taamun .input:focus,
+.theme-taamun .textarea:focus,
+.theme-taamun .select:focus {
+  outline: 1px solid var(--fg-accent);
+  outline-offset: 2px;
+  border-color: var(--border-gold);
+}
+
+/* ---------- Badges ---------- */
+.theme-taamun .badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px var(--s-2);
+  border-radius: var(--radius-full);
+  font-family: var(--font-body);
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  border: 1px solid var(--border);
+  background: var(--bg-raised);
+  color: var(--fg-muted);
+}
+
+.theme-taamun .badge-gold { border-color: var(--border-gold); color: var(--fg-accent); background: var(--gold-wash); }
+.theme-taamun .badge-sage { border-color: var(--sage-500); color: var(--sage-500); }
+.theme-taamun .badge-copper { border-color: var(--copper-500); color: var(--copper-500); }
+.theme-taamun .badge-sand { border-color: var(--sand-500); color: var(--sand-500); }
+.theme-taamun .badge-ember { border-color: var(--ember-500); color: var(--ember-500); }
+
+/* ---------- Hairline divider ---------- */
+.theme-taamun .hairline { height: 1px; background: var(--border); border: 0; }
+.theme-taamun .hairline-gold { height: 1px; background: var(--border-gold); border: 0; }
