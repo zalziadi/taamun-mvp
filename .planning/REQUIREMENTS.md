@@ -49,14 +49,14 @@
 ### BADGE — Milestone Badges (Phase 8)
 
 - [x] **BADGE-01**: 7 badges total per cycle: days 1, 3, 7, 14, 21, 28, + 1 cycle-completion badge. Scope cap: up to cycle 3 for v1.2. Decision locked 2026-04-18.
-- [ ] **BADGE-02**: Each badge stored in `badges` table with `UNIQUE(user_id, badge_code, cycle_number)` constraint
+- [x] **BADGE-02**: Each badge stored in `badges` table with `UNIQUE(user_id, badge_code, cycle_number)` constraint
 - [x] **BADGE-03**: Badges rendered as inline SVG React components (6 variants + cycle-completion), no static PNG, no Lottie
 - [ ] **BADGE-04**: Badges are **private by default** — no share button, no `next/og` share route, no social export (Headspace إخلاص model). Decision locked 2026-04-18.
-- [ ] **BADGE-05**: Badge unlock trigger evaluates server-side on reflection save (not client-side) — prevents bypass + handles offline catch-up
-- [ ] **BADGE-06**: Badge unlock event is idempotent — duplicate saves do not create duplicate rows or duplicate analytics events
+- [x] **BADGE-05**: Badge unlock trigger evaluates server-side on reflection save (not client-side) — prevents bypass + handles offline catch-up
+- [x] **BADGE-06**: Badge unlock event is idempotent — duplicate saves do not create duplicate rows or duplicate analytics events
 - [x] **BADGE-07**: Existing users are backfilled with historical badges on deploy; backfill sets `notified=true` and reconstructs `unlocked_at` from `reflections.day_number` MIN timestamp — no post-hoc PostHog events fire
 - [ ] **BADGE-08**: Badge grid visible on `/progress` page shows unlocked + locked states in same layout
-- [ ] **BADGE-09**: No badge modal / toast interrupts the daily flow — unlock is revealed on the completion screen only
+- [x] **BADGE-09**: No badge modal / toast interrupts the daily flow — unlock is revealed on the completion screen only
 
 ### RENEW — Renewal Prompts In-App (Phase 9)
 
