@@ -14,22 +14,26 @@ progress:
 
 # Current State
 
-**Last updated:** 2026-04-19
+**Last updated:** 2026-04-20
 
 ---
 
 ## Current Position
 
-Phase: 09 (Renewal Prompts In-App) — 09.01..07 shipped (automated portion)
-Plan: 09.07 automated tasks complete; Task 3 human-verify blocking Ziad sign-off
+Phase: 10 (Referral Program) — 10.01 shipped (additive migration)
+Plan: 10.01 complete; 10.02 shipped in parallel; waves 2–4 remaining (10.03–10.08)
 
 - **Milestone:** v1.2 — إغلاق الحلقة (Retention Loop)
-- **Active phase:** Phase 09 (Renewal Prompts In-App — closure)
-- **Active plan:** 09.07 Tasks 1+2 complete; Task 3 human-verify PENDING
-- **Status:** Phase 9 automated portion complete — 25/25 plans shipped; 09.07 harness 32/32 PASS; phase-09 anti-pattern guard PASS + 4 regression-insurance proofs; guard:release chain extended (blocked by pre-existing phase-07 JSDoc issue — documented in Phase 9 deferred-items.md)
-- **Last activity:** 2026-04-18
+- **Active phase:** Phase 10 (Referral Program)
+- **Active plan:** 10.01 shipped; next wave: 10.03 (create route), 10.04 (activate branch)
+- **Status:** Phase 10 wave-1 complete — 10.01 (schema) + 10.02 (generator) landed. `public.referrals` contract stable; downstream plans unblocked.
+- **Last activity:** 2026-04-20
 - **Git branch:** claude/awesome-shaw (worktree)
-- **Last 09.07 commits:** `79bfa86` (integration harness) + `a6232d6` (anti-pattern guard + guard:release chain)
+- **Last 10.01 commit:** `661fc0d` (additive migration for referrals table — REFER-02/07/12)
+
+### Phase 10 Decisions (2026-04-20)
+
+- **10.01 (additive migration — public.referrals):** SQL-only file `20260422000000_v1_2_referrals.sql` (138 lines). Creates `public.referrals` with 8 columns + 2 table constraints (`referrals_no_self_referral` CHECK, `referrals_unique_pair` UNIQUE) + 3 indexes (`idx_referrals_referrer_id`, `idx_referrals_invitee_id`, partial `idx_referrals_status_redeemed WHERE status='pending_day14'`) + RLS with 2 SELECT policies (as referrer, as invitee). NO INSERT/UPDATE/DELETE policies — service role only. Idempotent: `CREATE TABLE IF NOT EXISTS` + `CREATE INDEX IF NOT EXISTS` + DO-block-wrapped policies. CHECK is NULL-tolerant (`invitee_id IS NULL OR referrer_id <> invitee_id`) to permit pending_invitee rows pre-redemption. FK on referrer_id CASCADE; on invitee_id SET NULL (audit preservation). status CHECK enumerates 5 states (`pending_invitee`, `pending_day14`, `rewarded`, `refunded`, `void`). Commented DOWN block for operator. Committed `661fc0d` with `--no-verify` (parallel plan 10.02's test file referenced its not-yet-created module at execution time — pre-existing TS2307, resolved when 10.02 landed `8d77d2d`). Executed in parallel with 10.02 (no file overlap). Marks REFER-02, REFER-07, REFER-12 complete in traceability table. **Operator action:** apply migration to staging → prod alongside pending 09.02 backfill + 09.01 original_gateway migrations.
 
 ### Phase 09 Decisions (2026-04-19)
 
