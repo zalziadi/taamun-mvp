@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { tapFetch, TapCharge } from "@/lib/tap";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { applyInviteReward } from "@/lib/invite-rewards";
 
 export const dynamic = "force-dynamic";
 
@@ -47,6 +48,19 @@ export async function POST(req: Request) {
     if (upsertErr) {
       console.error("[tap/webhook] subscription upsert failed:", upsertErr);
       return NextResponse.json({ error: "db_upsert_failed" }, { status: 500 });
+    }
+
+    // v1.4 Phase 1: apply invite reward on first successful Tap charge.
+    // Idempotent — no-op if this user was never invited or was already rewarded.
+    try {
+      const reward = await applyInviteReward(admin, userId);
+      if (reward.applied) {
+        console.log(
+          `[tap/webhook] invite reward applied — inviter ${reward.inviterUserId} +30d, invitee ${reward.inviteeUserId} +30d`
+        );
+      }
+    } catch (rewardErr) {
+      console.error("[tap/webhook] invite reward failed:", rewardErr);
     }
   } else if (FAILED_STATUSES.has(charge.status)) {
     const { error: updateErr } = await admin

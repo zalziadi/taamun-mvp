@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import Stripe from "stripe";
 import { getStripe } from "@/lib/stripe";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { applyInviteReward } from "@/lib/invite-rewards";
 
 export const dynamic = "force-dynamic";
 
@@ -57,6 +58,19 @@ export async function POST(req: Request) {
         session.subscription as string
       );
       await upsertSubscription(admin, userId, sub, session.metadata?.tier);
+
+      // v1.4 Phase 1: apply invite reward on first paid subscription.
+      // Idempotent — no-op if this user was never invited or was already rewarded.
+      try {
+        const reward = await applyInviteReward(admin, userId);
+        if (reward.applied) {
+          console.log(
+            `[stripe/webhook] invite reward applied — inviter ${reward.inviterUserId} +30d, invitee ${reward.inviteeUserId} +30d`
+          );
+        }
+      } catch (rewardErr) {
+        console.error("[stripe/webhook] invite reward failed:", rewardErr);
+      }
     }
   }
 
