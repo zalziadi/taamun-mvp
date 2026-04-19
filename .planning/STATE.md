@@ -1,15 +1,15 @@
 ---
 gsd_state_version: 1.0
-milestone: v1.0
-milestone_name: — Core Experience
+milestone: v1.2
+milestone_name: إغلاق الحلقة (Retention Loop)
 status: verifying
-last_updated: "2026-04-19T01:25:25.017Z"
+last_updated: "2026-04-19T04:30:00.000Z"
 last_activity: 2026-04-19
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 18
-  completed_plans: 17
+  completed_plans: 18
 ---
 
 # Current State
@@ -20,21 +20,24 @@ progress:
 
 ## Current Position
 
-Phase: 08 (Milestone Badges) — 08.04 complete; 08.01 executing in parallel
-Plan: 08.04 of 08.01..06 shipped (pure-SQL retroactive backfill migration — PITFALL #4 mitigation)
+Phase: 08 (Milestone Badges) — 08.01..06 shipped (automated portion)
+Plan: 08.06 complete (automated); human-verify checkpoint pending Ziad sign-off
 
 - **Milestone:** v1.2 — إغلاق الحلقة (Retention Loop)
-- **Active phase:** Phase 08 (Milestone Badges — multi-plan parallel execution)
-- **Active plan:** 08.04 complete; 08.01 (SVG variants) running in parallel
-- **Status:** Phase complete — ready for verification
+- **Active phase:** Phase 08 (Milestone Badges — closure)
+- **Active plan:** 08.06 automated portion complete; Task 3 human-verify PENDING
+- **Status:** Phase 8 awaiting human checkpoint — all 6 plans shipped; 40/40 integration harness checks PASS; phase-08 anti-pattern guard PASS; guard:release chain extended
 - **Last activity:** 2026-04-19
 - **Git branch:** claude/awesome-shaw (worktree)
-- **Last commit (08.04):** pending this plan's atomic commit
+- **Last 08.06 commits:** `38e3f66` (integration harness) + `c4b642b` (anti-pattern guard)
 
 ### Phase 08 Decisions (2026-04-19)
 
 - **08.04 (backfill migration):** Pure SQL, 5 INSERT sections (cycle-1 milestones from reflections, cycle-1 day_28 from reflections, cycle_complete from completed_cycles, day_28 for archived cycles, milestones for archived cycles). Every row has `notified=true` and `ON CONFLICT (user_id, badge_code, cycle_number) DO NOTHING`. Attributes historical reflections to cycle 1 because reflections table is keyed UNIQUE(user_id, day) — no cycle dimension.
 - **08.04 Ziad-flag:** Section 5 could over-backfill users whose `completed_cycles` was populated via edge case without reaching day 21 of that cycle. In practice vanishingly rare (start-cycle route gates archival on completed_days.includes(28)). ON CONFLICT DO NOTHING means a corrective migration later is safe.
+- **08.06 (integration harness + anti-pattern guard):** Mirrored Phase 7 closure pattern verbatim — Node ESM harness with in-memory fake Supabase + fetch-intercept PostHog sink + POSIX-bash grep guard. 4 scenarios / 40 checks all PASS. 8 guard checks across 4 path buckets (BADGE + PROGRESS + SACRED_API + BADGE_HELPER) all clean. Narrowed vocab check with comment-line carve-out (`grep -v ':[[:space:]]*\\*|:[[:space:]]*//'`) so JSDoc bans-documentation doesn't trip the guard while real JSX violations still match. Regression-insurance test (injected violation) confirms guard correctly fails on real banned patterns.
+- **08.06 Ziad-flag carried forward from 08.03:** `cycle_complete` cap-at-cycle-3 decision — leave as-is (no guard) OR wrap 2nd unlock call in `if (finishedCycle <= 3)`. Default = leave as-is (planner recommendation); resolve at human-verify.
+- **08.06 deferred:** Pre-existing `guard:brand` failure (verified at commit `6ac844d` — predates Phase 8.06). Not Phase 8 scope. Logged in `.planning/phases/08-milestone-badges/deferred-items.md`.
 
 ---
 
@@ -91,9 +94,12 @@ Phase 12 (YIR Ramadan moment) explicitly deferred to v1.3.
 
 ## Next action
 
-1. **Run `/gsd:plan-phase 6`** — Plan Phase 6 (PostHog Event Instrumentation)
-   - Routing hint: SKIP `/gsd:research-phase` (research already covers it)
-2. After Phase 6 ships → `/gsd:plan-phase 7` (RUN research-phase first for cycle-2 timezone spike)
+1. **Ziad human-verify checkpoint** — Review Plan 08.06 automated deliverables and execute the 7-step walkthrough documented in `08.06-SUMMARY.md` and the executor's final message. Reply with one of:
+   - `approved` — Phase 8 complete; move to Phase 9 planning.
+   - `approved-with-fixes: <list>` — apply tweaks, then Phase 8 complete.
+   - `rejected: <reason>` — revise Plans 08.01–08.05 as needed.
+2. **After Phase 8 sign-off:** Run `/gsd:plan-phase 9` (Renewal Prompts In-App) — depends on Phase 6 analytics + Phase 7 cycle transitions (both shipped).
+3. **Apply `supabase/migrations/20260420000000_v1_2_badge_backfill.sql` to staging → prod** as part of deploy (Ziad decision per 08.04-SUMMARY; file is ready but NOT applied yet).
 
 ---
 

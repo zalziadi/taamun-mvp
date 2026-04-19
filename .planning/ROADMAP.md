@@ -104,7 +104,7 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
   - [x] 08.03-PLAN.md — cycle_complete unlock alongside day_28 on /api/program/start-cycle
   - [x] 08.04-PLAN.md — Pure-SQL retroactive backfill migration (notified=true, zero events) — shipped 2026-04-19, file ready but NOT applied (human decision)
   - [x] 08.05-PLAN.md — Private BadgeGrid on /progress (no modal, no share, subtle fade-in)
-  - [ ] 08.06-PLAN.md — Integration tests + anti-pattern grep guard + human-verify checkpoint
+  - [x] 08.06-PLAN.md — Integration tests + anti-pattern grep guard + human-verify checkpoint (automated portion complete 2026-04-19; 40/40 harness checks PASS + phase-08 guard PASS + guard:release wired; human-verify checkpoint PENDING Ziad sign-off)
 **UI hint**: yes
 **Risks & Mitigations** (from PITFALLS.md):
   - **Pitfall 4 — Retroactive badge flood:** Backfill migration sets `notified=true` and reconstructs `unlocked_at` from `MIN(reflections.created_at)` per day; no client animation fires for backfilled rows; backfill never emits PostHog events.
