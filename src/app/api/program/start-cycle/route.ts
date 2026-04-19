@@ -166,15 +166,22 @@ export async function POST(req: Request) {
     }
   }
 
-  // --- RETURN-05: Day-28 badge silent reveal (Plan 07.04) ---
-  // Award the `day_28` badge for the cycle the user just FINISHED as part of
-  // this transition — idempotent via UNIQUE (user_id, badge_code, cycle_number)
-  // from Plan 07.01. The helper owns the single `badge_unlock` emitEvent call
-  // site; it never throws, so a DB failure here does NOT fail the cycle
-  // transition (the UNIQUE constraint ensures a later retry still converges).
-  // Awaited so we stay inside the same request lifecycle for Node runtime.
+  // --- RETURN-05 (day_28) + BADGE-01 (cycle_complete) silent reveal ---
+  // Award BOTH badges for the cycle the user just FINISHED as part of this
+  // transition:
+  //   • `day_28`        — RETURN-05, Plan 07.04 (Phase 7)
+  //   • `cycle_complete` — BADGE-01 (the 7th badge per cycle), Plan 08.03
+  // Each is idempotent via UNIQUE (user_id, badge_code, cycle_number) from
+  // Plan 07.01; distinct badge_code = distinct UNIQUE key, so the two calls
+  // cannot contaminate each other. The helper owns the single
+  // `badge_unlock` emitEvent call site; it never throws, so a DB hiccup here
+  // does NOT fail the cycle transition (the UNIQUE constraint guarantees
+  // convergence on a later retry). Awaited so we stay inside the same request
+  // lifecycle for Node runtime. Sequential awaits (~5–15ms total added
+  // latency on the happy path) keep failure modes local and obvious.
   try {
     await unlockBadge(auth.user.id, "day_28", finishedCycle, 28);
+    await unlockBadge(auth.user.id, "cycle_complete", finishedCycle, 28);
   } catch {
     // defensive — helper is documented as never-throwing, but we never let
     // a badge hiccup block the cycle transition response.
