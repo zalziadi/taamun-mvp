@@ -129,7 +129,7 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
   - [ ] 09.02-PLAN.md — Backfill profiles.original_gateway from gateway tables + activation_codes
   - [ ] 09.03-PLAN.md — Forward-fill: webhook + activate routes write original_gateway with first-gateway-wins guard
   - [ ] 09.04-PLAN.md — RenewalBanner client component + /api/renewal/status route + AppChrome mount
-  - [ ] 09.05-PLAN.md — Server helper shouldShowRenewalBanner — 7d window + email/push dedup + auto-renewed suppression
+  - [x] 09.05-PLAN.md — Server helper shouldShowRenewalBanner — 7d window + email/push dedup + auto-renewed suppression
   - [ ] 09.06-PLAN.md — Helper refreshEntitlementIfStale — cookie-vs-DB reconciliation (RENEW-09)
   - [ ] 09.07-PLAN.md — Integration harness (6 scenarios) + phase-09 anti-pattern guard + human-verify checkpoint
 **UI hint**: yes
