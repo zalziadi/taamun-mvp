@@ -24,3 +24,13 @@ Running `npx tsc --noEmit` is clean; only `next build`'s ESLint step fails.
 ### Pre-existing warning in `src/app/guide/page.tsx:258`
 
 `react-hooks/exhaustive-deps` warning on `useCallback` missing `profile` dep. Not in Phase 10 scope.
+
+## Discovered during 10.04 execution (2026-04-20)
+
+Same two issues above still unresolved when 10.04 ran (confirmed via `git stash && npm run build` against HEAD immediately prior to 10.04 edits — errors present without any 10.04 change).
+
+Plan 10.04 verification therefore relied on:
+- `npx tsc --noEmit` — clean.
+- `npx vitest run src/app/api/activate/route.test.ts` — 8/8 passing.
+- `npm run lint:analytics-privacy` — 455 files scanned, passed.
+- `next build` — compiles (`✓ Compiled successfully`) but ESLint step fails on 10.02's pre-existing `@typescript-eslint/no-explicit-any` rule-not-found. No regression introduced by 10.04.

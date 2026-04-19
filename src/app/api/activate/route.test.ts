@@ -114,6 +114,9 @@ vi.mock("@/lib/entitlement", async () => {
 vi.mock("@/lib/subscriptionDurations", async () => {
   return await import("../../../lib/subscriptionDurations");
 });
+vi.mock("@/lib/referral/generate", async () => {
+  return await import("../../../lib/referral/generate");
+});
 
 function buildFakeAdmin() {
   return {
