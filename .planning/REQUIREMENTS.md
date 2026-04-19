@@ -68,7 +68,7 @@
 - [x] **RENEW-06**: Nudge orchestrator deduplicates: if email sent today + push sent today, banner is suppressed (avoid 3-channel fatigue)
 - [x] **RENEW-07**: Banner does not render for users who already auto-renewed (expires_at > now + 7 days after webhook update)
 - [x] **RENEW-08**: Existing `src/lib/emails/expiry-warning-template.ts` is reused — no new email template created
-- [ ] **RENEW-09**: Cookie-vs-DB reconciliation helper refreshes stale HMAC entitlement cookie if DB shows renewal
+- [x] **RENEW-09**: Cookie-vs-DB reconciliation helper refreshes stale HMAC entitlement cookie if DB shows renewal
 
 ### REFER — Referral Program (Phase 10)
 
