@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: — Core Experience
-status: executing
-last_updated: "2026-04-19T00:16:30.014Z"
+status: Awaiting user "approved" signal on Day-28 walk-through
+last_updated: "2026-04-19T01:06:52.772Z"
 last_activity: 2026-04-19
 progress:
-  total_phases: 2
+  total_phases: 3
   completed_phases: 2
-  total_plans: 12
-  completed_plans: 12
+  total_plans: 18
+  completed_plans: 13
 ---
 
 # Current State

@@ -99,7 +99,7 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
   4. Inspecting any badge on `/progress` reveals NO share button, NO `next/og` route, NO social export action — badges are private by definition
   5. Badge SVGs render correctly RTL on iOS Safari + Android Chrome (no Arabic glyph disconnection, no mirrored numerals — text rendered via HTML `<span dir="rtl">`, not embedded in SVG)
 **Plans** (6 plans):
-  - [ ] 08.01-PLAN.md — Widen MilestoneBadge with 6 new SVG variants (days 1/3/7/14/21 + cycle_complete)
+  - [x] 08.01-PLAN.md — Widen MilestoneBadge with 6 new SVG variants (days 1/3/7/14/21 + cycle_complete)
   - [ ] 08.02-PLAN.md — Server-side mid-cycle milestone unlock trigger on /api/reflections POST + widen unlock helper
   - [ ] 08.03-PLAN.md — cycle_complete unlock alongside day_28 on /api/program/start-cycle
   - [ ] 08.04-PLAN.md — Pure-SQL retroactive backfill migration (notified=true, zero events)

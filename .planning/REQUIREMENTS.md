@@ -50,7 +50,7 @@
 
 - [ ] **BADGE-01**: 7 badges total per cycle: days 1, 3, 7, 14, 21, 28, + 1 cycle-completion badge. Scope cap: up to cycle 3 for v1.2. Decision locked 2026-04-18.
 - [ ] **BADGE-02**: Each badge stored in `badges` table with `UNIQUE(user_id, badge_code, cycle_number)` constraint
-- [ ] **BADGE-03**: Badges rendered as inline SVG React components (6 variants + cycle-completion), no static PNG, no Lottie
+- [x] **BADGE-03**: Badges rendered as inline SVG React components (6 variants + cycle-completion), no static PNG, no Lottie
 - [ ] **BADGE-04**: Badges are **private by default** — no share button, no `next/og` share route, no social export (Headspace إخلاص model). Decision locked 2026-04-18.
 - [ ] **BADGE-05**: Badge unlock trigger evaluates server-side on reflection save (not client-side) — prevents bypass + handles offline catch-up
 - [ ] **BADGE-06**: Badge unlock event is idempotent — duplicate saves do not create duplicate rows or duplicate analytics events
@@ -109,8 +109,8 @@
 - [ ] **NFR-03**: SEO — Lighthouse SEO = 100 (maintained)
 - [ ] **NFR-04**: Privacy — zero tracking pixels on prayer/reflection pages (PROJECT.md principle #4)
 - [ ] **NFR-05**: Cost — v1.2 feature work < 2000 SAR total (no paid SaaS, no new infrastructure)
-- [ ] **NFR-06**: RTL — all new UI renders correctly right-to-left
-- [ ] **NFR-07**: Arabic-first — all copy written in Arabic natively, never machine-translated
+- [x] **NFR-06**: RTL — all new UI renders correctly right-to-left
+- [x] **NFR-07**: Arabic-first — all copy written in Arabic natively, never machine-translated
 - [x] **NFR-08**: No new runtime dependencies added (CLAUDE.md rule #6)
 - [ ] **NFR-09**: Every schema migration is two-step (additive, then enforce) to avoid prod outages
 - [x] **NFR-10**: Pre-merge checks: `npx tsc --noEmit && npm run build` must pass (CLAUDE.md mandatory)
