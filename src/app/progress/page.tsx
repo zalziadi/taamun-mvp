@@ -21,6 +21,7 @@ import {
   PHASE_SUBTITLE_AR,
   phaseOrder,
 } from "@/lib/journey/phases";
+import { BadgeGrid } from "@/components/badges/BadgeGrid";
 
 type TimelinePayload = {
   ok?: boolean;
@@ -277,6 +278,9 @@ export default function ProgressPage() {
             </div>
           </div>
         )}
+
+        {/* Badge grid — private milestones, silent reveal (BADGE-04/08/09) */}
+        {status === "ok" && <BadgeGrid />}
 
         {/* Phase sections — four stages of transformation */}
         {!isEmpty && (
