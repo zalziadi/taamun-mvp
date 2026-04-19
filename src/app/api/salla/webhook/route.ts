@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { calcExpiresAt } from "@/lib/subscriptionDurations";
+import { applyInviteReward } from "@/lib/invite-rewards";
 import crypto from "crypto";
 
 export const dynamic = "force-dynamic";
@@ -187,6 +188,21 @@ export async function POST(req: Request) {
       // لا نرجع خطأ — customer_subscriptions تم تحديثه بنجاح
     } else {
       console.log(`Salla webhook: profiles updated for ${matchedUser.id}`);
+    }
+
+    // v1.4 Phase 1: apply invite reward (+30 days both sides) on first paid charge.
+    // applyInviteReward is idempotent — no-op when there's no redemption
+    // or when this redemption was already rewarded.
+    try {
+      const reward = await applyInviteReward(admin, matchedUser.id);
+      if (reward.applied) {
+        console.log(
+          `Salla webhook: invite reward applied — inviter ${reward.inviterUserId} +30d, invitee ${reward.inviteeUserId} +30d`
+        );
+      }
+    } catch (rewardErr) {
+      console.error("Salla webhook: invite reward failed", rewardErr);
+      // لا نرجع خطأ — الاشتراك تم تفعيله بنجاح
     }
   }
 
