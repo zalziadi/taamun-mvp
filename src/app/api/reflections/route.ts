@@ -9,6 +9,8 @@ import { attachDecision } from "@/lib/decisionLayer";
 import { generateNarrative } from "@/lib/narrativeEngine";
 import { analyzeReflection } from "@/lib/ai/analyzeReflection";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
+import { unlockBadge } from "@/lib/badges/unlock";
+import { PROGRESSION_MILESTONES } from "@/lib/taamun-content";
 
 export const dynamic = "force-dynamic";
 
@@ -89,6 +91,38 @@ export async function POST(req: Request) {
 
   if (error) {
     return NextResponse.json({ ok: false, error: "save_failed" }, { status: 500 });
+  }
+
+  // Phase 8 · Plan 08.02 — milestone badge fire-and-forget.
+  //
+  // BADGE-05 (server-side trigger), BADGE-06 (idempotent), BADGE-09 (silent).
+  //
+  // Guard on PROGRESSION_MILESTONES = [1, 3, 7, 14, 21, 28]. Day 28 is ALSO
+  // handled by start-cycle (Plan 07.04 / Plan 08.03) — firing here too is
+  // harmless: duplicate upsert returns already_unlocked (UNIQUE constraint),
+  // and the helper's emit-only-on-fresh-insert gate means zero duplicate
+  // `badge_unlock` events.
+  //
+  // The call is `void`-prefixed so it never blocks the response and never
+  // surfaces UI — the user sees the new badge on their next /progress visit
+  // (silent reveal). No push notification, no toast, no modal, no payload
+  // change.
+  if ((PROGRESSION_MILESTONES as readonly number[]).includes(day)) {
+    const { data: cycleRow } = await supabase
+      .from("progress")
+      .select("current_cycle")
+      .eq("user_id", user.id)
+      .maybeSingle();
+    const cycle =
+      typeof cycleRow?.current_cycle === "number" ? cycleRow.current_cycle : 1;
+    const code = `day_${day}` as
+      | "day_1"
+      | "day_3"
+      | "day_7"
+      | "day_14"
+      | "day_21"
+      | "day_28";
+    void unlockBadge(user.id, code, cycle, day);
   }
 
   // Phase 4 · Task 2 — fire-and-forget AI enhancement.
