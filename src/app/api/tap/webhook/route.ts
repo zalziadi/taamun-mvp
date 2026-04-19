@@ -48,6 +48,25 @@ export async function POST(req: Request) {
       console.error("[tap/webhook] subscription upsert failed:", upsertErr);
       return NextResponse.json({ error: "db_upsert_failed" }, { status: 500 });
     }
+
+    // Phase 9 RENEW-03: tag first-seen gateway for renewal CTA routing.
+    // Guarded by .is("original_gateway", null) so first-gateway-wins.
+    // Best-effort: failure is logged but never blocks webhook 2xx.
+    try {
+      const { error: gatewayTagError } = await admin
+        .from("profiles")
+        .update({ original_gateway: "tap" })
+        .eq("id", userId)
+        .is("original_gateway", null);
+      if (gatewayTagError) {
+        console.warn(
+          "[tap webhook] original_gateway tag failed (non-blocking):",
+          gatewayTagError.message
+        );
+      }
+    } catch (e) {
+      console.warn("[tap webhook] original_gateway tag threw (non-blocking):", e);
+    }
   } else if (FAILED_STATUSES.has(charge.status)) {
     const { error: updateErr } = await admin
       .from("customer_subscriptions")

@@ -57,6 +57,25 @@ export async function POST(req: Request) {
         session.subscription as string
       );
       await upsertSubscription(admin, userId, sub, session.metadata?.tier);
+
+      // Phase 9 RENEW-03: tag first-seen gateway for renewal CTA routing.
+      // Guarded by .is("original_gateway", null) so first-gateway-wins.
+      // Best-effort: failure is logged but never blocks webhook 2xx.
+      try {
+        const { error: gatewayTagError } = await admin
+          .from("profiles")
+          .update({ original_gateway: "stripe" })
+          .eq("id", userId)
+          .is("original_gateway", null);
+        if (gatewayTagError) {
+          console.warn(
+            "[stripe webhook] original_gateway tag failed (non-blocking):",
+            gatewayTagError.message
+          );
+        }
+      } catch (e) {
+        console.warn("[stripe webhook] original_gateway tag threw (non-blocking):", e);
+      }
     }
   }
 

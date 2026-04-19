@@ -188,6 +188,25 @@ export async function POST(req: Request) {
     } else {
       console.log(`Salla webhook: profiles updated for ${matchedUser.id}`);
     }
+
+    // Phase 9 RENEW-03: tag first-seen gateway for renewal CTA routing.
+    // Guarded by .is("original_gateway", null) so first-gateway-wins.
+    // Best-effort: failure is logged but never blocks webhook 2xx.
+    try {
+      const { error: gatewayTagError } = await admin
+        .from("profiles")
+        .update({ original_gateway: "salla" })
+        .eq("id", matchedUser.id)
+        .is("original_gateway", null);
+      if (gatewayTagError) {
+        console.warn(
+          "[salla webhook] original_gateway tag failed (non-blocking):",
+          gatewayTagError.message
+        );
+      }
+    } catch (e) {
+      console.warn("[salla webhook] original_gateway tag threw (non-blocking):", e);
+    }
   }
 
   console.log(`Salla webhook: activated ${tier} for ${matchedUser.id} (${email})`);

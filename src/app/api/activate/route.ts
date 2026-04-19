@@ -90,6 +90,26 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "تعذر تحديث حالة الاشتراك." }, { status: 500 });
   }
 
+  // Phase 9 RENEW-03: tag first-seen gateway as 'eid_code' for renewal CTA routing.
+  // Guarded by .is("original_gateway", null) so first-gateway-wins. If this user
+  // previously paid via Salla/Tap/Stripe, their prior gateway tag is preserved.
+  // Best-effort: failure is logged but never blocks activation.
+  try {
+    const { error: gatewayTagError } = await admin
+      .from("profiles")
+      .update({ original_gateway: "eid_code" })
+      .eq("id", auth.user.id)
+      .is("original_gateway", null);
+    if (gatewayTagError) {
+      console.warn(
+        "[activate] original_gateway tag failed (non-blocking):",
+        gatewayTagError.message
+      );
+    }
+  } catch (e) {
+    console.warn("[activate] original_gateway tag threw (non-blocking):", e);
+  }
+
   /* ── 6. أنشئ entitlement token واكتبه في cookie ── */
   const token = makeEntitlementToken(auth.user.id, tier, expiresAt);
 
