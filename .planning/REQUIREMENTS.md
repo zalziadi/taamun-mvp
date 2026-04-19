@@ -80,9 +80,9 @@
 - [x] **REFER-06**: Max 3 successful referrals per referrer per calendar year (abuse cap)
 - [x] **REFER-07**: Self-referrals forbidden — `referrals.referrer_id !== invitee_id` enforced by constraint; same-device fingerprint flagged for manual review
 - [ ] **REFER-08**: Refund/cancellation of invitee within 14 days voids pending referrer reward
-- [ ] **REFER-09**: Share flow prioritizes WhatsApp deep link (Saudi/Gulf audience primary channel), with Instagram story and link-copy fallback
-- [ ] **REFER-10**: Copy uses "ادعُ للتمعّن" da'wah framing, not "earn rewards" / "earn points"
-- [ ] **REFER-11**: Referrer page shows status: pending / active (day 14+) / rewarded — transparent without gamification UI
+- [x] **REFER-09**: Share flow prioritizes WhatsApp deep link (Saudi/Gulf audience primary channel), with Instagram story and link-copy fallback
+- [x] **REFER-10**: Copy uses "ادعُ للتمعّن" da'wah framing, not "earn rewards" / "earn points"
+- [x] **REFER-11**: Referrer page shows status: pending / active (day 14+) / rewarded — transparent without gamification UI
 - [x] **REFER-12**: RLS policies: referrer can read own referral rows; redemption uses service-role client (existing pattern in `/api/activate`)
 
 ### YIR — Year-in-Review (Phase 11, archive-only)

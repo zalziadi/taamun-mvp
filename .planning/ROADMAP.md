@@ -156,8 +156,8 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
   - [x] 10.02-PLAN.md — FRIEND-XXXXXX code generator (Crockford base32, no confusables) + tests (REFER-01)
   - [x] 10.03-PLAN.md — POST /api/referral/create — mint/reuse + annual cap + prefix-only analytics (REFER-01/06/12)
   - [x] 10.04-PLAN.md — /api/activate FRIEND-* branch — invitee month + pending_day14 + self-referral block (REFER-01/03/07)
-  - [ ] 10.05-PLAN.md — /account/referral page + ReferralPanel + GET /api/referral/list + da'wah copy (REFER-01/09/10/11)
-  - [ ] 10.06-PLAN.md — /api/cron/credit-referrals nightly scan + direct expires_at extension + cap re-check (REFER-03/04/05/06/08)
+  - [x] 10.05-PLAN.md — /account/referral page + ReferralPanel + GET /api/referral/list + da'wah copy (REFER-01/09/10/11)
+  - [x] 10.06-PLAN.md — /api/cron/credit-referrals nightly scan + direct expires_at extension + cap re-check (REFER-03/04/05/06/08)
   - [ ] 10.07-PLAN.md — next/og share card for WhatsApp/IG previews (REFER-09/10)
   - [ ] 10.08-PLAN.md — Integration harness (7 scenarios) + phase-10 anti-pattern guard + human-verify checkpoint (cross-cutting REFER-01..10)
 **UI hint**: yes
@@ -214,7 +214,7 @@ NFRs apply to ALL phases (Phase 6 through Phase 11):
 | 7. Cycle 2 Transition + Day-28 Badge | 0/6 | Planned | - |
 | 8. Milestone Badges | 0/6 | Planned | - |
 | 9. Renewal Prompts In-App | 0/7 | Planned | - |
-| 10. Referral Program | 4/8 | In Progress|  |
+| 10. Referral Program | 6/8 | In Progress|  |
 | 11. Year-in-Review Archive | 0/0 | Not started | - |
 
 ---

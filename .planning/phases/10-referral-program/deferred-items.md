@@ -34,3 +34,14 @@ Plan 10.04 verification therefore relied on:
 - `npx vitest run src/app/api/activate/route.test.ts` — 8/8 passing.
 - `npm run lint:analytics-privacy` — 455 files scanned, passed.
 - `next build` — compiles (`✓ Compiled successfully`) but ESLint step fails on 10.02's pre-existing `@typescript-eslint/no-explicit-any` rule-not-found. No regression introduced by 10.04.
+
+## Discovered during 10.05 execution (2026-04-20)
+
+Same two pre-existing issues (10.02 test file `@typescript-eslint/no-explicit-any` rule-not-found + `src/app/guide/page.tsx:258` `react-hooks/exhaustive-deps`) remain in `next build` output. Not introduced by 10.05 (only new files added: `/api/referral/list/route.ts(.test.ts)`, `ReferralPanelHelpers.ts(.test.ts)`, `ReferralPanel.tsx`, `/account/referral/page.tsx`).
+
+Plan 10.05 verification therefore relied on:
+- `npx tsc --noEmit` — clean.
+- `npx vitest run src/components/ReferralPanelHelpers.test.ts src/app/api/referral/list/route.test.ts` — 11/11 passing.
+- `npm run lint:analytics-privacy` — 465 files scanned, passed.
+- `next build` — compiles (`✓ Compiled successfully`); ESLint step fails on pre-existing 10.02 errors. No regression introduced by 10.05.
+- grep confirms required Arabic phrases present + banned vocabulary/emoji absent in `ReferralPanel.tsx` and `page.tsx`.
