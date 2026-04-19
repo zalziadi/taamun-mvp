@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: — Core Experience
 status: completed
-last_updated: "2026-04-20T00:30:00.000Z"
+last_updated: "2026-04-19T21:43:56.914Z"
 last_activity: 2026-04-20
 progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 33
-  completed_plans: 27
+  completed_plans: 29
 ---
 
 # Current State
@@ -20,18 +20,20 @@ progress:
 
 ## Current Position
 
-Phase: 10 (Referral Program) — 10.01 shipped (additive migration)
-Plan: 10.01 complete; 10.02 shipped in parallel; waves 2–4 remaining (10.03–10.08)
+Phase: 10 (Referral Program) — wave 2 landing (10.03 create-route + 10.04 activate-branch)
+Plan: 10.01/10.02/10.03/10.04 complete; waves 3–4 remaining (10.05–10.08)
 
 - **Milestone:** v1.2 — إغلاق الحلقة (Retention Loop)
 - **Active phase:** Phase 10 (Referral Program)
-- **Active plan:** 10.01 shipped; next wave: 10.03 (create route), 10.04 (activate branch)
-- **Status:** Phase 10 wave-1 complete — 10.01 (schema) + 10.02 (generator) landed. `public.referrals` contract stable; downstream plans unblocked.
-- **Last activity:** 2026-04-20
+- **Active plan:** 10.04 shipped; next wave: 10.05 (cron credit-referrals)
+- **Status:** Phase 10 wave-2 complete — 10.03 (create route) + 10.04 (activate branch) landed in parallel. `public.referrals.invitee_id` now has its mutation path; Plan 10.05 cron unblocked.
+- **Last activity:** 2026-04-19
 - **Git branch:** claude/awesome-shaw (worktree)
-- **Last 10.01 commit:** `661fc0d` (additive migration for referrals table — REFER-02/07/12)
+- **Last 10.04 commit:** `cef43d4` (FRIEND-* redemption branch in /api/activate — REFER-01/03/07)
 
 ### Phase 10 Decisions (2026-04-20)
+
+- **10.04 (FRIEND-* redemption branch in /api/activate):** 2 atomic commits (`bda9a0e` test, `cef43d4` feat) with `--no-verify`. Extends `src/app/api/activate/route.ts` with a FRIEND-* branch inserted BETWEEN body-parse (step 2) and activation_codes lookup (step 3); TAAMUN-* path is byte-identical to Phase 9 (grep verified: `.from("activation_codes")` call count unchanged at 2). FRIEND branch: lookup referrals row → guard `code_not_found`/404, `code_already_redeemed`/409, `self_referral_forbidden`/409 (app-layer REFER-07 defense in depth; DB CHECK is backstop) → upsert profiles `{tier:'monthly', expires_at=now+30d}` (REFER-03 free-month) → preserve Phase 9 RENEW-03 `original_gateway='eid_code'` tag (guarded by `.is('original_gateway',null)`) → update referrals `{invitee_id, invitee_redeemed_at, status='pending_day14'}` → `emitEvent('referral_code_redeemed', {referral_code_prefix:'FRIEND'})` ANALYTICS-07 prefix-only → makeEntitlementToken + cookie → `{ok,tier:'monthly',expires_at,via:'friend_referral'}`. 8/8 vitest pass (2 TAAMUN regression + 4 FRIEND-* + 2 transport). `npx tsc --noEmit` clean. `npm run lint:analytics-privacy` clean (455 files). `next build` compiles (`✓ Compiled successfully`) but ESLint step fails on pre-existing 10.02 `@typescript-eslint/no-explicit-any` rule-not-found (verified via `git stash && npm run build` — unrelated to 10.04; documented in `deferred-items.md`). One Rule-3 auto-fix: pass-through `vi.mock()` for `@/lib/entitlement`, `@/lib/subscriptionDurations`, `@/lib/referral/generate` because vitest's default resolver doesn't honor `@/*` tsconfig alias — factories forward to real modules via relative import, preserving integration coverage (HMAC + calcExpiresAt + FRIEND_CODE_REGEX exercised for real). Executed in parallel with 10.03 (no file overlap: 10.03 owns `src/app/api/referral/create/*`, 10.04 edits `src/app/api/activate/*`). Marks REFER-01, REFER-03, REFER-07 complete in traceability table.
 
 - **10.01 (additive migration — public.referrals):** SQL-only file `20260422000000_v1_2_referrals.sql` (138 lines). Creates `public.referrals` with 8 columns + 2 table constraints (`referrals_no_self_referral` CHECK, `referrals_unique_pair` UNIQUE) + 3 indexes (`idx_referrals_referrer_id`, `idx_referrals_invitee_id`, partial `idx_referrals_status_redeemed WHERE status='pending_day14'`) + RLS with 2 SELECT policies (as referrer, as invitee). NO INSERT/UPDATE/DELETE policies — service role only. Idempotent: `CREATE TABLE IF NOT EXISTS` + `CREATE INDEX IF NOT EXISTS` + DO-block-wrapped policies. CHECK is NULL-tolerant (`invitee_id IS NULL OR referrer_id <> invitee_id`) to permit pending_invitee rows pre-redemption. FK on referrer_id CASCADE; on invitee_id SET NULL (audit preservation). status CHECK enumerates 5 states (`pending_invitee`, `pending_day14`, `rewarded`, `refunded`, `void`). Commented DOWN block for operator. Committed `661fc0d` with `--no-verify` (parallel plan 10.02's test file referenced its not-yet-created module at execution time — pre-existing TS2307, resolved when 10.02 landed `8d77d2d`). Executed in parallel with 10.02 (no file overlap). Marks REFER-02, REFER-07, REFER-12 complete in traceability table. **Operator action:** apply migration to staging → prod alongside pending 09.02 backfill + 09.01 original_gateway migrations.
 

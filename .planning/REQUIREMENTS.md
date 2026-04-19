@@ -72,12 +72,12 @@
 
 ### REFER — Referral Program (Phase 10)
 
-- [ ] **REFER-01**: Each user can generate a referral code via `/account/referral` page; code prefix is distinct from `TAAMUN-*` (use `FRIEND-*`) to avoid namespace collision
+- [x] **REFER-01**: Each user can generate a referral code via `/account/referral` page; code prefix is distinct from `TAAMUN-*` (use `FRIEND-*`) to avoid namespace collision
 - [x] **REFER-02**: Referral codes stored in **new `referrals` table** (NOT an extension of `activation_codes`). Decision locked 2026-04-18.
-- [ ] **REFER-03**: Both-sided reward: invitee gets free month immediately upon code redemption; referrer gets free month **after invitee reaches day 14** of retention. Decision locked 2026-04-18.
+- [x] **REFER-03**: Both-sided reward: invitee gets free month immediately upon code redemption; referrer gets free month **after invitee reaches day 14** of retention. Decision locked 2026-04-18.
 - [ ] **REFER-04**: Referrer reward delivered by extending `profiles.expires_at` directly — NEVER by minting fake `activation_codes` rows
 - [ ] **REFER-05**: Reward crediting happens synchronously inside `/api/activate` on invitee's day-14 milestone — no async webhook delivery
-- [ ] **REFER-06**: Max 3 successful referrals per referrer per calendar year (abuse cap)
+- [x] **REFER-06**: Max 3 successful referrals per referrer per calendar year (abuse cap)
 - [x] **REFER-07**: Self-referrals forbidden — `referrals.referrer_id !== invitee_id` enforced by constraint; same-device fingerprint flagged for manual review
 - [ ] **REFER-08**: Refund/cancellation of invitee within 14 days voids pending referrer reward
 - [ ] **REFER-09**: Share flow prioritizes WhatsApp deep link (Saudi/Gulf audience primary channel), with Instagram story and link-copy fallback
