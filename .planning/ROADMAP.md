@@ -152,8 +152,8 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
   4. A referrer who has already had 3 successful referrals in the current calendar year sees their referral page status reflect the cap; the 4th invitee gets their free month but the referrer reward is denied with a transparent message
   5. An invitee who refunds within 14 days causes the pending referrer reward to be voided automatically (no manual admin action needed)
 **Plans** (8 plans):
-  - [ ] 10.01-PLAN.md — Migration: referrals table + CHECK(no self-ref) + UNIQUE(pair) + RLS (REFER-02/07/12)
-  - [ ] 10.02-PLAN.md — FRIEND-XXXXXX code generator (Crockford base32, no confusables) + tests (REFER-01)
+  - [x] 10.01-PLAN.md — Migration: referrals table + CHECK(no self-ref) + UNIQUE(pair) + RLS (REFER-02/07/12)
+  - [x] 10.02-PLAN.md — FRIEND-XXXXXX code generator (Crockford base32, no confusables) + tests (REFER-01)
   - [ ] 10.03-PLAN.md — POST /api/referral/create — mint/reuse + annual cap + prefix-only analytics (REFER-01/06/12)
   - [ ] 10.04-PLAN.md — /api/activate FRIEND-* branch — invitee month + pending_day14 + self-referral block (REFER-01/03/07)
   - [ ] 10.05-PLAN.md — /account/referral page + ReferralPanel + GET /api/referral/list + da'wah copy (REFER-01/09/10/11)
@@ -214,7 +214,7 @@ NFRs apply to ALL phases (Phase 6 through Phase 11):
 | 7. Cycle 2 Transition + Day-28 Badge | 0/6 | Planned | - |
 | 8. Milestone Badges | 0/6 | Planned | - |
 | 9. Renewal Prompts In-App | 0/7 | Planned | - |
-| 10. Referral Program | 0/8 | Planned | - |
+| 10. Referral Program | 2/8 | In Progress|  |
 | 11. Year-in-Review Archive | 0/0 | Not started | - |
 
 ---

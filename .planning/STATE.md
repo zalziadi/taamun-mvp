@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: — Core Experience
-status: "Phase 9 automated portion complete — 25/25 plans shipped. 09.07 integration harness 32/32 PASS, anti-pattern guard PASS, regression-insurance 4/4 PASS. Task 3 (human-verify) awaiting Ziad real-device sign-off."
-last_updated: "2026-04-19T15:31:19.921Z"
-last_activity: 2026-04-19
+status: completed
+last_updated: "2026-04-20T00:30:00.000Z"
+last_activity: 2026-04-20
 progress:
-  total_phases: 4
+  total_phases: 5
   completed_phases: 4
-  total_plans: 25
-  completed_plans: 25
+  total_plans: 33
+  completed_plans: 27
 ---
 
 # Current State
@@ -34,7 +34,6 @@ Plan: 09.07 automated tasks complete; Task 3 human-verify blocking Ziad sign-off
 ### Phase 09 Decisions (2026-04-19)
 
 - **09.07 (integration harness + anti-pattern guard + guard:release extension):** 2 atomic commits (`79bfa86`, `a6232d6`) with `--no-verify`. Harness at `scripts/test-phase-09-integration.mjs` (plan frontmatter path — NOT `scripts/verify/` like Phase 7/8) covers 6 scenarios / 32 checks, all PASS, <1s runtime, zero new deps. Uses Node 22 TS-stripping to directly import real `src/lib/entitlement.ts`, `src/components/renewalBannerHelpers.ts`, `src/lib/analytics/excludedPaths.ts`; shape-equivalent inline mirror for `shouldShowRenewalBanner` + `refreshEntitlementIfStale` (path-aliased `@/lib/supabaseAdmin` cannot be resolved by Node ESM without a dev-dep loader — Phase 8 precedent). Guard `scripts/guards/phase-09-anti-patterns.sh` with POSIX bash + comment-line carve-out; 5 check blocks × 3 path buckets (`src/components/RenewalBanner*.ts(x)`, `src/app/api/renewal/**`, `src/lib/renewal/**`). Bans: `لا تفقد`/`لن تستطيع الوصول`/`Don't lose`, `setInterval`/`Countdown`, `<Dialog`/`<Modal`/`@radix-ui/react-dialog`/`fixed inset-0`, `posthog.capture`, `framer-motion`. Regression-insurance 4/4 PASS (inject/fail/revert/pass for loss-copy, setInterval, posthog.capture, framer-motion). `guard:release` chain extended: `... && guard:phase-08 && guard:phase-09 && npx tsc --noEmit && npm run build`. Marks RENEW-01/02/04/05/06/07/09 complete in traceability table (03 + 08 already covered by 09.01/09.04 respectively). Full chain currently blocked by pre-existing phase-07 JSDoc issue (`src/components/badges/MilestoneBadge.tsx:16` from commit `044a3ce`, Plan 08.01) — documented in `.planning/phases/09-renewal-prompts/deferred-items.md`. Recommend 1-line follow-up plan to backport the comment-line carve-out from phase-08/09 guard into phase-07 guard.
-
 
 - **09.04 (RenewalBanner + /api/renewal/status + AppChrome mount):** 3 atomic commits (`6ee0f7b`, `0d45087`, `4f3d553`) with `--no-verify`. Ships the user-facing half of Phase 9 — single client-side banner in AppChrome, mount at `!hide` inside `<main>` above `{children}`; banner also gates on `isExcludedPath` (dual-layer defense). Copy uses "واصل" framing only — no countdown digits, no "لا تفقد" language. `renewal_prompted` fires once per session via sessionStorage dedup; skipped for `gateway='eid_code'` (not in TypedEvent union). Dismiss = LocalStorage `taamun.renewal_dismissed_until.v1` (+48h) + `taamun.renewal_dismiss_count.v1` (cap 3). Gateway CTA resolves per env vars (`NEXT_PUBLIC_SALLA_RENEWAL_URL`, `NEXT_PUBLIC_TAP_RENEWAL_URL`, `NEXT_PUBLIC_STRIPE_PORTAL_URL`) with `/pricing?source=expired&gateway=<gw>` fallbacks. 14/14 vitest tests pass (logic-only — RTL/jsdom not installed; deferred to 09.07 integration harness per CLAUDE.md rule 6 + NFR-08). tsc + build + analytics-privacy all clean. Marks RENEW-01, RENEW-02, RENEW-04, RENEW-05, ANALYTICS-06 complete. Remaining for Phase 9: Plan 09.07 (integration tests + anti-pattern guard).
 
