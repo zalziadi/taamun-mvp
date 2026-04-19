@@ -131,7 +131,7 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
   - [x] 09.04-PLAN.md — RenewalBanner client component + /api/renewal/status route + AppChrome mount
   - [x] 09.05-PLAN.md — Server helper shouldShowRenewalBanner — 7d window + email/push dedup + auto-renewed suppression
   - [x] 09.06-PLAN.md — Helper refreshEntitlementIfStale — cookie-vs-DB reconciliation (RENEW-09)
-  - [ ] 09.07-PLAN.md — Integration harness (6 scenarios) + phase-09 anti-pattern guard + human-verify checkpoint
+  - [x] 09.07-PLAN.md — Integration harness (6 scenarios) + phase-09 anti-pattern guard + human-verify checkpoint
 **UI hint**: yes
 **Risks & Mitigations** (from PITFALLS.md):
   - **Pitfall 13 — 3-channel notification fatigue:** Central nudge orchestrator with `(user_id, channel, sent_at)` table; banner suppressed if email/push fired in last 48h.
