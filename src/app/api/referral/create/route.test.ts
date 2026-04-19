@@ -85,7 +85,7 @@ function buildFakeAdmin(responses: FakeResponsesByFilter) {
         },
         insert: (row: unknown) => {
           ctx.sawInsert = true;
-          insertSpy(row);
+          (insertSpy as any)(row);
           return chain;
         },
       };
@@ -95,7 +95,7 @@ function buildFakeAdmin(responses: FakeResponsesByFilter) {
 }
 
 vi.mock("@/lib/authz", () => ({
-  requireUser: (...args: any[]) => requireUserSpy(...args),
+  requireUser: (...args: any[]) => (requireUserSpy as any)(...args),
 }));
 
 vi.mock("@/lib/supabaseAdmin", () => ({
@@ -103,13 +103,13 @@ vi.mock("@/lib/supabaseAdmin", () => ({
 }));
 
 vi.mock("@/lib/referral/generate", () => ({
-  generateUniqueFriendCode: (...args: any[]) => generateSpy(...args),
+  generateUniqueFriendCode: (...args: any[]) => (generateSpy as any)(...args),
   FRIEND_PREFIX: "FRIEND-",
   FRIEND_CODE_REGEX: /^FRIEND-[0-9A-HJKMNP-TV-Z]{6}$/,
 }));
 
 vi.mock("@/lib/analytics/server", () => ({
-  emitEvent: (...args: any[]) => emitSpy(...args),
+  emitEvent: (...args: any[]) => (emitSpy as any)(...args),
 }));
 
 import { POST } from "./route";
