@@ -127,7 +127,6 @@ function makeFakeAdmin(responses: Array<{ data: unknown; error: unknown }>) {
 describe("generateUniqueFriendCode", () => {
   it("returns a valid FRIEND code on first attempt when no collision", async () => {
     const admin = makeFakeAdmin([{ data: null, error: null }]);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const code = await generateUniqueFriendCode(admin as any);
     expect(FRIEND_CODE_REGEX.test(code)).toBe(true);
     expect(admin.from).toHaveBeenCalledWith("referrals");
@@ -139,7 +138,6 @@ describe("generateUniqueFriendCode", () => {
       { data: { id: "collide-2" }, error: null },
       { data: null, error: null },
     ]);
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const code = await generateUniqueFriendCode(admin as any);
     expect(FRIEND_CODE_REGEX.test(code)).toBe(true);
     expect(admin.maybeSingle).toHaveBeenCalledTimes(3);
@@ -152,7 +150,6 @@ describe("generateUniqueFriendCode", () => {
       { data: { id: "c3" }, error: null },
     ]);
     await expect(
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       generateUniqueFriendCode(admin as any, 3),
     ).rejects.toThrow("referral_code_collision_exhausted");
     expect(admin.maybeSingle).toHaveBeenCalledTimes(3);
