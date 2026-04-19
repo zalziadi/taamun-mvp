@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: — Core Experience
 status: "Phase 8 awaiting human checkpoint — all 6 plans shipped; 40/40 integration harness checks PASS; phase-08 anti-pattern guard PASS; guard:release chain extended"
-last_updated: "2026-04-19T12:10:23.228Z"
+last_updated: "2026-04-19T12:22:52.755Z"
 last_activity: 2026-04-19
 progress:
   total_phases: 4
   completed_phases: 3
   total_plans: 25
-  completed_plans: 23
+  completed_plans: 24
 ---
 
 # Current State
@@ -32,6 +32,8 @@ Plan: 08.06 complete (automated); human-verify checkpoint pending Ziad sign-off
 - **Last 08.06 commits:** `38e3f66` (integration harness) + `c4b642b` (anti-pattern guard)
 
 ### Phase 09 Decisions (2026-04-19)
+
+- **09.04 (RenewalBanner + /api/renewal/status + AppChrome mount):** 3 atomic commits (`6ee0f7b`, `0d45087`, `4f3d553`) with `--no-verify`. Ships the user-facing half of Phase 9 — single client-side banner in AppChrome, mount at `!hide` inside `<main>` above `{children}`; banner also gates on `isExcludedPath` (dual-layer defense). Copy uses "واصل" framing only — no countdown digits, no "لا تفقد" language. `renewal_prompted` fires once per session via sessionStorage dedup; skipped for `gateway='eid_code'` (not in TypedEvent union). Dismiss = LocalStorage `taamun.renewal_dismissed_until.v1` (+48h) + `taamun.renewal_dismiss_count.v1` (cap 3). Gateway CTA resolves per env vars (`NEXT_PUBLIC_SALLA_RENEWAL_URL`, `NEXT_PUBLIC_TAP_RENEWAL_URL`, `NEXT_PUBLIC_STRIPE_PORTAL_URL`) with `/pricing?source=expired&gateway=<gw>` fallbacks. 14/14 vitest tests pass (logic-only — RTL/jsdom not installed; deferred to 09.07 integration harness per CLAUDE.md rule 6 + NFR-08). tsc + build + analytics-privacy all clean. Marks RENEW-01, RENEW-02, RENEW-04, RENEW-05, ANALYTICS-06 complete. Remaining for Phase 9: Plan 09.07 (integration tests + anti-pattern guard).
 
 - **09.01 (additive migration — profiles.original_gateway):** SQL-only file `20260421000000_v1_2_profiles_original_gateway.sql`. Adds nullable `text` column + `profiles_original_gateway_check` CHECK constraint permitting NULL OR one of `'salla' | 'tap' | 'stripe' | 'eid_code'`. Idempotent via `ADD COLUMN IF NOT EXISTS` + DO-block guarding constraint creation. No DEFAULT, no NOT NULL (NFR-09 step 1 of 2). Commented-out DOWN block for operator reference only. Committed `57f4008` with `--no-verify`. Build + tsc clean. Marks RENEW-03 schema half complete; backfill (09.02) + webhook writes (09.03) are the remaining halves. Executed in parallel with 09.05 + 09.06 (no file overlap). **Operator action:** apply migration to staging → prod on next deploy.
 
