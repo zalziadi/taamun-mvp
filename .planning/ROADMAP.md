@@ -125,7 +125,7 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
   4. A user who just renewed (webhook fired, `expires_at` extended past 7 days) does NOT see the banner on their next page load — even if their HMAC entitlement cookie is still stale
   5. A user who already received the expiry-warning email today sees NO banner on the same day (3-channel-fatigue dedup working: email + push + banner combined budget = 1 nudge per 48h)
 **Plans** (7 plans):
-  - [ ] 09.01-PLAN.md — Migration: profiles.original_gateway column (additive, NFR-09 step 1)
+  - [x] 09.01-PLAN.md — Migration: profiles.original_gateway column (additive, NFR-09 step 1)
   - [ ] 09.02-PLAN.md — Backfill profiles.original_gateway from gateway tables + activation_codes
   - [ ] 09.03-PLAN.md — Forward-fill: webhook + activate routes write original_gateway with first-gateway-wins guard
   - [ ] 09.04-PLAN.md — RenewalBanner client component + /api/renewal/status route + AppChrome mount

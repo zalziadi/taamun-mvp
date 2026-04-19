@@ -62,7 +62,7 @@
 
 - [ ] **RENEW-01**: In-app banner renders in `AppChrome.tsx` when `profiles.expires_at` is within 7 days
 - [ ] **RENEW-02**: Banner copy uses "واصل" framing, not "لا تفقد الوصول" or countdown timers
-- [ ] **RENEW-03**: CTA routes user to correct renewal path based on `profiles.original_gateway` (Salla / Tap / Stripe) — new column added
+- [x] **RENEW-03**: CTA routes user to correct renewal path based on `profiles.original_gateway` (Salla / Tap / Stripe) — new column added
 - [ ] **RENEW-04**: Banner is dismissible; dismissal persists in LocalStorage key `taamun.renewal_dismissed_until.v1` for 48 hours
 - [ ] **RENEW-05**: Banner NEVER renders on `/day/**`, `/reflection/**`, `/book/**` routes (privacy + flow preservation)
 - [ ] **RENEW-06**: Nudge orchestrator deduplicates: if email sent today + push sent today, banner is suppressed (avoid 3-channel fatigue)
