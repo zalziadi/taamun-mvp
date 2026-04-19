@@ -1,14 +1,24 @@
 /**
  * src/lib/badges/unlock.ts
  *
- * Single source of truth for the Day-28 badge idempotent unlock.
+ * Single source of truth for milestone-badge idempotent unlock.
  *
- * Called from TWO sites with identical semantics:
+ * Phase 8 widened the BadgeCode union from Phase 7's "day_28"-only scope to
+ * the full 7-code set. Day 1/3/7/14/21 unlocks are triggered from
+ * `/api/reflections` POST (fire-and-forget, Plan 08.02). Cycle-complete unlock
+ * is triggered from `/api/program/start-cycle` alongside day_28 (Plan 08.03).
+ * Idempotency is data-driven on onConflict="user_id,badge_code,cycle_number"
+ * — unchanged from Phase 7.
+ *
+ * Called from the following sites with identical semantics:
  *   1. POST /api/badges/unlock (Plan 07.04 Task 2) — client-initiated route.
- *   2. POST /api/program/start-cycle (Plan 07.04 Task 3) — server-side
- *      invocation inside the cycle-transition success path so the badge is
- *      awarded atomically (from the user's perspective) as part of the
- *      cycle transition — no separate achievement modal, no client action.
+ *   2. POST /api/program/start-cycle (Plan 07.04 Task 3, Plan 08.03) —
+ *      server-side invocation inside the cycle-transition success path so the
+ *      day_28 + cycle_complete badges are awarded atomically (from the user's
+ *      perspective) as part of the cycle transition — no separate achievement
+ *      modal, no client action.
+ *   3. POST /api/reflections (Plan 08.02) — fire-and-forget server-side call
+ *      after a reflection upsert succeeds on a milestone day (1/3/7/14/21).
  *
  * Requirements delivered:
  *   - RETURN-05: silent reveal — this helper never surfaces UI, only persists
@@ -46,7 +56,22 @@ import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { emitEvent } from "@/lib/analytics/server";
 import type { TypedEvent } from "@/lib/analytics/events";
 
-export type Phase7BadgeCode = "day_28"; // Phase 8 will widen
+/**
+ * Phase 8 widened union. Data-driven idempotency on (user_id, badge_code,
+ * cycle_number) means the helper body needed no behavioral change — only the
+ * signature type widens.
+ */
+export type BadgeCode =
+  | "day_1"
+  | "day_3"
+  | "day_7"
+  | "day_14"
+  | "day_21"
+  | "day_28"
+  | "cycle_complete";
+
+/** @deprecated Phase 7 alias kept for one commit. Prefer `BadgeCode`. */
+export type Phase7BadgeCode = "day_28";
 
 export interface UnlockResult {
   unlocked: boolean;
@@ -64,7 +89,7 @@ export interface UnlockResult {
  */
 export async function unlockBadge(
   userId: string,
-  badge_code: Phase7BadgeCode,
+  badge_code: BadgeCode,
   cycle_number: number,
   day_number: number,
 ): Promise<UnlockResult> {
