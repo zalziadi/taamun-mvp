@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: — Core Experience
-status: Awaiting user "approved" signal on Day-28 walk-through
-last_updated: "2026-04-19T01:06:52.772Z"
+status: Phase 08 executing (08.04 complete; 08.01 in parallel)
+last_updated: "2026-04-19T01:08:00Z"
 last_activity: 2026-04-19
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 18
-  completed_plans: 13
+  completed_plans: 14
 ---
 
 # Current State
@@ -20,16 +20,21 @@ progress:
 
 ## Current Position
 
-Phase: 07 (Cycle 2 Transition + Day-28 Badge) — 6/6 plans complete (automated); human checkpoint pending
-Plan: 6 of 6 (07.06 automated portion complete — integration harness + anti-pattern guard shipped)
+Phase: 08 (Milestone Badges) — 08.04 complete; 08.01 executing in parallel
+Plan: 08.04 of 08.01..06 shipped (pure-SQL retroactive backfill migration — PITFALL #4 mitigation)
 
 - **Milestone:** v1.2 — إغلاق الحلقة (Retention Loop)
-- **Active phase:** Phase 07 (awaiting human sign-off on Day-28 flow, then complete)
-- **Active plan:** 07.06 — HUMAN-VERIFY checkpoint returned to user
-- **Status:** Awaiting user "approved" signal on Day-28 walk-through
+- **Active phase:** Phase 08 (Milestone Badges — multi-plan parallel execution)
+- **Active plan:** 08.04 complete; 08.01 (SVG variants) running in parallel
+- **Status:** 08.04 ready — migration file created but NOT APPLIED (human decision per CLAUDE.md)
 - **Last activity:** 2026-04-19
 - **Git branch:** claude/awesome-shaw (worktree)
-- **Last commit:** `c4d64c9 feat(07-06): add Phase 7 anti-pattern grep guard + wire into guard:release`
+- **Last commit (08.04):** pending this plan's atomic commit
+
+### Phase 08 Decisions (2026-04-19)
+
+- **08.04 (backfill migration):** Pure SQL, 5 INSERT sections (cycle-1 milestones from reflections, cycle-1 day_28 from reflections, cycle_complete from completed_cycles, day_28 for archived cycles, milestones for archived cycles). Every row has `notified=true` and `ON CONFLICT (user_id, badge_code, cycle_number) DO NOTHING`. Attributes historical reflections to cycle 1 because reflections table is keyed UNIQUE(user_id, day) — no cycle dimension.
+- **08.04 Ziad-flag:** Section 5 could over-backfill users whose `completed_cycles` was populated via edge case without reaching day 21 of that cycle. In practice vanishingly rare (start-cycle route gates archival on completed_days.includes(28)). ON CONFLICT DO NOTHING means a corrective migration later is safe.
 
 ---
 

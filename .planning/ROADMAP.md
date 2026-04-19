@@ -102,7 +102,7 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
   - [x] 08.01-PLAN.md — Widen MilestoneBadge with 6 new SVG variants (days 1/3/7/14/21 + cycle_complete)
   - [ ] 08.02-PLAN.md — Server-side mid-cycle milestone unlock trigger on /api/reflections POST + widen unlock helper
   - [ ] 08.03-PLAN.md — cycle_complete unlock alongside day_28 on /api/program/start-cycle
-  - [ ] 08.04-PLAN.md — Pure-SQL retroactive backfill migration (notified=true, zero events)
+  - [x] 08.04-PLAN.md — Pure-SQL retroactive backfill migration (notified=true, zero events) — shipped 2026-04-19, file ready but NOT applied (human decision)
   - [ ] 08.05-PLAN.md — Private BadgeGrid on /progress (no modal, no share, subtle fade-in)
   - [ ] 08.06-PLAN.md — Integration tests + anti-pattern grep guard + human-verify checkpoint
 **UI hint**: yes

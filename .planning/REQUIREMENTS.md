@@ -54,7 +54,7 @@
 - [ ] **BADGE-04**: Badges are **private by default** — no share button, no `next/og` share route, no social export (Headspace إخلاص model). Decision locked 2026-04-18.
 - [ ] **BADGE-05**: Badge unlock trigger evaluates server-side on reflection save (not client-side) — prevents bypass + handles offline catch-up
 - [ ] **BADGE-06**: Badge unlock event is idempotent — duplicate saves do not create duplicate rows or duplicate analytics events
-- [ ] **BADGE-07**: Existing users are backfilled with historical badges on deploy; backfill sets `notified=true` and reconstructs `unlocked_at` from `reflections.day_number` MIN timestamp — no post-hoc PostHog events fire
+- [x] **BADGE-07**: Existing users are backfilled with historical badges on deploy; backfill sets `notified=true` and reconstructs `unlocked_at` from `reflections.day_number` MIN timestamp — no post-hoc PostHog events fire
 - [ ] **BADGE-08**: Badge grid visible on `/progress` page shows unlocked + locked states in same layout
 - [ ] **BADGE-09**: No badge modal / toast interrupts the daily flow — unlock is revealed on the completion screen only
 
@@ -190,7 +190,7 @@ REQ → Phase mapping (assigned 2026-04-18 by gsd-roadmapper). 100% coverage val
 | BADGE-04 | Phase 8 | BADGE | Pending |
 | BADGE-05 | Phase 8 | BADGE | Pending |
 | BADGE-06 | Phase 8 | BADGE | Pending |
-| BADGE-07 | Phase 8 | BADGE | Pending |
+| BADGE-07 | Phase 8 | BADGE | Complete (08.04) |
 | BADGE-08 | Phase 8 | BADGE | Pending |
 | BADGE-09 | Phase 8 | BADGE | Pending |
 | RENEW-01 | Phase 9 | RENEW | Pending |
