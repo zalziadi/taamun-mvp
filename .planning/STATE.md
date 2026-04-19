@@ -2,14 +2,14 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: — Core Experience
-status: Phase 08 executing (08.04 complete; 08.01 in parallel)
-last_updated: "2026-04-19T01:08:00Z"
+status: 08.04 ready — migration file created but NOT APPLIED (human decision per CLAUDE.md)
+last_updated: "2026-04-19T01:15:05.193Z"
 last_activity: 2026-04-19
 progress:
   total_phases: 3
   completed_phases: 2
   total_plans: 18
-  completed_plans: 14
+  completed_plans: 15
 ---
 
 # Current State

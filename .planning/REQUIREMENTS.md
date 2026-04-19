@@ -48,7 +48,7 @@
 
 ### BADGE — Milestone Badges (Phase 8)
 
-- [ ] **BADGE-01**: 7 badges total per cycle: days 1, 3, 7, 14, 21, 28, + 1 cycle-completion badge. Scope cap: up to cycle 3 for v1.2. Decision locked 2026-04-18.
+- [x] **BADGE-01**: 7 badges total per cycle: days 1, 3, 7, 14, 21, 28, + 1 cycle-completion badge. Scope cap: up to cycle 3 for v1.2. Decision locked 2026-04-18.
 - [ ] **BADGE-02**: Each badge stored in `badges` table with `UNIQUE(user_id, badge_code, cycle_number)` constraint
 - [x] **BADGE-03**: Badges rendered as inline SVG React components (6 variants + cycle-completion), no static PNG, no Lottie
 - [ ] **BADGE-04**: Badges are **private by default** — no share button, no `next/og` share route, no social export (Headspace إخلاص model). Decision locked 2026-04-18.
@@ -107,7 +107,7 @@
 - [ ] **NFR-01**: Performance — LCP < 6s on 3G mobile (Lighthouse mobile)
 - [ ] **NFR-02**: Accessibility — Lighthouse A11y ≥ 95 (existing score: 100/100)
 - [ ] **NFR-03**: SEO — Lighthouse SEO = 100 (maintained)
-- [ ] **NFR-04**: Privacy — zero tracking pixels on prayer/reflection pages (PROJECT.md principle #4)
+- [x] **NFR-04**: Privacy — zero tracking pixels on prayer/reflection pages (PROJECT.md principle #4)
 - [ ] **NFR-05**: Cost — v1.2 feature work < 2000 SAR total (no paid SaaS, no new infrastructure)
 - [x] **NFR-06**: RTL — all new UI renders correctly right-to-left
 - [x] **NFR-07**: Arabic-first — all copy written in Arabic natively, never machine-translated
