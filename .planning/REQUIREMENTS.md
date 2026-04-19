@@ -193,15 +193,15 @@ REQ → Phase mapping (assigned 2026-04-18 by gsd-roadmapper). 100% coverage val
 | BADGE-07 | Phase 8 | BADGE | Complete (08.04) |
 | BADGE-08 | Phase 8 | BADGE | Pending |
 | BADGE-09 | Phase 8 | BADGE | Pending |
-| RENEW-01 | Phase 9 | RENEW | Pending |
-| RENEW-02 | Phase 9 | RENEW | Pending |
-| RENEW-03 | Phase 9 | RENEW | Pending |
-| RENEW-04 | Phase 9 | RENEW | Pending |
-| RENEW-05 | Phase 9 | RENEW | Pending |
-| RENEW-06 | Phase 9 | RENEW | Pending |
-| RENEW-07 | Phase 9 | RENEW | Pending |
-| RENEW-08 | Phase 9 | RENEW | Pending |
-| RENEW-09 | Phase 9 | RENEW | Pending |
+| RENEW-01 | Phase 9 | RENEW | Complete |
+| RENEW-02 | Phase 9 | RENEW | Complete |
+| RENEW-03 | Phase 9 | RENEW | Complete |
+| RENEW-04 | Phase 9 | RENEW | Complete |
+| RENEW-05 | Phase 9 | RENEW | Complete |
+| RENEW-06 | Phase 9 | RENEW | Complete |
+| RENEW-07 | Phase 9 | RENEW | Complete |
+| RENEW-08 | Phase 9 | RENEW | Complete |
+| RENEW-09 | Phase 9 | RENEW | Complete |
 | REFER-01 | Phase 10 | REFER | Pending |
 | REFER-02 | Phase 10 | REFER | Pending |
 | REFER-03 | Phase 10 | REFER | Pending |
