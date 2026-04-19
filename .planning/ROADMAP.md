@@ -34,11 +34,13 @@ PWA install + offline, invite flow, voice tasbeeh, shareable insights, year reca
 
 ---
 
-## v1.4 — Community & Creators (planning)
+## v1.4 — Community & Creators (shipped 2026-04-20)
 
-**Goal:** v1.3 gave users **channels** to spread Taamun. v1.4 builds **places** where users come back together — community space inside the app + creator tools so trusted voices can publish their own journeys.
+**Archived:** [v1.4-ROADMAP.md](./milestones/v1.4-ROADMAP.md) · [v1.4-REQUIREMENTS.md](./milestones/v1.4-REQUIREMENTS.md)
 
-### Candidate phases
+Invite reward credit, in-app threads, creator mode MVP, OG images for shared insights, year-end recap cron.
+
+### Phases (all shipped)
 
 #### Phase 1: Reward Credit Application
 - Apply +30 days to `expires_at` for both inviter and invitee on successful subscription
