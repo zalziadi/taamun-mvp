@@ -98,7 +98,13 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
   3. A user saving the same reflection twice (network retry, double-tap) ends up with exactly one row per `(user_id, badge_code, cycle_number)` in the `badges` table
   4. Inspecting any badge on `/progress` reveals NO share button, NO `next/og` route, NO social export action — badges are private by definition
   5. Badge SVGs render correctly RTL on iOS Safari + Android Chrome (no Arabic glyph disconnection, no mirrored numerals — text rendered via HTML `<span dir="rtl">`, not embedded in SVG)
-**Plans**: TBD
+**Plans** (6 plans):
+  - [ ] 08.01-PLAN.md — Widen MilestoneBadge with 6 new SVG variants (days 1/3/7/14/21 + cycle_complete)
+  - [ ] 08.02-PLAN.md — Server-side mid-cycle milestone unlock trigger on /api/reflections POST + widen unlock helper
+  - [ ] 08.03-PLAN.md — cycle_complete unlock alongside day_28 on /api/program/start-cycle
+  - [ ] 08.04-PLAN.md — Pure-SQL retroactive backfill migration (notified=true, zero events)
+  - [ ] 08.05-PLAN.md — Private BadgeGrid on /progress (no modal, no share, subtle fade-in)
+  - [ ] 08.06-PLAN.md — Integration tests + anti-pattern grep guard + human-verify checkpoint
 **UI hint**: yes
 **Risks & Mitigations** (from PITFALLS.md):
   - **Pitfall 4 — Retroactive badge flood:** Backfill migration sets `notified=true` and reconstructs `unlocked_at` from `MIN(reflections.created_at)` per day; no client animation fires for backfilled rows; backfill never emits PostHog events.
@@ -191,7 +197,7 @@ NFRs apply to ALL phases (Phase 6 through Phase 11):
 |-------|----------------|--------|-----------|
 | 6. PostHog Event Instrumentation | 0/6 | Planned | - |
 | 7. Cycle 2 Transition + Day-28 Badge | 0/6 | Planned | - |
-| 8. Milestone Badges | 0/0 | Not started | - |
+| 8. Milestone Badges | 0/6 | Planned | - |
 | 9. Renewal Prompts In-App | 0/0 | Not started | - |
 | 10. Referral Program | 0/0 | Not started | - |
 | 11. Year-in-Review Archive | 0/0 | Not started | - |
