@@ -124,7 +124,14 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
   3. A user who dismisses the banner does not see it again for 48 hours, even after page reloads or new sessions, until the `taamun.renewal_dismissed_until.v1` LocalStorage key expires
   4. A user who just renewed (webhook fired, `expires_at` extended past 7 days) does NOT see the banner on their next page load — even if their HMAC entitlement cookie is still stale
   5. A user who already received the expiry-warning email today sees NO banner on the same day (3-channel-fatigue dedup working: email + push + banner combined budget = 1 nudge per 48h)
-**Plans**: TBD
+**Plans** (7 plans):
+  - [ ] 09.01-PLAN.md — Migration: profiles.original_gateway column (additive, NFR-09 step 1)
+  - [ ] 09.02-PLAN.md — Backfill profiles.original_gateway from gateway tables + activation_codes
+  - [ ] 09.03-PLAN.md — Forward-fill: webhook + activate routes write original_gateway with first-gateway-wins guard
+  - [ ] 09.04-PLAN.md — RenewalBanner client component + /api/renewal/status route + AppChrome mount
+  - [ ] 09.05-PLAN.md — Server helper shouldShowRenewalBanner — 7d window + email/push dedup + auto-renewed suppression
+  - [ ] 09.06-PLAN.md — Helper refreshEntitlementIfStale — cookie-vs-DB reconciliation (RENEW-09)
+  - [ ] 09.07-PLAN.md — Integration harness (6 scenarios) + phase-09 anti-pattern guard + human-verify checkpoint
 **UI hint**: yes
 **Risks & Mitigations** (from PITFALLS.md):
   - **Pitfall 13 — 3-channel notification fatigue:** Central nudge orchestrator with `(user_id, channel, sent_at)` table; banner suppressed if email/push fired in last 48h.
@@ -198,7 +205,7 @@ NFRs apply to ALL phases (Phase 6 through Phase 11):
 | 6. PostHog Event Instrumentation | 0/6 | Planned | - |
 | 7. Cycle 2 Transition + Day-28 Badge | 0/6 | Planned | - |
 | 8. Milestone Badges | 0/6 | Planned | - |
-| 9. Renewal Prompts In-App | 0/0 | Not started | - |
+| 9. Renewal Prompts In-App | 0/7 | Planned | - |
 | 10. Referral Program | 0/0 | Not started | - |
 | 11. Year-in-Review Archive | 0/0 | Not started | - |
 
