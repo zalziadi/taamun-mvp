@@ -126,7 +126,7 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
   5. A user who already received the expiry-warning email today sees NO banner on the same day (3-channel-fatigue dedup working: email + push + banner combined budget = 1 nudge per 48h)
 **Plans** (7 plans):
   - [x] 09.01-PLAN.md — Migration: profiles.original_gateway column (additive, NFR-09 step 1)
-  - [ ] 09.02-PLAN.md — Backfill profiles.original_gateway from gateway tables + activation_codes
+  - [x] 09.02-PLAN.md — Backfill profiles.original_gateway from gateway tables + activation_codes
   - [x] 09.03-PLAN.md — Forward-fill: webhook + activate routes write original_gateway with first-gateway-wins guard
   - [ ] 09.04-PLAN.md — RenewalBanner client component + /api/renewal/status route + AppChrome mount
   - [x] 09.05-PLAN.md — Server helper shouldShowRenewalBanner — 7d window + email/push dedup + auto-renewed suppression

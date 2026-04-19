@@ -112,7 +112,7 @@
 - [x] **NFR-06**: RTL — all new UI renders correctly right-to-left
 - [x] **NFR-07**: Arabic-first — all copy written in Arabic natively, never machine-translated
 - [x] **NFR-08**: No new runtime dependencies added (CLAUDE.md rule #6)
-- [ ] **NFR-09**: Every schema migration is two-step (additive, then enforce) to avoid prod outages
+- [x] **NFR-09**: Every schema migration is two-step (additive, then enforce) to avoid prod outages
 - [x] **NFR-10**: Pre-merge checks: `npx tsc --noEmit && npm run build` must pass (CLAUDE.md mandatory)
 
 ---
