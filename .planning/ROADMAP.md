@@ -79,7 +79,7 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
   - [x] 07.03-PLAN.md — DayExperience.tsx: inline 'واصل الرحلة' CTA with framer-motion (no confetti, no modal)
   - [x] 07.04-PLAN.md — Day-28 badge: MilestoneBadge SVG + /api/badges/unlock + silent unlock inside cycle transition
   - [x] 07.05-PLAN.md — Asia/Riyadh timezone helper audit + refactor of src/lib/calendarDay.ts
-  - [ ] 07.06-PLAN.md — Integration tests + anti-pattern grep guard + human Day-28 flow verification
+  - [x] 07.06-PLAN.md — Integration tests + anti-pattern grep guard + human Day-28 flow verification
 **UI hint**: yes
 **Risks & Mitigations** (from PITFALLS.md):
   - **Pitfall 1 — Multi-device cycle race:** Optimistic-concurrency guard (`progress.cycle_paused_at` column + `.eq("current_cycle", expected)` in update) returns 409 on race; client disables CTA after first tap.
