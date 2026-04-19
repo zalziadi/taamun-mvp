@@ -6,6 +6,7 @@ import { NavAuth } from "@/components/NavAuth";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { JourneyGuideRail } from "@/components/JourneyGuideRail";
 import { SearchBox } from "@/components/SearchBox";
+import { RenewalBanner } from "@/components/RenewalBanner";
 import { APP_NAME } from "@/lib/appConfig";
 import { BrandLogo } from "@/components/BrandLogo";
 import {
@@ -99,7 +100,10 @@ export function AppChrome({
         </header>
       ) : null}
 
-      <main id="main-content" className={hide ? "flex-1" : "flex-1 pb-24 md:pb-0"}>{children}</main>
+      <main id="main-content" className={hide ? "flex-1" : "flex-1 pb-24 md:pb-0"}>
+        {!hide ? <RenewalBanner /> : null}
+        {children}
+      </main>
 
       {!hide ? (
         <footer className="border-t border-[#2A2621] py-10">
