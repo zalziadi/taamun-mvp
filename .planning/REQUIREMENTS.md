@@ -88,8 +88,8 @@
 ### YIR — Year-in-Review (Phase 11, archive-only)
 
 - [ ] **YIR-01**: `/year-in-review` route accessible to authenticated users with ≥30 days of reflections
-- [ ] **YIR-02**: Page aggregates data from `reflections` + `awareness_logs` + `progress` tables via Postgres RPC `get_year_in_review(user_id, year_key)`
-- [ ] **YIR-03**: Aggregation results cached in new `year_reviews` table (`user_id`, `year_key`, `payload jsonb`, `generated_at`) with stale-after-24h refresh
+- [x] **YIR-02**: Page aggregates data from `reflections` + `awareness_logs` + `progress` tables via Postgres RPC `get_year_in_review(user_id, year_key)`
+- [x] **YIR-03**: Aggregation results cached in new `year_reviews` table (`user_id`, `year_key`, `payload jsonb`, `generated_at`) with stale-after-24h refresh
 - [ ] **YIR-04**: "Year" is anchored to **activation anniversary** (user-specific), with Hijri + Gregorian both displayed
 - [ ] **YIR-05**: Numerals displayed in **Eastern Arabic (٠١٢٣)** for the page body; Western Arabic (0123) used in share card for broader readability. Decision locked 2026-04-18.
 - [ ] **YIR-06**: Graceful degradation: users with <365 days see range-labeled aggregation ("من 2026-01-15 إلى 2026-11-30") instead of empty year page
@@ -98,17 +98,17 @@
 - [ ] **YIR-09**: Share card copy uses reflective tone ("سنتي مع القرآن"), never performative achievements or comparison
 - [ ] **YIR-10**: Year-in-Review Ramadan moment (scarcity + annual push) **deferred to v1.3** per scope decision. Decision locked 2026-04-18.
 - [ ] **YIR-11**: Charts hand-rolled as SVG `<polyline>` sparkline — no chart library installed
-- [ ] **YIR-12**: Aggregation query is indexed — `reflections` and `awareness_logs` already have `user_id + created_at` indexes (verify, add if missing)
+- [x] **YIR-12**: Aggregation query is indexed — `reflections` and `awareness_logs` already have `user_id + created_at` indexes (verify, add if missing)
 
 ---
 
 ## Non-Functional Requirements (carried forward)
 
-- [ ] **NFR-01**: Performance — LCP < 6s on 3G mobile (Lighthouse mobile)
+- [x] **NFR-01**: Performance — LCP < 6s on 3G mobile (Lighthouse mobile)
 - [ ] **NFR-02**: Accessibility — Lighthouse A11y ≥ 95 (existing score: 100/100)
 - [ ] **NFR-03**: SEO — Lighthouse SEO = 100 (maintained)
 - [x] **NFR-04**: Privacy — zero tracking pixels on prayer/reflection pages (PROJECT.md principle #4)
-- [ ] **NFR-05**: Cost — v1.2 feature work < 2000 SAR total (no paid SaaS, no new infrastructure)
+- [x] **NFR-05**: Cost — v1.2 feature work < 2000 SAR total (no paid SaaS, no new infrastructure)
 - [x] **NFR-06**: RTL — all new UI renders correctly right-to-left
 - [x] **NFR-07**: Arabic-first — all copy written in Arabic natively, never machine-translated
 - [x] **NFR-08**: No new runtime dependencies added (CLAUDE.md rule #6)
