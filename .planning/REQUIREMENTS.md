@@ -214,18 +214,18 @@ REQ → Phase mapping (assigned 2026-04-18 by gsd-roadmapper). 100% coverage val
 | REFER-10 | Phase 10 | REFER | Pending |
 | REFER-11 | Phase 10 | REFER | Pending |
 | REFER-12 | Phase 10 | REFER | Pending |
-| YIR-01 | Phase 11 | YIR | Pending |
-| YIR-02 | Phase 11 | YIR | Pending |
-| YIR-03 | Phase 11 | YIR | Pending |
-| YIR-04 | Phase 11 | YIR | Pending |
+| YIR-01 | Phase 11 | YIR | Complete |
+| YIR-02 | Phase 11 | YIR | Complete |
+| YIR-03 | Phase 11 | YIR | Complete |
+| YIR-04 | Phase 11 | YIR | Complete |
 | YIR-05 | Phase 11 | YIR | Pending |
-| YIR-06 | Phase 11 | YIR | Pending |
+| YIR-06 | Phase 11 | YIR | Complete |
 | YIR-07 | Phase 11 | YIR | Pending |
-| YIR-08 | Phase 11 | YIR | Pending |
+| YIR-08 | Phase 11 | YIR | Complete |
 | YIR-09 | Phase 11 | YIR | Pending |
 | YIR-10 | Phase 11 | YIR (deferred to v1.3) | Deferred |
-| YIR-11 | Phase 11 | YIR | Pending |
-| YIR-12 | Phase 11 | YIR | Pending |
+| YIR-11 | Phase 11 | YIR | Complete |
+| YIR-12 | Phase 11 | YIR | Complete |
 | NFR-01 | All phases | Performance | Cross-cutting |
 | NFR-02 | All phases | A11y | Cross-cutting |
 | NFR-03 | All phases | SEO | Cross-cutting |
