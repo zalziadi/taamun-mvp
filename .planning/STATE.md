@@ -1,55 +1,51 @@
 # Current State
 
-**Last updated:** 2026-04-20 (after v1.4 archive)
+**Last updated:** 2026-04-20 (after v1.5 archive)
 
 ---
 
 ## Status
 
-- **Last shipped milestone:** v1.4 (tagged)
-- **Next milestone:** v1.5 (not yet scoped)
-- **Active phase:** none (between milestones)
+- **Last shipped milestone:** v1.5 (tagged)
+- **Next milestone:** v1.6 (not yet scoped)
+- **Active phase:** none
 - **Active plan:** none
-- **Git branch:** claude/hopeful-euler (will merge to main)
-- **Last commit:** v1.4 all 5 phases batched
+- **Git branch:** claude/hopeful-euler (auto-merges to main on push)
 
 ---
 
 ## Recent context
 
-v1.4 shipped all 5 phases in a single batch on top of v1.3:
+v1.5 shipped all 4 phases in one batch immediately after v1.4:
 
-### v1.4 accomplishments
-- **Phase 1 — Invite reward credit:** `profiles.expires_at` migration + `invite-rewards.applyInviteReward()` + admin endpoint at `/api/invite/apply-reward`
-- **Phase 2 — In-app threads:** `threads` + `thread_replies` schema with RLS + moderation; public `/threads/[id]` SSR page + reply form + API
-- **Phase 3 — Creator mode MVP:** `creator_journeys` + `days` + `subscriptions` schema; full CRUD API (VIP-gated); `/discover` catalog + `/journey/[slug]` subscribe + `/creator` dashboard + `/creator/[slug]` editor
-- **Phase 4 — OG image generation:** `/shared/[slug]/opengraph-image.tsx` via `next/og` ImageResponse with Amiri + Noto Naskh Arabic
-- **Phase 5 — Year-end recap cron:** `year-recap` lib (Gregorian + Hijri anchors via Intl) + daily cron route + `vercel.json` entry
+### v1.5 accomplishments
+- **Phase 1 — Moderation dashboard:** `/admin/moderation` listing all flagged UGC across threads, thread_replies, creator_journeys, shared_insights; approve/remove/keep actions
+- **Phase 2 — Thread reply push:** shared `src/lib/push.ts` + fan-out on `/api/threads/[id]/replies` POST; silent no-op when VAPID unset
+- **Phase 3 — Creator analytics:** `/creator/[slug]/analytics` with stat tiles + per-day drop-off chart + recent activity (creator-only)
+- **Phase 4 — v1.4 activations:** `/discover` in desktop nav, `/creator` in `/account` for VIPs, new `/threads` list page with anchor filter, "ناقش هذه الآية" link at the bottom of every day
+
+### Also shipped during the same session
+- v1.4 migrations applied to Supabase prod via `supabase db push` (after migration history repair)
+- Stripe + Salla + Tap webhooks wired to `applyInviteReward()` (idempotent, non-fatal)
+- Vercel cron limit (Hobby) unblocked production auto-deploy — `send-push` changed hourly → daily
 
 ---
 
 ## Pending activation (operational)
 
-- **Apply 4 new migrations** to Supabase (SQL Editor):
-  1. `20260420000000_membership_expiry.sql`
-  2. `20260420100000_threads.sql`
-  3. `20260420200000_creator_journeys.sql`
-- **Wire payment webhooks** (Stripe/Salla/Tap) to call `POST /api/invite/apply-reward` on first successful charge with `ADMIN_MIGRATION_KEY` or `SUPABASE_SERVICE_ROLE_KEY` as `key`
-- **Add links:** `/discover` + `/creator` into navbar / account; "ناقش هذه الآية" button on day/book pages pointing to `/threads`
-- **Verify:** Gregorian + Hijri cron skipped on non-anchor days — tail Vercel logs around next annual boundary
+- Nothing for v1.5 — everything degrades gracefully. Push helper is silent when VAPID keys aren't set; moderation dashboard is admin-only.
+- Restore `send-push` to hourly `"0 * * * *"` when upgrading Vercel to Pro (currently `"0 6 * * *"`).
 
 ---
 
 ## Next action
 
-1. Apply the 4 pending migrations in Supabase
-2. Decide whether to keep building (v1.5 scoping) or freeze for validation.
-   Cumulative ship rate: 4 milestones in ~3 days, still zero end-user community/creator data.
-3. If v1.5, likely candidates:
-   - Thread reply push notifications (wire to existing push infra)
-   - Moderation dashboard for flagged threads + creator journeys + shared insights
-   - Creator analytics (opens / completions / drop-off per journey)
-4. Consider promoting `/creator` + `/discover` in the main nav once ≥ 3 real creator journeys exist.
+1. Scope v1.6 or pause for validation.
+2. v1.6 candidates:
+   - Rewarded-at visibility in `/account` (small, high-trust)
+   - Creator-follow notifications
+   - Moderation daily-summary email to founder
+3. Consider: freeze new features and watch the first real creator journey + thread land in production before adding more surface area.
 
 ---
 

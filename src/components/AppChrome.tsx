@@ -68,6 +68,9 @@ export function AppChrome({
               <Link href={REFLECTION_ROUTE} className="tm-nav-link">
                 التمعّن
               </Link>
+              <Link href="/discover" className="tm-nav-link">
+                استكشف
+              </Link>
               <Link href={JOURNAL_ROUTE} className="tm-nav-link">
                 الدفتر
               </Link>

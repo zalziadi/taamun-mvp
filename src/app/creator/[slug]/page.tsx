@@ -254,6 +254,12 @@ export default function CreatorJourneyEditor() {
               معاينة عامة
             </Link>
           )}
+          <Link
+            href={`/creator/${slug}/analytics`}
+            className="text-xs text-[#5a4a35] underline"
+          >
+            تحليلات
+          </Link>
           <button
             onClick={remove}
             className="mr-auto text-[11px] text-[#a64b3f] hover:underline"

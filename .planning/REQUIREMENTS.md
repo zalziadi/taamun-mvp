@@ -1,18 +1,17 @@
-# Requirements — v1.5 (pending scope)
+# Requirements — v1.6 (pending scope)
 
-v1.4 archived at [milestones/v1.4-REQUIREMENTS.md](./milestones/v1.4-REQUIREMENTS.md).
+v1.5 archived at [milestones/v1.5-REQUIREMENTS.md](./milestones/v1.5-REQUIREMENTS.md).
 
 This file resets when the next milestone is scoped.
-In the meantime, operational activation work for v1.4 is tracked in STATE.md.
 
 ---
 
-## Candidate themes for v1.5
+## Candidate themes for v1.6
 
-1. **Trust & moderation:** dashboard for flagged threads + creator journeys + shared insights
-2. **Notifications depth:** reply push, creator-follow notifications, day-release alerts
-3. **Creator analytics:** opens / completions / drop-off per journey
-4. **Validation-first pause:** no new features until N real threads + creator journeys + invite credits exist
+1. **User-visible credits:** show `invite_redemptions.rewarded_at` and total earned days in `/account`
+2. **Creator-follow notifications:** opt-in follow; new-journey alert to followers
+3. **Ops signal:** daily moderation summary email to founder
+4. **Validation pause:** freeze new features until ≥ 3 real creator journeys + ≥ 10 real threads
 
 ---
 

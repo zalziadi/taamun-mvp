@@ -75,9 +75,18 @@ Invite reward credit, in-app threads, creator mode MVP, OG images for shared ins
 
 ---
 
-## v1.5+ — Backlog
+## v1.5 — Trust, Signal & Re-engagement (shipped 2026-04-20)
 
-- Moderation UI for shared_insights flagged queue
+**Archived:** [v1.5-ROADMAP.md](./milestones/v1.5-ROADMAP.md) · [v1.5-REQUIREMENTS.md](./milestones/v1.5-REQUIREMENTS.md)
+
+Moderation dashboard across all UGC surfaces, thread-reply push notifications, per-journey creator analytics, and the v1.4 nav/day-page activations (discover + creator + "ناقش هذه الآية").
+
+---
+
+## v1.6+ — Backlog
+
+- `rewarded_at` visibility in `/account` (user sees their invite credits)
+- Creator-follow notifications (opt-in)
 - Mobile native wrapper (Capacitor) if PWA gaps appear on iOS
 - Arabic + English content (for Muslims in English-speaking countries)
 - Family plan (multi-user subscription)

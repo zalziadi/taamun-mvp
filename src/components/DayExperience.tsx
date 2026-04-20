@@ -1,6 +1,7 @@
 "use client";
 
 import { useCallback, useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { supabase } from "../lib/supabaseClient";
 import { getDay, PROGRESSION_MILESTONES } from "../lib/taamun-content";
 import { DailyHint } from "./DailyHint";
@@ -393,6 +394,16 @@ export function DayExperience({ day }: DayExperienceProps) {
 
       {/* Share */}
       <ShareCard day={day} verse={content.verse} verseRef={content.verseRef} />
+
+      {/* v1.5: discuss this verse in the community */}
+      <div className="text-center pt-1">
+        <Link
+          href={`/threads?anchor_type=verse&anchor_value=${encodeURIComponent(content.verseRef)}`}
+          className="text-xs text-[#c9b88a]/70 hover:text-[#c9b88a] underline"
+        >
+          ناقش هذه الآية مع المجتمع →
+        </Link>
+      </div>
     </div>
   );
 }

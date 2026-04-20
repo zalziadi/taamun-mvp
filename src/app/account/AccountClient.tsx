@@ -331,6 +331,14 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
             >
               تحدّث مع تمعّن
             </Link>
+            {planTier && ["yearly", "vip", "lifetime", "premium"].includes(planTier) && (
+              <Link
+                href="/creator"
+                className="rounded-xl border border-[#c9b88a]/30 bg-[#c9b88a]/5 px-4 py-2 text-xs font-semibold text-[#c9b88a] transition-colors hover:bg-[#c9b88a]/15"
+              >
+                وضع المبدع
+              </Link>
+            )}
           </div>
         </div>
       )}

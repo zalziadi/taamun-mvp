@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { moderate } from "@/lib/thread-moderation";
+import { sendPushToUser } from "@/lib/push";
 
 export const dynamic = "force-dynamic";
 
@@ -56,10 +58,10 @@ export async function POST(req: Request, ctx: RouteCtx) {
     return NextResponse.json({ error: "content_too_short" }, { status: 400 });
   }
 
-  // Verify thread exists + is published
+  // Verify thread exists + is published; capture author for reply push.
   const { data: thread } = await supabase
     .from("threads")
-    .select("id, status")
+    .select("id, status, user_id, title")
     .eq("id", id)
     .maybeSingle();
 
@@ -83,6 +85,27 @@ export async function POST(req: Request, ctx: RouteCtx) {
 
   if (error) {
     return NextResponse.json({ error: "db_error", details: error.message }, { status: 500 });
+  }
+
+  // v1.5 Phase 2: notify the thread author when a published reply lands,
+  // but never push them their own reply. Failure is silent — reply stays created.
+  if (
+    status === "published" &&
+    thread.user_id &&
+    thread.user_id !== auth.user.id
+  ) {
+    try {
+      const admin = getSupabaseAdmin();
+      const preview = replyBody.length > 80 ? replyBody.slice(0, 77) + "…" : replyBody;
+      await sendPushToUser(admin, thread.user_id as string, {
+        title: `ردّ جديد على: ${String(thread.title).slice(0, 40)}`,
+        body: `${displayName}: ${preview}`,
+        url: `/threads/${id}`,
+        tag: `taamun-reply-${id}`,
+      });
+    } catch (pushErr) {
+      console.error("[threads/replies] push notify failed", pushErr);
+    }
   }
 
   return NextResponse.json({ ok: true, reply: data, status });
