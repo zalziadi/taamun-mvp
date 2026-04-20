@@ -44,9 +44,8 @@ describe("type-split compile-time invariant (YIR-08)", () => {
   });
 
   it("a function accepting YIRPublicStats rejects YIRPrivateContent at compile time", () => {
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    function renderShareCard(_stats: YIRPublicStats): string {
-      return "ok";
+    function renderShareCard(stats: YIRPublicStats): string {
+      return `ok:${stats.reflections_count}`;
     }
 
     const publicStats: YIRPublicStats = {
@@ -58,7 +57,7 @@ describe("type-split compile-time invariant (YIR-08)", () => {
       latest_reflection_at: "2026-05-01T00:00:00Z",
       awareness_trajectory: [0.5, 0.6, 0.7],
     };
-    expect(renderShareCard(publicStats)).toBe("ok");
+    expect(renderShareCard(publicStats)).toBe("ok:30");
 
     const privateContent: YIRPrivateContent = {
       reflection_text: "secret",
