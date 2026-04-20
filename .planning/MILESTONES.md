@@ -8,6 +8,7 @@ Historical record of shipped milestones.
 |---------|---------|---------|---------|
 | **v1.0** | 2026-04-18 | Core 28-day program + AI guide + VIP + post-28 retention + minimal UI | [v1.0-ROADMAP.md](./milestones/v1.0-ROADMAP.md) · [v1.0-REQUIREMENTS.md](./milestones/v1.0-REQUIREMENTS.md) |
 | **v1.1** | 2026-04-18 | Email automation · web push · AI-generated cycles · book highlights · WhatsApp infra (code) | [v1.1-ROADMAP.md](./milestones/v1.1-ROADMAP.md) |
+| **v1.2** | 2026-04-20 | إغلاق الحلقة · 6 phases: PostHog + Cycle 2 + Badges + Renewal + Referral + Year-in-Review · 70/71 REQs · zero new deps · CX 60→91 | [v1.2-ROADMAP.md](./milestones/v1.2-ROADMAP.md) · [v1.2-REQUIREMENTS.md](./milestones/v1.2-REQUIREMENTS.md) · [v1.2-MILESTONE-AUDIT.md](./v1.2-MILESTONE-AUDIT.md) |
 
 ---
 

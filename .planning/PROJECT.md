@@ -62,25 +62,28 @@ Hosting     Vercel (static + Fluid Compute)
 
 ---
 
-## Current Milestone: v1.2 إغلاق الحلقة (Retention Loop)
+## Current State: v1.2 shipped (2026-04-20)
 
-**Goal:** Transform the 28-day experience from a program that ends into a year-long relationship — by closing six retention gaps between Day 28 and Day 365.
+**No active milestone.** Ready to scope v1.3 via `/gsd:new-milestone` when founder chooses.
 
-**Target features:**
-- Cycle 2 Transition UX — in-app CTA on Day 28 instead of a silent wall
-- Milestone Badges — activate trigger logic on days 1 / 3 / 7 / 14 / 21 / 28
-- Year-in-Review — annual retrospective page aggregating 365 reflections + awareness trajectory + insights
-- Renewal Prompts In-App — 7-day-before-expiry reminder surfaced inside the product
-- Referral Program — "ادع صديق، خذ شهر مجاني" to convert "قلبي يتشرب معاني" advocacy into growth
-- PostHog Event Instrumentation — day_complete, cycle_start, badge_unlock, renewal_prompted (foundation for data-driven v1.3)
+**Operational TODO before v1.2 user-visible:** 6 SQL migrations pending `supabase db push` (see [MILESTONES.md](./MILESTONES.md) v1.2 row). Staging walkthrough checklist in [v1.2-MILESTONE-AUDIT.md](./v1.2-MILESTONE-AUDIT.md).
 
-**Key context / constraints:**
+**Next milestone candidate: v1.3 — Depth & Personalization (backlog).** Deferred items ready for inclusion:
+- Reflection themes ML clustering
+- Long-term memory across sessions
+- Voice journaling (Munsit integration)
+- Arabic screen reader a11y audit
+- YIR Ramadan annual moment (deferred from v1.2 decision #4)
+- HMAC entitlement colon-split bug fix (discovered v1.2 Phase 9)
+- BaZi VIP integration (promised in PROJECT.md, not yet shipped)
+- Phase-07 anti-pattern guard comment-line carve-out patch
+
+**Key context / constraints (carry-over):**
 - Budget: <10K SAR, solo founder, Instagram-focused organic distribution, target 1,500 customers
 - No feature ships without real user validation (north star: "قلبي يتشرب معاني")
-- Performance budget: LCP < 6s on 3G mobile — every feature respects it
+- Performance budget: LCP < 6s on 3G mobile
 - Arabic-first, RTL throughout, no tracking pixels on prayer/reflection pages
-- v1.1 Phase 5 (WhatsApp community) is operationally-blocked and will NOT be unblocked in v1.2 — that's an independent operational decision
-- v1.2 phase numbering continues from v1.1 → starts at Phase 6
+- v1.1 Phase 5 (WhatsApp community operational activation) remains independent track
 
 ---
 
@@ -88,6 +91,7 @@ Hosting     Vercel (static + Fluid Compute)
 
 - **v1.0** (shipped 2026-04-18) — Core 28-day program, AI guide, VIP, post-28 retention, minimal UI
 - **v1.1** (shipped 2026-04-18) — Email automation · Web push · AI-generated cycles · Book highlights · WhatsApp infra (code)
+- **v1.2** (shipped 2026-04-20) — إغلاق الحلقة · 6 phases · 70/71 REQs · CX 60→91 · zero new deps · 2 bugs caught · Ta'ammun DS site-wide · [audit](./v1.2-MILESTONE-AUDIT.md)
 
 ---
 
