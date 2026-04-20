@@ -215,7 +215,7 @@ NFRs apply to ALL phases (Phase 6 through Phase 11):
 | 8. Milestone Badges | 0/6 | Planned | - |
 | 9. Renewal Prompts In-App | 0/7 | Planned | - |
 | 10. Referral Program | 6/8 | In Progress|  |
-| 11. Year-in-Review Archive | 2/7 | In Progress|  |
+| 11. Year-in-Review Archive | 3/7 | In Progress|  |
 
 ---
 
