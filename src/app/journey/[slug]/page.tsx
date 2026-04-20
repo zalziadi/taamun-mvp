@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { JourneySubscribeButton } from "@/components/JourneySubscribeButton";
+import { CreatorFollowButton } from "@/components/CreatorFollowButton";
 
 export const dynamic = "force-dynamic";
 
@@ -106,14 +107,18 @@ export default async function JourneyPage({ params }: PageProps) {
         </p>
 
         {!isDraft && (
-          <div className="pt-2">
+          <div className="pt-2 flex flex-wrap items-center gap-3">
             <JourneySubscribeButton slug={journey.slug} alreadySubscribed={subscribed} />
-            {subscribed && (
-              <p className="mt-2 text-[11px] text-[#8c7851]">
-                أنت على اليوم {currentDay} من {journey.duration_days}
-              </p>
-            )}
+            <CreatorFollowButton
+              creatorId={journey.creator_user_id as string}
+              journeySlug={journey.slug}
+            />
           </div>
+        )}
+        {!isDraft && subscribed && (
+          <p className="text-[11px] text-[#8c7851]">
+            أنت على اليوم {currentDay} من {journey.duration_days}
+          </p>
         )}
 
         {isOwner && isDraft && (

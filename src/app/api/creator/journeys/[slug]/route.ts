@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
+import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { moderate } from "@/lib/thread-moderation";
+import { sendPushToUser } from "@/lib/push";
 
 export const dynamic = "force-dynamic";
 
@@ -113,17 +115,22 @@ export async function PATCH(req: Request, ctx: RouteCtx) {
 
   patch.updated_at = new Date().toISOString();
 
+  // Track pre-publish state so we can fan out follow notifications only on
+  // the draft/flagged → published transition.
+  let prevStatus: string | null = null;
+
   // Auto-flag when the creator pushes to published and the text is sus
   if (publishCheckNeeded) {
     const { data: current } = await supabase
       .from("creator_journeys")
-      .select("title, description, duration_days")
+      .select("title, description, duration_days, status")
       .eq("slug", slug)
       .eq("creator_user_id", auth.user.id)
       .maybeSingle();
     if (!current) {
       return NextResponse.json({ error: "not_found" }, { status: 404 });
     }
+    prevStatus = (current.status as string | null) ?? null;
 
     const nextTitle = (patch.title as string | undefined) ?? (current.title as string);
     const nextDesc = (patch.description as string | undefined) ?? (current.description as string);
@@ -159,6 +166,43 @@ export async function PATCH(req: Request, ctx: RouteCtx) {
   }
   if (!data) {
     return NextResponse.json({ error: "not_found" }, { status: 404 });
+  }
+
+  // v1.6 Phase 2: on the draft → published transition, push to followers.
+  // Skipped if publish auto-flagged to 'flagged', or if re-publishing
+  // (prev === 'published'). Fire-and-forget; failure doesn't break the PATCH.
+  const nowPublished = data.status === "published";
+  const wasNotPublished = prevStatus !== "published";
+  if (publishCheckNeeded && nowPublished && wasNotPublished) {
+    (async () => {
+      try {
+        const admin = getSupabaseAdmin();
+        const { data: followers } = await admin
+          .from("creator_follows")
+          .select("follower_user_id")
+          .eq("creator_user_id", auth.user.id)
+          .limit(1000);
+
+        const title = `رحلة جديدة من ${data.creator_display_name}`;
+        const body = `"${String(data.title).slice(0, 60)}" — ${data.duration_days} يوم`;
+        const url = `/journey/${data.slug}`;
+
+        for (const f of followers ?? []) {
+          try {
+            await sendPushToUser(admin, f.follower_user_id as string, {
+              title,
+              body,
+              url,
+              tag: `taamun-new-journey-${data.slug}`,
+            });
+          } catch {
+            // per-follower errors are swallowed to keep the fan-out going
+          }
+        }
+      } catch (fanoutErr) {
+        console.error("[creator/journeys PATCH] fanout failed", fanoutErr);
+      }
+    })();
   }
 
   return NextResponse.json({ ok: true, journey: data });

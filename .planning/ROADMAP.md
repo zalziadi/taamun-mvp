@@ -83,13 +83,22 @@ Moderation dashboard across all UGC surfaces, thread-reply push notifications, p
 
 ---
 
-## v1.6+ — Backlog
+---
 
-- `rewarded_at` visibility in `/account` (user sees their invite credits)
-- Creator-follow notifications (opt-in)
+## v1.6 — Visible Credits, Followers & Ops Signal (shipped 2026-04-20)
+
+**Archived:** [v1.6-ROADMAP.md](./milestones/v1.6-ROADMAP.md) · [v1.6-REQUIREMENTS.md](./milestones/v1.6-REQUIREMENTS.md)
+
+Earned invite credits surfaced in InviteShare, creator follow system with auto-push on new published journey, daily moderation digest email to the founder.
+
+---
+
+## v1.7+ — Backlog
+
 - Mobile native wrapper (Capacitor) if PWA gaps appear on iOS
 - Arabic + English content (for Muslims in English-speaking countries)
 - Family plan (multi-user subscription)
+- Creator revenue share (monetization model TBD)
 
 ---
 

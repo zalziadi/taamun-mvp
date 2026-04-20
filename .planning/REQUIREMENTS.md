@@ -1,17 +1,15 @@
-# Requirements — v1.6 (pending scope)
+# Requirements — v1.7 (pending scope)
 
-v1.5 archived at [milestones/v1.5-REQUIREMENTS.md](./milestones/v1.5-REQUIREMENTS.md).
-
-This file resets when the next milestone is scoped.
+v1.6 archived at [milestones/v1.6-REQUIREMENTS.md](./milestones/v1.6-REQUIREMENTS.md).
 
 ---
 
-## Candidate themes for v1.6
+## Candidate themes for v1.7
 
-1. **User-visible credits:** show `invite_redemptions.rewarded_at` and total earned days in `/account`
-2. **Creator-follow notifications:** opt-in follow; new-journey alert to followers
-3. **Ops signal:** daily moderation summary email to founder
-4. **Validation pause:** freeze new features until ≥ 3 real creator journeys + ≥ 10 real threads
+1. **Creator depth:** public creator profile pages at `/creator/by/[user_id]` listing their catalog
+2. **Social depth:** "following" tab in `/account` showing creators followed + latest journey per creator
+3. **Discovery quality:** sort `/discover` by subscriber count / completion rate; add a leaderboard
+4. **Validation-first pause:** freeze until real community metrics justify more surface area
 
 ---
 

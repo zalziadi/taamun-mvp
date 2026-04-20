@@ -94,14 +94,19 @@ export function InviteShare() {
       </button>
 
       {(uses > 0 || rewarded > 0) && (
-        <div className="flex items-center gap-4 text-[11px]">
+        <div className="flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px]">
           <span className="text-white/50">
             استخدمه {uses} شخص
           </span>
           {rewarded > 0 && (
-            <span className="text-emerald-400/80">
-              • {rewarded} اشترك
-            </span>
+            <>
+              <span className="text-emerald-400/80">
+                • {rewarded} اشترك
+              </span>
+              <span className="text-[#c9b88a]">
+                • +{rewarded * 30} يوم رصيد مكتسب
+              </span>
+            </>
           )}
         </div>
       )}
