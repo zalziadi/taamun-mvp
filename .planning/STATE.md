@@ -1,44 +1,44 @@
 # Current State
 
-**Last updated:** 2026-04-20 (after v1.6 archive)
+**Last updated:** 2026-04-20 (after v1.7 archive)
 
 ---
 
 ## Status
 
-- **Last shipped milestone:** v1.6 (tagged)
-- **Next milestone:** v1.7 (not yet scoped)
+- **Last shipped milestone:** v1.7 (tagged)
+- **Next milestone:** v1.8 (not yet scoped)
 - **Git branch:** claude/hopeful-euler (auto-pushes to main)
 
 ---
 
 ## Recent context
 
-v1.6 shipped all 3 phases immediately after v1.5:
+v1.7 shipped all 4 phases immediately after v1.6:
 
-### v1.6 accomplishments
-- **Phase 1 — Invite credits visibility:** `/api/invite/my-rewards` endpoint + InviteShare badge "+N يوم رصيد مكتسب"
-- **Phase 2 — Creator follow system:** `creator_follows` table + RLS + follow/unfollow/status API + button on `/journey/[slug]` + publish-transition push fan-out to followers
-- **Phase 3 — Daily mod digest:** `/api/cron/mod-digest` runs 08:00 UTC, counts flagged rows, emails summary via Resend to ADMIN_EMAIL (silent on empty queue or missing env)
+- **Phase 1:** Public creator profile at `/creator/by/[userId]` (SSR, indexable)
+- **Phase 2:** Following tab on `/account` via `/api/creator/follows` + `FollowingList` card
+- **Phase 3:** `/discover` ranked by `subscriber_count DESC`, with a "الأكثر اشتراكاً" top row
+- **Phase 4:** `ModerationQueueBadge` amber hero on `/admin` when items are waiting
 
 ---
 
 ## Pending activation (operational)
 
-- **Apply 1 new migration:** `20260420300000_creator_follows.sql` (done in this session via `supabase db push` in the worktree)
-- `ADMIN_EMAIL` + `RESEND_API_KEY` should be set in Vercel for the mod digest to actually send — otherwise it just reports `skipped: email_not_configured` and logs the counts
-- Restore `send-push` to hourly when upgrading Vercel Pro (still capped to daily on Hobby)
+- Nothing new — v1.7 adds no migrations
+- Outstanding from earlier milestones:
+  - `ADMIN_EMAIL` + `RESEND_API_KEY` in Vercel env for mod digest
+  - Restore `send-push` to hourly when upgrading Vercel Pro
 
 ---
 
 ## Next action
 
-1. Scope v1.7 or pause for validation.
-2. v1.7 candidates:
-   - Inline moderation banner on `/` when admin has items waiting
-   - Creator leaderboard on `/discover` (most subscribed / highest completion)
-   - Profile pages per creator (`/creator/by/[user_id]` with their full catalog)
-   - User "following" tab on `/account` listing creators you follow
+1. Scope v1.8 or pause for validation
+2. v1.8 candidates:
+   - Creator revenue share design
+   - Social proof on landing (testimonial carousel from real reflections)
+   - Family plan (multi-user subscription)
 
 ---
 

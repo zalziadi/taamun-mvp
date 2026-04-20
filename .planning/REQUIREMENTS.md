@@ -1,15 +1,15 @@
-# Requirements — v1.7 (pending scope)
+# Requirements — v1.8 (pending scope)
 
-v1.6 archived at [milestones/v1.6-REQUIREMENTS.md](./milestones/v1.6-REQUIREMENTS.md).
+v1.7 archived at [milestones/v1.7-REQUIREMENTS.md](./milestones/v1.7-REQUIREMENTS.md).
 
 ---
 
-## Candidate themes for v1.7
+## Candidate themes for v1.8
 
-1. **Creator depth:** public creator profile pages at `/creator/by/[user_id]` listing their catalog
-2. **Social depth:** "following" tab in `/account` showing creators followed + latest journey per creator
-3. **Discovery quality:** sort `/discover` by subscriber count / completion rate; add a leaderboard
-4. **Validation-first pause:** freeze until real community metrics justify more surface area
+1. **Social proof:** rotating testimonial from real shared_insights on `/` + `/pricing`
+2. **Family plan:** multi-user subscription with one payer + N members
+3. **Creator revenue share:** groundwork (subscriber counting → payout estimate)
+4. **Validation-first pause:** freeze until first paying user of a creator journey exists
 
 ---
 

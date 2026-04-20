@@ -13,6 +13,11 @@ const PushSetup = dynamic(
   () => import("@/components/PushSetup").then((m) => ({ default: m.PushSetup })),
   { ssr: false }
 );
+const FollowingList = dynamic(
+  () => import("@/components/FollowingList").then((m) => ({ default: m.FollowingList })),
+  { ssr: false }
+);
+
 const InviteShare = dynamic(
   () => import("@/components/InviteShare").then((m) => ({ default: m.InviteShare })),
   { ssr: false }
@@ -348,6 +353,9 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
 
       {/* Invite a friend — free month for both on successful subscription */}
       {subscriptionStatus === "subscribed" && <InviteShare />}
+
+      {/* v1.7: creators followed by this user */}
+      <FollowingList />
 
       {/* Subscription Card */}
       <div className="border-t border-[#c9b88a]/20 p-5">

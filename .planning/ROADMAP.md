@@ -93,7 +93,15 @@ Earned invite credits surfaced in InviteShare, creator follow system with auto-p
 
 ---
 
-## v1.7+ — Backlog
+## v1.7 — Creator Graph Depth (shipped 2026-04-20)
+
+**Archived:** [v1.7-ROADMAP.md](./milestones/v1.7-ROADMAP.md) · [v1.7-REQUIREMENTS.md](./milestones/v1.7-REQUIREMENTS.md)
+
+Public creator profiles, a member-facing "following" surface, discovery ranked by traction, and an admin queue hero badge.
+
+---
+
+## v1.8+ — Backlog
 
 - Mobile native wrapper (Capacitor) if PWA gaps appear on iOS
 - Arabic + English content (for Muslims in English-speaking countries)

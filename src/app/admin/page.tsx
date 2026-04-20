@@ -2,6 +2,7 @@
 
 import { useEffect, useState, FormEvent } from "react";
 import Link from "next/link";
+import { ModerationQueueBadge } from "@/components/ModerationQueueBadge";
 
 interface Metrics {
   users_active: number;
@@ -226,6 +227,9 @@ export default function AdminPage() {
             تحديث
           </button>
         </div>
+
+        {/* v1.7: moderation queue hero badge (hidden when empty) */}
+        <ModerationQueueBadge />
 
         {/* Overview Metrics */}
         <div className="grid grid-cols-2 gap-3 sm:grid-cols-3 lg:grid-cols-5">
