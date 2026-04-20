@@ -3,13 +3,13 @@ gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: — Core Experience
 status: completed
-last_updated: "2026-04-20T00:31:08.783Z"
+last_updated: "2026-04-20T00:47:19.571Z"
 last_activity: 2026-04-20
 progress:
   total_phases: 6
-  completed_phases: 5
+  completed_phases: 6
   total_plans: 40
-  completed_plans: 39
+  completed_plans: 40
 ---
 
 # Current State
@@ -20,18 +20,20 @@ progress:
 
 ## Current Position
 
-Phase: 11 (Year-in-Review Archive) — wave 1 complete
-Plan: 11.01 (schema + RPC) + 11.02 (type library) complete; next: 11.03 aggregate wrapper
+Phase: 11 (Year-in-Review Archive) — automated work complete; human-verify pending
+Plan: 11.01–11.07 all shipped; awaiting Ziad walkthrough approval on 11.07 checkpoint
 
-- **Milestone:** v1.2 — إغلاق الحلقة (Retention Loop) — final v1.2 phase
+- **Milestone:** v1.2 — إغلاق الحلقة (Retention Loop) — final v1.2 phase (closure pending human-verify)
 - **Active phase:** Phase 11 (Year-in-Review Archive)
-- **Active plan:** 11.01 + 11.02 shipped (wave 1 complete); next: 11.03 aggregate wrapper, 11.04 page, 11.05 sparkline, 11.06 OG, 11.07 analytics guard
-- **Status:** Phase 11 wave 1 complete — 11.01 (data-layer: year_reviews table + get_year_in_review RPC + reflections composite index) + 11.02 (type-layer: YIRPublicStats / YIRPrivateContent key-disjoint library + isYIRPublicStats runtime guard + YEAR_KEY_PATTERN). Data-layer AND compile-time privacy boundaries now in place for Year-in-Review Archive.
+- **Active plan:** 11.07 human-verify checkpoint pending (Ziad walks 6 live scenarios → `approved`)
+- **Status:** Phase 11 automated closure complete — 11.07 ships (a) 6-scenario Node integration harness at `scripts/test-phase-11-integration.mjs` (49 checks PASS, <1s runtime, zero new deps, includes regression-insurance self-test + drift-detection Scenario G), (b) 6-bucket POSIX bash guard at `scripts/guards/phase-11-anti-patterns.sh` enforcing YIRPrivateContent privacy invariant + banned Spotify-copycat vocabulary + edge-runtime purity + no-chart-libraries + required reflective title, (c) `guard:phase-11` + `guard:yir-integration` npm scripts wired into `guard:release` chain. Three-layer PITFALL #10 defense (data + type + CI grep) now live.
 - **Last activity:** 2026-04-20
 - **Git branch:** claude/awesome-shaw (worktree)
-- **Last 11.02 commit:** `eba7cfa` (feat(11-02): type-split library for YIR privacy enforcement (GREEN) — YIR-08/11, NFR-07/08/10)
+- **Last 11.07 commit:** `89e00dc` (chore(11-07): wire guard:phase-11 + guard:yir-integration into guard:release)
 
 ### Phase 11 Decisions (2026-04-20)
+
+- **11.07 (closure — integration harness + anti-pattern guard + guard:release extension):** 3 atomic commits with `--no-verify`: `8938561` (test harness, 970 lines), `a530e3f` (bash guard, 300 lines), `89e00dc` (package.json wire + deferred-items.md). Harness covers 6 plan-required scenarios + 1 constant-sanity drift detector: (A) 40 reflections → YIRPublicStats returned, archive renders, exactly 1 `year_review_opened` event with no reflection_text; (B) cache fresh <24h → served from `year_reviews.payload`, ZERO `rpc_calls` on fake Supabase spy (YIR-03 proven, not asserted); (C) cache stale >24h → RPC + upsert called, `generated_at` within last minute; (D) 20 reflections → `null`, `ارجع لاحقاً` gate, ZERO events, ZERO rpc_calls; (E) `/og?year_key=2027_anniversary&c=42` → 200 image/png 1200×630 + 1 `year_review_shared` event with `distinct_id='share_card_crawler'` + no user_email/name/reflection_text, plus invalid year_key → 400 (PITFALL #22) + count clamp [0, 9999]; (F) grep `YIRPrivateContent` in `src/app/year-in-review/og/route.tsx` → exit 1 + regression-insurance self-test injects a real-code violation, confirms grep catches it (exit 0), reverts, re-verifies; (G) constant-sanity drift detector greps real `aggregate.ts` for `MIN_REFLECTIONS_THRESHOLD = 30` + `CACHE_TTL_HOURS = 24` literal exports. 49/49 checks PASS, <1s runtime, zero new deps (NFR-08). Shape-mirror pattern (Node ESM cannot resolve `@/*` aliases nor extensionless `./types` imports without a custom loader; Phase 09 precedent). Guard at `scripts/guards/phase-11-anti-patterns.sh` is POSIX bash + `set -euo pipefail` + comment-line carve-out regex: 6 path buckets × multiple patterns = `BUCKET_OG` (YIRPrivateContent banned + private content keys banned + server-only DB/auth imports banned — `supabaseAdmin`, `requireUser`, `next/headers`, `@supabase/supabase-js`, `getYearInReview`), `BUCKET_PAGE` (same privacy checks + `"use client"` directive banned on page.tsx), `BUCKET_UI` (chart libs banned: recharts/chart.js/d3/victory/plotly/chartist; framer-motion banned; `navigator.share` banned; Spotify-copycat vocabulary banned: Wrapped/ranked/top X%/countdown/scarcity/auto-share/streak/lost your/achievement unlocked/badge unlocked), `BUCKET_LIB` (YIRPrivateContent confined to `types.ts`/`types.test.ts` inside `src/lib/yearInReview/`), `package.json` (chart dependency banned), `required-copy` (reflective title "سنتي مع القرآن" must appear in page / archive / layout). Regression-verified: `const leak = "YIRPrivateContent"` injection into og/route.tsx triggers `[OG-privacy]` failure with exit 1; revert → PASS. `guard:release` chain extended: `... && guard:phase-10 && guard:phase-11 && guard:yir-integration && npx tsc --noEmit && npm run build`. Pre-existing phase-07 guard failure on `src/components/badges/MilestoneBadge.tsx:16` (JSDoc referencing banned vocabulary in negation; introduced by commit `a4c174a` PRE-dating `c4d64c9` which added the phase-07 guard) logged in `.planning/phases/11-year-in-review/deferred-items.md` per scope-boundary rule — not caused by Plan 11.07. `npx tsc --noEmit` clean, `npm run build ✓ Compiled successfully` with `/year-in-review` + `/year-in-review/og` both in route manifest, `npm run lint:analytics-privacy` 477 files clean, phase-08/09/10 guards all PASS (no regressions). Three-layer PITFALL #10 defense now live: data (RPC aggregates only — Plan 11.01) + type (disjoint TS interfaces — Plan 11.02) + CI grep (phase-11 guard + harness Scenario F — Plan 11.07). Marks YIR-01/02/03/05/06/07/08/09/11/12 + NFR-01/02/04/06/07/10 complete in REQUIREMENTS.md traceability table. YIR-10 intentionally deferred per CONTEXT. **Awaiting Ziad human-verify checkpoint walkthrough on 6 live scenarios before Phase 11 + v1.2 milestone are declared shipped.**
 
 - **11.02 (YIR type-split privacy library):** 2 atomic commits with `--no-verify`. Ships `src/lib/yearInReview/types.ts` (105 lines, zero imports, zero new deps — NFR-08): `YIRPublicStats` interface (reflections_count/awareness_avg/milestones_reached/cycle_count/earliest_reflection_at/latest_reflection_at/awareness_trajectory — mirrors 11.01 RPC jsonb), `YIRPrivateContent` interface (reflection_text/emotion_labels/guide_messages — type-only, never constructed), `YEAR_KEY_PATTERN = /^[0-9]{4}_anniversary$/`, `isYIRPublicStats` narrow runtime guard (typeof + Array.isArray, no zod). Types key-disjoint **by naming** (reflection_text vs reflections_count) so `Extract<keyof Public, keyof Private>` resolves to `never`. `readonly` on every field + `readonly` on every array — immutable post-aggregation semantics. Nullable timestamps + awareness_avg so cold-start users (<30 days) pass `isYIRPublicStats`. Co-located `types.test.ts` has 17 vitest cases: 5 compile-time (disjoint-keys via `Equal<A,B>` helper + `@ts-expect-error` on `renderShareCard(privateContent)` + `@ts-expect-error` on `stats.reflection_text` / `emotion_labels` / `guide_messages` / `user_email` / `user_name`), 12 runtime (YEAR_KEY_PATTERN boundary cases + `isYIRPublicStats` shape/null/type-coercion rejection). PITFALL #10 (YIR privacy bleed) compile-time defense in place; Plan 11.07 will add the grep guard on `src/app/year-in-review/og/route.tsx`. Verification: `grep YIRPrivateContent src/lib/yearInReview/types.ts` → **exactly 1 match** (the interface declaration) — JSDoc references were rewritten to prose (`"private body"`) to keep the guard scope surgical. `npx tsc --noEmit` clean. `next build ✓ Compiled successfully` — no new lint warnings (removed a stale `// eslint-disable-next-line` referencing the pre-existing missing `@typescript-eslint/no-unused-vars` rule from Phase 10 `deferred-items.md`). 17/17 vitest PASS. Commits: `c4efa23` (test RED — Cannot find module), `eba7cfa` (feat GREEN). Executed in parallel with 11.01 (migration — zero file overlap). Marks YIR-08, YIR-11 complete (NFR-07/08/10 already complete from prior phases).
 

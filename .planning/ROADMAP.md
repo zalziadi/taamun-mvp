@@ -35,7 +35,7 @@ Email re-engagement automation, web push notifications, AI-generated infinite cy
 - [ ] **Phase 8: Milestone Badges (days 1/3/7/14/21 + cycle-completion)** — Private, content-paired, retroactively backfilled
 - [ ] **Phase 9: Renewal Prompts In-App** — 7-day banner, gateway-aware CTA, dedup with email/push channels
 - [ ] **Phase 10: Referral Program** — "ادع للتمعّن" da'wah-framed, both-sided reward, day-14 gating
-- [ ] **Phase 11: Year-in-Review Archive** — Always-on retrospective; Ramadan moment deferred to v1.3
+- [x] **Phase 11: Year-in-Review Archive** — Always-on retrospective; Ramadan moment deferred to v1.3 (completed 2026-04-20)
 
 ### Phase Details
 
@@ -215,7 +215,7 @@ NFRs apply to ALL phases (Phase 6 through Phase 11):
 | 8. Milestone Badges | 0/6 | Planned | - |
 | 9. Renewal Prompts In-App | 0/7 | Planned | - |
 | 10. Referral Program | 6/8 | In Progress|  |
-| 11. Year-in-Review Archive | 6/7 | In Progress|  |
+| 11. Year-in-Review Archive | 7/7 | Complete   | 2026-04-20 |
 
 ---
 
