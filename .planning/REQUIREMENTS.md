@@ -1,15 +1,16 @@
-# Requirements — v1.8 (pending scope)
+# Requirements — v1.9 (pending scope)
 
-v1.7 archived at [milestones/v1.7-REQUIREMENTS.md](./milestones/v1.7-REQUIREMENTS.md).
+v1.8 archived at [milestones/v1.8-REQUIREMENTS.md](./milestones/v1.8-REQUIREMENTS.md).
 
 ---
 
-## Candidate themes for v1.8
+## Candidate themes for v1.9
 
-1. **Social proof:** rotating testimonial from real shared_insights on `/` + `/pricing`
+1. **Creator revenue share groundwork:** per-creator payout estimate view
 2. **Family plan:** multi-user subscription with one payer + N members
-3. **Creator revenue share:** groundwork (subscriber counting → payout estimate)
-4. **Validation-first pause:** freeze until first paying user of a creator journey exists
+3. **Bilingual landing:** English landing variant for expat Muslims
+4. **Mobile native wrapper:** Capacitor wrap if iOS PWA gaps surface
+5. **Validation-first pause:** freeze until ≥ 3 real creator journeys + ≥ 10 threads exist
 
 ---
 

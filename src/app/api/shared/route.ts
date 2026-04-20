@@ -1,6 +1,33 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 
+export const dynamic = "force-dynamic";
+
+/**
+ * GET /api/shared?limit=3
+ *
+ * Public feed of published shared_insights — used by the SocialProofRotator
+ * on marketing surfaces. Anon-readable via RLS policy `shared_insights_public_published`.
+ * Silent no-op on DB error — the component renders nothing when list is empty.
+ */
+export async function GET(req: Request) {
+  const supabase = await createSupabaseServerClient();
+  const url = new URL(req.url);
+  const limit = Math.min(20, Math.max(1, parseInt(url.searchParams.get("limit") ?? "3", 10)));
+
+  const { data, error } = await supabase
+    .from("shared_insights")
+    .select("slug, content, attribution, created_at")
+    .eq("status", "published")
+    .order("created_at", { ascending: false })
+    .limit(limit);
+
+  if (error) {
+    return NextResponse.json({ ok: false, insights: [] });
+  }
+  return NextResponse.json({ ok: true, insights: data ?? [] });
+}
+
 // Content-based moderation: flag if too long, contains link patterns, or non-Arabic boilerplate
 function moderate(content: string): "published" | "flagged" {
   const trimmed = content.trim();

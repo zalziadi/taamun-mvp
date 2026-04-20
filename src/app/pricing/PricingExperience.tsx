@@ -3,6 +3,7 @@
 import { useState, useCallback, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { track } from "@/lib/analytics";
+import { SocialProofRotator } from "@/components/SocialProofRotator";
 
 /* ── الباقات ── */
 type TierDef = {
@@ -237,6 +238,9 @@ export default function PricingExperience() {
             <p className="text-xs text-[#c9b88a]/60">— مشترك حقيقي · واتساب</p>
           </div>
         </section>
+
+        {/* v1.8: live rotator of published shared_insights — silent when empty */}
+        <SocialProofRotator limit={3} />
 
         {/* ── لماذا تمعّن؟ ── */}
         <section className="rounded-3xl border border-[#c9b88a]/20 bg-gradient-to-b from-[#2b2824] to-[#1d1b17] p-7 sm:p-8">

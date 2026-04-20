@@ -101,7 +101,15 @@ Public creator profiles, a member-facing "following" surface, discovery ranked b
 
 ---
 
-## v1.8+ — Backlog
+## v1.8 — Growth & SEO Surfaces (shipped 2026-04-20)
+
+**Archived:** [v1.8-ROADMAP.md](./milestones/v1.8-ROADMAP.md) · [v1.8-REQUIREMENTS.md](./milestones/v1.8-REQUIREMENTS.md)
+
+Real-user social proof rotator on `/` and `/pricing`, featured creator journey spotlight, `sitemap.xml` + `robots.txt`, and public `/creator/leaderboard`.
+
+---
+
+## v1.9+ — Backlog
 
 - Mobile native wrapper (Capacitor) if PWA gaps appear on iOS
 - Arabic + English content (for Muslims in English-speaking countries)
