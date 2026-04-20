@@ -9,7 +9,7 @@ progress:
   total_phases: 5
   completed_phases: 4
   total_plans: 33
-  completed_plans: 31
+  completed_plans: 32
 ---
 
 # Current State
@@ -20,18 +20,20 @@ progress:
 
 ## Current Position
 
-Phase: 10 (Referral Program) — wave 2 landing (10.03 create-route + 10.04 activate-branch)
-Plan: 10.01/10.02/10.03/10.04 complete; waves 3–4 remaining (10.05–10.08)
+Phase: 10 (Referral Program) — wave 3 in flight (10.06 credit cron landed; 10.05 UI + 10.07 OG parallel)
+Plan: 10.01/10.02/10.03/10.04/10.06 complete; 10.05/10.07 pending landing; 10.08 = wave 4
 
 - **Milestone:** v1.2 — إغلاق الحلقة (Retention Loop)
 - **Active phase:** Phase 10 (Referral Program)
-- **Active plan:** 10.04 shipped; next wave: 10.05 (cron credit-referrals)
-- **Status:** Phase 10 wave-2 complete — 10.03 (create route) + 10.04 (activate branch) landed in parallel. `public.referrals.invitee_id` now has its mutation path; Plan 10.05 cron unblocked.
-- **Last activity:** 2026-04-19
+- **Active plan:** 10.06 shipped; next: 10.05+10.07 complete → 10.08 integration harness
+- **Status:** Phase 10 wave-3 partial — 10.06 (nightly credit cron) landed in parallel with 10.05 (account UI) + 10.07 (OG share card). `/api/cron/credit-referrals` scheduled 23:00 UTC; REFER-04 zero-activation_codes posture live in code + grep.
+- **Last activity:** 2026-04-20
 - **Git branch:** claude/awesome-shaw (worktree)
-- **Last 10.04 commit:** `cef43d4` (FRIEND-* redemption branch in /api/activate — REFER-01/03/07)
+- **Last 10.06 commit:** `c9e6af6` (vercel.json cron schedule — REFER-03/04/05/06/08)
 
 ### Phase 10 Decisions (2026-04-20)
+
+- **10.06 (nightly credit cron — `/api/cron/credit-referrals`):** 4 atomic commits --no-verify (`075c87e` test RED, `b12810e` feat helpers, `65b555e` feat route, `c9e6af6` chore vercel.json). Ships `src/lib/referral/credit.ts` (isInviteeEligible / yearlyRewardedCount / creditOneReferral) + cron route + daily cron at `0 23 * * *` UTC (= 02:00 Asia/Riyadh). Four independent guards: REFER-03/05 day-14 via `progress.completed_days` (user_progress legacy fallback matching progressStore.ts shape) → REFER-08 refund void (`subscription_status='expired'` OR `expires_at < redeemed+14d` → status='refunded') → REFER-06 annual-cap re-check (`yearlyRewardedCount >= 3` → status='void', no credit) → REFER-04 direct `profiles.expires_at` extension (NEVER mints `activation_codes`; grep-guarded). Math: `newExpiresAt = max(Date.now(), Date.parse(current)) + 30d` — blocks past-month stacking for already-expired referrers. Silent delivery (REFER-11): zero `email_queue`, push, or `emitEvent` on credit. Synchronous per-row (PITFALL #19): sequential loop, `.limit(500)` safety cap, per-row try/catch for poison-row isolation. Bearer `CRON_SECRET` gate mirrors `manage-subscriptions`. 13/13 vitest PASS (extended plan's 9-case spec with yearlyRewardedCount year-start filter, `status='void'` idempotency, null `invitee_id` defensive guard, missing-profile = refunded). `npx tsc --noEmit` clean. `npm run lint:analytics-privacy` 465 files PASS. `next build ✓ Compiled successfully` — ESLint step fails on pre-existing 10.02 `@typescript-eslint/no-explicit-any` rule-not-found in `generate.test.ts` (tracked in phase-09 `deferred-items.md`, NOT caused by 10.06). Executed in parallel with 10.05 + 10.07 (no file overlap: 10.05 owns `src/app/account/referral/*` + `src/components/ReferralPanel*` + `src/app/api/referral/list/*`; 10.06 owns `src/lib/referral/credit*` + `src/app/api/cron/credit-referrals/*` + `vercel.json`; 10.07 owns `src/app/account/referral/og/*`). Marks REFER-03, REFER-04, REFER-05, REFER-06, REFER-08 complete in traceability table.
 
 - **10.04 (FRIEND-* redemption branch in /api/activate):** 2 atomic commits (`bda9a0e` test, `cef43d4` feat) with `--no-verify`. Extends `src/app/api/activate/route.ts` with a FRIEND-* branch inserted BETWEEN body-parse (step 2) and activation_codes lookup (step 3); TAAMUN-* path is byte-identical to Phase 9 (grep verified: `.from("activation_codes")` call count unchanged at 2). FRIEND branch: lookup referrals row → guard `code_not_found`/404, `code_already_redeemed`/409, `self_referral_forbidden`/409 (app-layer REFER-07 defense in depth; DB CHECK is backstop) → upsert profiles `{tier:'monthly', expires_at=now+30d}` (REFER-03 free-month) → preserve Phase 9 RENEW-03 `original_gateway='eid_code'` tag (guarded by `.is('original_gateway',null)`) → update referrals `{invitee_id, invitee_redeemed_at, status='pending_day14'}` → `emitEvent('referral_code_redeemed', {referral_code_prefix:'FRIEND'})` ANALYTICS-07 prefix-only → makeEntitlementToken + cookie → `{ok,tier:'monthly',expires_at,via:'friend_referral'}`. 8/8 vitest pass (2 TAAMUN regression + 4 FRIEND-* + 2 transport). `npx tsc --noEmit` clean. `npm run lint:analytics-privacy` clean (455 files). `next build` compiles (`✓ Compiled successfully`) but ESLint step fails on pre-existing 10.02 `@typescript-eslint/no-explicit-any` rule-not-found (verified via `git stash && npm run build` — unrelated to 10.04; documented in `deferred-items.md`). One Rule-3 auto-fix: pass-through `vi.mock()` for `@/lib/entitlement`, `@/lib/subscriptionDurations`, `@/lib/referral/generate` because vitest's default resolver doesn't honor `@/*` tsconfig alias — factories forward to real modules via relative import, preserving integration coverage (HMAC + calcExpiresAt + FRIEND_CODE_REGEX exercised for real). Executed in parallel with 10.03 (no file overlap: 10.03 owns `src/app/api/referral/create/*`, 10.04 edits `src/app/api/activate/*`). Marks REFER-01, REFER-03, REFER-07 complete in traceability table.
 
