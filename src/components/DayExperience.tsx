@@ -463,6 +463,41 @@ export function DayExperience({ day }: DayExperienceProps) {
       {/* Share */}
       <ShareCard day={day} verse={content.verse} verseRef={content.verseRef} />
 
+      {/* Day-28 closing moment — quiet verse, no buttons, no celebration.
+          Adds tonal depth to the completion moment before the cycle-2 CTA.
+          Framer-motion subtle fade · contemplative · no confetti · no share.
+          v1.4 addition — Stage 3 CX depth. */}
+      <AnimatePresence>
+        {day === 28 && isCompleted && (
+          <motion.section
+            key="day-28-closing"
+            initial={{ opacity: 0, y: 12 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 1.2, ease: "easeOut", delay: 0.2 }}
+            aria-label="لحظة ختام اليوم الثامن والعشرين"
+            className="mb-6 border-t border-b border-white/5 py-10 text-center"
+          >
+            <p
+              className="mx-auto mb-4 max-w-md font-serif text-xl leading-loose text-white/85 sm:text-2xl"
+              dir="rtl"
+            >
+              ﴿ يَا أَيَّتُهَا النَّفْسُ الْمُطْمَئِنَّةُ · ارْجِعِي إِلَىٰ رَبِّكِ رَاضِيَةً مَّرْضِيَّةً ﴾
+            </p>
+            <p className="mb-6 text-[11px] uppercase tracking-[0.3em] text-white/30">
+              الفجر · ٢٧–٢٨
+            </p>
+            <div className="my-6 flex items-center justify-center gap-3 text-white/25" aria-hidden="true">
+              <span className="h-px w-10 bg-white/15" />
+              <span className="text-xs">·</span>
+              <span className="h-px w-10 bg-white/15" />
+            </div>
+            <p className="mx-auto max-w-sm text-sm leading-loose text-white/55">
+              ثمانية وعشرون يومًا — تمعّن معك.
+            </p>
+          </motion.section>
+        )}
+      </AnimatePresence>
+
       {/* Day-28 Cycle 2 CTA — inline, no modal, Arabic-native (RETURN-01/03/04) */}
       <AnimatePresence>
         {day === 28 && isCompleted && (
@@ -470,7 +505,7 @@ export function DayExperience({ day }: DayExperienceProps) {
             key="cycle-2-cta"
             initial={{ opacity: 0, y: 8 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6, ease: "easeOut" }}
+            transition={{ duration: 0.6, ease: "easeOut", delay: 1.4 }}
             className="rounded-2xl border border-white/10 bg-white/5 p-6 backdrop-blur-sm"
           >
             <p className="mb-2 text-xs uppercase tracking-widest text-white/40">
