@@ -47,12 +47,10 @@ export function AppChrome({
             <div className="flex items-center gap-3 text-[#8c7851]">
               <Link
                 href="/"
+                aria-label={APP_NAME}
                 className="flex items-center gap-2 rounded-md outline-none transition-opacity duration-200 hover:opacity-80 focus-visible:ring-2 focus-visible:ring-[#8c7851]/45 focus-visible:ring-offset-2 focus-visible:ring-offset-[#f4f1ea]"
               >
                 <BrandLogo variant="mark" size={36} />
-                <span className="tm-heading text-2xl font-bold text-[#7b694a]">
-                  {APP_NAME}
-                </span>
               </Link>
             </div>
 
