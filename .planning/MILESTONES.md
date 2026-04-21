@@ -6,6 +6,7 @@ Historical record of shipped milestones.
 
 | Version | Shipped | Summary | Archive |
 |---------|---------|---------|---------|
+| **v2.2** | 2026-04-20 | Historical observability — ops_snapshots + daily cron + sparklines + CSV | [v2.2-ROADMAP.md](./milestones/v2.2-ROADMAP.md) · [v2.2-REQUIREMENTS.md](./milestones/v2.2-REQUIREMENTS.md) |
 | **v2.1** | 2026-04-20 | Operator cockpit — /api/ops/stats + /admin/ops dashboard | [v2.1-ROADMAP.md](./milestones/v2.1-ROADMAP.md) · [v2.1-REQUIREMENTS.md](./milestones/v2.1-REQUIREMENTS.md) |
 | **v2.0** | 2026-04-20 | English landing + English FAQ + hreflang + language switcher | [v2.0-ROADMAP.md](./milestones/v2.0-ROADMAP.md) · [v2.0-REQUIREMENTS.md](./milestones/v2.0-REQUIREMENTS.md) |
 | **v1.9** | 2026-04-20 | Journey OG images + JSON-LD schemas + creator guide + FAQ | [v1.9-ROADMAP.md](./milestones/v1.9-ROADMAP.md) · [v1.9-REQUIREMENTS.md](./milestones/v1.9-REQUIREMENTS.md) |
@@ -35,3 +36,4 @@ Historical record of shipped milestones.
 - **v1.9:** Make it earn clicks (OG + JSON-LD + onboarding + FAQ) ✅
 - **v2.0:** Make it reach English-speaking Muslims (bridge landing + i18n signals) ✅
 - **v2.1:** Make it observable (operator cockpit before more building) ✅
+- **v2.2:** Make growth visible (trend lines + CSV) ✅

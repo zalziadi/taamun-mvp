@@ -1,17 +1,17 @@
-# Requirements — v2.2 (pending scope)
+# Requirements — v2.3 (pending scope)
 
-v2.1 archived at [milestones/v2.1-REQUIREMENTS.md](./milestones/v2.1-REQUIREMENTS.md).
+v2.2 archived at [milestones/v2.2-REQUIREMENTS.md](./milestones/v2.2-REQUIREMENTS.md).
 
 ---
 
-## Candidate themes for v2.2
+## Candidate themes for v2.3
 
-1. **Validation pause:** freeze until /admin/ops shows real counts
-2. **Family plan:** one payer → N members, shared invite pool (DB + payment integration)
-3. **Creator revenue share:** payout model + monthly statement
-4. **Full English translation of authed app**
-5. **Mobile native wrapper (Capacitor)**
-6. **Historical ops snapshots:** `ops_snapshots` migration + daily cron
+1. **Validation pause:** freeze until /admin/ops sparklines show movement
+2. **Alert thresholds:** email founder when specific metric crosses X
+3. **Family plan:** one payer → N members, shared invite pool
+4. **Creator revenue share:** payout model + monthly statement
+5. **Full English authed app:** program, guide, account
+6. **Mobile native wrapper (Capacitor)**
 
 ---
 

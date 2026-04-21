@@ -133,13 +133,21 @@ English landing at `/en`, English FAQ at `/en/faq` with FAQPage schema, full hre
 
 ---
 
-## v2.2+ — Backlog
+## v2.2 — Historical Observability (shipped 2026-04-20)
+
+**Archived:** [v2.2-ROADMAP.md](./milestones/v2.2-ROADMAP.md) · [v2.2-REQUIREMENTS.md](./milestones/v2.2-REQUIREMENTS.md)
+
+`ops_snapshots` table + daily 23:55 UTC cron + 30-day inline SVG sparklines on `/admin/ops` + CSV export.
+
+---
+
+## v2.3+ — Backlog
 
 - Mobile native wrapper (Capacitor) if PWA gaps appear on iOS
 - Full English translation of the authed app (program, guide, account)
 - Family plan (multi-user subscription)
 - Creator revenue share (monetization model TBD)
-- Historical ops snapshots (time-series migration)
+- Alert thresholds on specific metrics (email/push when value crosses X)
 
 ---
 

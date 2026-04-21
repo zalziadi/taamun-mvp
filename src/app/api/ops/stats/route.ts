@@ -11,7 +11,7 @@ export const dynamic = "force-dynamic";
  * product surface. Pure read, no side effects, no new tables.
  */
 
-type Count = { label: string; value: number; href?: string };
+type Count = { label: string; value: number; href?: string; metricKey?: string };
 
 async function headCount(
   admin: ReturnType<typeof import("@/lib/supabaseAdmin").getSupabaseAdmin>,
@@ -84,43 +84,43 @@ export async function GET() {
     {
       section: "المستخدمون",
       items: [
-        { label: "إجمالي البروفايلات", value: profiles },
+        { label: "إجمالي البروفايلات", value: profiles, metricKey: "profiles_total" },
         { label: "تسجيل جديد (٢٤س)", value: newProfiles24h ?? 0 },
-        { label: "اشتراكات Push", value: pushSubs },
+        { label: "اشتراكات Push", value: pushSubs, metricKey: "push_subscriptions" },
       ],
     },
     {
       section: "النقاشات (v1.4)",
       items: [
-        { label: "خيوط (إجمالي)", value: threads, href: "/threads" },
-        { label: "خيوط معلّمة", value: threadsFlagged, href: "/admin/moderation" },
-        { label: "ردود (إجمالي)", value: replies },
-        { label: "ردود معلّمة", value: repliesFlagged, href: "/admin/moderation" },
+        { label: "خيوط (إجمالي)", value: threads, href: "/threads", metricKey: "threads_total" },
+        { label: "خيوط معلّمة", value: threadsFlagged, href: "/admin/moderation", metricKey: "threads_flagged" },
+        { label: "ردود (إجمالي)", value: replies, metricKey: "thread_replies_total" },
+        { label: "ردود معلّمة", value: repliesFlagged, href: "/admin/moderation", metricKey: "thread_replies_flagged" },
       ],
     },
     {
       section: "وضع المبدع (v1.4 + v1.6 + v1.7)",
       items: [
-        { label: "رحلات (إجمالي)", value: journeys },
-        { label: "رحلات منشورة", value: journeysPublished, href: "/discover" },
-        { label: "رحلات مسوّدة", value: journeysDraft },
-        { label: "رحلات معلّمة", value: journeysFlagged, href: "/admin/moderation" },
-        { label: "اشتراكات رحلات", value: subscriptions },
-        { label: "متابعات مبدعين", value: follows },
+        { label: "رحلات (إجمالي)", value: journeys, metricKey: "journeys_total" },
+        { label: "رحلات منشورة", value: journeysPublished, href: "/discover", metricKey: "journeys_published" },
+        { label: "رحلات مسوّدة", value: journeysDraft, metricKey: "journeys_draft" },
+        { label: "رحلات معلّمة", value: journeysFlagged, href: "/admin/moderation", metricKey: "journeys_flagged" },
+        { label: "اشتراكات رحلات", value: subscriptions, metricKey: "journey_subscriptions" },
+        { label: "متابعات مبدعين", value: follows, metricKey: "creator_follows" },
       ],
     },
     {
       section: "الدعوات (v1.3 + v1.4)",
       items: [
-        { label: "استخدامات (إجمالي)", value: invitesTotal },
-        { label: "مكافآت مطبّقة", value: invitesRewarded },
+        { label: "استخدامات (إجمالي)", value: invitesTotal, metricKey: "invites_total" },
+        { label: "مكافآت مطبّقة", value: invitesRewarded, metricKey: "invites_rewarded" },
       ],
     },
     {
       section: "الرؤى المشاركة (v1.3)",
       items: [
-        { label: "رؤى (إجمالي)", value: insights, href: "/discover" },
-        { label: "رؤى معلّمة", value: insightsFlagged, href: "/admin/moderation" },
+        { label: "رؤى (إجمالي)", value: insights, href: "/discover", metricKey: "insights_total" },
+        { label: "رؤى معلّمة", value: insightsFlagged, href: "/admin/moderation", metricKey: "insights_flagged" },
       ],
     },
   ];
