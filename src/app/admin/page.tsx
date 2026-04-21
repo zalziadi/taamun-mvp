@@ -370,6 +370,13 @@ export default function AdminPage() {
         {/* Quick Actions + Stats */}
         <div className="grid grid-cols-1 gap-3 sm:grid-cols-3">
           <Link
+            href="/admin/ops"
+            className="rounded-2xl border border-[#c9b88a]/30 bg-[#2b2824] px-6 py-4 text-white transition-colors hover:bg-[#c9b88a]/10"
+          >
+            <span className="text-sm font-medium">نظرة تشغيلية</span>
+            <p className="mt-1 text-xs text-white/40">عدّادات مجتمع + المبدعين + الدعوات</p>
+          </Link>
+          <Link
             href="/admin/moderation"
             className="rounded-2xl border border-amber-500/30 bg-[#2b2824] px-6 py-4 text-white transition-colors hover:bg-amber-500/10"
           >

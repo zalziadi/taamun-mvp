@@ -1,16 +1,17 @@
-# Requirements — v2.1 (pending scope)
+# Requirements — v2.2 (pending scope)
 
-v2.0 archived at [milestones/v2.0-REQUIREMENTS.md](./milestones/v2.0-REQUIREMENTS.md).
+v2.1 archived at [milestones/v2.1-REQUIREMENTS.md](./milestones/v2.1-REQUIREMENTS.md).
 
 ---
 
-## Candidate themes for v2.1
+## Candidate themes for v2.2
 
-1. **Validation pause:** freeze feature work until ≥ 3 real creator journeys + ≥ 10 threads + ≥ 1 successful invite reward
+1. **Validation pause:** freeze until /admin/ops shows real counts
 2. **Family plan:** one payer → N members, shared invite pool (DB + payment integration)
-3. **Creator revenue share:** payout model (subscriber × SAR) + monthly statement
-4. **Full English translation of authed app:** program, guide, account, day experience
-5. **Mobile native wrapper:** Capacitor iOS+Android wrap for App Store presence
+3. **Creator revenue share:** payout model + monthly statement
+4. **Full English translation of authed app**
+5. **Mobile native wrapper (Capacitor)**
+6. **Historical ops snapshots:** `ops_snapshots` migration + daily cron
 
 ---
 
