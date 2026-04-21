@@ -1,6 +1,7 @@
 import Link from "next/link";
 import "./JourneyLanding.css";
 import { LandingEffects } from "./LandingEffects";
+import { BrandLogo } from "@/components/BrandLogo";
 
 /**
  * JourneyLanding — Server Component.
@@ -43,7 +44,9 @@ export function JourneyLanding() {
       {/* Header */}
       <header className="jl-header">
         <Link href="/auth" className="jl-header-cta">ابدأ مجانا</Link>
-        <span className="jl-logo">تمعّن</span>
+        <span className="jl-logo" aria-label="تمعّن">
+          <BrandLogo variant="mark" size={44} />
+        </span>
       </header>
 
       {/* ════════ HERO ════════ */}
@@ -314,8 +317,10 @@ export function JourneyLanding() {
           <li><Link href="/reflection">تأمل</Link></li>
           <li><Link href="/progress">انعكاس</Link></li>
         </ul>
-        <div className="jl-footer-center">تمعّن &copy; 2026</div>
-        <div className="jl-footer-logo">تمعّن</div>
+        <div className="jl-footer-center">&copy; 2026</div>
+        <div className="jl-footer-logo" aria-label="تمعّن">
+          <BrandLogo variant="mark" size={40} />
+        </div>
       </footer>
     </div>
   );
