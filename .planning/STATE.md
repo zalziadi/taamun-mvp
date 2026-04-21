@@ -1,10 +1,10 @@
 ---
 gsd_state_version: 1.0
-milestone: null
-milestone_name: (between milestones — ready for v1.3)
-status: milestone_complete
-last_updated: "2026-04-20T03:30:00.000Z"
-last_activity: 2026-04-20
+milestone: v1.3
+milestone_name: العمق (Depth & Personalization)
+status: defining_requirements
+last_updated: "2026-04-21T00:00:00.000Z"
+last_activity: 2026-04-21
 progress:
   total_phases: 0
   completed_phases: 0
@@ -14,97 +14,63 @@ progress:
 
 # Current State
 
-**Last updated:** 2026-04-20
+**Last updated:** 2026-04-21
 
 ---
 
 ## Current Position
 
-- **Milestone:** — (v1.2 shipped · no active milestone)
-- **Active phase:** none
-- **Active plan:** —
-- **Status:** milestone_complete · ready for `/gsd:new-milestone` (v1.3 candidate)
-- **Last activity:** 2026-04-20 — v1.2 milestone archived
+Phase: Not started (defining requirements)
+Plan: —
+Status: Defining requirements for v1.3
+Last activity: 2026-04-21 — v1.3 milestone started
+
+- **Milestone:** v1.3 — العمق (Depth & Personalization)
 - **Git branch:** claude/awesome-shaw (worktree)
 
 ---
 
-## Shipped (historical)
+## v1.3 Goals
 
-### v1.0 — shipped 2026-04-18
-Core 28-day program · AI guide · VIP · post-28 retention · minimal UI.
+Transform Taamun from "same experience for every user" into "experience that understands and remembers the user" via 4 target features:
 
-### v1.1 — shipped 2026-04-18
-Email re-engagement · Web push · AI-generated cycles · Book highlights · WhatsApp infra (code).
+1. **Reflection Themes ML Clustering** — monthly digest of recurring themes
+2. **Long-Term Memory for AI Guide** — cross-session memory via extended RAG
+3. **Voice Journaling (Munsit STT)** — record → transcribe → reflection (no audio storage)
+4. **Arabic Screen Reader A11y Audit** — VoiceOver + TalkBack + Lighthouse A11y ≥ 98
 
-### v1.2 — shipped 2026-04-20
-إغلاق الحلقة (Retention Loop) · 3 days · 134 commits · 254 files · +36,996/-616 LOC · zero new runtime deps.
-
-**6 phases:**
-- Phase 6 — PostHog Event Instrumentation (20 commits · 12/12 ANALYTICS REQs)
-- Phase 7 — Cycle 2 Transition + Day-28 Badge (18 commits · 7/7 RETURN REQs · Asia/Riyadh TZ bug FIXED)
-- Phase 8 — Milestone Badges (15 commits · 9/9 BADGE REQs · retroactive backfill zero event spam)
-- Phase 9 — Renewal Prompts (18 commits · 9/9 RENEW REQs · HMAC bug caught as deferred)
-- Phase 10 — Referral Program (20 commits · 12/12 REFER REQs · day-14 retention-gated)
-- Phase 11 — Year-in-Review Archive (19 commits · 11/12 YIR REQs · 4-layer privacy defense)
-
-**Cumulative:** 219 integration assertions · 700+ unit tests · 5 CI build-breaking guards · CX 60→91.
-
-**Archives:** [v1.2-ROADMAP.md](./milestones/v1.2-ROADMAP.md) · [v1.2-REQUIREMENTS.md](./milestones/v1.2-REQUIREMENTS.md) · [v1.2-MILESTONE-AUDIT.md](./v1.2-MILESTONE-AUDIT.md).
+Expected CX impact: 91 → ~96 (+5)
 
 ---
 
-## Operational TODO (before v1.2 user-visible in prod)
+## Accumulated Context
 
-### 6 SQL migrations pending apply
-```
-supabase/migrations/20260419000000_v1_2_badges_and_cycle_guard.sql           (Phase 7)
-supabase/migrations/20260420000000_v1_2_badge_backfill.sql                   (Phase 8)
-supabase/migrations/20260421000000_v1_2_profiles_original_gateway.sql        (Phase 9)
-supabase/migrations/20260421100000_v1_2_profiles_original_gateway_backfill.sql (Phase 9)
-supabase/migrations/20260422000000_v1_2_referrals.sql                        (Phase 10)
-supabase/migrations/20260423000000_v1_2_year_reviews.sql                     (Phase 11)
-```
+### Shipped milestones
+- **v1.0** (2026-04-18) — Core 28-day program + AI guide + VIP + post-28 retention + minimal UI
+- **v1.1** (2026-04-18) — Email automation · web push · AI-generated cycles · book highlights · WhatsApp infra
+- **v1.2** (2026-04-20) — إغلاق الحلقة · 6 phases · 70/71 REQs · CX 60→91 · zero new deps
 
-From main repo:
-```bash
-supabase db push
-```
-
-### Staging walkthrough checklist
-8 items in [v1.2-MILESTONE-AUDIT.md](./v1.2-MILESTONE-AUDIT.md) §"Human Staging Items" — DevTools, Lighthouse, PostHog Live Events, WhatsApp share preview, iOS/Android RTL, Vercel TZ verification.
+### Carry-over technical debt (tracked, handled outside v1.3 scope)
+- Phase-07 guard false-positive on `MilestoneBadge.tsx:16` JSDoc — 1-line patch
+- HMAC colon-split bug in `src/lib/entitlement.ts` — ISO-timestamp tokens fail verification
+- Pre-existing 10.02 ESLint rule-not-found blocks full `guard:release` chain
 
 ---
 
 ## Next action
 
-1. **Push branch + create PR:** `git push origin claude/awesome-shaw` then open PR at https://github.com/zalziadi/taamun-mvp/pull/new/claude/awesome-shaw
-2. **Apply migrations** after merge: `supabase db push` from main repo
-3. **Staging walkthrough** per v1.2-MILESTONE-AUDIT.md
-4. **When ready:** `/gsd:new-milestone v1.3` — Depth & Personalization
-
----
-
-## Deferred items (v1.3 backlog)
-
-Aggregated from 4× `deferred-items.md` files across phases:
-
-1. **Phase-07 guard false-positive** on `MilestoneBadge.tsx:16` JSDoc — 1-line comment-carve-out patch
-2. **HMAC colon-split bug** in `src/lib/entitlement.ts` — ISO-timestamp tokens fail verification (v1.2 helper works around)
-3. **10.02 pre-existing ESLint** rule-not-found blocks full `npm run build` chain — needs rule registration decision
-4. **YIR Ramadan annual moment** (YIR-10 marker) — deferred from v1.2 decision #4
-5. **BaZi VIP integration** — promised in PROJECT.md original; only Gene Keys shipped
-6. **Welcome tutorial / onboarding tour** — Day 0 still cold; v1.3+ Stage 1 boost
-7. **WhatsApp community operational activation** — v1.1 Phase 5 code shipped; admin + moderation decisions pending
+1. Research decision — investigate ML clustering + long-term memory patterns before requirements
+2. Define REQUIREMENTS.md with REQ-IDs for 4 feature categories (THEMES, MEMORY, VOICE, A11Y)
+3. Spawn gsd-roadmapper — continues numbering from Phase 12
 
 ---
 
 ## Active todos
 
-None — milestone closed cleanly.
+None in session — milestone just started.
 
 ---
 
 ## Blockers
 
-None. v1.2 architecturally sealed.
+None. v1.2 migrations pending apply are separate operational track.

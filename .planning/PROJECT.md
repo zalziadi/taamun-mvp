@@ -62,28 +62,34 @@ Hosting     Vercel (static + Fluid Compute)
 
 ---
 
-## Current State: v1.2 shipped (2026-04-20)
+## Current Milestone: v1.3 العمق (Depth & Personalization)
 
-**No active milestone.** Ready to scope v1.3 via `/gsd:new-milestone` when founder chooses.
+**Goal:** Transform Taamun من "نفس التجربة لكل عميل" إلى "تجربة تفهم العميل وتتذكّره" — عبر ML + long-term memory + voice + full accessibility.
 
-**Operational TODO before v1.2 user-visible:** 6 SQL migrations pending `supabase db push` (see [MILESTONES.md](./MILESTONES.md) v1.2 row). Staging walkthrough checklist in [v1.2-MILESTONE-AUDIT.md](./v1.2-MILESTONE-AUDIT.md).
-
-**Next milestone candidate: v1.3 — Depth & Personalization (backlog).** Deferred items ready for inclusion:
-- Reflection themes ML clustering
-- Long-term memory across sessions
-- Voice journaling (Munsit integration)
-- Arabic screen reader a11y audit
-- YIR Ramadan annual moment (deferred from v1.2 decision #4)
-- HMAC entitlement colon-split bug fix (discovered v1.2 Phase 9)
-- BaZi VIP integration (promised in PROJECT.md, not yet shipped)
-- Phase-07 anti-pattern guard comment-line carve-out patch
+**Target features:**
+- **Reflection Themes ML Clustering** — monthly digest surfacing recurring themes ("صبر", "شكر", "توكّل") via OpenAI embeddings + k-means
+- **Long-Term Memory for AI Guide** — guide remembers user across sessions via extended RAG + new `guide_memory` table
+- **Voice Journaling (Munsit STT)** — record → transcribe → reflection input; no audio storage
+- **Arabic Screen Reader A11y Audit** — VoiceOver + TalkBack full coverage across v1.2 components; Lighthouse A11y ≥ 98
 
 **Key context / constraints (carry-over):**
 - Budget: <10K SAR, solo founder, Instagram-focused organic distribution, target 1,500 customers
-- No feature ships without real user validation (north star: "قلبي يتشرب معاني")
-- Performance budget: LCP < 6s on 3G mobile
-- Arabic-first, RTL throughout, no tracking pixels on prayer/reflection pages
-- v1.1 Phase 5 (WhatsApp community operational activation) remains independent track
+- Zero new runtime deps preferred (Munsit + OpenAI embeddings already in stack)
+- Arabic-first, RTL, no tracking on sacred pages (NFR-04 continues)
+- v1.3 phase numbering continues from v1.2 → starts at Phase 12
+
+**Expected CX impact:** 91 → ~96 (+5: Stage 2 voice, Stage 3 memory, Stage 5 themes, cross-cutting a11y)
+
+**Out of scope (explicit — tracked separately):**
+- HMAC bug fix (tech debt patch)
+- Phase-07 guard carve-out (1-line follow-up)
+- BaZi VIP integration (needs astrological API design)
+- Welcome tutorial (needs UX research)
+- Streak counter (permanently banned — tonal)
+- YIR Ramadan moment (revisit closer to Ramadan)
+- WhatsApp community operational activation (independent track)
+
+**Operational TODO (v1.2 carry-over):** 6 SQL migrations pending `supabase db push` (see [v1.2-MILESTONE-AUDIT.md](./v1.2-MILESTONE-AUDIT.md)).
 
 ---
 
