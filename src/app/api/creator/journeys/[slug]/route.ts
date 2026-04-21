@@ -3,6 +3,8 @@ import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { getSupabaseAdmin } from "@/lib/supabaseAdmin";
 import { moderate } from "@/lib/thread-moderation";
 import { sendPushToUser } from "@/lib/push";
+import { submitToIndexNow } from "@/lib/indexnow";
+import { APP_DOMAIN } from "@/lib/appConfig";
 
 export const dynamic = "force-dynamic";
 
@@ -174,6 +176,15 @@ export async function PATCH(req: Request, ctx: RouteCtx) {
   const nowPublished = data.status === "published";
   const wasNotPublished = prevStatus !== "published";
   if (publishCheckNeeded && nowPublished && wasNotPublished) {
+    // Ping IndexNow so Bing/Yandex see the new public URL immediately.
+    // Fire-and-forget; Google will catch it on its own crawl cycle.
+    submitToIndexNow([
+      `${APP_DOMAIN}/journey/${data.slug}`,
+      `${APP_DOMAIN}/creator/by/${data.creator_user_id}`,
+      `${APP_DOMAIN}/discover`,
+      `${APP_DOMAIN}/creator/leaderboard`,
+    ]).catch((err) => console.warn("[creator publish] indexnow failed", err));
+
     (async () => {
       try {
         const admin = getSupabaseAdmin();

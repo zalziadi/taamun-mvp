@@ -83,6 +83,21 @@ export function articleSchema(input: {
   } as const;
 }
 
+export function breadcrumbSchema(
+  crumbs: Array<{ name: string; url: string }>
+) {
+  return {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: crumbs.map((c, i) => ({
+      "@type": "ListItem",
+      position: i + 1,
+      name: c.name,
+      item: c.url,
+    })),
+  } as const;
+}
+
 export function faqSchema(
   pairs: Array<{ question: string; answer: string }>
 ) {

@@ -1,6 +1,8 @@
 import { NextResponse } from "next/server";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { moderate } from "@/lib/thread-moderation";
+import { submitToIndexNow } from "@/lib/indexnow";
+import { APP_DOMAIN } from "@/lib/appConfig";
 
 export const dynamic = "force-dynamic";
 
@@ -90,6 +92,14 @@ export async function POST(req: Request) {
 
   if (error) {
     return NextResponse.json({ error: "db_error", details: error.message }, { status: 500 });
+  }
+
+  // Ping IndexNow for published threads so Bing/Yandex discover them quickly.
+  if (status === "published" && data?.id) {
+    submitToIndexNow([
+      `${APP_DOMAIN}/threads/${data.id}`,
+      `${APP_DOMAIN}/threads`,
+    ]).catch((err) => console.warn("[threads] indexnow failed", err));
   }
 
   return NextResponse.json({ ok: true, thread: data, status });

@@ -4,7 +4,8 @@ import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { JourneySubscribeButton } from "@/components/JourneySubscribeButton";
 import { CreatorFollowButton } from "@/components/CreatorFollowButton";
-import { courseSchema, jsonLdString } from "@/lib/json-ld";
+import { courseSchema, breadcrumbSchema, jsonLdString } from "@/lib/json-ld";
+import { APP_DOMAIN } from "@/lib/appConfig";
 
 export const dynamic = "force-dynamic";
 
@@ -87,12 +88,26 @@ export default async function JourneyPage({ params }: PageProps) {
       })
     : null;
 
+  const breadcrumbs = !isDraft
+    ? breadcrumbSchema([
+        { name: "الرئيسية", url: `${APP_DOMAIN}/` },
+        { name: "استكشف", url: `${APP_DOMAIN}/discover` },
+        { name: journey.title as string, url: `${APP_DOMAIN}/journey/${journey.slug}` },
+      ])
+    : null;
+
   return (
     <main className="max-w-2xl mx-auto px-5 sm:px-6 py-10 space-y-6" dir="rtl">
       {schema && (
         <script
           type="application/ld+json"
           dangerouslySetInnerHTML={{ __html: jsonLdString(schema) }}
+        />
+      )}
+      {breadcrumbs && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLdString(breadcrumbs) }}
         />
       )}
       <nav className="text-xs text-[#8c7851]">
