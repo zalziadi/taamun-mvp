@@ -1,17 +1,17 @@
-# Requirements — v2.3 (pending scope)
+# Requirements — v2.4 (pending scope)
 
-v2.2 archived at [milestones/v2.2-REQUIREMENTS.md](./milestones/v2.2-REQUIREMENTS.md).
+v2.3 archived at [milestones/v2.3-REQUIREMENTS.md](./milestones/v2.3-REQUIREMENTS.md).
 
 ---
 
-## Candidate themes for v2.3
+## Candidate themes for v2.4
 
-1. **Validation pause:** freeze until /admin/ops sparklines show movement
-2. **Alert thresholds:** email founder when specific metric crosses X
-3. **Family plan:** one payer → N members, shared invite pool
-4. **Creator revenue share:** payout model + monthly statement
-5. **Full English authed app:** program, guide, account
-6. **Mobile native wrapper (Capacitor)**
+1. **Strong validation pause:** freeze until any default alert fires (signals real UGC activity)
+2. **Family plan:** one payer → N members, shared invite pool
+3. **Creator revenue share:** payout model + monthly statement
+4. **Full English authed app:** program, guide, account
+5. **Mobile native wrapper (Capacitor)**
+6. **Alert push channel:** add push-notification delivery alongside existing email
 
 ---
 

@@ -106,6 +106,12 @@ export default function OpsDashboard() {
             </p>
           </div>
           <div className="flex items-center gap-2">
+            <Link
+              href="/admin/ops/alerts"
+              className="rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-xs text-white/70 hover:bg-white/10"
+            >
+              تنبيهات
+            </Link>
             <a
               href="/api/ops/export"
               className="rounded-xl border border-white/15 bg-white/5 px-4 py-2 text-xs text-white/70 hover:bg-white/10"

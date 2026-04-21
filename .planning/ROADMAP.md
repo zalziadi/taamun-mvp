@@ -141,13 +141,21 @@ English landing at `/en`, English FAQ at `/en/faq` with FAQPage schema, full hre
 
 ---
 
-## v2.3+ — Backlog
+## v2.3 — Alert Thresholds (shipped 2026-04-20)
+
+**Archived:** [v2.3-ROADMAP.md](./milestones/v2.3-ROADMAP.md) · [v2.3-REQUIREMENTS.md](./milestones/v2.3-REQUIREMENTS.md)
+
+`ops_alerts` rules table + daily check-alerts cron + admin CRUD UI; email digest to founder when any active rule crosses threshold (12h debounce).
+
+---
+
+## v2.4+ — Backlog
 
 - Mobile native wrapper (Capacitor) if PWA gaps appear on iOS
 - Full English translation of the authed app (program, guide, account)
 - Family plan (multi-user subscription)
 - Creator revenue share (monetization model TBD)
-- Alert thresholds on specific metrics (email/push when value crosses X)
+- Push notification channel for alerts (currently email only)
 
 ---
 

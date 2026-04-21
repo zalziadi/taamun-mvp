@@ -1,42 +1,41 @@
 # Current State
 
-**Last updated:** 2026-04-20 (after v2.2 archive)
+**Last updated:** 2026-04-20 (after v2.3 archive)
 
 ---
 
 ## Status
 
-- **Last shipped milestone:** v2.2 (tagged)
-- **Next milestone:** v2.3 (not yet scoped)
+- **Last shipped milestone:** v2.3 (tagged)
+- **Next milestone:** v2.4 (not yet scoped)
 - **Git branch:** claude/hopeful-euler (auto-pushes to main)
 
 ---
 
 ## Recent context
 
-v2.2 shipped 3 tight phases on top of v2.1:
+v2.3 shipped 3 phases on top of v2.2:
 
-- **Phase 1:** `ops_snapshots` migration + `/api/cron/ops-snapshot` daily at 23:55 UTC
-- **Phase 2:** `/api/ops/trends` + inline SVG `Sparkline` component + tile-level trend rendering
-- **Phase 3:** `/api/ops/export` CSV download + button in `/admin/ops` header
+- **Phase 1:** `ops_alerts` migration with 3 seeded defaults (threads_flagged, journeys_flagged, thread_replies_flagged all > 0) + CRUD API
+- **Phase 2:** `/api/cron/check-alerts` daily 00:05 UTC after the snapshot cron, with 12h per-rule debounce, Resend email digest
+- **Phase 3:** `/admin/ops/alerts` CRUD UI (16-metric dropdown × 5 operators × threshold + optional label)
 
 ---
 
 ## Pending activation (operational)
 
-- Apply migration `20260421000000_ops_snapshots.sql` to Supabase
-- Outstanding earlier:
-  - `ADMIN_EMAIL` + `RESEND_API_KEY` in Vercel env
-  - Restore `send-push` to hourly when upgrading Vercel Pro
-  - Submit sitemap to Google Search Console
-  - Seed first creator journey
+- Apply migration `20260421100000_ops_alerts.sql` to Supabase
+- `ADMIN_EMAIL` + `RESEND_API_KEY` in Vercel env (NOW critical — alerts need email to work)
+- Restore `send-push` to hourly when upgrading Vercel Pro
+- Submit sitemap to Google Search Console
+- Seed first creator journey
 
 ---
 
 ## Next action
 
-1. **Strong pause signal.** 31 phases shipped, 0 real user data. The `/admin/ops` sparklines will only show movement once you drive traffic.
-2. If v2.3 anyway: family plan, creator revenue share, mobile wrapper, alerts.
+1. **Observability loop complete:** v2.1 live counts + v2.2 trends + v2.3 alerts. The founder now has continuous passive monitoring.
+2. **Strongest pause signal yet:** 34 phases shipped with no real user data. The three default alert rules will fire immediately if any flagged content appears — which means we'll know the moment real traffic hits.
 
 ---
 
