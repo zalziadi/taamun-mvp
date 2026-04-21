@@ -3,6 +3,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { ThreadReplyForm } from "@/components/ThreadReplyForm";
+import { articleSchema, jsonLdString } from "@/lib/json-ld";
 
 export const dynamic = "force-dynamic";
 
@@ -67,8 +68,20 @@ export default async function ThreadPage({ params }: PageProps) {
 
   const { thread, replies } = data;
 
+  const schema = articleSchema({
+    id: thread.id as string,
+    title: thread.title as string,
+    body: thread.body as string,
+    displayName: thread.display_name as string,
+    createdAt: thread.created_at as string,
+  });
+
   return (
     <main className="max-w-2xl mx-auto px-5 sm:px-6 py-10 space-y-6" dir="rtl">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: jsonLdString(schema) }}
+      />
       <nav className="text-xs text-[#8c7851]">
         <Link href="/" className="hover:text-[#5a4a35]">الرئيسية</Link>
         <span className="mx-2">/</span>

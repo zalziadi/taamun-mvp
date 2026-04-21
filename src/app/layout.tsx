@@ -6,6 +6,7 @@ import { ServiceWorkerRegistrar } from "@/components/ServiceWorkerRegistrar";
 import { AppChrome } from "@/components/AppChrome";
 import { APP_DESCRIPTION, APP_DOMAIN, APP_NAME } from "@/lib/appConfig";
 import { isRamadanProgramClosed } from "@/lib/season";
+import { organizationSchema, jsonLdString } from "@/lib/json-ld";
 import "./globals.css";
 
 const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID;
@@ -110,6 +111,11 @@ export default function RootLayout({
   return (
     <html lang="ar" dir="rtl">
       <head>
+        {/* v1.9: global Organization schema — surfaces sitelinks + brand box in SERP */}
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLdString(organizationSchema()) }}
+        />
         {META_PIXEL_ID && (
           <Script id="meta-pixel" strategy="lazyOnload">
             {`

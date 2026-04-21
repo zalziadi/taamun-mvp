@@ -109,7 +109,15 @@ Real-user social proof rotator on `/` and `/pricing`, featured creator journey s
 
 ---
 
-## v1.9+ — Backlog
+## v1.9 — SEO Rich Results & Onboarding Polish (shipped 2026-04-20)
+
+**Archived:** [v1.9-ROADMAP.md](./milestones/v1.9-ROADMAP.md) · [v1.9-REQUIREMENTS.md](./milestones/v1.9-REQUIREMENTS.md)
+
+Journey OG images, JSON-LD schemas (Organization, Course, DiscussionForumPosting, FAQPage), `/creator/guide` onboarding, `/faq` public page.
+
+---
+
+## v2.0+ — Backlog
 
 - Mobile native wrapper (Capacitor) if PWA gaps appear on iOS
 - Arabic + English content (for Muslims in English-speaking countries)

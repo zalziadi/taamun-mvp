@@ -14,6 +14,8 @@ export default function robots(): MetadataRoute.Robots {
           "/journey/",
           "/creator/by/",
           "/creator/leaderboard",
+          "/creator/guide",
+          "/faq",
           "/shared/",
           "/book",
           "/about",

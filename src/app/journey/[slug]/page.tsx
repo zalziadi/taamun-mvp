@@ -4,6 +4,7 @@ import Link from "next/link";
 import { createSupabaseServerClient } from "@/lib/supabase/server";
 import { JourneySubscribeButton } from "@/components/JourneySubscribeButton";
 import { CreatorFollowButton } from "@/components/CreatorFollowButton";
+import { courseSchema, jsonLdString } from "@/lib/json-ld";
 
 export const dynamic = "force-dynamic";
 
@@ -76,8 +77,24 @@ export default async function JourneyPage({ params }: PageProps) {
   const { journey, days, isOwner, subscribed, currentDay } = data;
   const isDraft = journey.status !== "published";
 
+  const schema = !isDraft
+    ? courseSchema({
+        slug: journey.slug as string,
+        title: journey.title as string,
+        description: journey.description as string,
+        durationDays: journey.duration_days as number,
+        creatorName: journey.creator_display_name as string,
+      })
+    : null;
+
   return (
     <main className="max-w-2xl mx-auto px-5 sm:px-6 py-10 space-y-6" dir="rtl">
+      {schema && (
+        <script
+          type="application/ld+json"
+          dangerouslySetInnerHTML={{ __html: jsonLdString(schema) }}
+        />
+      )}
       <nav className="text-xs text-[#8c7851]">
         <Link href="/discover" className="hover:text-[#5a4a35]">استكشف</Link>
         <span className="mx-2">/</span>
