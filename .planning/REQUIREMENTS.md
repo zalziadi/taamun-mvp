@@ -156,20 +156,89 @@
 
 ---
 
-## Traceability
+## Traceability (authoritative — set by gsd-roadmapper 2026-04-21)
 
-Phases will be assigned by `gsd-roadmapper`. Target mapping:
+Every v1.3 functional REQ maps to exactly one phase. NFRs are cross-cutting and apply to every phase.
+
+| REQ-ID | Phase | Status |
+|---|---|---|
+| A11Y-01 | Phase 12 | Pending |
+| A11Y-02 | Phase 12 | Pending |
+| A11Y-03 | Phase 12 | Pending |
+| A11Y-04 | Phase 12 | Pending |
+| A11Y-05 | Phase 12 | Pending |
+| A11Y-06 | Phase 12 | Pending |
+| A11Y-07 | Phase 12 | Pending |
+| A11Y-08 | Phase 12 | Pending |
+| A11Y-09 | Phase 12 | Pending |
+| A11Y-10 | Phase 12 | Pending |
+| A11Y-11 | Phase 12 | Pending |
+| A11Y-12 | Phase 12 | Pending |
+| VOICE-01 | Phase 13 | Pending |
+| VOICE-02 | Phase 13 | Pending |
+| VOICE-03 | Phase 13 | Pending |
+| VOICE-04 | Phase 13 | Pending |
+| VOICE-05 | Phase 13 | Pending |
+| VOICE-06 | Phase 13 | Pending |
+| VOICE-07 | Phase 13 | Pending |
+| VOICE-08 | Phase 13 | Pending |
+| VOICE-09 | Phase 13 | Pending |
+| VOICE-10 | Phase 13 | Pending |
+| VOICE-11 | Phase 13 | Pending |
+| VOICE-12 | Phase 13 | Pending |
+| VOICE-13 | Phase 13 | Pending |
+| MEMORY-01 | Phase 14 | Pending |
+| MEMORY-02 | Phase 14 | Pending |
+| MEMORY-03 | Phase 14 | Pending |
+| MEMORY-04 | Phase 14 | Pending |
+| MEMORY-05 | Phase 14 | Pending |
+| MEMORY-06 | Phase 14 | Pending |
+| MEMORY-07 | Phase 14 | Pending |
+| MEMORY-08 | Phase 14 | Pending |
+| MEMORY-09 | Phase 14 | Pending |
+| MEMORY-10 | Phase 14 | Pending |
+| MEMORY-11 | Phase 14 | Pending |
+| MEMORY-12 | Phase 14 | Pending |
+| THEMES-01 | Phase 15 | Pending |
+| THEMES-02 | Phase 15 | Pending |
+| THEMES-03 | Phase 15 | Pending |
+| THEMES-04 | Phase 15 | Pending |
+| THEMES-05 | Phase 15 | Pending |
+| THEMES-06 | Phase 15 | Pending |
+| THEMES-07 | Phase 15 | Pending |
+| THEMES-08 | Phase 15 | Pending |
+| THEMES-09 | Phase 15 | Pending |
+| THEMES-10 | Phase 15 | Pending |
+| THEMES-11 | Phase 15 | Pending |
+| THEMES-12 | Phase 15 | Pending |
+| MEMORY-B-01 | Phase 16 (optional) | Pending |
+| MEMORY-B-02 | Phase 16 (optional) | Pending |
+| MEMORY-B-03 | Phase 16 (optional) | Pending |
+| MEMORY-B-04 | Phase 16 (optional, splittable v1.4) | Pending |
+| MEMORY-B-05 | Phase 16 (optional, splittable v1.4) | Pending |
+| MEMORY-B-06 | Phase 16 (optional, splittable v1.4) | Pending |
+| MEMORY-B-07 | Phase 16 (meta) | Pending |
+| NFR-01 | All phases | Pending |
+| NFR-02 | All phases | Pending |
+| NFR-03 | All phases | Pending |
+| NFR-04 | All phases | Pending |
+| NFR-05 | All phases | Pending |
+| NFR-06 | All phases | Pending |
+| NFR-07 | All phases | Pending |
+| NFR-08 | All phases | Pending |
+| NFR-09 | Phases 14, 15, 16 (schema) | Pending |
+| NFR-10 | All phases | Pending |
+
+**Coverage summary:** 56 functional REQs mapped (12 A11Y + 13 VOICE + 12 MEMORY + 12 THEMES + 7 MEMORY-B) + 10 NFR cross-cutting = **66 / 66 REQs · zero orphans · zero duplicates**.
 
 | Category | Phase | REQ-IDs |
 |---|---|---|
-| A11Y | Phase 12 (foundation) | A11Y-01..12 |
+| A11Y | Phase 12 (foundation · ship blocker) | A11Y-01..12 |
 | VOICE | Phase 13 | VOICE-01..13 |
 | MEMORY | Phase 14 | MEMORY-01..12 |
 | THEMES | Phase 15 | THEMES-01..12 |
 | MEMORY-B | Phase 16 (optional) | MEMORY-B-01..07 |
 | NFR | All phases | NFR-01..10 (cross-cutting) |
-
-**Total v1.3 REQs:** 12 + 13 + 12 + 12 + 7 = **56 functional** + 10 NFR = **66 total**.
 
 ---
 
@@ -181,3 +250,4 @@ Phases will be assigned by `gsd-roadmapper`. Target mapping:
 - Ta'ammun DS compliance on every new UI (A11Y · Voice pill · رسالة page)
 - Existing v1.2 CI guards all pass: analytics-privacy + phase-07/08/09/10/11 anti-patterns
 - New v1.3 CI guards: phase-12-a11y + phase-13-voice + phase-14-memory + phase-15-themes + phase-16-memory-b
+- Phase 12 pre-flight: reconcile duplicate `guide_memory` / `guide_sessions` migrations BEFORE Phase 14 opens (PITFALL #30)
