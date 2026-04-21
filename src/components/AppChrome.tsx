@@ -10,14 +10,9 @@ import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { APP_NAME } from "@/lib/appConfig";
 import { BrandLogo } from "@/components/BrandLogo";
 import {
-  CITY_ROUTE,
   GUIDE_ROUTE,
   JOURNAL_ROUTE,
-  JOURNEY_ROUTE,
   PRICING_ROUTE,
-  REFLECTION_ROUTE,
-  SOURCES_ROUTE,
-  TASBEEH_ROUTE,
 } from "@/lib/routes";
 
 function shouldHideGlobalChrome(pathname: string | null) {
@@ -55,45 +50,25 @@ export function AppChrome({
             </div>
 
             <nav aria-label="الرئيسية" className="hidden items-center gap-6 lg:flex">
-              {/* 1. الأساس — البيت + البرنامج اليومي */}
+              {/* 7-item focused nav. Secondary surfaces (الرحلة، التمعّن،
+                  المسبحة، المدينة، مصادر) still have live routes — reachable
+                  via /account shortcuts, direct URL, mobile bottom nav, or
+                  the sitemap. Kept OFF the top nav to reduce cognitive load. */}
               <Link href="/" className="tm-nav-link">
                 الرئيسية
               </Link>
               <Link href="/program" className="tm-nav-link">
                 البرنامج
               </Link>
-              <Link href={JOURNEY_ROUTE} className="tm-nav-link">
-                الرحلة
-              </Link>
-
-              {/* 2. الممارسة — الأدوات اليومية */}
-              <Link href={REFLECTION_ROUTE} className="tm-nav-link">
-                التمعّن
-              </Link>
               <Link href={JOURNAL_ROUTE} className="tm-nav-link">
                 الدفتر
               </Link>
-              <Link href={TASBEEH_ROUTE} className="tm-nav-link">
-                المسبحة
-              </Link>
-
-              {/* 3. المساعدة — مرشد + مدينة */}
               <Link href={GUIDE_ROUTE} className="tm-nav-link">
                 المرشد
               </Link>
-              <Link href={CITY_ROUTE} className="tm-nav-link">
-                المدينة
-              </Link>
-
-              {/* 4. المجتمع والمراجع */}
               <Link href="/discover" className="tm-nav-link">
                 استكشف
               </Link>
-              <Link href={SOURCES_ROUTE} className="tm-nav-link">
-                مصادر
-              </Link>
-
-              {/* 5. الحساب والاشتراك */}
               <Link href={PRICING_ROUTE} className="tm-nav-link">
                 الأسعار
               </Link>
