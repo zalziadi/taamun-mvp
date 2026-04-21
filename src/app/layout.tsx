@@ -78,6 +78,11 @@ export const metadata: Metadata = {
       "x-default": "/",
     },
   },
+  // v2.2: Google Search Console verification — populated via env var
+  // so we never commit the code. Set GOOGLE_SITE_VERIFICATION in Vercel.
+  verification: process.env.GOOGLE_SITE_VERIFICATION
+    ? { google: process.env.GOOGLE_SITE_VERIFICATION }
+    : undefined,
   openGraph: {
     type: "website",
     locale: "ar_SA",
