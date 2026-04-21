@@ -20,6 +20,8 @@ export default function robots(): MetadataRoute.Robots {
           "/book",
           "/about",
           "/sources",
+          "/en",
+          "/en/",
         ],
         disallow: [
           "/admin",

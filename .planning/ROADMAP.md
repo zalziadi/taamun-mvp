@@ -117,10 +117,18 @@ Journey OG images, JSON-LD schemas (Organization, Course, DiscussionForumPosting
 
 ---
 
-## v2.0+ — Backlog
+## v2.0 — Internationalization (shipped 2026-04-20)
+
+**Archived:** [v2.0-ROADMAP.md](./milestones/v2.0-ROADMAP.md) · [v2.0-REQUIREMENTS.md](./milestones/v2.0-REQUIREMENTS.md)
+
+English landing at `/en`, English FAQ at `/en/faq` with FAQPage schema, full hreflang wiring, and a context-aware AR ↔ EN language switcher.
+
+---
+
+## v2.1+ — Backlog
 
 - Mobile native wrapper (Capacitor) if PWA gaps appear on iOS
-- Arabic + English content (for Muslims in English-speaking countries)
+- Full English translation of the authed app (program, guide, account)
 - Family plan (multi-user subscription)
 - Creator revenue share (monetization model TBD)
 

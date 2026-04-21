@@ -1,26 +1,25 @@
 # Current State
 
-**Last updated:** 2026-04-20 (after v1.9 archive)
+**Last updated:** 2026-04-20 (after v2.0 archive)
 
 ---
 
 ## Status
 
-- **Last shipped milestone:** v1.9 (tagged)
-- **Next milestone:** v2.0 (not yet scoped)
+- **Last shipped milestone:** v2.0 (tagged)
+- **Next milestone:** v2.1 (not yet scoped)
 - **Git branch:** claude/hopeful-euler (auto-pushes to main)
 
 ---
 
 ## Recent context
 
-v1.9 shipped all 4 phases immediately after v1.8:
+v2.0 shipped all 4 phases immediately after v1.9:
 
-- **Phase 1:** `src/app/journey/[slug]/opengraph-image.tsx` — next/og at 1200×630 with Amiri + Noto Naskh Arabic
-- **Phase 2:** `src/lib/json-ld.ts` schemas — Organization (global), Course (journey), DiscussionForumPosting (thread), FAQPage (faq); injected via dangerouslySetInnerHTML with escape
-- **Phase 3:** `src/app/creator/guide/page.tsx` — 5-step public onboarding
-- **Phase 4:** `src/app/faq/page.tsx` — 8 Q&A + FAQPage JSON-LD
-- Sitemap + robots updated to include /faq + /creator/guide
+- **Phase 1:** `src/app/en/layout.tsx` + `src/app/en/page.tsx` — English marketing landing (LTR, static)
+- **Phase 2:** `src/app/en/faq/page.tsx` — 8 Q&A + FAQPage JSON-LD
+- **Phase 3:** Root metadata `alternates.languages` + `/faq` alternates + sitemap + robots updates
+- **Phase 4:** `src/components/LanguageSwitcher.tsx` — context-aware AR ↔ EN toggle, mounted in AppChrome
 
 ---
 
@@ -36,11 +35,11 @@ v1.9 shipped all 4 phases immediately after v1.8:
 
 ## Next action
 
-1. Scope v2.0 or pause for validation
-2. v2.0 candidates:
-   - Family plan (multi-user subscription)
+1. Pause for validation — 25 shipped phases, zero end-user creator or thread data yet
+2. Or scope v2.1 candidates:
+   - Full English translation of authed app (large scope)
+   - Family plan (multi-user subscription, DB + payment changes)
    - Creator revenue share model
-   - Bilingual landing (English variant)
    - Mobile native wrapper (Capacitor)
 
 ---

@@ -6,6 +6,14 @@ export const metadata: Metadata = {
   title: "أسئلة شائعة — تمعّن",
   description:
     "إجابات مختصرة حول تمعّن: الأسعار، الخصوصية، كيف يعمل، وضع المبدع، الاسترجاع.",
+  alternates: {
+    canonical: "/faq",
+    languages: {
+      ar: "/faq",
+      en: "/en/faq",
+      "x-default": "/faq",
+    },
+  },
   openGraph: {
     title: "أسئلة شائعة — تمعّن",
     description:

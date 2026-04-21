@@ -1,16 +1,16 @@
-# Requirements — v2.0 (pending scope)
+# Requirements — v2.1 (pending scope)
 
-v1.9 archived at [milestones/v1.9-REQUIREMENTS.md](./milestones/v1.9-REQUIREMENTS.md).
+v2.0 archived at [milestones/v2.0-REQUIREMENTS.md](./milestones/v2.0-REQUIREMENTS.md).
 
 ---
 
-## Candidate themes for v2.0
+## Candidate themes for v2.1
 
-1. **Family plan:** one payer → N members, shared invite pool
-2. **Creator revenue share:** payout model (subscriber × SAR) + monthly statement
-3. **Bilingual landing:** English variant for expat Muslims (landing + key pages only, Arabic remains canonical)
-4. **Mobile native wrapper:** Capacitor iOS+Android wrap for App Store presence
-5. **Validation-first pause:** freeze until ≥ 3 real creator journeys + ≥ 10 threads + ≥ 1 successful invite reward
+1. **Validation pause:** freeze feature work until ≥ 3 real creator journeys + ≥ 10 threads + ≥ 1 successful invite reward
+2. **Family plan:** one payer → N members, shared invite pool (DB + payment integration)
+3. **Creator revenue share:** payout model (subscriber × SAR) + monthly statement
+4. **Full English translation of authed app:** program, guide, account, day experience
+5. **Mobile native wrapper:** Capacitor iOS+Android wrap for App Store presence
 
 ---
 

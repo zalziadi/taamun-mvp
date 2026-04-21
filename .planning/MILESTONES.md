@@ -6,6 +6,7 @@ Historical record of shipped milestones.
 
 | Version | Shipped | Summary | Archive |
 |---------|---------|---------|---------|
+| **v2.0** | 2026-04-20 | English landing + English FAQ + hreflang + language switcher | [v2.0-ROADMAP.md](./milestones/v2.0-ROADMAP.md) · [v2.0-REQUIREMENTS.md](./milestones/v2.0-REQUIREMENTS.md) |
 | **v1.9** | 2026-04-20 | Journey OG images + JSON-LD schemas + creator guide + FAQ | [v1.9-ROADMAP.md](./milestones/v1.9-ROADMAP.md) · [v1.9-REQUIREMENTS.md](./milestones/v1.9-REQUIREMENTS.md) |
 | **v1.8** | 2026-04-20 | Social proof rotator + featured journey + sitemap/robots + creator leaderboard | [v1.8-ROADMAP.md](./milestones/v1.8-ROADMAP.md) · [v1.8-REQUIREMENTS.md](./milestones/v1.8-REQUIREMENTS.md) |
 | **v1.7** | 2026-04-20 | Public creator profiles + following tab + discover ranking + mod queue badge | [v1.7-ROADMAP.md](./milestones/v1.7-ROADMAP.md) · [v1.7-REQUIREMENTS.md](./milestones/v1.7-REQUIREMENTS.md) |
@@ -31,4 +32,4 @@ Historical record of shipped milestones.
 - **v1.7:** Make the graph navigable (profiles + following + ranking + queue) ✅
 - **v1.8:** Make it discoverable (social proof + sitemap + leaderboard) ✅
 - **v1.9:** Make it earn clicks (OG + JSON-LD + onboarding + FAQ) ✅
-- **v2.0:** Make it a platform (multi-user, creator-driven, multi-language)
+- **v2.0:** Make it reach English-speaking Muslims (bridge landing + i18n signals) ✅

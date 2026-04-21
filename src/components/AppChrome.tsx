@@ -6,6 +6,7 @@ import { NavAuth } from "@/components/NavAuth";
 import { MobileBottomNav } from "@/components/MobileBottomNav";
 import { JourneyGuideRail } from "@/components/JourneyGuideRail";
 import { SearchBox } from "@/components/SearchBox";
+import { LanguageSwitcher } from "@/components/LanguageSwitcher";
 import { APP_NAME } from "@/lib/appConfig";
 import { BrandLogo } from "@/components/BrandLogo";
 import {
@@ -96,6 +97,7 @@ export function AppChrome({
 
             <div className="flex items-center gap-2 sm:gap-3">
               <SearchBox />
+              <LanguageSwitcher />
               <NavAuth />
             </div>
           </div>

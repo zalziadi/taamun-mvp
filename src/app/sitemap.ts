@@ -15,6 +15,9 @@ const STATIC_PATHS: Array<{ path: string; priority: number; changeFrequency: Met
   { path: "/book", priority: 0.6, changeFrequency: "monthly" },
   { path: "/about", priority: 0.5, changeFrequency: "monthly" },
   { path: "/sources", priority: 0.4, changeFrequency: "monthly" },
+  // v2.0: English marketing bridge
+  { path: "/en", priority: 0.8, changeFrequency: "weekly" },
+  { path: "/en/faq", priority: 0.6, changeFrequency: "monthly" },
 ];
 
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {

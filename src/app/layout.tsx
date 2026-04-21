@@ -72,6 +72,11 @@ export const metadata: Metadata = {
   metadataBase: new URL(APP_DOMAIN),
   alternates: {
     canonical: "/",
+    languages: {
+      ar: "/",
+      en: "/en",
+      "x-default": "/",
+    },
   },
   openGraph: {
     type: "website",
