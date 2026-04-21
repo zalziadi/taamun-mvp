@@ -55,6 +55,7 @@ export function AppChrome({
             </div>
 
             <nav aria-label="الرئيسية" className="hidden items-center gap-6 lg:flex">
+              {/* 1. الأساس — البيت + البرنامج اليومي */}
               <Link href="/" className="tm-nav-link">
                 الرئيسية
               </Link>
@@ -64,29 +65,37 @@ export function AppChrome({
               <Link href={JOURNEY_ROUTE} className="tm-nav-link">
                 الرحلة
               </Link>
+
+              {/* 2. الممارسة — الأدوات اليومية */}
               <Link href={REFLECTION_ROUTE} className="tm-nav-link">
                 التمعّن
-              </Link>
-              <Link href="/discover" className="tm-nav-link">
-                استكشف
               </Link>
               <Link href={JOURNAL_ROUTE} className="tm-nav-link">
                 الدفتر
               </Link>
-              <Link href={CITY_ROUTE} className="tm-nav-link">
-                المدينة
+              <Link href={TASBEEH_ROUTE} className="tm-nav-link">
+                المسبحة
               </Link>
+
+              {/* 3. المساعدة — مرشد + مدينة */}
               <Link href={GUIDE_ROUTE} className="tm-nav-link">
                 المرشد
               </Link>
-              <Link href={PRICING_ROUTE} className="tm-nav-link">
-                الأسعار
+              <Link href={CITY_ROUTE} className="tm-nav-link">
+                المدينة
+              </Link>
+
+              {/* 4. المجتمع والمراجع */}
+              <Link href="/discover" className="tm-nav-link">
+                استكشف
               </Link>
               <Link href={SOURCES_ROUTE} className="tm-nav-link">
                 مصادر
               </Link>
-              <Link href={TASBEEH_ROUTE} className="tm-nav-link">
-                المسبحة
+
+              {/* 5. الحساب والاشتراك */}
+              <Link href={PRICING_ROUTE} className="tm-nav-link">
+                الأسعار
               </Link>
               <Link href="/account" className="tm-nav-link">
                 كهفي
