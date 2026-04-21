@@ -15,14 +15,23 @@ function getSecret(): string {
   return secret;
 }
 
-/** أنشئ token مُشفّر للمستخدم — يتضمن تاريخ الانتهاء */
+/** أنشئ token مُشفّر للمستخدم — يتضمن تاريخ الانتهاء
+ *
+ * Delimiter changed from `:` to `|` in v1.4 to fix ISO-timestamp colon-split bug
+ * discovered during v1.2 Phase 9 research. ISO strings like `2026-04-21T12:34:56.789Z`
+ * contain colons which broke the parser. Pipe character `|` appears in neither
+ * UUIDs, tier enums, epoch ms, nor ISO timestamps — safe delimiter.
+ *
+ * Old `:`-delimited tokens are still parsed (backward compat) but treated as
+ * expired to force re-issue with the new format.
+ */
 export function makeEntitlementToken(userId: string, tier: string, expiresAt?: string): string {
   const exp = expiresAt ?? "";
-  const payload = `${userId}:${tier}:${Date.now()}:${exp}`;
+  const payload = `${userId}|${tier}|${Date.now()}|${exp}`;
   const hmac = createHmac("sha256", getSecret());
   hmac.update(payload);
   const signature = hmac.digest("hex");
-  const raw = `${payload}:${signature}`;
+  const raw = `${payload}|${signature}`;
   return Buffer.from(raw).toString("base64");
 }
 
@@ -36,36 +45,32 @@ export function verifyEntitlementToken(token: string): {
 } {
   try {
     const decoded = Buffer.from(token, "base64").toString("utf-8");
-    const parts = decoded.split(":");
-    // format: userId:tier:timestamp:expiresAt:signature
-    if (parts.length < 5) {
-      // Backward compat: old tokens without expiresAt (4 parts)
-      if (parts.length === 4) {
-        const [userId, tier, timestamp, signature] = parts;
-        const payload = `${userId}:${tier}:${timestamp}`;
-        const hmac = createHmac("sha256", getSecret());
-        hmac.update(payload);
-        const expected = hmac.digest("hex");
-        if (signature !== expected) return { valid: false };
-        // Old token without expiry — treat as expired to force re-login
-        return { valid: false, expired: true };
-      }
-      return { valid: false };
+
+    // Detect delimiter. New tokens use `|`; old pre-v1.4 tokens use `:`.
+    // Old tokens are treated as expired to force re-issue with new format.
+    if (!decoded.includes("|")) {
+      // Old format — split on `:`, treat as expired.
+      // This handles both 4-part and 5-part old tokens without double-parsing.
+      const oldParts = decoded.split(":");
+      if (oldParts.length < 4) return { valid: false };
+      const userId = oldParts[0];
+      const tier = oldParts[1];
+      return { valid: false, userId, tier, expired: true };
     }
 
-    const userId = parts[0];
-    const tier = parts[1];
-    const timestamp = parts[2];
-    const expiresAt = parts[3];
-    const signature = parts.slice(4).join(":");
+    const parts = decoded.split("|");
+    // format: userId|tier|timestamp|expiresAt|signature
+    if (parts.length !== 5) return { valid: false };
 
-    const payload = `${userId}:${tier}:${timestamp}:${expiresAt}`;
+    const [userId, tier, timestamp, expiresAt, signature] = parts;
+
+    const payload = `${userId}|${tier}|${timestamp}|${expiresAt}`;
     const hmac = createHmac("sha256", getSecret());
     hmac.update(payload);
     const expected = hmac.digest("hex");
     if (signature !== expected) return { valid: false };
 
-    // Check expiry
+    // Check expiry (expiresAt is ISO string with colons — safely preserved now)
     if (expiresAt && new Date(expiresAt) < new Date()) {
       return { valid: false, userId, tier, expiresAt, expired: true };
     }

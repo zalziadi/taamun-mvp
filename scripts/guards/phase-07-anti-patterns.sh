@@ -103,14 +103,20 @@ if [ ${#SACRED_EXTANT[@]} -gt 0 ]; then
   # Banned quoted strings (single OR double quoted) containing English-loan
   # vocabulary in user-facing form.
   VOCAB_PATTERN='"[^"]*(Unlocked!|Achievement|Level Up|Mission Accomplished|unlock!|achievement!|level up!)[^"]*"|'"'"'[^'"'"']*(Unlocked!|Achievement|Level Up|Mission Accomplished|unlock!|achievement!|level up!)[^'"'"']*'"'"''
-  if grep -rniE "$VOCAB_PATTERN" "${SACRED_EXTANT[@]}" 2>/dev/null; then
+  # Comment-line carve-out (v1.4 patch): JSDoc / line-comments documenting
+  # the ban itself must not trip the guard. Matches phase-08/09/10/11 pattern.
+  # Excludes lines where the match is preceded by `*` or `//` (after path:lineno:).
+  if grep -rniE "$VOCAB_PATTERN" "${SACRED_EXTANT[@]}" 2>/dev/null \
+       | grep -vE ':[[:space:]]*\*|:[[:space:]]*//' ; then
     report "User-facing English-loan vocabulary (Unlocked! / Achievement / Level Up) in a sacred path"
   fi
 
   # Banned "streak continuation UI" — only flag the actual UX string
   # "X days streak" / fire emoji + streak. Does NOT flag `streak: number`.
+  # Same comment-line carve-out.
   if grep -rnE '🔥[[:space:]]*[0-9]+[[:space:]]*days?[[:space:]]*streak|[0-9]+[[:space:]]*days?[[:space:]]*streak!|streak!' \
-       "${SACRED_EXTANT[@]}" 2>/dev/null; then
+       "${SACRED_EXTANT[@]}" 2>/dev/null \
+       | grep -vE ':[[:space:]]*\*|:[[:space:]]*//' ; then
     report "Streak continuation UI string in a sacred path"
   fi
 fi
