@@ -15,6 +15,7 @@ interface ActivationCode {
 const TIER_LABELS: Record<string, string> = {
   eid: "عيدية (28 ر.س)",
   monthly: "شهري (82 ر.س)",
+  quarterly: "ربع سنوي (199 ر.س)",
   yearly: "سنوي (820 ر.س)",
   vip: "VIP (8,200 ر.س)",
 };
@@ -147,6 +148,7 @@ export default function ActivationsPage() {
               >
                 <option value="eid">عيدية (28 ر.س)</option>
                 <option value="monthly">شهري (82 ر.س)</option>
+                <option value="quarterly">ربع سنوي (199 ر.س)</option>
                 <option value="yearly">سنوي (820 ر.س)</option>
                 <option value="vip">VIP (8,200 ر.س)</option>
               </select>
@@ -183,6 +185,7 @@ export default function ActivationsPage() {
               <option value="all">كل الباقات</option>
               <option value="eid">عيدية</option>
               <option value="monthly">شهري</option>
+              <option value="quarterly">ربع سنوي</option>
               <option value="yearly">سنوي</option>
               <option value="vip">VIP</option>
             </select>
