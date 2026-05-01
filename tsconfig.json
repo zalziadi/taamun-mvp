@@ -39,6 +39,7 @@
     "node_modules",
     "scripts",
     "najm-command-center",
-    "supabase/functions"
+    "supabase/functions",
+    "wafrah-app"
   ]
 }
