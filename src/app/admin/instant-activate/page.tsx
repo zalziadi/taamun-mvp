@@ -18,6 +18,8 @@ interface UserRow {
 const TIER_OPTIONS = [
   { value: "vip", label: "VIP" },
   { value: "yearly", label: "سنوي" },
+  { value: "half_yearly", label: "نصف سنوي" },
+  { value: "quarterly", label: "ربع سنوي" },
   { value: "monthly", label: "شهري" },
   { value: "eid", label: "عيدية" },
 ];

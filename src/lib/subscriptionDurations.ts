@@ -2,6 +2,7 @@
 export const TIER_DURATION_DAYS: Record<string, number> = {
   trial: 7,
   quarterly: 90,
+  half_yearly: 180,
   yearly: 365,
   vip: 1095, // 3 سنوات
   // Legacy tiers (backward compatibility)

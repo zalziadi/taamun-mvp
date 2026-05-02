@@ -1,5 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { requireAdmin } from "@/lib/authz";
+import { calcExpiresAt } from "@/lib/subscriptionDurations";
 
 export async function GET() {
   const auth = await requireAdmin();
@@ -48,15 +49,15 @@ export async function POST(req: NextRequest) {
     return NextResponse.json({ ok: false, error: "userId is required" }, { status: 400 });
   }
 
-  const now = new Date().toISOString();
-  const expiresAt = new Date(Date.now() + 365 * 24 * 60 * 60 * 1000).toISOString();
+  const now = new Date();
+  const expiresAt = calcExpiresAt(tier, now);
 
   const { data, error } = await admin
     .from("profiles")
     .update({
       subscription_status: "active",
       subscription_tier: tier,
-      activated_at: now,
+      activated_at: now.toISOString(),
       expires_at: expiresAt,
     })
     .eq("id", userId)

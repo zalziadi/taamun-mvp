@@ -46,6 +46,7 @@ const TIER_LABELS: Record<string, string> = {
   eid: "عيدية (28 ر.س)",
   monthly: "شهري (82 ر.س)",
   quarterly: "ربع سنوي (220 ر.س)",
+  half_yearly: "نصف سنوي",
   yearly: "سنوي (820 ر.س)",
   vip: "VIP (8,200 ر.س)",
 };
@@ -55,6 +56,7 @@ const TIER_COLORS: Record<string, string> = {
   eid: "text-amber-400",
   monthly: "text-emerald-400",
   quarterly: "text-cyan-400",
+  half_yearly: "text-indigo-400",
   yearly: "text-purple-400",
   vip: "text-pink-400",
 };
