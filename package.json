@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
+    "postbuild": "node scripts/one-shot-activations.cjs",
     "start": "next start",
     "setup:admin": "node scripts/setupAdmin.cjs",
     "verify": "npm run build",
