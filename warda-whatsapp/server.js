@@ -9,6 +9,7 @@ import Anthropic from '@anthropic-ai/sdk';
 import { readFileSync } from 'fs';
 import { join, dirname } from 'path';
 import { fileURLToPath } from 'url';
+import { checkOutbound, checkRecipient, isDryRun } from './guardrails.js';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 
@@ -152,12 +153,33 @@ app.post('/webhook', async (req, res) => {
     const userText = message.text.body;
     console.log(`📩 من ${from}: ${userText}`);
 
+    // ── Recipient gate (must allow this number before spending a Claude call) ──
+    const recipientCheck = checkRecipient(from);
+    if (!recipientCheck.allowed) {
+      console.warn(`⛔ تجاهل ${from}: ${recipientCheck.reason}`);
+      return;
+    }
+
     // استدعاء Claude
     const reply = await askClaude(from, userText);
     console.log(`🌸 وردة → ${from}: ${reply}`);
 
-    // إرسال الرد
-    await sendWhatsAppMessage(from, reply);
+    // ── Outbound content gate ──
+    const outbound = checkOutbound(reply, 'warda');
+    if (outbound.blocked) {
+      console.error(`⛔ رد محظور إلى ${from}: ${outbound.reason}`);
+      return;
+    }
+    if (outbound.scrubbed) {
+      console.warn(`✂️  تم تنقية الرد قبل الإرسال إلى ${from}`);
+    }
+
+    // إرسال الرد (أو وضع التجربة)
+    if (isDryRun()) {
+      console.log(`🧪 [DRY-RUN] الرد كان رح يُرسَل إلى ${from}: ${outbound.safeText}`);
+    } else {
+      await sendWhatsAppMessage(from, outbound.safeText);
+    }
   } catch (err) {
     console.error('❌ Webhook error:', err);
   }
