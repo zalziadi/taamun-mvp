@@ -7,11 +7,19 @@
 // 2. WHATSAPP_ACCESS_TOKEN — for sending replies (Meta Cloud API)
 // 3. WHATSAPP_PHONE_NUMBER_ID — your business phone number ID
 // 4. Configure webhook URL in Meta Developer Console
+//
+// Guardrails (see src/lib/agents/guardrails.ts):
+//   - WARDA_DRY_RUN=1            -> log replies, do not send
+//   - WARDA_RECIPIENT_MODE       -> "allowlist" | "denylist" | "open"
+//   - WARDA_ALLOWLIST            -> comma-separated E.164 numbers
+//   - WHATSAPP_BUSINESS_NUMBER   -> our own number, never message it
+//   - WARDA_OPERATOR_NUMBER      -> operator's personal line, never message it
 
 import { NextRequest, NextResponse } from "next/server";
-import { routeMessage, detectHandoff, stripHandoffTag } from "@/lib/agents/router";
+import { routeMessage } from "@/lib/agents/router";
 import { generateAgentResponse } from "@/lib/agents/claude";
-import type { IncomingMessage } from "@/lib/agents/types";
+import { checkOutbound, checkRecipient, isDryRun } from "@/lib/agents/guardrails";
+import type { IncomingMessage, AgentName } from "@/lib/agents/types";
 
 /* ── GET: Webhook Verification (Meta handshake) ── */
 
@@ -37,12 +45,10 @@ export async function POST(request: NextRequest) {
   try {
     const body = await request.json();
 
-    // Meta Cloud API sends a specific structure
     const entry = body?.entry?.[0];
     const changes = entry?.changes?.[0];
     const value = changes?.value;
 
-    // Only process messages (not status updates)
     if (!value?.messages?.length) {
       return NextResponse.json({ ok: true });
     }
@@ -50,7 +56,6 @@ export async function POST(request: NextRequest) {
     const message = value.messages[0];
     const contact = value.contacts?.[0];
 
-    // Only handle text messages for now
     if (message.type !== "text") {
       return NextResponse.json({ ok: true });
     }
@@ -64,18 +69,27 @@ export async function POST(request: NextRequest) {
       timestamp: parseInt(message.timestamp, 10) * 1000,
     };
 
-    // Route to correct agent
-    const agentName = routeMessage(incomingMessage);
+    // Recipient gate (BEFORE we spend an API call). The reply target is the
+    // same number that wrote in, so we check that against the allowlist.
+    const recipientCheck = checkRecipient(message.from);
+    if (!recipientCheck.allowed) {
+      console.warn(
+        `[WhatsApp] Refusing to engage with ${message.from}: ${recipientCheck.reason}`
+      );
+      return NextResponse.json({ ok: true, skipped: recipientCheck.reason });
+    }
 
-    // Generate response
+    // Route + generate
+    const agentName: AgentName = routeMessage(incomingMessage);
+
     const agentResponse = await generateAgentResponse(
       agentName,
       "whatsapp",
       incomingMessage.text
     );
 
-    // If handoff detected, generate response from new agent
     let finalText = agentResponse.text;
+    let finalAgent: AgentName = agentName;
     if (agentResponse.handoff) {
       const handoffResponse = await generateAgentResponse(
         agentResponse.handoff,
@@ -83,12 +97,42 @@ export async function POST(request: NextRequest) {
         incomingMessage.text
       );
       finalText = handoffResponse.text;
+      finalAgent = agentResponse.handoff;
     }
 
-    // Send reply via WhatsApp Cloud API
-    await sendWhatsAppReply(message.from, finalText);
+    // Outbound content gate.
+    const outbound = checkOutbound(finalText, finalAgent);
+    if (outbound.blocked) {
+      console.error(
+        `[WhatsApp] Outbound BLOCKED for ${message.from} (agent=${finalAgent}): ${outbound.reason}`
+      );
+      return NextResponse.json({
+        ok: true,
+        blocked: true,
+        reason: outbound.reason,
+      });
+    }
+    if (outbound.scrubbed) {
+      console.warn(
+        `[WhatsApp] Outbound scrubbed for ${message.from} (agent=${finalAgent})`
+      );
+    }
 
-    return NextResponse.json({ ok: true, agent: agentName });
+    // Send (or log if dry-run).
+    if (isDryRun()) {
+      console.log(
+        `[WhatsApp][DRY-RUN] would send to ${message.from} (agent=${finalAgent}): ${outbound.safeText}`
+      );
+    } else {
+      await sendWhatsAppReply(message.from, outbound.safeText);
+    }
+
+    return NextResponse.json({
+      ok: true,
+      agent: finalAgent,
+      scrubbed: outbound.scrubbed,
+      dryRun: isDryRun(),
+    });
   } catch (error) {
     console.error("[WhatsApp] Webhook error:", error);
     return NextResponse.json({ error: "Internal error" }, { status: 500 });
