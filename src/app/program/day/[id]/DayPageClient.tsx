@@ -239,19 +239,41 @@ export default function DayPageClient({ day }: Props) {
       <DailyJourney
         content={content}
         isFirstTime={isFirstTime}
-        onComplete={() => {
+        onComplete={async () => {
           // Record completion in journey memory (UX). The DB write
           // happens inside DailyJourney.handleClosingComplete which
           // POSTs to /api/program/progress — that's the real source
           // of truth. This localStorage update is for the bridge voice
           // and continuity banner only.
-          const nextDay = Math.min(28, day + 1);
+          const isLastDayOfCycle = day === 28;
+          const nextDay = isLastDayOfCycle ? 1 : day + 1;
           journey.update({
             completedStep: `day_${day}`,
             currentDay: nextDay,
             progressDelta: 5,
-            emotionalState: "flow",
+            emotionalState: day === 28 ? "clear" : "flow",
           });
+
+          // Cycle bridge: when day 28 is completed, archive the cycle
+          // and advance to the next one. Without this, users hit the
+          // CHECK (current_day BETWEEN 1 AND 28) ceiling and feel stuck.
+          if (isLastDayOfCycle) {
+            const nextCycle = currentCycle + 1;
+            try {
+              const res = await fetch("/api/program/start-cycle", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ cycle: nextCycle }),
+              });
+              if (res.ok && typeof window !== "undefined") {
+                localStorage.setItem("taamun.currentCycle", String(nextCycle));
+              }
+            } catch {
+              // Silent fallback — the manual "ابدأ الدورة التالية" button
+              // on /program remains available as a safety net.
+            }
+          }
+
           router.push(PROGRAM_ROUTE);
         }}
       />

@@ -482,6 +482,10 @@ export function DailyJourney({ content, isFirstTime, onComplete }: Props) {
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ day: content.day }),
       });
+
+      if (content.day === 28) {
+        fetch("/api/program/complete-journey", { method: "POST" }).catch(() => {});
+      }
     } catch {
       // best-effort
     }

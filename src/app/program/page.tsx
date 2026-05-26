@@ -31,13 +31,17 @@ export default async function ProgramPage() {
     redirect("/auth?next=/program");
   }
 
-  // 3. User has started (any completed day) → send to current day
+  // 3. User finished the full 28 days → render the grid/completion view
+  //    instead of redirecting back into day 28 forever.
+  const finished = progress.completedDays.length >= progress.totalDays;
+
+  // 4. User has started but not finished → send to current day
   //    This replaces the old resolveJourneyRoute(journey.state) pattern
   //    which read from localStorage and caused race conditions.
-  if (progress.completedDays.length > 0) {
+  if (!finished && progress.completedDays.length > 0) {
     redirect(`/program/day/${progress.currentDay}`);
   }
 
-  // 4. Fresh user → show the 28-day grid as welcome UI
+  // 5. Fresh user OR finished user → render the grid (welcome / completion UI)
   return <ProgramPageClient serverCurrentDay={progress.currentDay} />;
 }
