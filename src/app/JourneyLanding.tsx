@@ -23,6 +23,37 @@ const TONES = [
   { emoji: "◈", name: "نبرة التمعّن", desc: "\u00ABاليوم أبحث عن وضوح\u00BB", msg: "تمرين عملي مرتبط بحياتك اليومية." },
 ];
 
+const DNA_ENGINES = [
+  {
+    symbol: "✦",
+    name: "الوعي",
+    en: "Genius",
+    essence: "تمعّن لا يشرح الآية. يعيدك إلى الموضع الذي تقرأ منه.",
+    line: "لا يتغيّر النص. الذي يتغيّر هو المكان الذي تقرأ منه.",
+  },
+  {
+    symbol: "◈",
+    name: "الاتصال",
+    en: "Blaze",
+    essence: "ينتشر بالطمأنينة. دعوة هادئة، بلا توبيخ، بلا سباق.",
+    line: "أنت عدت. هذا يكفي.",
+  },
+  {
+    symbol: "❍",
+    name: "البيئة",
+    en: "Tempo",
+    essence: "بيئة يومية هادئة: صمت، آية، سؤال مرآوي، كتابة، وملاحظة للحالة.",
+    line: "دفتر، مدينة، بوابة، ظل، هدية، أفضل احتمال.",
+  },
+  {
+    symbol: "⟡",
+    name: "النظام",
+    en: "Data",
+    essence: "يحوّل التأمل إلى عادة قابلة للعودة. عودة من حيث أنت.",
+    line: "آية → سؤال → كتابة → ملاحظة → عودة → استمرار.",
+  },
+];
+
 const FEATURES = [
   { icon: "📖", name: "البرنامج", desc: "28 يوم من التمعّن المتدرج. من بوابة الصمت إلى المدينة. كل يوم مبني على ما قبله." },
   { icon: "🪞", name: "الدفتر", desc: "مساحتك الشخصية. في نهاية كل أسبوع ترى ما كتبته جنبا إلى جنب — لا تحليل، فقط مرآة." },
@@ -117,7 +148,7 @@ export function JourneyLanding() {
       <div className="jl-divider" />
 
       {/* ════════ DAILY 5 STEPS ════════ */}
-      <section className="jl-daily">
+      <section className="jl-daily" id="daily">
         <div className="jl-reveal"><span className="jl-section-label">الرحلة اليومية</span></div>
         <div className="jl-reveal"><h2 className="jl-section-title">خمس خطوات كل يوم</h2></div>
         <div className="jl-reveal"><p className="jl-section-desc">كل يوم يعكس مسار التحوّل بشكل مصغّر — من الصمت إلى الوعي.</p></div>
@@ -206,6 +237,52 @@ export function JourneyLanding() {
           <p className="jl-problem-text">إذا غبت — لا نعيدك من البداية. نقول: <strong>&laquo;أنت عدت. هذا يكفي. استمر من هنا.&raquo;</strong><br />عدم إكمال يوم ليس فشلا. التحول يبدأ من أن ترى نفسك وأنت تتحرك بين الحالات.</p>
         </section>
       </div>
+
+      <div className="jl-divider" />
+
+      {/* ════════ DNA — IDENTITY OS ════════ */}
+      <section className="jl-dna" id="dna">
+        <div className="jl-reveal"><span className="jl-section-label">DNA تمعّن</span></div>
+        <div className="jl-reveal"><h2 className="jl-section-title">هوية تمعّن ليست تطبيقاً.<br />هي نظام عودة.</h2></div>
+        <div className="jl-reveal">
+          <p className="jl-section-desc">
+            تمعّن بُني على أربعة محركات خفية: وعي يقرأ الآية من الداخل، اتصال يفتح الباب بلا توبيخ، بيئة يومية تحفظ الصمت، ونظام يجعل العودة ممكنة كلما انقطعت.
+          </p>
+        </div>
+
+        <div className="jl-dna-grid">
+          {DNA_ENGINES.map((eng) => (
+            <div className="jl-reveal" key={eng.en}>
+              <div className="jl-dna-card">
+                <span className="jl-dna-symbol">{eng.symbol}</span>
+                <div className="jl-dna-head">
+                  <h3 className="jl-dna-name">{eng.name}</h3>
+                  <span className="jl-dna-en">{eng.en}</span>
+                </div>
+                <p className="jl-dna-essence">{eng.essence}</p>
+                <p className="jl-dna-line">{eng.line}</p>
+              </div>
+            </div>
+          ))}
+        </div>
+
+        <div className="jl-reveal">
+          <p className="jl-dna-closing">
+            من هنا لا يصبح الشعار أو التصميم مجرد ذوق. يصبح نتيجة لطاقة المشروع:<br />
+            القرآن كمدينة، الآية كمرآة، والعودة كمسار.
+          </p>
+        </div>
+
+        <div className="jl-reveal">
+          <div className="jl-dna-cta-row">
+            <Link href="/auth" className="jl-dna-cta-primary">
+              <span>ابدأ ٧ أيام مجاناً</span>
+              <span style={{ fontSize: "0.9rem" }}>&#8592;</span>
+            </Link>
+            <Link href="#daily" className="jl-dna-cta-secondary">شاهد رحلة ٢٨ يوم</Link>
+          </div>
+        </div>
+      </section>
 
       <div className="jl-divider" />
 
