@@ -44,112 +44,112 @@ export default function DecisionInputForm({ onSubmit, loading = false }: Props) 
   return (
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Current State Card */}
-      <section className="tm-card p-5 sm:p-6 space-y-4">
+      <section className="dbs-card p-5 sm:p-6 space-y-4">
         <div>
-          <h2 className="tm-heading text-2xl text-[#2f2619]">١. الوضع الحالي</h2>
-          <p className="text-xs text-[#7d7362] mt-1">صف ما عندك الآن — بصدق، بلا تجميل</p>
+          <h2 className="dbs-heading text-2xl">١. الوضع الحالي</h2>
+          <p className="dbs-label mt-1">صف ما عندك الآن — بصدق، بلا تجميل</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-3">
           <label className="space-y-1.5">
-            <span className="text-xs text-[#7d7362]">المالي</span>
+            <span className="dbs-label">المالي</span>
             <input
               value={financial}
               onChange={(e) => setFinancial(e.target.value)}
               placeholder="مثل: محدود، بدون مدخرات"
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#2f2619]"
+              className="dbs-input"
             />
           </label>
           <label className="space-y-1.5">
-            <span className="text-xs text-[#7d7362]">العاطفي</span>
+            <span className="dbs-label">العاطفي</span>
             <input
               value={emotional}
               onChange={(e) => setEmotional(e.target.value)}
               placeholder="مثل: قلق، متحمّس، عالق"
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#2f2619]"
+              className="dbs-input"
             />
           </label>
           <label className="space-y-1.5">
-            <span className="text-xs text-[#7d7362]">العملي</span>
+            <span className="dbs-label">العملي</span>
             <input
               value={practical}
               onChange={(e) => setPractical(e.target.value)}
               placeholder="مثل: وحدي، فريق صغير"
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#2f2619]"
+              className="dbs-input"
             />
           </label>
         </div>
       </section>
 
       {/* Goal Card */}
-      <section className="tm-card p-5 sm:p-6 space-y-4">
+      <section className="dbs-card p-5 sm:p-6 space-y-4">
         <div>
-          <h2 className="tm-heading text-2xl text-[#2f2619]">٢. الهدف</h2>
-          <p className="text-xs text-[#7d7362] mt-1">جملة واحدة واضحة عن الذي تريد تحقيقه</p>
+          <h2 className="dbs-heading text-2xl">٢. الهدف</h2>
+          <p className="dbs-label mt-1">جملة واحدة واضحة عن الذي تريد تحقيقه</p>
         </div>
         <div className="space-y-3">
           <label className="block space-y-1.5">
-            <span className="text-xs text-[#7d7362]">الهدف القريب (٣٠ يوم) *</span>
+            <span className="dbs-label">الهدف القريب (٣٠ يوم) *</span>
             <input
               value={shortTerm}
               onChange={(e) => setShortTerm(e.target.value)}
               placeholder="مثل: أطلق منتجي الأول"
               required
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#2f2619]"
+              className="dbs-input"
             />
           </label>
           <label className="block space-y-1.5">
-            <span className="text-xs text-[#7d7362]">الهدف البعيد (اختياري)</span>
+            <span className="dbs-label">الهدف البعيد (اختياري)</span>
             <input
               value={longTerm}
               onChange={(e) => setLongTerm(e.target.value)}
               placeholder="مثل: مشروع مستقل خلال سنة"
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#2f2619]"
+              className="dbs-input"
             />
           </label>
         </div>
       </section>
 
       {/* Constraints Card */}
-      <section className="tm-card p-5 sm:p-6 space-y-4">
+      <section className="dbs-card p-5 sm:p-6 space-y-4">
         <div>
-          <h2 className="tm-heading text-2xl text-[#2f2619]">٣. القيود</h2>
-          <p className="text-xs text-[#7d7362] mt-1">ما الحدود الحقيقية التي تتعامل معها؟</p>
+          <h2 className="dbs-heading text-2xl">٣. القيود</h2>
+          <p className="dbs-label mt-1">ما الحدود الحقيقية التي تتعامل معها؟</p>
         </div>
         <div className="grid gap-3 sm:grid-cols-2">
           <label className="space-y-1.5">
-            <span className="text-xs text-[#7d7362]">قيد المال</span>
+            <span className="dbs-label">قيد المال</span>
             <input
               value={money}
               onChange={(e) => setMoney(e.target.value)}
               placeholder="مثل: ميزانية صفر"
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#2f2619]"
+              className="dbs-input"
             />
           </label>
           <label className="space-y-1.5">
-            <span className="text-xs text-[#7d7362]">قيد الوقت</span>
+            <span className="dbs-label">قيد الوقت</span>
             <input
               value={time}
               onChange={(e) => setTime(e.target.value)}
               placeholder="مثل: ساعة يومياً"
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#2f2619]"
+              className="dbs-input"
             />
           </label>
           <label className="space-y-1.5">
-            <span className="text-xs text-[#7d7362]">الالتزامات</span>
+            <span className="dbs-label">الالتزامات</span>
             <input
               value={obligations}
               onChange={(e) => setObligations(e.target.value)}
               placeholder="مثل: عمل بدوام كامل"
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#2f2619]"
+              className="dbs-input"
             />
           </label>
           <label className="space-y-1.5">
-            <span className="text-xs text-[#7d7362]">المخاطر</span>
+            <span className="dbs-label">المخاطر</span>
             <input
               value={risks}
               onChange={(e) => setRisks(e.target.value)}
               placeholder="مثل: خوف من الفشل"
-              className="w-full rounded-xl border border-[#d8cdb9] bg-[#fcfaf7] px-3 py-2 text-sm text-[#2f2619]"
+              className="dbs-input"
             />
           </label>
         </div>
@@ -159,9 +159,9 @@ export default function DecisionInputForm({ onSubmit, loading = false }: Props) 
         <button
           type="submit"
           disabled={loading || !shortTerm.trim()}
-          className="tm-gold-btn rounded-2xl px-8 py-3 text-base disabled:opacity-50 disabled:cursor-not-allowed"
+          className="dbs-btn text-base"
         >
-          {loading ? "جارٍ التحليل..." : "✦ اكشف القرار"}
+          {loading ? "جارٍ التحليل..." : "📌 حلّل الدبوس"}
         </button>
       </div>
     </form>
