@@ -121,3 +121,4 @@ ADMIN_EMAIL                  # (اختياري) بريد الأدمن للتحق
 ## مصادر أخرى
 - `docs/plan.md` — نطاق الـ MVP وتفاصيل الأكواد
 - `docs/book.md` — قواعد اقتباس/تلخيص من الكتيّب
+- `~/Code/vercel-monorepo/` — مرجع Vercel الرسمي (shallow clone). أمثلة جاهزة في `examples/`، حزم رسمية (`next`, `node`, `edge`, `functions`, `mcp-adapter`, `frameworks`) في `packages/`.

@@ -94,6 +94,58 @@ t('allowlist mode allows a listed number', () => {
   assert.equal(r.allowed, true);
 });
 
+t('allowlist matches Meta phone format without plus', () => {
+  const r = checkRecipient('966594409396', {
+    WARDA_RECIPIENT_MODE: 'allowlist',
+    WARDA_ALLOWLIST: '+966594409396',
+  });
+  assert.equal(r.allowed, true);
+});
+
+t('blocks our own business number when Meta omits plus', () => {
+  const r = checkRecipient('966553930885', {
+    WARDA_RECIPIENT_MODE: 'open',
+    WHATSAPP_BUSINESS_NUMBER: '+966553930885',
+  });
+  assert.equal(r.allowed, false);
+  assert.equal(r.reason, 'self_send_blocked');
+});
+
+t('blocks the operator number when Meta omits plus', () => {
+  const r = checkRecipient('966594409396', {
+    WARDA_RECIPIENT_MODE: 'open',
+    WARDA_OPERATOR_NUMBER: '+966594409396',
+  });
+  assert.equal(r.allowed, false);
+  assert.equal(r.reason, 'operator_send_blocked');
+});
+
+t('allowlist matches Meta phone format without plus', () => {
+  const r = checkRecipient('966594409396', {
+    WARDA_RECIPIENT_MODE: 'allowlist',
+    WARDA_ALLOWLIST: '+966594409396',
+  });
+  assert.equal(r.allowed, true);
+});
+
+t('blocks our own business number when Meta omits plus', () => {
+  const r = checkRecipient('966553930885', {
+    WARDA_RECIPIENT_MODE: 'open',
+    WHATSAPP_BUSINESS_NUMBER: '+966553930885',
+  });
+  assert.equal(r.allowed, false);
+  assert.equal(r.reason, 'self_send_blocked');
+});
+
+t('blocks the operator number when Meta omits plus', () => {
+  const r = checkRecipient('966594409396', {
+    WARDA_RECIPIENT_MODE: 'open',
+    WARDA_OPERATOR_NUMBER: '+966594409396',
+  });
+  assert.equal(r.allowed, false);
+  assert.equal(r.reason, 'operator_send_blocked');
+});
+
 t('allowlist mode rejects an unlisted number', () => {
   const r = checkRecipient('+966599999999', {
     WARDA_RECIPIENT_MODE: 'allowlist',

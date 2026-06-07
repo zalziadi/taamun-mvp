@@ -68,7 +68,11 @@ export function checkOutbound(text, agent = 'warda') {
 }
 
 function normalise(num) {
-  return (num || '').replace(/[^\d+]/g, '');
+  // Digits-only canonical form: Meta delivers `from` without a leading "+"
+  // (e.g. "966594409396") while configs/allowlists are written E.164 with it
+  // ("+966594409396"). Stripping non-digits makes both sides compare equal —
+  // this both fixes allowlist matching and hardens the business/operator block.
+  return (num || '').replace(/\D/g, '');
 }
 
 function parseList(raw) {
