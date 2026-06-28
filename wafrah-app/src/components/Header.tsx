@@ -6,6 +6,7 @@ import { cn } from "@/lib/utils";
 
 const NAV = [
   { href: "/journey", label: "الرحلة" },
+  { href: "/library", label: "المكتبة" },
   { href: "/progress", label: "تقدمي" },
   { href: "/reflection", label: "التأملات" },
 ];
