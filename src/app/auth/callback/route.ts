@@ -14,12 +14,24 @@ export async function GET(request: NextRequest) {
   const code = searchParams.get("code");
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type");
+  const providerError = searchParams.get("error_description") ?? searchParams.get("error");
   const safeNext = getSafeNext(searchParams.get("next"));
 
   const successUrl = new URL(safeNext, origin);
-  const fallbackUrl = new URL("/login", origin);
-  fallbackUrl.searchParams.set("next", safeNext);
-  fallbackUrl.searchParams.set("error", "oauth_failed");
+
+  /** Send the user back to /login with a reason we can act on, and log the real cause. */
+  function fail(reason: string, detail?: string) {
+    console.error("[auth/callback] failed", { reason, detail, hasCode: !!code, hasTokenHash: !!tokenHash, type });
+    const url = new URL("/login", origin);
+    url.searchParams.set("next", safeNext);
+    url.searchParams.set("error", reason);
+    return NextResponse.redirect(url);
+  }
+
+  // The provider (Supabase/Google) rejected the sign-in before we ever got a code.
+  if (providerError) {
+    return fail("provider_error", providerError);
+  }
 
   const response = NextResponse.redirect(successUrl);
   const supabase = createServerClient(
@@ -39,6 +51,7 @@ export async function GET(request: NextRequest) {
     }
   );
 
+  // Email links: works in any browser — no code verifier needed.
   if (tokenHash && type) {
     const { error } = await supabase.auth.verifyOtp({
       token_hash: tokenHash,
@@ -47,11 +60,17 @@ export async function GET(request: NextRequest) {
     if (!error) {
       return response;
     }
+    return fail("link_invalid", error.message);
   }
 
   if (code) {
     const { error } = await supabase.auth.exchangeCodeForSession(code);
-    if (!error) {
+    if (error) {
+      // Almost always: the PKCE verifier cookie is missing because the link was
+      // opened in a different browser than the one that requested it, or it expired.
+      return fail("link_invalid", error.message);
+    }
+    {
       const { data: userData, error: userError } = await supabase.auth.getUser();
       if (!userError && userData.user) {
         // Check if this is a new user (no subscription)
@@ -94,8 +113,9 @@ export async function GET(request: NextRequest) {
         
         return response;
       }
+      return fail("session_failed", userError?.message);
     }
   }
 
-  return NextResponse.redirect(fallbackUrl);
+  return fail("no_code");
 }

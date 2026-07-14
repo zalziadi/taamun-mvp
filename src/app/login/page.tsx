@@ -21,9 +21,16 @@ function LoginContent() {
 
   useEffect(() => {
     const errorCode = searchParams.get("error");
-    if (errorCode === "oauth_failed") {
-      setError("تعذر إكمال تسجيل الدخول عبر Google. حاول مرة أخرى أو استخدم رابط البريد الإلكتروني.");
-    }
+    if (!errorCode) return;
+    const messages: Record<string, string> = {
+      link_invalid:
+        "انتهت صلاحية رابط الدخول، أو فُتح في متصفح غير الذي طلبه. اطلب رابطاً جديداً وافتحه في نفس المتصفح.",
+      provider_error: "رفض مزوّد الدخول إكمال العملية. جرّب رابط البريد الإلكتروني.",
+      session_failed: "تعذر إنشاء الجلسة. حاول مرة أخرى.",
+      no_code: "رابط الدخول غير مكتمل. اطلب رابطاً جديداً.",
+      oauth_failed: "تعذر إكمال تسجيل الدخول. حاول مرة أخرى أو استخدم رابط البريد الإلكتروني.",
+    };
+    setError(messages[errorCode] ?? messages.oauth_failed);
   }, [searchParams]);
 
   useEffect(() => {
@@ -73,8 +80,16 @@ function LoginContent() {
         emailRedirectTo: `${window.location.origin}/auth/callback?next=${encodeURIComponent(next)}`,
       },
     });
-    if (err) setError("تعذر إرسال رابط الدخول الآن. حاول مرة أخرى.");
-    else setSent(true);
+    if (err) {
+      console.error("[login] signInWithOtp failed", err);
+      const rateLimited =
+        err.status === 429 || /rate limit/i.test(err.message ?? "");
+      setError(
+        rateLimited
+          ? "تجاوزنا حدّ إرسال الرسائل مؤقتاً. انتظر قليلاً ثم أعد المحاولة، أو تواصل معنا في واتساب."
+          : "تعذر إرسال رابط الدخول الآن. حاول مرة أخرى."
+      );
+    } else setSent(true);
   };
 
   if (checkingSession) {
