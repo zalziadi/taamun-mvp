@@ -228,17 +228,17 @@ export function HomeClient() {
       {showEidPopup ? (
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/55 px-4">
           <div className="w-full max-w-md rounded-2xl border border-[#c9b88a]/30 bg-[#1d1b17] p-6 text-center shadow-2xl">
-            <p className="text-xs tracking-[0.2em] text-[#c9b88a]">عيدية تمعّن</p>
+            <p className="text-xs tracking-[0.2em] text-[#c9b88a]">تمعّن</p>
             <h2 className="mt-2 font-[var(--font-amiri)] text-xl sm:text-3xl text-[#e8e1d9]">مرحبًا بك</h2>
             <p className="mt-3 text-sm leading-relaxed text-white/75">
               هذه نافذة تعريف سريعة بالعروض والمزايا. ستظهر لك مرة واحدة فقط بعد أول تفعيل للاشتراك.
             </p>
             <div className="mt-5 flex flex-wrap justify-center gap-2">
               <Link
-                href="/eid"
+                href="/pricing"
                 className="rounded-lg bg-[#c9b88a] px-4 py-2 text-sm font-semibold text-[#15130f]"
               >
-                عرض العيدية
+                تصفح الباقات
               </Link>
               <button
                 type="button"

@@ -262,7 +262,7 @@ export async function POST(req: NextRequest) {
       message: "جاهز تنتقل للمستوى الجاي؟",
       cta: "ترقية للباقة الكاملة",
       url: "/pricing",
-      package: "382 ريال — سنة كاملة + مجتمع خاص",
+      package: "699 ريال — سنة كاملة بكل المميزات",
     };
   }
 

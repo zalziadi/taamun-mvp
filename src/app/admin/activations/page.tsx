@@ -13,11 +13,11 @@ interface ActivationCode {
 }
 
 const TIER_LABELS: Record<string, string> = {
-  eid: "عيدية (28 ر.س)",
-  monthly: "شهري (82 ر.س)",
+  eid: "عيدية (عرض منتهٍ — للأكواد القديمة)",
+  monthly: "شهري (عرض منتهٍ — للأكواد القديمة)",
   quarterly: "ربع سنوي (199 ر.س)",
-  yearly: "سنوي (820 ر.س)",
-  vip: "VIP (8,200 ر.س)",
+  yearly: "سنوي (699 ر.س)",
+  vip: "VIP (4,999 ر.س)",
 };
 
 export default function ActivationsPage() {
@@ -27,7 +27,7 @@ export default function ActivationsPage() {
   const [usedCount, setUsedCount] = useState(0);
   const [loading, setLoading] = useState(true);
   const [creating, setCreating] = useState(false);
-  const [tier, setTier] = useState("monthly");
+  const [tier, setTier] = useState("quarterly");
   const [filterTierView, setFilterTierView] = useState<string>("all");
   const [msg, setMsg] = useState<{ ok: boolean; text: string } | null>(null);
   const [copiedId, setCopiedId] = useState<string | null>(null);
@@ -92,7 +92,7 @@ export default function ActivationsPage() {
 
 أنا وردة، من فريق تمعّن.
 
-هذا كود تفعيل اشتراكك في عيدية تمعّن:
+هذا كود تفعيل اشتراكك في تمعّن:
 
 🔑 ${code}
 
@@ -146,11 +146,9 @@ export default function ActivationsPage() {
                 onChange={(e: React.ChangeEvent<HTMLSelectElement>) => setTier(e.target.value)}
                 className="mt-1 w-full rounded-xl border border-white/15 bg-[#1c1a15] px-4 py-3 text-sm text-[#e8e1d9] focus:border-[#c9b88a]/50 focus:outline-none"
               >
-                <option value="eid">عيدية (28 ر.س)</option>
-                <option value="monthly">شهري (82 ر.س)</option>
                 <option value="quarterly">ربع سنوي (199 ر.س)</option>
-                <option value="yearly">سنوي (820 ر.س)</option>
-                <option value="vip">VIP (8,200 ر.س)</option>
+                <option value="yearly">سنوي (699 ر.س)</option>
+                <option value="vip">VIP (4,999 ر.س)</option>
               </select>
             </div>
             <div className="flex items-end">

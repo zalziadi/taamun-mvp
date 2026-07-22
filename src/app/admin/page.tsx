@@ -43,11 +43,11 @@ interface Report {
 
 const TIER_LABELS: Record<string, string> = {
   trial: "تجربة مجانية",
-  eid: "عيدية (28 ر.س)",
-  monthly: "شهري (82 ر.س)",
-  quarterly: "ربع سنوي (220 ر.س)",
-  yearly: "سنوي (820 ر.س)",
-  vip: "VIP (8,200 ر.س)",
+  eid: "عيدية (عرض منتهٍ)",
+  monthly: "شهري (عرض منتهٍ)",
+  quarterly: "ربع سنوي (199 ر.س)",
+  yearly: "سنوي (699 ر.س)",
+  vip: "VIP (4,999 ر.س)",
 };
 
 const TIER_COLORS: Record<string, string> = {
