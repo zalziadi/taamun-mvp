@@ -19,7 +19,7 @@ export default async function BookPage() {
           <p className="text-base leading-loose text-amber-100/90">&ldquo;القرآن لم يُنزَل ليُقرأ فحسب — بل ليقرأك. كل آية مرآة، وكل سورة رحلة. المعنى ليس في الكلمات وحدها، بل في ما يحدث داخلك حين تتوقف عندها.&rdquo;</p>
           <p className="mt-2 text-xs text-amber-400/50">مدينة المعنى بلغة القرآن — المقدمة</p>
         </div>
-        <Paywall reason="book" title="الكتاب للمشتركين" message="اشترك في عيدية تمعّن بـ ٢٨ ريال وتحصل على الكتاب كاملاً + برنامج ٢٨ يوم" />
+        <Paywall reason="book" />
       </div>
     );
   }
@@ -51,7 +51,7 @@ export default async function BookPage() {
           <p className="text-base leading-loose text-amber-100/90">&ldquo;القرآن لم يُنزَل ليُقرأ فحسب — بل ليقرأك. كل آية مرآة، وكل سورة رحلة. المعنى ليس في الكلمات وحدها، بل في ما يحدث داخلك حين تتوقف عندها.&rdquo;</p>
           <p className="mt-2 text-xs text-amber-400/50">مدينة المعنى بلغة القرآن — المقدمة</p>
         </div>
-        <Paywall reason="book" title="الكتاب للمشتركين" message="اشترك في عيدية تمعّن بـ ٢٨ ريال وتحصل على الكتاب كاملاً + برنامج ٢٨ يوم" />
+        <Paywall reason="book" />
       </div>
     );
   }

@@ -186,11 +186,14 @@ export function AccountClient({ embedded, userEmail, userCreatedAt }: AccountCli
 
   const tierLabel = (tier: string | null): string => {
     if (!tier) return "—";
+    // الأسعار تُعرض في /pricing فقط (مصدر الحقيقة) — هنا اسم الباقة بلا سعر
     switch (tier) {
-      case "eid": return "العيدية — ٢٨ ر.س";
-      case "monthly": return "المسار — ٨٢ ر.س";
-      case "yearly": return "التمكين — ٨٢٠ ر.س";
-      case "vip": return "الخلوة — ٨,٢٠٠ ر.س";
+      case "trial": return "تجربة مجانية";
+      case "quarterly": return "ربع سنوي";
+      case "yearly": return "سنوي";
+      case "vip": return "VIP";
+      case "eid": return "العيدية — عرض منتهٍ";
+      case "monthly": return "المسار — عرض منتهٍ";
       default: return tier;
     }
   };

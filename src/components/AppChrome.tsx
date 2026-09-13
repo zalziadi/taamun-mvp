@@ -66,9 +66,7 @@ export function AppChrome({
               <Link href={GUIDE_ROUTE} className="tm-nav-link">
                 المرشد
               </Link>
-              <Link href="/discover" className="tm-nav-link">
-                استكشف
-              </Link>
+              {/* رابط استكشف مخفي حتى تُنشر أول رحلة مبدع (قرار 2026-07-22) — الصفحة /discover تبقى حية */}
               <Link href={PRICING_ROUTE} className="tm-nav-link">
                 الأسعار
               </Link>

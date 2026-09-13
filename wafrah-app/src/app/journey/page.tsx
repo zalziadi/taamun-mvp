@@ -4,6 +4,7 @@ import { useMemo } from "react";
 import Link from "next/link";
 import { DAYS, TOTAL_DAYS } from "@/lib/days";
 import { DayCard } from "@/components/DayCard";
+import { LeadForm } from "@/components/LeadForm";
 import { ProgressBar } from "@/components/ProgressBar";
 import { useProgressStore } from "@/store/useProgressStore";
 import { PHASE_META } from "@/lib/types";
@@ -51,6 +52,8 @@ export default function JourneyPage() {
             )}
           </div>
         </div>
+
+        <LeadForm />
       </header>
 
       {(Object.keys(grouped) as Array<keyof typeof PHASE_META>).map((phase) => (

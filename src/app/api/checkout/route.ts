@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { requireUser } from "@/lib/authz";
 import { getCheckoutProvider } from "@/lib/checkoutProvider";
-import { sallaProductUrl } from "@/lib/salla";
 import type { CheckoutTier } from "@/lib/stripe";
 
 export const dynamic = "force-dynamic";
@@ -44,13 +43,18 @@ export async function POST(req: Request) {
 
   const provider = getCheckoutProvider();
 
-  /* ── Salla: redirect to product page ── */
+  /* ── Salla أُلغيت (2026-06-26): الدفع يدوي عبر STC Pay/تحويل — واتساب برسالة الباقة ── */
   if (provider === "salla") {
-    const url = sallaProductUrl(tier);
-    if (!url) {
-      return NextResponse.json({ error: "salla_not_configured" }, { status: 500 });
-    }
-    return NextResponse.json({ ok: true, url, provider: "salla" });
+    const labels: Record<string, string> = {
+      quarterly: "الربع سنوية (199 ر.س)",
+      yearly: "السنوية (699 ر.س)",
+      vip: "VIP (4,999 ر.س)",
+    };
+    const plan = labels[tier] ?? "";
+    const text = `السلام عليكم، أرغب في الاشتراك في تمعّن — الباقة ${plan}\nالبريد: ${auth.user.email ?? ""}`;
+    const number = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "966553930885";
+    const url = `https://wa.me/${number}?text=${encodeURIComponent(text)}`;
+    return NextResponse.json({ ok: true, url, provider: "manual" });
   }
 
   /* ── Stripe (fallback) ── */

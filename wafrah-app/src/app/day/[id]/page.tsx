@@ -5,6 +5,8 @@ import Link from "next/link";
 import { useParams, useRouter } from "next/navigation";
 import { motion } from "framer-motion";
 import { DAYS, TOTAL_DAYS, getDay } from "@/lib/days";
+import { episodeId } from "@/lib/episodes";
+import { FractalCTA } from "@/components/FractalCTA";
 import { QuestionBox } from "@/components/QuestionBox";
 import { useProgressStore } from "@/store/useProgressStore";
 import { cn } from "@/lib/utils";
@@ -121,6 +123,24 @@ export default function DayPage() {
         <p className="text-base leading-relaxed text-ink-600">{day.intro}</p>
       </motion.header>
 
+      {episodeId(day.id) && (
+        <motion.div
+          initial={{ opacity: 0, y: 8 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.45, delay: 0.1 }}
+          className="mx-auto w-full max-w-[340px] overflow-hidden rounded-xl2 border border-ink-100 bg-black shadow-soft"
+          style={{ aspectRatio: "9 / 16" }}
+        >
+          <iframe
+            className="h-full w-full"
+            src={`https://www.youtube.com/embed/${episodeId(day.id)}?rel=0&modestbranding=1&playsinline=1`}
+            title={`لمة وفرة · اليوم ${day.id} · ${day.title}`}
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+            allowFullScreen
+          />
+        </motion.div>
+      )}
+
       <Section title="فكرة الوعي" tone="awareness">
         <p className="text-lg leading-loose text-ink-800">{day.awareness}</p>
       </Section>
@@ -158,6 +178,9 @@ export default function DayPage() {
           “{day.affirmation}”
         </p>
       </Section>
+
+      {day.id === 10 && <FractalCTA variant="mid" />}
+      {day.id === TOTAL_DAYS && <FractalCTA variant="final" />}
 
       <footer className="flex flex-wrap items-center justify-between gap-3 border-t border-ink-100 pt-6">
         <div className="flex items-center gap-2">

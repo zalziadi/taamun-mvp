@@ -17,11 +17,7 @@ export default async function TasbeehPage() {
       <div className="min-h-screen bg-[#07070c] p-6 max-w-xl mx-auto">
         <h1 className="mb-2 text-2xl font-bold text-[#e8e1d9]">مسبحة تمعّن</h1>
         <p className="mb-6 text-[#c9b88a] text-sm">أسماء الله الحسنى — تسبيح تأملي</p>
-        <Paywall
-          reason="tasbeeh"
-          title="المسبحة للمشتركين"
-          message="اشترك بـ 28 ريال للمسبحة، أو بـ 82 ريال للباقة السنوية الشاملة"
-        />
+        <Paywall reason="tasbeeh" />
       </div>
     );
   }
@@ -45,11 +41,7 @@ export default async function TasbeehPage() {
       <div className="min-h-screen bg-[#07070c] p-6 max-w-xl mx-auto">
         <h1 className="mb-2 text-2xl font-bold text-[#e8e1d9]">مسبحة تمعّن</h1>
         <p className="mb-6 text-[#c9b88a] text-sm">أسماء الله الحسنى — تسبيح تأملي</p>
-        <Paywall
-          reason="tasbeeh"
-          title="المسبحة للمشتركين"
-          message="اشترك بـ 28 ريال للمسبحة، أو بـ 82 ريال للباقة السنوية الشاملة"
-        />
+        <Paywall reason="tasbeeh" />
       </div>
     );
   }

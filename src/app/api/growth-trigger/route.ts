@@ -13,7 +13,7 @@ const OFFERS = {
   standard: {
     type: "subscription" as const,
     message: "واضح أنك تبحث عن عمق… مو مجرد قراءة. في رحلة مصممة لك.",
-    cta: "أكمل الرحلة — 82 ريال",
+    cta: "أكمل الرحلة — 199 ريال",
     url: "/pricing",
     framing: "continuation",
   },
@@ -27,7 +27,7 @@ const OFFERS = {
   upgrade: {
     type: "upgrade" as const,
     message: "لاحظنا تطور حقيقي عندك. الباقة الكاملة تناسب مستواك.",
-    cta: "الباقة الكاملة — 382 ريال",
+    cta: "الباقة السنوية — 699 ريال",
     url: "/pricing?plan=full",
     framing: "growth",
   },

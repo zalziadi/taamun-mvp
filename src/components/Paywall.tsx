@@ -195,8 +195,15 @@ export function Paywall({ reason = "locked", title, message, type, profile }: Pa
   // For trial_active_locked, show a simpler lock message
   if (type === 'trial_active_locked' || r.hidePrice) {
     return (
-      <div className="border-y border-amber-500/25 py-4">
-        <p className="text-amber-400/90 text-center">🔒 {m}</p>
+      <div className="border-y border-amber-500/25 py-4 text-center">
+        <p className="mb-3 text-amber-400/90">🔒 {m}</p>
+        <Link
+          href="/pricing"
+          onClick={() => track("pricing_clicked", { from: "paywall", reason })}
+          className="text-sm text-[#c9b88a] underline underline-offset-4 hover:text-amber-300"
+        >
+          تصفح الباقات
+        </Link>
       </div>
     );
   }
