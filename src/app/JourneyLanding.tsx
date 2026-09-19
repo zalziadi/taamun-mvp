@@ -277,9 +277,9 @@ export function JourneyLanding() {
         <div className="jl-payment-note">
           <p>الدفع عبر تحويل بنكي أو STC Pay — أرسل الإيصال عبر واتساب واحصل على كود التفعيل خلال دقائق</p>
           <div className="jl-payment-methods">
-            <span className="jl-payment-method">STC Bank</span>
-            <span className="jl-payment-method">STC Pay</span>
-            <span className="jl-payment-method">واتساب</span>
+            <Link href="/pricing" className="jl-payment-method">STC Bank</Link>
+            <Link href="/pricing" className="jl-payment-method">STC Pay</Link>
+            <a href="https://wa.me/966553930885?text=%D8%A3%D8%B1%D8%BA%D8%A8%20%D9%81%D9%8A%20%D8%A7%D9%84%D8%A7%D8%B4%D8%AA%D8%B1%D8%A7%D9%83%20%D9%81%D9%8A%20%D8%AA%D9%85%D8%B9%D9%91%D9%86" target="_blank" rel="noopener noreferrer" className="jl-payment-method">واتساب</a>
           </div>
         </div>
       </div>

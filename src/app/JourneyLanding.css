@@ -694,6 +694,10 @@
   font-size: 0.7rem;
   color: var(--jl-sand);
   letter-spacing: 0.15em;
+  text-decoration: none;
+}
+.jl-payment-method:hover {
+  border-color: var(--jl-sand);
 }
 
 /* ─── GUARANTEE ─── */
