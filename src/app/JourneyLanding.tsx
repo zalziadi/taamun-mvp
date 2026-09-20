@@ -10,11 +10,11 @@ import { BrandLogo } from "@/components/BrandLogo";
  */
 
 const STEPS = [
-  { num: "١", name: "لحظة صمت", time: "الاستعداد", desc: "لا تبدأ بالآية. ابدأ بالسكون. الشاشة فارغة تماما — فقط سؤال واحد: ماذا يحدث في داخلي الآن؟ لا يظهر شيء آخر حتى تكتب كلمة واحدة على الأقل.", hasLine: true },
-  { num: "٢", name: "آية واحدة", time: "الاستقبال", desc: "آية واحدة فقط — بسيطة وواضحة دون تشتيت. ليست المسألة أن تقرأ كثيرا، بل أن تقرأ بوعي.", hasLine: true },
-  { num: "٣", name: "طبقة أعمق", time: "الانكشاف", desc: "معنى مخفي يكشف عن نفسه حين تكون مستعدا. سؤالان: السؤال الظاهري من سطح الآية، والسؤال المرآوي — ماذا تكشف الآية عنك؟", hasLine: true },
-  { num: "٤", name: "تأمل شخصي", time: "الحوار", desc: "دفترك الخاص. تدوّن ما شعرت به وما لاحظته. حوار بينك وبين الآية. الصدق مع النفس أهم من الكمال.", hasLine: true },
-  { num: "٥", name: "قياس الوعي", time: "الملاحظة", desc: "تتبّع حالة وعيك ونموك — ليس بأرقام مثالية، بل بملاحظة حركتك بين الحالات. المشهد واضح. الآن طبّق في يومك الحالي.", hasLine: false },
+  { num: "١", name: "لحظة صمت", time: "الاستعداد", desc: "تبدأ بما يحدث داخلك الآن، لا بما يجب أن تشعر به. الشاشة فارغة — فقط سؤال واحد: ماذا يحدث في داخلي الآن؟", hasLine: true },
+  { num: "٢", name: "آية واحدة", time: "الاستقبال", desc: "آية بسيطة وواضحة، بلا تشتيت أو كثرة. ليست المسألة أن تقرأ كثيرا، بل أن تقرأ بوعي.", hasLine: true },
+  { num: "٣", name: "سؤال مرآوي", time: "الانكشاف", desc: "ليس فقط ما معنى الآية، بل ماذا تكشف عنك؟ السؤال الذي يحوّل النص من معلومة إلى مرآة.", hasLine: true },
+  { num: "٤", name: "كتابة شخصية", time: "الحوار", desc: "مساحة صادقة بينك وبين الآية. تدوّن ما شعرت به وما لاحظته — الصدق مع النفس أهم من الكمال.", hasLine: true },
+  { num: "٥", name: "ملاحظة الحالة", time: "الانعكاس", desc: "ترى حركتك بين الظل والهدية وأفضل احتمال — ليس تقييما، بل وعيا بالمسار.", hasLine: false },
 ];
 
 const TONES = [
@@ -43,7 +43,7 @@ export function JourneyLanding() {
 
       {/* Header */}
       <header className="jl-header">
-        <Link href="/auth" className="jl-header-cta">ابدأ مجانا</Link>
+        <Link href="/auth" className="jl-header-cta">ابدأ ٧ أيام مجاناً</Link>
         <span className="jl-logo" aria-label="تمعّن">
           <BrandLogo variant="mark" size={44} />
         </span>
@@ -51,15 +51,19 @@ export function JourneyLanding() {
 
       {/* ════════ HERO ════════ */}
       <section className="jl-hero">
-        <span className="jl-hero-badge">برنامج 28 يوم</span>
-        <p className="jl-hero-tagline">رحلة تأمل قرآنية تعيد ضبط علاقتك بالآيات — من القراءة إلى التجربة</p>
-        <h1 className="jl-hero-title">من الظل...<br />إلى الهدية...<br />إلى أفضل احتمال</h1>
-        <p className="jl-hero-subtitle">تمعّن ليس تطبيق قرآن. هو رحلة تغيّر الموضع الذي تقرأ منه.<br />٢٨ يوما تعيد ضبط علاقتك بالآيات — من سطح المعنى إلى عمق التجربة.</p>
-        <Link href="#pricing" className="jl-hero-cta">
-          <span>ابدأ رحلتك مجانا</span>
-          <span style={{ fontSize: "0.9rem" }}>&#8592;</span>
-        </Link>
-        <p className="jl-hero-note">٧ أيام مجانية — بدون بطاقة دفع</p>
+        <span className="jl-hero-badge">رحلة تأمل قرآنية من ٢٨ يوم</span>
+        <h1 className="jl-hero-title">اقرأ آية واحدة<br />كأنها تحدث فيك الآن.</h1>
+        <p className="jl-hero-subtitle">تمعّن رحلة ٢٨ يوم تعيد علاقتك بالقرآن من القراءة إلى التجربة.<br />كل يوم: لحظة صمت، آية واحدة، سؤال مرآوي، كتابة شخصية، وملاحظة لما يتحرك داخلك.</p>
+        <div className="jl-hero-actions">
+          <Link href="/auth" className="jl-hero-cta">
+            <span>ابدأ ٧ أيام مجاناً</span>
+            <span style={{ fontSize: "0.9rem" }}>&#8592;</span>
+          </Link>
+          <Link href="#daily" className="jl-hero-cta-secondary">
+            <span>شاهد كيف تعمل الرحلة</span>
+          </Link>
+        </div>
+        <p className="jl-hero-note">بدون بطاقة دفع. بدون توبيخ. إذا غبت، تعود من حيث أنت.</p>
       </section>
 
       <div className="jl-divider" />
@@ -68,8 +72,8 @@ export function JourneyLanding() {
       <div className="jl-reveal">
         <section className="jl-problem">
           <span className="jl-section-label">المشكلة</span>
-          <p className="jl-problem-quote">&laquo;المشكلة ليست في النص، بل في المكان الذي نقف فيه حين نقرأه.&raquo;</p>
-          <p className="jl-problem-text">نقرأ القرآن كل يوم. نحفظ. نفسّر. نسمع. لكن شيئاً ما لا يتغيّر.<br />لأن السؤال الذي نسأله خاطئ. لم يعد الأهم: <strong>ما معنى الآية؟</strong><br />السؤال الأصدق: <strong>ماذا يحدث داخلي عندما أقرأ هذه الآية؟</strong></p>
+          <p className="jl-problem-quote">&laquo;أحياناً نقرأ كثيراً… ولا يتحرك شيء.&raquo;</p>
+          <p className="jl-problem-text">قد تقرأ، تحفظ، تسمع، وتفهم. ومع ذلك تشعر أن الآية لم تصبح تجربة داخلك.<br />ليست المشكلة في النص. المشكلة غالباً في <strong>الموضع الذي تقرأ منه</strong>.<br />تمعّن لا يزيد عليك واجباً جديداً. هو يبطئ اللحظة حتى ترى ما يحدث فيك أمام الآية.</p>
         </section>
       </div>
 
@@ -77,9 +81,9 @@ export function JourneyLanding() {
 
       {/* ════════ 3 TRANSFORMATION PHASES ════════ */}
       <section className="jl-phases">
-        <div className="jl-reveal"><span className="jl-section-label">مسار التحوّل</span></div>
-        <div className="jl-reveal"><h2 className="jl-section-title">ثلاث بوابات تعبرها في ٢٨ يوم</h2></div>
-        <div className="jl-reveal"><p className="jl-section-desc">كل موضوع في حياتك — الهوية، العلاقات، المال، الجمال — يمرّ بنفس المراحل الثلاث.</p></div>
+        <div className="jl-reveal"><span className="jl-section-label">الرحلة</span></div>
+        <div className="jl-reveal"><h2 className="jl-section-title">٢٨ يوم عبر ثلاث بوابات</h2></div>
+        <div className="jl-reveal"><p className="jl-section-desc">كل بوابة طبقة من التمعّن. تعبرها بهدوء، خطوة كل يوم.</p></div>
 
         <div className="jl-phases-track">
           <div className="jl-reveal">
@@ -87,7 +91,7 @@ export function JourneyLanding() {
               <span className="jl-phase-num">١</span><span className="jl-phase-icon">🌑</span>
               <h3 className="jl-phase-name">الظل</h3>
               <span className="jl-phase-en">The Shadow — Observation</span>
-              <p className="jl-phase-body">أن ترى ما يحدث فيك دون أن تحاول تغييره. ليس تمريناً ذهنياً — بل لحظة صدق. الظل ليس خطأ أخلاقياً ولا ضعف إيمان. الظل يختفي حين يُرى.</p>
+              <p className="jl-phase-body">أن ترى ما يحدث فيك دون أن تهرب أو تحكم. الظل ليس خطأ أخلاقياً ولا ضعف إيمان — الظل يختفي حين يُرى.</p>
               <p className="jl-phase-question">&laquo;ماذا يحدث في داخلي الآن؟&raquo;</p>
             </div>
           </div>
@@ -97,7 +101,7 @@ export function JourneyLanding() {
               <span className="jl-phase-num">٢</span><span className="jl-phase-icon">&#10022;</span>
               <h3 className="jl-phase-name">الهدية</h3>
               <span className="jl-phase-en">The Gift — Awareness</span>
-              <p className="jl-phase-body">يحدث فجأة... كأنه انكشاف داخلي. لا يمكن التخطيط له، لكن يمكن خلق بيئة يحدث فيها. اللحظة التي ينتقل فيها المعنى من فكرة إلى تجربة.</p>
+              <p className="jl-phase-body">أن يبدأ المعنى في الانكشاف كوعي لا كمعلومة. لا يمكن التخطيط لها، لكن يمكن خلق بيئة تحدث فيها.</p>
               <p className="jl-phase-question">&laquo;ماذا يحدث داخلي وأنا أقرأها؟&raquo;</p>
             </div>
           </div>
@@ -117,9 +121,9 @@ export function JourneyLanding() {
       <div className="jl-divider" />
 
       {/* ════════ DAILY 5 STEPS ════════ */}
-      <section className="jl-daily">
-        <div className="jl-reveal"><span className="jl-section-label">الرحلة اليومية</span></div>
-        <div className="jl-reveal"><h2 className="jl-section-title">خمس خطوات كل يوم</h2></div>
+      <section className="jl-daily" id="daily">
+        <div className="jl-reveal"><span className="jl-section-label">كيف يعمل اليوم الواحد</span></div>
+        <div className="jl-reveal"><h2 className="jl-section-title">خمس خطوات هادئة كل يوم</h2></div>
         <div className="jl-reveal"><p className="jl-section-desc">كل يوم يعكس مسار التحوّل بشكل مصغّر — من الصمت إلى الوعي.</p></div>
         <div className="jl-steps-list">
           {STEPS.map((step) => (
@@ -202,8 +206,14 @@ export function JourneyLanding() {
       <div className="jl-reveal">
         <section className="jl-different">
           <span className="jl-section-label">ما يميّز تمعّن</span>
-          <p className="jl-different-quote">&laquo;لا توبيخ أبدا. لا إشعارات فاتك يوم! ولا لم تكمل تمرينك.&raquo;</p>
-          <p className="jl-problem-text">إذا غبت — لا نعيدك من البداية. نقول: <strong>&laquo;أنت عدت. هذا يكفي. استمر من هنا.&raquo;</strong><br />عدم إكمال يوم ليس فشلا. التحول يبدأ من أن ترى نفسك وأنت تتحرك بين الحالات.</p>
+          <p className="jl-different-quote">&laquo;تمعّن ليس تطبيق قراءة. هو مساحة عودة.&raquo;</p>
+          <ul className="jl-different-list">
+            <li>لا يوبّخك إذا انقطعت.</li>
+            <li>لا يعيدك من البداية إذا غبت.</li>
+            <li>لا يطلب منك أن تكون مثالياً.</li>
+            <li>لا يشرح الآية فقط، بل يعيدك إلى تجربتك معها.</li>
+          </ul>
+          <p className="jl-problem-text">إذا غبت — نقول: <strong>&laquo;أنت عدت. هذا يكفي. استمر من هنا.&raquo;</strong></p>
         </section>
       </div>
 
@@ -221,52 +231,56 @@ export function JourneyLanding() {
 
       <div className="jl-divider" />
 
-      {/* ════════ PRICING ════════ */}
+      {/* ════════ OFFER PATH ════════ */}
       <section className="jl-pricing" id="pricing">
-        <div className="jl-reveal"><span className="jl-section-label">الباقات</span></div>
-        <div className="jl-reveal"><h2 className="jl-section-title">اختر رحلتك</h2></div>
-        <div className="jl-reveal"><p className="jl-section-desc">ابدأ مجانا. ثم قرّر متى تريد أن تعمّق.</p></div>
+        <div className="jl-reveal"><span className="jl-section-label">العرض</span></div>
+        <div className="jl-reveal"><h2 className="jl-section-title">ابدأ بسيطاً. ثم عمّق الرحلة عندما تكون جاهزاً.</h2></div>
+        <div className="jl-reveal"><p className="jl-section-desc">أربع مراحل تصعد بهدوء — لا خيارات متنافسة، بل مسار واحد.</p></div>
 
         <div className="jl-pricing-grid">
           <div className="jl-reveal">
             <div className="jl-price-card">
-              <h3 className="jl-price-name">مجانية</h3>
-              <p className="jl-price-period">7 أيام كاملة</p>
+              <span className="jl-path-step">المرحلة ١</span>
+              <h3 className="jl-price-name">٧ أيام مجانية</h3>
+              <p className="jl-price-period">جرّب بوابة الصمت</p>
               <div className="jl-price-amount">0 <small style={{ fontSize: "0.7rem" }}>ر.س</small></div>
               <p className="jl-price-unit">بدون بطاقة دفع</p>
-              <ul className="jl-price-features"><li>بوابة الصمت والتمعّن</li><li>الدفتر الشخصي</li><li>7 أيام كاملة بدون التزام</li></ul>
-              <Link href="/auth" className="jl-price-btn">ابدأ مجانا</Link>
-            </div>
-          </div>
-          <div className="jl-reveal">
-            <div className="jl-price-card">
-              <h3 className="jl-price-name">ربع سنوية</h3>
-              <p className="jl-price-period">90 يوم</p>
-              <div className="jl-price-amount">199 <small style={{ fontSize: "0.7rem" }}>ر.س</small></div>
-              <p className="jl-price-unit">66 ر.س / شهر</p>
-              <ul className="jl-price-features"><li>جميع مميزات التمعّن</li><li>المدينة التفاعلية</li><li>مرشد تمعّن</li><li>تحليلات الرحلة</li></ul>
-              <Link href="/pricing" className="jl-price-btn">اشترك الآن</Link>
+              <ul className="jl-price-features"><li>بوابة الصمت والتمعّن</li><li>الدفتر الشخصي</li><li>٧ أيام كاملة بدون التزام</li></ul>
+              <Link href="/auth" className="jl-price-btn">ابدأ ٧ أيام مجاناً</Link>
             </div>
           </div>
           <div className="jl-reveal">
             <div className="jl-price-card featured">
-              <div className="jl-price-badge">الأفضل قيمة</div>
-              <h3 className="jl-price-name">سنوية</h3>
-              <p className="jl-price-period">365 يوم</p>
-              <div className="jl-price-amount">699 <small style={{ fontSize: "0.7rem" }}>ر.س</small></div>
-              <p className="jl-price-unit">58 ر.س / شهر — توفير 41%</p>
-              <ul className="jl-price-features"><li>جميع مميزات الربع سنوي</li><li>توفير 4 أشهر</li><li>أولوية في الدعم</li><li>محتوى إضافي حصري</li></ul>
-              <Link href="/pricing" className="jl-price-btn">اشترك الآن</Link>
+              <div className="jl-price-badge">الأكثر اختياراً</div>
+              <span className="jl-path-step">المرحلة ٢</span>
+              <h3 className="jl-price-name">رحلة ٢٨ يوم</h3>
+              <p className="jl-price-period">من القراءة إلى التجربة</p>
+              <div className="jl-price-amount">199 <small style={{ fontSize: "0.7rem" }}>ر.س</small></div>
+              <p className="jl-price-unit">المسار اليومي الكامل</p>
+              <ul className="jl-price-features"><li>المسار اليومي عبر الثلاث بوابات</li><li>مرشد تمعّن</li><li>تحليلات الرحلة</li><li>الدفتر الشخصي الكامل</li></ul>
+              <Link href="/pricing" className="jl-price-btn">اشترك في الرحلة</Link>
             </div>
           </div>
           <div className="jl-reveal">
             <div className="jl-price-card">
+              <span className="jl-path-step">المرحلة ٣</span>
+              <h3 className="jl-price-name">المدينة</h3>
+              <p className="jl-price-period">بعد الرحلة</p>
+              <div className="jl-price-amount">699 <small style={{ fontSize: "0.7rem" }}>ر.س</small></div>
+              <p className="jl-price-unit">٥٨ ر.س / شهر — سنوي</p>
+              <ul className="jl-price-features"><li>كل يوم: آية، سؤال، مساحة كتابة</li><li>تحديات أسبوعية</li><li>أولوية في الدعم</li><li>محتوى إضافي حصري</li></ul>
+              <Link href="/pricing" className="jl-price-btn">اسكن المدينة</Link>
+            </div>
+          </div>
+          <div className="jl-reveal">
+            <div className="jl-price-card">
+              <span className="jl-path-step">المرحلة ٤</span>
               <h3 className="jl-price-name">VIP</h3>
-              <p className="jl-price-period">365 يوم</p>
+              <p className="jl-price-period">للجادين في رحلة أعمق</p>
               <div className="jl-price-amount">4,999 <small style={{ fontSize: "0.7rem" }}>ر.س</small></div>
-              <p className="jl-price-unit">للجادين في رحلتهم</p>
-              <ul className="jl-price-features"><li>جميع مميزات السنوي</li><li>جلسات تمعّن خاصة</li><li>دعم مباشر ومخصص</li><li>مجتمع VIP حصري</li></ul>
-              <Link href="/pricing" className="jl-price-btn">اشترك الآن</Link>
+              <p className="jl-price-unit">دعم مباشر وجلسات خاصة</p>
+              <ul className="jl-price-features"><li>جميع مميزات المدينة</li><li>جلسات تمعّن خاصة</li><li>دعم مباشر ومخصص</li><li>مجتمع VIP حصري</li></ul>
+              <Link href="/pricing" className="jl-price-btn">انضم لـ VIP</Link>
             </div>
           </div>
         </div>
@@ -291,7 +305,7 @@ export function JourneyLanding() {
         <section className="jl-guarantee">
           <div className="jl-guarantee-box">
             <span className="jl-guarantee-icon">🤲</span>
-            <span>ابدأ بـ 7 أيام مجانية. إذا لم تلاحظ فرقا في طريقة قراءتك للقرآن — لا تكمل. بدون أي التزام.</span>
+            <span>ابدأ بـ ٧ أيام مجانية. إذا لم تلاحظ فرقاً في طريقة قراءتك للقرآن — لا تكمل. بدون بطاقة دفع وبدون التزام.</span>
           </div>
         </section>
       </div>
@@ -301,10 +315,10 @@ export function JourneyLanding() {
       {/* ════════ FINAL CTA ════════ */}
       <section className="jl-final-cta">
         <div className="jl-reveal"><h2 className="jl-final-verse">وَتَوَكَّلْ عَلَى الْحَيِّ الَّذِي لَا يَمُوتُ</h2></div>
-        <div className="jl-reveal"><p className="jl-final-text">لا يتغير النص. الذي يتغير هو القارئ.<br />ابدأ رحلتك — واكتشف من تكون حين تقرأ.</p></div>
+        <div className="jl-reveal"><p className="jl-final-text">لا يتغير النص. الذي يتغير هو المكان الذي تقرأ منه.<br />خذ أول خطوة بهدوء. آية واحدة تكفي.</p></div>
         <div className="jl-reveal">
-          <Link href="#pricing" className="jl-hero-cta-static">
-            <span>ابدأ رحلتك مجانا</span>
+          <Link href="/auth" className="jl-hero-cta-static">
+            <span>ابدأ ٧ أيام مجاناً</span>
             <span style={{ fontSize: "0.9rem" }}>&#8592;</span>
           </Link>
         </div>
