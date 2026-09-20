@@ -3,6 +3,17 @@ on: [push, pull_request]
 jobs:
   verify:
     runs-on: ubuntu-latest
+    # next build يتطلب متغيّرات Supabase لإنشاء صفحات مثل /book و/login و/program.
+    # تُضبط كـ Repository Secrets في إعدادات GitHub (Settings → Secrets and variables → Actions).
+    env:
+      NEXT_PUBLIC_SUPABASE_URL: ${{ secrets.NEXT_PUBLIC_SUPABASE_URL }}
+      NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ secrets.NEXT_PUBLIC_SUPABASE_ANON_KEY }}
+      SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+      SUPABASE_ANON_KEY: ${{ secrets.SUPABASE_ANON_KEY }}
+      SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.SUPABASE_SERVICE_ROLE_KEY }}
+      ENTITLEMENT_SECRET: ${{ secrets.ENTITLEMENT_SECRET }}
+      ADMIN_KEY: ${{ secrets.ADMIN_KEY }}
+      NEXT_PUBLIC_APP_ORIGIN: ${{ secrets.NEXT_PUBLIC_APP_ORIGIN }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4

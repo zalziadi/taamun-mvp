@@ -158,6 +158,99 @@
 }
 
 /* -----------------------------
+   Dabboos (دبّوس) — scoped brand theme
+   Scope: only inside .dbs-theme — does NOT affect Taamun.
+   Tokens drive all colors (no hardcode in components).
+------------------------------ */
+.dbs-theme {
+  --dbs-red: #E63946;       /* اللون الأساسي */
+  --dbs-red-deep: #9E0E18;  /* أحمر غامق (hover / إبرة الدبوس) */
+  --dbs-yellow: #FFD23F;    /* لون التمييز */
+  --dbs-yellow-deep: #F4B400;
+  --dbs-ink: #15171C;       /* النص الداكن */
+  --dbs-ink-soft: #41454d;
+  --dbs-muted: #6b7079;
+  --dbs-bg: #FAFAF7;        /* الخلفية الفاتحة */
+  --dbs-surface: #ffffff;
+  --dbs-line: rgba(21, 23, 28, 0.10);
+
+  background: var(--dbs-bg);
+  color: var(--dbs-ink);
+}
+
+.dbs-theme .dbs-heading {
+  font-family: "Amiri", serif;
+  color: var(--dbs-ink);
+}
+
+.dbs-theme .dbs-card {
+  background: var(--dbs-surface);
+  border: 1px solid var(--dbs-line);
+  border-radius: 1rem;
+  box-shadow: 0 1px 2px rgba(21, 23, 28, 0.04);
+}
+
+/* بطاقة القرار الأبرز — حافة صفراء مميِّزة */
+.dbs-theme .dbs-card-accent {
+  border-color: var(--dbs-yellow);
+  background: linear-gradient(to bottom, #fffdf3, var(--dbs-surface));
+}
+
+.dbs-theme .dbs-badge {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 9999px;
+  background: var(--dbs-yellow);
+  color: var(--dbs-ink);
+  font-size: 0.75rem;
+  font-weight: 700;
+  padding: 0.25rem 0.75rem;
+}
+
+.dbs-theme .dbs-label {
+  font-size: 0.75rem;
+  color: var(--dbs-muted);
+}
+
+.dbs-theme .dbs-input {
+  width: 100%;
+  border-radius: 0.75rem;
+  border: 1px solid var(--dbs-line);
+  background: var(--dbs-surface);
+  padding: 0.5rem 0.75rem;
+  font-size: 0.875rem;
+  color: var(--dbs-ink);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+.dbs-theme .dbs-input::placeholder { color: var(--dbs-muted); }
+.dbs-theme .dbs-input:focus {
+  outline: none;
+  border-color: var(--dbs-red);
+  box-shadow: 0 0 0 3px rgba(230, 57, 70, 0.15);
+}
+
+/* الزر الأساسي — أحمر دبّوس */
+.dbs-theme .dbs-btn {
+  cursor: pointer;
+  border-radius: 1rem;
+  background: var(--dbs-red);
+  color: #fff;
+  font-weight: 800;
+  padding: 0.75rem 2rem;
+  transition: background-color 0.2s ease, opacity 0.2s ease;
+}
+.dbs-theme .dbs-btn:hover { background: var(--dbs-red-deep); }
+.dbs-theme .dbs-btn:disabled { opacity: 0.5; cursor: not-allowed; }
+
+.dbs-theme .dbs-link {
+  cursor: pointer;
+  font-size: 0.875rem;
+  color: var(--dbs-muted);
+  transition: color 0.15s ease;
+}
+.dbs-theme .dbs-link:hover { color: var(--dbs-red); }
+
+/* -----------------------------
    Landing v2: Parchment Theme
    Scope: only when wrapper has .theme-parchment
 ------------------------------ */
