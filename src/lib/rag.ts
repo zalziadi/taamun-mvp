@@ -1,4 +1,4 @@
-import { readFile } from "node:fs/promises";
+import { readdir, readFile } from "node:fs/promises";
 import path from "node:path";
 
 const DEFAULT_EMBEDDING_MODEL = process.env.OPENAI_EMBEDDING_MODEL ?? "text-embedding-3-small";
@@ -20,17 +20,19 @@ function normalizeMarkdown(input: string): string {
     .trim();
 }
 
+// النص الكامل لكتاب «مدينة المعنى بلغة القرآن» — ملف لكل فصل.
+// المصدر: _content-tools/madinat-almana/*.html (نفس أصل الـPDF المطبوع).
+const BOOK_DIR = path.join(process.cwd(), "src", "content", "book", "madinat-almana");
+
 export async function loadBookCorpus(): Promise<Array<{ source: string; text: string }>> {
-  const base = path.join(process.cwd(), "src", "content", "book", "chapters");
-  const files = [
-    { file: "muraqabah.md", source: "book:muraqabah" },
-    { file: "idrak.md", source: "book:idrak" },
-    { file: "best-potential.md", source: "book:best-potential" },
-  ];
+  const files = (await readdir(BOOK_DIR))
+    .filter((file) => file.endsWith(".md"))
+    .sort()
+    .map((file) => ({ file, source: `book:madinat:${file.replace(/\.md$/, "")}` }));
 
   const corpus = await Promise.all(
     files.map(async ({ file, source }) => {
-      const raw = await readFile(path.join(base, file), "utf8");
+      const raw = await readFile(path.join(BOOK_DIR, file), "utf8");
       return { source, text: normalizeMarkdown(raw) };
     })
   );
